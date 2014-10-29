@@ -1,0 +1,52 @@
+Class Design: 
+
+
+
+MakamRecording - all recording-specific info, sections. Handles the mapping between score and recording sections. 
+Note that There might be omissions and change of order in a recording of a given composition.  
+self.sections - recording-specific sections 
+self.makamScore
+self.audioFile
+
+
+MakamScore 
+field sectionLyrics is a map: 
+e.g.
+"nakarat" -> Lyrics "word1 word2 word3"
+each Lyrics item  is of object type Lyrics
+
+Lyrics
+ is a holder of a list of words: each Word in turn contains a list of object type Syllable
+Each syllable in turn contains a list of Phoneme objects
+
+
+LyricsWithModels
+extend Lyrics with  modeling-related info : 
+- phonemes network with links to trained models
+- statesNetwork
+
+
+Decoder 
+ hmmNetwork - of type HMM for forced alignment
+ decodeAudio. based on hmm._BaseHMM._viterbiForced2
+ path - result
+
+
+
+Phonetizer
+grapheme2phoneme(word) 
+turkishlyrics2PhoneticDict parses all words and turns them into a HTK-format dictionary. 
+HTK takes the sequence of words (mlf file) and the dict and  expands them internally  
+
+
+Aligner - most important class
+
+self.lyrics - stores lyrics for given audio
+
+Aligner.Aligner.alignAudio - creates word-level grammar file and dict file; runs alignment with HTK
+
+incl. feature extraction
+
+
+
+MakamScore.createTranscriptForSection - just array of all phonems, used in matlab dtw 

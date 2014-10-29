@@ -1,0 +1,11 @@
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/evalDTWmatlab.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/ 02_Gel_
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/dtw/evalDTWmatlab.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/barbaros/ 02_Gel_
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/dtw/evalDTWmatlab.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/barbaros/ 02_Kok
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/evalDTWmatlab.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/safiye/ 01_Aksam
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/evalDTWmatlab.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Olmaz
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/evalDTWmatlab.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Aksam
