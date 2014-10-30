@@ -98,10 +98,10 @@ class MakamScore():
         for currSection in self.sectionToLyricsMap:
     
             print '\n' + str(currSection[0]) + ':'
-            
-            for word in  currSection[1]:
-                print word.__str__().encode('utf-8','replace')
-    #             string_for_output = currSection[1].encode('utf-8','replace')
+
+            print currSection[1]
+#             for word in  currSection[1]:
+#                 print word.__str__().encode('utf-8','replace')
         
 
     def serializePhonemesForSection(self, whichSection, outputFileName):

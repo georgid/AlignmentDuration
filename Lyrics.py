@@ -67,6 +67,11 @@ class Lyrics(object):
         for i, phoneme in enumerate(self.phonemesNetwork):
             print "{} : {}".format(i, phoneme.ID)
                  
-
+    def __str__(self):
+        lyricsStr = ''
+        for word_ in self.listWords:
+            lyricsStr += word_.__str__()
+            lyricsStr += ' '
+        return lyricsStr.rstrip().encode('utf-8','replace')
         
         
