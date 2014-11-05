@@ -10,16 +10,18 @@ import numpy
 import sys
 from Decoder import Decoder
 from LyricsWithModels import LyricsWithModels
+from numpy.core.arrayprint import set_printoptions
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 
 pathHtk2Sp = os.path.join(parentDir, 'htk2s3')
-pathHMM = os.path.join(parentDir, 'HMM')
+# pathHMM = os.path.join(parentDir, 'HMM')
+pathHMM = os.path.join(parentDir, 'HMMDuration')
 
 sys.path.append(pathHtk2Sp)
-sys.path.append(pathHMM)
+# sys.path.append(pathHMM)
 
 
 from hmm.continuous.GMHMM  import GMHMM
@@ -86,12 +88,12 @@ def loadMFCCs(URI_recording_noExt):
     
     return mfccsFeatrues 
 
-def decodeAudio( URIrecording, decoder):
+def decodeAudioChunk( URIrecording, decoder):
     
     
     observationFeatures = loadMFCCs(URIrecording) #     observationFeatures = observationFeatures[0:1000]
-    path, psi, delta = decoder.decodeAudio(observationFeatures)
-    writeListToTextFile(path, None, '/Users/joro/Downloads/path.test')
+    decoder.decodeAudio(observationFeatures)
+    
     detectedWordList = decoder.path2ResultWordList()
    
     return detectedWordList
@@ -116,7 +118,7 @@ def main(argv):
     whichSection = 3
     whichSection = int(argv[2])
     
-     
+    set_printoptions(threshold='nan') 
 
     lyrics = loadLyrics(pathToComposition, whichSection)
     
@@ -124,10 +126,13 @@ def main(argv):
 #     lyricsWithModels.printPhonemeNetwork()
     
     decoder = Decoder(lyricsWithModels)
+   
+#     decoder = Decoder(lyrics, withModels=False, numStates=86)
+
     
     #################### decode
     
-    detectedWordList = decodeAudio(URIrecording, decoder)
+    detectedWordList = decodeAudioChunk(URIrecording, decoder)
     
     alignmentErrors = _evalAlignmentError(URIrecording + '.TextGrid', detectedWordList, 1)
         
@@ -139,3 +144,5 @@ def main(argv):
 if __name__ == '__main__':
     main(sys.argv)
 
+#     import scipy
+#     from scipy.stats import gamma

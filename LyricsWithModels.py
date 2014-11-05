@@ -29,8 +29,11 @@ class LyricsWithModels(Lyrics):
         
         self._linkToModels(MODEL_URI, HMM_LIST_URI)
         
+        # list of object type State
         self.statesNetwork = []
-        self._phonemes2stateNetwork()
+#         self._phonemes2stateNetwork()
+        self._phonemes2stateNetworkOnlyMiddle()
+
         
 
         
@@ -56,7 +59,7 @@ class LyricsWithModels(Lyrics):
         
     def _phonemes2stateNetwork(self):
         '''
-        expand to states network
+        expand to states network. 
         '''
         
         self.statesNetwork = []
@@ -72,7 +75,29 @@ class LyricsWithModels(Lyrics):
             for (numState, state ) in phoneme.htkModel.states:
                 self.statesNetwork.append(state)
    
-
+    def _phonemes2stateNetworkOnlyMiddle(self):
+        '''
+        expand to states network. TAKE ONLY middle state for now
+        '''
+        
+        self.statesNetwork = []
+        stateCount = 0
+        
+        for phoneme in self.phonemesNetwork:
+            
+            phoneme.setNumFirstState(stateCount)
+            # update
+            stateCount += 1
+            
+        
+            if len( phoneme.htkModel.states) == 1:
+                (numState, state ) = phoneme.htkModel.states[0]
+            elif len( phoneme.htkModel.states) == 3:             
+                (numState, state ) = phoneme.htkModel.states[1]
+            else:
+                sys.exit("not implemented")
+            
+            self.statesNetwork.append(state)
                     
     
     def printStates(self):

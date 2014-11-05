@@ -1,0 +1,11 @@
+report: 
+
+
+setting only the initial prob of first state to be diff. than zero assures the optimal path will be start first state.
+
+we backtrack starting at the very last state.
+
+
+Current parameteres:
+Only at middle state - check bookmark in code
+  

@@ -2,13 +2,6 @@ Class Design:
 
 
 
-MakamRecording - all recording-specific info, sections. Handles the mapping between score and recording sections. 
-Note that There might be omissions and change of order in a recording of a given composition.  
-self.sections - recording-specific sections 
-self.makamScore
-self.audioFile
-
-
 MakamScore 
 field sectionLyrics is a map: 
 e.g.

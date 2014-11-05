@@ -9,12 +9,12 @@ import sys
 import os
 import glob
 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
-parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir,  os.path.pardir)) 
-pathUtils = os.path.join(parentParentDir, 'utilsLyrics')
+parentDir = os.pathRaw.abspath(os.pathRaw.join(os.pathRaw.dirname(os.pathRaw.realpath(sys.argv[0]) ), os.pathRaw.pardir)) 
+parentParentDir = os.pathRaw.abspath(os.pathRaw.join(os.pathRaw.dirname(os.pathRaw.realpath(sys.argv[0]) ), os.pathRaw.pardir,  os.pathRaw.pardir)) 
+pathUtils = os.pathRaw.join(parentParentDir, 'utilsLyrics')
 
-sys.path.append(parentDir )
-sys.path.append(pathUtils )
+sys.pathRaw.append(parentDir )
+sys.pathRaw.append(pathUtils )
 
 from MakamScore import MakamScore
 import MakamScore

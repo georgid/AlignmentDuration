@@ -5,7 +5,6 @@ Created on Oct 27, 2014
 '''
 from Phoneme import Phoneme
 
-NUMSTATES_SIL = 3
 
 class Lyrics(object):
     '''

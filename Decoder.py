@@ -5,13 +5,16 @@ Created on Oct 27, 2014
 '''
 import os
 import sys
-from Utilz import writeListOfListToTextFile
+from Utilz import writeListOfListToTextFile, writeListToTextFile
+from Path import Path
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 pathHtk2Sp = os.path.join(parentDir, 'htk2s3')
-pathHMM = os.path.join(parentDir, 'HMM')
+# pathHMM = os.path.join(parentDir, 'HMM')
+pathHMM = os.path.join(parentDir, 'HMMDuration')
+
 
 sys.path.append(pathHtk2Sp)
 sys.path.append(pathUtils )
@@ -28,25 +31,30 @@ numDimensions = 25
 # TODO: read from feat extraction parameters
 NUM_FRAMES_PERSECOND = 100.0
 
+#DEBUG: 
+PATH_CHI = '/Users/joro/Downloads/chi'
+PATH_PSI = '/Users/joro/Downloads/psi'
+
 class Decoder(object):
     '''
     holds structures used in decoding and decoding result
     '''
 
 
-    def __init__(self, lyricsWithModels):
+    def __init__(self, lyricsWithModels, numStates=None, withModels=True):
         '''
         Constructor
         '''
         self.lyricsWithModels = lyricsWithModels
         self.hmmNetwork = []
                 
-        self.indicesStateStarts = []
 
-        self._constructHmmNetwork()
+        self._constructHmmNetwork(numStates, withModels)
         
+        # Path class object
+        self.path = None
         
-    def _constructHmmNetwork(self ):
+    def _constructHmmNetwork(self,  numStates, withModels ):
         '''
         Tests the guyz hmm viterbi with one word. 
         '''
@@ -57,20 +65,21 @@ class Decoder(object):
         ######## construct transition matrix
         #######
         
-        transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels.phonemesNetwork)
-        
+#         transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels.phonemesNetwork)
 #        DEBUG
 #  writeListOfListToTextFile(transMAtrix, None , '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/transMatrix')
         
         # construct means, covars, and all the rest params
         #########
+       
+        if numStates == None:
+            numStates = len(self.lyricsWithModels.statesNetwork) 
         
+        means, covars, weights, pi = self._constructHMMNetworkParameters(numStates,  withModels)
         
-        means, covars, weights, pi = self._constructHMMNetworkParameters(self.lyricsWithModels.statesNetwork)
+        self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,None,means,covars,weights,pi,init_type='user',verbose=True)
         
-        numStates = len(self.lyricsWithModels.statesNetwork) 
-        
-        self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,transMAtrix,means,covars,weights,pi,init_type='user',verbose=True)
+
         
     def  _constructTransMatrixHMMNetwork(self, sequencePhonemes):
         
@@ -110,11 +119,12 @@ class Decoder(object):
             
         return transMAtrix
     
-    def _constructHMMNetworkParameters(self, sequenceStates):
+    def _constructHMMNetworkParameters(self,  numStates,  withModels=True, sequenceStates=None):
         '''
         tranform h2s hmm model to  format of gyuz's hmm class
         '''
-        numStates = len(sequenceStates) 
+        
+       
         
         means = numpy.empty((numStates, numMixtures, numDimensions))
         
@@ -125,11 +135,24 @@ class Decoder(object):
         
         # start probs : allow to start only at first state
         pi = numpy.zeros((numStates), dtype=numpy.double)
-    
+        # avoid log(0) 
+        pi.fill(0.0001)
         pi[0] = 1
         
+#         pi = numpy.ones( (numStates)) *(1.0/numStates)
+        
+        if not withModels:
+            return None, None, None, pi
+
+        
+        sequenceStates = self.lyricsWithModels.statesNetwork
+         
+        if sequenceStates==None:
+            sys.exit('no state sequence')
+               
         for i in range(len(sequenceStates) ):
             state  = sequenceStates[i] 
+            
             for (numMixture, weight, mixture) in state.mixtures:
                 
                 weights[i,numMixture-1] = weight
@@ -141,51 +164,52 @@ class Decoder(object):
                     covars[i][numMixture-1][k,k] = variance_[k]
         return means, covars, weights, pi
     
+    
+    
     def decodeAudio( self, observationFeatures):
         ''' decode path for given exatrcted features for audio
         '''
-        # TODO: doulbe check that features are in same dimension as model
+        # TODO: double check that features are in same dimension as model
         
-    #     observationsMfccs = observationsMfccs[0:1000,:]
+#         observationFeatures = observationFeatures[0:100,:]
         
-        self.path, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
-         
+        
+#         self.path, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
+        if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
+            chiBackPointer = numpy.loadtxt(PATH_CHI)
+            psiBackPointer = numpy.loadtxt(PATH_PSI)
+               
+        else:
+            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
+        
+            writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
+            writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
+            
+        
+        self.path =  Path(chiBackPointer, psiBackPointer)
+        self.path.printDurations()
+        
          # DEBUG
-        writeListOfListToTextFile(psi, None , '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/psi', True)
-        writeListOfListToTextFile(delta, None , '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/delta', True)
+        writeListToTextFile(self.path.pathRaw, None , '/tmp/path')
         
-         
-        for p in range(len(self.path)):
-            print p ," ", self.path[p], "\n" 
-        
-        return self.path, psi, delta
     
-    def _path2stateIndices(self):
-        '''
-         indices in path where a new state starts. 
-         the array index is the consequtive state count from sequence  
-        '''
-        self.indicesStateStarts = []
-        currState = -1
-        for i, p in enumerate(self.path):
-            if not p == currState:
-              self.indicesStateStarts.append(i)
-              currState = p
-    
+  
     
 
    
 
     def path2ResultWordList(self):
         '''
-        excludes 
+        makes sense of path indices : maps numbers to states and phonemes, uses self.lyricsWithModels.statesNetwork and lyricsWithModels.listWords) 
         to be called after decoding
         '''
-        # indices in path
-        self._path2stateIndices()
+        # indices in pathRaw
+        self.path._path2stateIndices()
+        
         #sanity check
         numStates = len(self.lyricsWithModels.statesNetwork)
-        numdecodedStates = len(self.indicesStateStarts)
+        numdecodedStates = len(self.path.indicesStateStarts)
+        
         if numStates != numdecodedStates:
             sys.exit("detected path has {} states, but stateNetwork transcript has {} states".format( numdecodedStates, numStates ) )
         
@@ -207,10 +231,10 @@ class Decoder(object):
     
     
     def _constructTimeStampsForWord(self,  word_, countFirstState, countLastState):
-        currWordBeginFrame = self.indicesStateStarts[countFirstState]
-        currWordEndFrame = self.indicesStateStarts[countLastState]
+        currWordBeginFrame = self.path.indicesStateStarts[countFirstState]
+        currWordEndFrame = self.path.indicesStateStarts[countLastState]
     #             # debug:
-    #             print self.path[currWordBeginFrame]
+    #             print self.pathRaw[currWordBeginFrame]
     # timestamp:
         startTs = float(currWordBeginFrame) / NUM_FRAMES_PERSECOND
         endTs = float(currWordEndFrame) / NUM_FRAMES_PERSECOND
