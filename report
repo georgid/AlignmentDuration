@@ -6,6 +6,10 @@ setting only the initial prob of first state to be diff. than zero assures the o
 we backtrack starting at the very last state.
 
 
+Current state: 
+testing only duraations with no ObsProbs. 
+
 Current parameteres:
-Only at middle state - check bookmark in code
-  
+=Only at middle state - check bookmark in code
+= with Normal distribution = allows for 2*max duration. 
+- let max D be 20% on top of note duration (in _calcCurrStatePhi)

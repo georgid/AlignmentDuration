@@ -114,11 +114,7 @@ class MakamScore():
         writeListToTextFile(lyrics.phonemesNetwork, None,  outputFileName )
         return lyrics.phonemesNetwork
     
-    def _calcPhonemeDurations(self, whichSection):
-        lyrics = self.getLyricsForSection(whichSection)
-        for word_ in lyrics.listWords:
-            for syllable in word_.syllables:
-                syllable.calcPhonemeDurations()
+            
         
         
     def printSyllables(self, whichSection):

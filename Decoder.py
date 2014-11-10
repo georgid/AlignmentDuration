@@ -6,19 +6,23 @@ Created on Oct 27, 2014
 import os
 import sys
 from Utilz import writeListOfListToTextFile, writeListToTextFile
-from Path import Path
+from hmm.Path import Path
+from Syllable import MINIMAL_DURATION_UNIT
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
-pathHtk2Sp = os.path.join(parentDir, 'htk2s3')
+sys.path.append(pathUtils )
+
+htkModelParser = os.path.join(parentDir, 'htk2s3')
+sys.path.append(htkModelParser)
+
 # pathHMM = os.path.join(parentDir, 'HMM')
 pathHMM = os.path.join(parentDir, 'HMMDuration')
-
-
-sys.path.append(pathHtk2Sp)
-sys.path.append(pathUtils )
 sys.path.append(pathHMM)
+
+
 
 from hmm.continuous.GMHMM  import GMHMM
 
@@ -46,6 +50,10 @@ class Decoder(object):
         Constructor
         '''
         self.lyricsWithModels = lyricsWithModels
+        
+        '''
+        of class HMM
+        '''
         self.hmmNetwork = []
                 
 
@@ -164,15 +172,45 @@ class Decoder(object):
                     covars[i][numMixture-1][k,k] = variance_[k]
         return means, covars, weights, pi
     
-    
+            
+      
+        
+        
+    def duration2numFrameDuration(self, observationFeatures):
+        '''
+        helper method. 
+        setDuration HowManyFrames for each state in hmm
+        '''
+        # TODO: read from score
+#         self.bpm = 60
+#         durationMinUnit = (1. / (self.bpm/60) ) * (1. / MINIMAL_DURATION_UNIT) 
+#         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
+        totalDur = self.lyricsWithModels.getTotalDuration()
+        numFramesPerMinUnit   = float(len(observationFeatures)) / float(totalDur)
+        numFramesDurationsList = []
+        
+        for  i, stateWithDur_ in enumerate (self.lyricsWithModels.statesNetwork):
+            # numFrames per phoneme
+            numFramesPerState = round(float(stateWithDur_.duration) * numFramesPerMinUnit)
+            numFramesDurationsList.append(numFramesPerState)
+            stateWithDur_.setDurationInFrames(numFramesPerState)
+            
+        return numFramesDurationsList
+        
+        
+
+
+        
     
     def decodeAudio( self, observationFeatures):
         ''' decode path for given exatrcted features for audio
         '''
         # TODO: double check that features are in same dimension as model
-        
 #         observationFeatures = observationFeatures[0:100,:]
         
+        listDurations = self.duration2numFrameDuration(observationFeatures)
+        
+        self.hmmNetwork.setDurForStates(listDurations) 
         
 #         self.path, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
         if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
@@ -187,16 +225,14 @@ class Decoder(object):
             
         
         self.path =  Path(chiBackPointer, psiBackPointer)
-        self.path.printDurations()
         
          # DEBUG
+#         self.path.printDurations()
         writeListToTextFile(self.path.pathRaw, None , '/tmp/path')
         
     
   
     
-
-   
 
     def path2ResultWordList(self):
         '''

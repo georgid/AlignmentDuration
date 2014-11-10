@@ -6,18 +6,20 @@ Created on Oct 27, 2014
 from Lyrics import Lyrics
 import os
 import sys
+from StateWithDur import StateWithDur
+from htk_converter import HtkConverter
+from numpy.f2py.crackfortran import word_pattern
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
-pathHtk2Sp = os.path.join(parentDir, 'htk2s3')
 
-sys.path.append(pathHtk2Sp )
+htkModelParser = os.path.join(parentDir, 'htk2s3')
+sys.path.append(htkModelParser)
 
 
-from htk_converter import HtkConverter
 
 class LyricsWithModels(Lyrics):
     '''
-    lyrics with each Phoneme having a link to a model
+    lyrics with each Phoneme having a link to a model of class type htkModel from htkModelParser
     '''
 
 
@@ -29,7 +31,7 @@ class LyricsWithModels(Lyrics):
         
         self._linkToModels(MODEL_URI, HMM_LIST_URI)
         
-        # list of object type State
+        # list of class type StateWithDur
         self.statesNetwork = []
 #         self._phonemes2stateNetwork()
         self._phonemes2stateNetworkOnlyMiddle()
@@ -69,11 +71,14 @@ class LyricsWithModels(Lyrics):
             
             phoneme.setNumFirstState(stateCount)
             # update
-            stateCount += len(phoneme.htkModel.states)
+            currStateCount = len(phoneme.htkModel.states)
+            stateCount += currStateCount
             
             
             for (numState, state ) in phoneme.htkModel.states:
-                self.statesNetwork.append(state)
+                 currStateWithDur = StateWithDur(state.mixtures)
+                 currStateWithDur.setDuration(phoneme.getDuration()/currStateCount)
+                 self.statesNetwork.append(currStateWithDur)
    
     def _phonemes2stateNetworkOnlyMiddle(self):
         '''
@@ -95,14 +100,30 @@ class LyricsWithModels(Lyrics):
             elif len( phoneme.htkModel.states) == 3:             
                 (numState, state ) = phoneme.htkModel.states[1]
             else:
-                sys.exit("not implemented")
+                sys.exit("not implemented. only 3 or 1 state per phoneme supported")
             
-            self.statesNetwork.append(state)
-                    
+            currStateWithDur = StateWithDur(state.mixtures)
+            currStateWithDur.setDuration(phoneme.getDuration())
+            
+            self.statesNetwork.append(currStateWithDur)
     
+    def printWordsAndStates(self, resultPath):
+        '''
+        debug word begining states
+        '''
+        
+        for word_ in self.listWords:
+            print word_ , ":" 
+            for syllable_ in word_.syllables:
+                for phoneme_ in syllable_.phonemes:
+                    print "\t phoneme: " , phoneme_
+                    countFirstState =  phoneme_.numFirstState
+                    print "\t\t state: {} duration (in Frames): {} DERATION RESULT: {}".format(countFirstState,  self.statesNetwork[countFirstState].durationInFrames, resultPath.durations[countFirstState])
+            
+                
     def printStates(self):
         '''
-        debug: print syllables 
+        debug: print states 
         '''
         
         

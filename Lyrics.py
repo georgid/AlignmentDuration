@@ -25,6 +25,7 @@ class Lyrics(object):
         self.phonemesNetwork =  []
         
         self._words2Phonemes()
+        self._calcPhonemeDurs()
     
     def _words2Phonemes(self):
         ''' list of words (Word []) to list of phonemes (Phoneme [])
@@ -47,7 +48,16 @@ class Lyrics(object):
         
         phonemeSil2 = Phoneme("sil"); phonemeSil2.setDuration('1')
         self.phonemesNetwork.append(phonemeSil2)
-
+    
+    def _calcPhonemeDurs(self):
+        '''
+        distribute duraitions among phonemes within each syllable
+        '''
+        for word_ in self.listWords:
+            for syllable in word_.syllables:
+                syllable.calcPhonemeDurations()
+                 
+    
     def printSyllables(self):
         '''
         debug: print syllables 
@@ -58,13 +68,23 @@ class Lyrics(object):
                 for syll in word_.syllables:
                     print syll
                     
+    def getTotalDuration(self):
+        '''
+        total duration of phonemes according to score. no pauses considered.
+        '''
+        totalDuration = 0    
+        for i, phoneme_ in enumerate(self.phonemesNetwork):
+           totalDuration +=  int(phoneme_.duration)
+        return totalDuration
+            
+    
     def printPhonemeNetwork(self):
         '''
         debug:  
         '''
                
         for i, phoneme in enumerate(self.phonemesNetwork):
-            print "{} : {}".format(i, phoneme.ID)
+            print "{}: {} {}".format(i, phoneme.ID, phoneme.duration)
                  
     def __str__(self):
         lyricsStr = ''

@@ -9,15 +9,14 @@ import sys
 import os
 import glob
 
-parentDir = os.pathRaw.abspath(os.pathRaw.join(os.pathRaw.dirname(os.pathRaw.realpath(sys.argv[0]) ), os.pathRaw.pardir)) 
-parentParentDir = os.pathRaw.abspath(os.pathRaw.join(os.pathRaw.dirname(os.pathRaw.realpath(sys.argv[0]) ), os.pathRaw.pardir,  os.pathRaw.pardir)) 
-pathUtils = os.pathRaw.join(parentParentDir, 'utilsLyrics')
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir,  os.path.pardir)) 
+pathUtils = os.path.join(parentParentDir, 'utilsLyrics')
 
-sys.pathRaw.append(parentDir )
-sys.pathRaw.append(pathUtils )
+sys.path.append(parentDir )
+sys.path.append(pathUtils )
 
 from MakamScore import MakamScore
-import MakamScore
 import imp
 from Utilz import writeListToTextFile
 import Syllable
@@ -126,18 +125,16 @@ def parseScoreAndSerialize(pathToComposition, whichSection, withDurations):
         # DEBUG
         makamScore.printSyllables(whichSection)
         
-        # 1. phoneme IDs
+        # 1. phoneme IDs and durations loaded
         listPhonemes = makamScore.serializePhonemesForSection(whichSection, '/tmp/test.phn')
         listDurations = []
         
-        # 2. phoneme Durations
-        makamScore._calcPhonemeDurations(whichSection)
 
         for phoneme_ in listPhonemes :
             listDurations.append(phoneme_.duration)
         writeListToTextFile(listDurations, None, '/tmp/test.durations')
         
-        # 3. indices
+        # 2. indices
         
         
         serializeIndices(makamScore, whichSection, withDurations, '/tmp/test.indices')

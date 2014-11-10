@@ -12,27 +12,31 @@ from Decoder import Decoder
 from LyricsWithModels import LyricsWithModels
 from numpy.core.arrayprint import set_printoptions
 
+# file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
-
-pathHtk2Sp = os.path.join(parentDir, 'htk2s3')
-# pathHMM = os.path.join(parentDir, 'HMM')
-pathHMM = os.path.join(parentDir, 'HMMDuration')
-
-sys.path.append(pathHtk2Sp)
-# sys.path.append(pathHMM)
-
-
-from hmm.continuous.GMHMM  import GMHMM
-from htk_converter import HtkConverter
 from Utilz import writeListOfListToTextFile, writeListToTextFile,\
     getMeanAndStDevError
 
+# parser of htk-build speech model
+pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
+sys.path.append(pathHtkModelParser)
+from htk_converter import HtkConverter
+
+
+# HMM model and decoding
+# pathHMM = os.path.join(parentDir, 'HMM')
+pathHMM = os.path.join(parentDir, 'HMMDuration')
+sys.path.append(pathHMM)
+from hmm.continuous.GMHMM  import GMHMM
+
+#  evaluation  
 pathEvaluation = os.path.join(parentDir, 'Evaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError
 
+# TODO: read mfccs with matlab htk_read
 # sys.path.append('/Users/joro/Downloads/python-matlab-bridge-master')
 # from pymatbridge import Matlab
 
@@ -57,7 +61,7 @@ def loadLyrics(pathToComposition, whichSection):
     pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
     pathToSectionTsv =  os.path.join(pathToComposition, glob.glob("*.tsv")[0])
     makamScore = MakamScore(pathTotxt, pathToSectionTsv )
-        
+    
     # phoneme IDs
     lyrics = makamScore.getLyricsForSection(whichSection)
     return lyrics
@@ -94,8 +98,11 @@ def decodeAudioChunk( URIrecording, decoder):
     observationFeatures = loadMFCCs(URIrecording) #     observationFeatures = observationFeatures[0:1000]
     decoder.decodeAudio(observationFeatures)
     
+    
+    
     detectedWordList = decoder.path2ResultWordList()
    
+
     return detectedWordList
 
 
@@ -119,30 +126,43 @@ def main(argv):
     whichSection = int(argv[2])
     
     set_printoptions(threshold='nan') 
+    
+    ################## load lyrics and models 
 
     lyrics = loadLyrics(pathToComposition, whichSection)
     
     lyricsWithModels = LyricsWithModels(lyrics.listWords, MODEL_URI, HMM_LIST_URI )
-#     lyricsWithModels.printPhonemeNetwork()
+    lyricsWithModels.printPhonemeNetwork()
     
     decoder = Decoder(lyricsWithModels)
    
-#     decoder = Decoder(lyrics, withModels=False, numStates=86)
+#  TODO: DEBUG: do not load models
+#  decoder = Decoder(lyrics, withModels=False, numStates=86)
 
     
     #################### decode
     
     detectedWordList = decodeAudioChunk(URIrecording, decoder)
     
+    ### VISUALIZE
+    decoder.lyricsWithModels.printWordsAndStates(decoder.path)
+    
+
+    
+    #################### evaluate 
     alignmentErrors = _evalAlignmentError(URIrecording + '.TextGrid', detectedWordList, 1)
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
         
-#         print "mean : ", mean, "st dev: " , stDev
-    print "(", mean, ",", stDev, ")"   
+    print "mean : ", mean, "st dev: " , stDev
+
+
+
+
+
+
 
 if __name__ == '__main__':
     main(sys.argv)
 
-#     import scipy
-#     from scipy.stats import gamma
+
