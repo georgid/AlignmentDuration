@@ -8,6 +8,7 @@ import sys
 from Utilz import writeListOfListToTextFile, writeListToTextFile
 from hmm.Path import Path
 from Syllable import MINIMAL_DURATION_UNIT
+from hmm.continuous.DurationPdf import MINIMAL_PROB
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -144,7 +145,7 @@ class Decoder(object):
         # start probs : allow to start only at first state
         pi = numpy.zeros((numStates), dtype=numpy.double)
         # avoid log(0) 
-        pi.fill(0.0001)
+        pi.fill(MINIMAL_PROB)
         pi[0] = 1
         
 #         pi = numpy.ones( (numStates)) *(1.0/numStates)

@@ -132,7 +132,7 @@ def main(argv):
     lyrics = loadLyrics(pathToComposition, whichSection)
     
     lyricsWithModels = LyricsWithModels(lyrics.listWords, MODEL_URI, HMM_LIST_URI )
-    lyricsWithModels.printPhonemeNetwork()
+#     lyricsWithModels.printPhonemeNetwork()
     
     decoder = Decoder(lyricsWithModels)
    
