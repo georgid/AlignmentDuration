@@ -214,15 +214,15 @@ class Decoder(object):
         self.hmmNetwork.setDurForStates(listDurations) 
         
 #         self.path, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
-        if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
-            chiBackPointer = numpy.loadtxt(PATH_CHI)
-            psiBackPointer = numpy.loadtxt(PATH_PSI)
-               
-        else:
-            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
-        
-            writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
-            writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
+#         if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
+#             chiBackPointer = numpy.loadtxt(PATH_CHI)
+#             psiBackPointer = numpy.loadtxt(PATH_PSI)
+#                
+#         else:
+        chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
+    
+        writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
+        writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
             
         
         self.path =  Path(chiBackPointer, psiBackPointer)

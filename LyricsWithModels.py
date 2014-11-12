@@ -117,8 +117,11 @@ class LyricsWithModels(Lyrics):
             for syllable_ in word_.syllables:
                 for phoneme_ in syllable_.phonemes:
                     print "\t phoneme: " , phoneme_
-                    countFirstState =  phoneme_.numFirstState
-                    print "\t\t state: {} duration (in Frames): {} DERATION RESULT: {}".format(countFirstState,  self.statesNetwork[countFirstState].durationInFrames, resultPath.durations[countFirstState])
+                    countPhonemeFirstState =  phoneme_.numFirstState
+                    print "\t\t state: {} duration (in Frames): {} DERATION RESULT: {}, t_end: {}".format(countPhonemeFirstState, 
+                                                                                                self.statesNetwork[countPhonemeFirstState].durationInFrames,
+                                                                                                 resultPath.durations[countPhonemeFirstState], 
+                                                                                                 resultPath.endingTimes[countPhonemeFirstState])
             
                 
     def printStates(self):
