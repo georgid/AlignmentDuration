@@ -10,6 +10,13 @@ Current state:
 testing only duraations with no ObsProbs. 
 
 Current parameteres:
+
+FIXED:
 =Only at middle state - check bookmark in code
-= with Normal distribution = allows for 2*max duration. 
-- let max D be 20% on top of note duration (in _calcCurrStatePhi)
+= with Normal distribution ( allows for 2*maxD(state) (DurationHMM.getWaitLogLik() )
+)
+- let currMax be 30% on top of note duration (in _calcCurrStatePhi and initPhis)
+-no normalisation of durationPDF
+
+ADJUST: 
+	- then play with ALPHA (start at > 0.9)

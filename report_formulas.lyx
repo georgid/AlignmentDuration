@@ -77,6 +77,26 @@
 \begin_body
 
 \begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+p_{i}(d) are from same distribution type where max_d(i) from score
+\end_layout
+
+\begin_layout Subsection*
+Initialization
+\end_layout
+
+\begin_layout Standard
 For 
 \begin_inset Formula $t<=D\_MAX$
 \end_inset
@@ -93,7 +113,35 @@ reduced-duration delta:
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\delta_{t}(i)*=max_{d=1}^{t-1}\delta_{t-d}(i-1)p_{i}(d)\Pi_{s=t-d+1}^{t}b_{i}(O_{s})$
+\begin_inset Formula $\delta_{t}(i)*=max_{d=1}^{min(t-1,max(d))}\delta_{t-d}(i-1)p_{i}(d)\Pi_{s=t-d+1}^{t}b_{i}(O_{s})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $min(t-1,max(d))$
+\end_inset
+
+ reduces the duration to 
+\begin_inset Formula $t$
+\end_inset
+
+ when 
+\begin_inset Formula $t<max(d)$
 \end_inset
 
 
@@ -170,6 +218,10 @@ Note that becasue in forced alignment the source state could be only the
 no maximization over source states in nesessary
 \end_layout
 
+\begin_layout Subsection*
+Recursion
+\end_layout
+
 \begin_layout Standard
 --------------
 \end_layout
@@ -187,6 +239,10 @@ For
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+--------------------
 \end_layout
 
 \begin_layout Standard
@@ -250,8 +306,8 @@ instead of
 \uwave default
 \noun default
 \color inherit
- defined by Rabiner in V.
- A as 
+ (to comply with the notation of Rabiner in V.
+ A) as 
 \begin_inset Formula $\phi_{t}(i)=max_{d=1}^{D}\{\phi_{t-d}(i-1)+log[p_{i}(d)]+\Sigma_{s=t-d+1}^{t}log[b_{i}(O_{s})]\}$
 \end_inset
 
@@ -299,8 +355,8 @@ it might be
 -----------------
 \end_layout
 
-\begin_layout Standard
-backtracking: 
+\begin_layout Subsection*
+backtracking
 \end_layout
 
 \begin_layout Standard
@@ -354,7 +410,7 @@ update
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $d=\phi_{t}(q_{t})$
+\begin_inset Formula $d=\chi_{t}(q_{t})$
 \end_inset
 
 
