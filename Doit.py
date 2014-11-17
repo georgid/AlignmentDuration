@@ -33,7 +33,7 @@ sys.path.append(pathHMM)
 from hmm.continuous.GMHMM  import GMHMM
 
 #  evaluation  
-pathEvaluation = os.path.join(parentDir, 'Evaluation')
+pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError
 

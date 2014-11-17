@@ -15,19 +15,22 @@ You should have received a copy of the GNU General Public License along with thi
 
 
 BUILD INSTRUCTIONS: 
+git clone https://github.com/georgid/AlignmentDuration.git
+
+
 to run you need to put in parent dir these python projects: 
 
-
 * htkModelParser
-https://github.com/georgid/htkModelParser
+git clone https://github.com/georgid/htkModelParser.git
 
 * HMM
-https://github.com/georgid/HMM
+git clone https://github.com/georgid/HMM.git
 
 * Evaluation (if evaluation step needed, see Doit.py )
-https://github.com/georgid/AlignmentEvaluation
+git clone https://github.com/georgid/AlignmentEvaluation.git
 
-* utilsLyrics - TODO
+* utilsLyrics
+git clone https://github.com/georgid/utilsLyrics.git
 
 
 
