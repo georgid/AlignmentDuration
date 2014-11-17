@@ -10,7 +10,6 @@ Created on Mar 3, 2014
 import os
 import sys
 import imp
-from IPython.config.configurable import LoggingConfigurable
 
 # trick to make terminal NOT assume ascii
 reload(sys).setdefaultencoding("utf-8")
