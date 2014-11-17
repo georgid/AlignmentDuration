@@ -3,12 +3,12 @@ import sys
 import glob
 
 
-parentDir = os.pathRaw.abspath(os.pathRaw.join(os.pathRaw.dirname(os.pathRaw.realpath(sys.argv[0]) ), os.pathRaw.pardir)) 
-parentParentDir = os.pathRaw.abspath(os.pathRaw.join(os.pathRaw.dirname(os.pathRaw.realpath(sys.argv[0]) ), os.pathRaw.pardir,  os.pathRaw.pardir)) 
-pathUtils = os.pathRaw.join(parentParentDir, 'utilsLyrics')
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir,  os.path.pardir)) 
+pathUtils = os.path.join(parentParentDir, 'utilsLyrics')
 
-sys.pathRaw.append(parentDir )
-sys.pathRaw.append(pathUtils )
+sys.path.append(parentDir )
+sys.path.append(pathUtils )
 
 from evaluation.WordLevelEvaluator import evalOneFile
 from Utilz import getMeanAndStDevError
@@ -37,13 +37,13 @@ def evalDtw(argv):
     listDecodedFiles = glob.glob(a) 
         
     for i in range(len(listDecodedFiles)) :
-        listDecodedFiles[i] = os.pathRaw.join(argv[1], listDecodedFiles[i])
+        listDecodedFiles[i] = os.path.join(argv[1], listDecodedFiles[i])
 # get annot files with starting pattern
     b = argv[2] + '*'   + ANNOTATION_EXT
     listAnnoFiles = glob.glob(b) 
         
     for i in range(len(listAnnoFiles)) :
-        listAnnoFiles[i] = os.pathRaw.join(argv[1], listAnnoFiles[i])
+        listAnnoFiles[i] = os.path.join(argv[1], listAnnoFiles[i])
     
     for file in listAnnoFiles:
         print file

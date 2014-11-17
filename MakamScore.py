@@ -10,6 +10,7 @@ Created on Mar 3, 2014
 import os
 import sys
 import imp
+from IPython.config.configurable import LoggingConfigurable
 
 # trick to make terminal NOT assume ascii
 reload(sys).setdefaultencoding("utf-8")
@@ -85,9 +86,12 @@ class MakamScore():
         '''
         convenience getter
         '''
+        
+        if sectionNumber >  len(self.sectionToLyricsMap):
+            sys.exit("section withNumber {} not present in score. Chech your .sections.tsv file".format(sectionNumber) )
+
         #python indexing starts from zero
-        sectionNumber = sectionNumber - 1
-        return self.sectionToLyricsMap[sectionNumber][1]
+        return self.sectionToLyricsMap[sectionNumber-1][1]
  
   
    ##################################################################################

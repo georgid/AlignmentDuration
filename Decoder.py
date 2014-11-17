@@ -5,26 +5,25 @@ Created on Oct 27, 2014
 '''
 import os
 import sys
-from Utilz import writeListOfListToTextFile, writeListToTextFile
-from hmm.Path import Path
-from Syllable import MINIMAL_DURATION_UNIT
-from hmm.continuous.DurationPdf import MINIMAL_PROB
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
+from Utilz import writeListOfListToTextFile, writeListToTextFile
 
-htkModelParser = os.path.join(parentDir, 'htk2s3')
-sys.path.append(htkModelParser)
+# htkModelParser = os.path.join(parentDir, 'htk2s3')
+# sys.path.append(htkModelParser)
 
-# pathHMM = os.path.join(parentDir, 'HMM')
-pathHMM = os.path.join(parentDir, 'HMMDuration')
+pathHMM = os.path.join(parentDir, 'HMM')
+# pathHMM = os.path.join(parentDir, 'HMMDuration')
 sys.path.append(pathHMM)
 
 
+from hmm.continuous.DurationPdf import MINIMAL_PROB
 
+from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
 import numpy
@@ -203,22 +202,26 @@ class Decoder(object):
 
         
     
-    def decodeAudio( self, observationFeatures):
+    def decodeAudio( self, observationFeatures, usePersistentFiles):
         ''' decode path for given exatrcted features for audio
         '''
+        self.hmmNetwork.usePersistentFiles = usePersistentFiles
         # TODO: double check that features are in same dimension as model
+        if observationFeatures.shape[1] != numDimensions:
+            sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
 #         observationFeatures = observationFeatures[0:100,:]
         
         listDurations = self.duration2numFrameDuration(observationFeatures)
         
         self.hmmNetwork.setDurForStates(listDurations) 
         
-#         self.path, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
 #         if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
 #             chiBackPointer = numpy.loadtxt(PATH_CHI)
 #             psiBackPointer = numpy.loadtxt(PATH_PSI)
 #                
 #         else:
+
+#         self.path, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
         chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
     
         writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)

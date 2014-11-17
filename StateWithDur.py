@@ -6,7 +6,7 @@ Created on Nov 10, 2014
 import os
 import sys
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
-htkModelParser = os.path.join(parentDir, 'htk2s3')
+htkModelParser = os.path.join(parentDir, 'HtkModelParser')
 
 sys.path.append(htkModelParser )
 
@@ -14,7 +14,9 @@ from htk_models import State
 
 class StateWithDur(State):
     '''
-    classdocs
+    extends State with 
+    - duration (in minimal_duration unit)
+    - duration (in Frames)
     '''
 
 

@@ -1,0 +1,42 @@
+Copyright © 2014  Music Technology Group - Universitat Pompeu Fabra
+
+NAME: AlignmentDuration
+
+DESCRIPTION 
+ tool for Aligning lyrics to audio automatically using Hidden Markov Models with Explicit Duration
+
+LICENSE:
+AlignmentDuration is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation (FSF), either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses/
+
+
+
+BUILD INSTRUCTIONS: 
+to run you need to put in parent dir these python projects: 
+
+
+* htkModelParser
+https://github.com/georgid/htkModelParser
+
+* HMM
+https://github.com/georgid/HMM
+
+* Evaluation (if evaluation step needed, see Doit.py )
+https://github.com/georgid/AlignmentEvaluation
+
+* utilsLyrics - TODO
+
+
+
+USAGE: python  <pathToComposition> <whichSection> <URI_recording_no_ext>
+
+EXAMPLE: Doit.main() - one chunk
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/Doit.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ 3 /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin
+
+
+EXAMPLE: Doit.evalDirPattern()
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/Doit.py   /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Aksam

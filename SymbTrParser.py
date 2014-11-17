@@ -9,7 +9,6 @@ import os
 import sys
 from Word import Word
 from Syllable import Syllable, MINIMAL_DURATION_UNIT
-import imp
 from Lyrics import Lyrics
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 

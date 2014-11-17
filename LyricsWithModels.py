@@ -12,8 +12,8 @@ from numpy.f2py.crackfortran import word_pattern
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 
-htkModelParser = os.path.join(parentDir, 'htk2s3')
-sys.path.append(htkModelParser)
+# htkModelParser = os.path.join(parentDir, 'htk2s3')
+# sys.path.append(htkModelParser)
 
 
 
