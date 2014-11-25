@@ -18,8 +18,8 @@ Each syllable in turn contains a list of Phoneme objects
 LyricsWithModels
 ---------------------
 extend Lyrics with  modeling-related info : 
-- phonemes network with links to trained models of class type htkModel from htkModelParser
-- statesNetwork of class type StateWithDur inherited from htkModelParser (for fast access to states when decoding)
+- phonemes network (utility field) with links to trained models of class type htkModel from project HtkModelParser
+- statesNetwork of class type StateWithDur inherited from htkModelParser (utility field for fast access to states when decoding)
 
 
 Phoneme
@@ -34,7 +34,7 @@ Decoder
  lyricsWithModels - its field statesNetwork is used in self.constructHMMNetworkParameters() to construct a self.hmmNetwork in form usable for decoding
  hmmNetwork - of type HMM for forced alignment
  
- decodeAudio. based on hmm._BaseHMM._viterbiForced2
+ decodeAudio - a wrapper for hmm._BaseHMM._viterbiForced
  path - result
 
 

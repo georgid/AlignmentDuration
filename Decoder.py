@@ -16,15 +16,7 @@ from Utilz import writeListOfListToTextFile, writeListToTextFile
 # htkModelParser = os.path.join(parentDir, 'htk2s3')
 # sys.path.append(htkModelParser)
 
-pathHMM = os.path.join(parentDir, 'HMM')
-# pathHMM = os.path.join(parentDir, 'HMMDuration')
-sys.path.append(pathHMM)
 
-
-from hmm.continuous.DurationPdf import MINIMAL_PROB
-
-from hmm.Path import Path
-from hmm.continuous.GMHMM  import GMHMM
 
 import numpy
 
@@ -34,6 +26,30 @@ numDimensions = 25
 
 # TODO: read from feat extraction parameters
 NUM_FRAMES_PERSECOND = 100.0
+
+# if false, use transition probabilities from htkModels
+WITH_DURATIONS= False
+
+ONLY_MIDDLE_STATE = False
+
+if WITH_DURATIONS:
+    pathHMM = os.path.join(parentDir, 'HMMDuration')
+else:
+    pathHMM = os.path.join(parentDir, 'HMM')
+
+
+if pathHMM not in sys.path:    
+    sys.path.append(pathHMM)
+
+if WITH_DURATIONS:
+    from hmm.continuous.DurationPdf import MINIMAL_PROB
+
+from hmm.Path import Path
+from hmm.continuous.GMHMM  import GMHMM
+
+print 'SYS PATH is: ', sys.path
+
+
 
 #DEBUG: 
 PATH_CHI = '/Users/joro/Downloads/chi'
@@ -64,7 +80,7 @@ class Decoder(object):
         
     def _constructHmmNetwork(self,  numStates, withModels ):
         '''
-        Tests the guyz hmm viterbi with one word. 
+        top level-function: costruct self.hmmNEtwork that confirms to guyz's code 
         '''
         
     #     sequencePhonemes = sequencePhonemes[0:4]
@@ -72,8 +88,9 @@ class Decoder(object):
         
         ######## construct transition matrix
         #######
-        
-#         transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels.phonemesNetwork)
+        if not WITH_DURATIONS:
+            transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels.phonemesNetwork)
+
 #        DEBUG
 #  writeListOfListToTextFile(transMAtrix, None , '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/transMatrix')
         
@@ -85,12 +102,18 @@ class Decoder(object):
         
         means, covars, weights, pi = self._constructHMMNetworkParameters(numStates,  withModels)
         
-        self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,None,means,covars,weights,pi,init_type='user',verbose=True)
-        
+        if  WITH_DURATIONS:
+            self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,None,means,covars,weights,pi,init_type='user',verbose=True)
+        else:
+            self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,transMAtrix,means,covars,weights,pi,init_type='user',verbose=True)
+
 
         
     def  _constructTransMatrixHMMNetwork(self, sequencePhonemes):
-        
+        '''
+        tranform other htkModel params to  format of gyuz's hmm class
+        take from sequencePhonemes' attached htk models the transprobs.
+        '''
         # just for initialization totalNumPhonemes
         totalNumStates = 0
         for phoneme in sequencePhonemes:
@@ -129,7 +152,7 @@ class Decoder(object):
     
     def _constructHMMNetworkParameters(self,  numStates,  withModels=True, sequenceStates=None):
         '''
-        tranform h2s hmm model to  format of gyuz's hmm class
+        tranform other htkModel params to  format of gyuz's hmm class
         '''
         
        
@@ -143,8 +166,11 @@ class Decoder(object):
         
         # start probs : allow to start only at first state
         pi = numpy.zeros((numStates), dtype=numpy.double)
+        
         # avoid log(0) 
-        pi.fill(MINIMAL_PROB)
+#         pi.fill(MINIMAL_PROB)
+        pi.fill(sys.float_info.min)
+        
         pi[0] = 1
         
 #         pi = numpy.ones( (numStates)) *(1.0/numStates)
@@ -211,9 +237,10 @@ class Decoder(object):
             sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
 #         observationFeatures = observationFeatures[0:100,:]
         
-        listDurations = self.duration2numFrameDuration(observationFeatures)
+        if  WITH_DURATIONS:
+            listDurations = self.duration2numFrameDuration(observationFeatures)
         
-        self.hmmNetwork.setDurForStates(listDurations) 
+            self.hmmNetwork.setDurForStates(listDurations) 
         
 #         if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
 #             chiBackPointer = numpy.loadtxt(PATH_CHI)
@@ -221,18 +248,25 @@ class Decoder(object):
 #                
 #         else:
 
-#         self.path, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
-        chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
-    
-        writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
-        writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
+        # standard viterbi forced alignment
+        if not WITH_DURATIONS:
+            path_, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
+            self.path =  Path(None, None)
+            self.path.setPatRaw(path_)
             
+        # duration-HMM
+        else:
         
-        self.path =  Path(chiBackPointer, psiBackPointer)
+            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
+        
+            writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
+            writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
+                
+            self.path =  Path(chiBackPointer, psiBackPointer)
         
          # DEBUG
 #         self.path.printDurations()
-        writeListToTextFile(self.path.pathRaw, None , '/tmp/path')
+#         writeListToTextFile(self.path.pathRaw, None , '/tmp/path')
         
     
   
@@ -271,6 +305,9 @@ class Decoder(object):
     
     
     def _constructTimeStampsForWord(self,  word_, countFirstState, countLastState):
+        '''
+        helper method
+        '''
         currWordBeginFrame = self.path.indicesStateStarts[countFirstState]
         currWordEndFrame = self.path.indicesStateStarts[countLastState]
     #             # debug:

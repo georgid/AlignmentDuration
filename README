@@ -24,7 +24,9 @@ to run you need to put in parent dir these python projects:
 git clone https://github.com/georgid/htkModelParser.git
 
 * HMM
-git clone https://github.com/georgid/HMM.git
+https://github.com/MTG/HMM.git
+#or
+git clone https://github.com/georgid/HMMDuration.git
 
 * Evaluation (if evaluation step needed, see Doit.py )
 git clone https://github.com/georgid/AlignmentEvaluation.git

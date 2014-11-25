@@ -8,7 +8,6 @@ import os
 import sys
 from StateWithDur import StateWithDur
 from htk_converter import HtkConverter
-from numpy.f2py.crackfortran import word_pattern
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 
@@ -23,33 +22,34 @@ class LyricsWithModels(Lyrics):
     '''
 
 
-    def __init__(self, listWords, MODEL_URI, HMM_LIST_URI ):
+    def __init__(self, listWords, htkParser, ONLY_MIDDLE_STATE  ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
         Lyrics.__init__(self, listWords)
         
-        self._linkToModels(MODEL_URI, HMM_LIST_URI)
+        self._linkToModels(htkParser)
         
         # list of class type StateWithDur
         self.statesNetwork = []
-#         self._phonemes2stateNetwork()
-        self._phonemes2stateNetworkOnlyMiddle()
+        
+        if ONLY_MIDDLE_STATE:
+            self._phonemes2stateNetworkOnlyMiddle()
+        else:
+            self._phonemes2stateNetwork()
 
         
 
         
-    def _linkToModels(self, MODEL_URI, HMM_LIST_URI):
+    def _linkToModels(self, htkParser):
         '''
         load links to trained models   
         '''
         
-        conv_before = HtkConverter()
-        conv_before.load(MODEL_URI, HMM_LIST_URI)
         
         # FIXME: DO A MORE OPTIMAL WAY like ismember()
         for phonemeFromTranscript in    self.phonemesNetwork:
-            for currHmmModel in conv_before.hmms:
+            for currHmmModel in htkParser.hmms:
                 if currHmmModel.name == phonemeFromTranscript.ID:
                     phonemeFromTranscript.setHTKModel(currHmmModel) 
             
@@ -61,7 +61,9 @@ class LyricsWithModels(Lyrics):
         
     def _phonemes2stateNetwork(self):
         '''
-        expand to states network. 
+        expand to self.statesNetwork. 
+        each state gets 1/n-th of total num of states. 
+        @DEBUG: NOT used right now 
         '''
         
         self.statesNetwork = []
@@ -77,12 +79,13 @@ class LyricsWithModels(Lyrics):
             
             for (numState, state ) in phoneme.htkModel.states:
                  currStateWithDur = StateWithDur(state.mixtures)
-                 currStateWithDur.setDuration(phoneme.getDuration()/currStateCount)
+                 dur = float(phoneme.getDuration()) / float(currStateCount)
+                 currStateWithDur.setDuration( dur )
                  self.statesNetwork.append(currStateWithDur)
    
     def _phonemes2stateNetworkOnlyMiddle(self):
         '''
-        expand to states network. TAKE ONLY middle state for now
+        expand to self.statesNetwork . TAKE ONLY middle state for now
         '''
         
         self.statesNetwork = []
@@ -107,7 +110,7 @@ class LyricsWithModels(Lyrics):
             
             self.statesNetwork.append(currStateWithDur)
     
-    def printWordsAndStates(self, resultPath):
+    def printWordsAndStatesAndDurations(self, resultPath):
         '''
         debug word begining states
         '''
@@ -118,7 +121,7 @@ class LyricsWithModels(Lyrics):
                 for phoneme_ in syllable_.phonemes:
                     print "\t phoneme: " , phoneme_
                     countPhonemeFirstState =  phoneme_.numFirstState
-                    print "\t\t state: {} duration (in Frames): {} DERATION RESULT: {}, t_end: {}".format(countPhonemeFirstState, 
+                    print "\t\t state: {} duration (in Frames): {} DURATION RESULT: {}, t_end: {}".format(countPhonemeFirstState, 
                                                                                                 self.statesNetwork[countPhonemeFirstState].durationInFrames,
                                                                                                  resultPath.durations[countPhonemeFirstState], 
                                                                                                  resultPath.endingTimes[countPhonemeFirstState])

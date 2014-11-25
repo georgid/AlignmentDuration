@@ -8,7 +8,7 @@ from MakamScore import MakamScore
 import glob
 import numpy
 import sys
-from Decoder import Decoder
+from Decoder import Decoder, ONLY_MIDDLE_STATE
 from LyricsWithModels import LyricsWithModels
 from numpy.core.arrayprint import set_printoptions
 import logging
@@ -25,12 +25,6 @@ pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
 from htk_converter import HtkConverter
 
-
-# HMM model and decoding
-# pathHMM = os.path.join(parentDir, 'HMM')
-pathHMM = os.path.join(parentDir, 'HMMDuration')
-sys.path.append(pathHMM)
-from hmm.continuous.GMHMM  import GMHMM
 
 #  evaluation  
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
@@ -106,17 +100,19 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
 
 
 
-def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, usePersistentFiles):
+def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles):
     lyrics = loadLyrics(pathToComposition, whichSection)
-    lyricsWithModels = LyricsWithModels(lyrics.listWords, MODEL_URI, HMM_LIST_URI)
+    lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
     decoder = Decoder(lyricsWithModels)
 #  TODO: DEBUG: do not load models
 #  decoder = Decoder(lyrics, withModels=False, numStates=86)
 #################### decode
     detectedWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
+
 ### VISUALIZE
-    decoder.lyricsWithModels.printWordsAndStates(decoder.path)
+#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+
 #################### evaluate
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, 1)
     return alignmentErrors
@@ -152,21 +148,24 @@ def evalDirPattern(argv):
      
     totalErrors = []
     
+    htkParser = HtkConverter()
+    htkParser.load(MODEL_URI, HMM_LIST_URI)
+    
     for  URI_annotation in listAnnoFiles :
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logging.info("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection  = int(URIrecordingNoExt.split("_")[-2])
-            currAlignmentErrors = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, usePersistentFiles)
+            currAlignmentErrors = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles)
             totalErrors.extend(currAlignmentErrors)
           
         
     mean, stDev, median = getMeanAndStDevError(totalErrors)
     print "( mean: "  ",", mean, ", st dev: " , stDev ,   ")"  
-    
+    return mean, stDev
 
-def main(argv):
+def doitOneChunk(argv):
     
-    if len(argv) != 4:
+    if len(argv) != 4 and  len(argv) != 5 :
             print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext>".format(argv[0]) )
             sys.exit();
     
@@ -183,11 +182,17 @@ def main(argv):
     whichSection = 5
     whichSection = int(argv[2])
     
+    usePersistentFiles = False
+    if len(argv) == 5: usePersistentFiles = argv[4]
+    
     set_printoptions(threshold='nan') 
     
     ################## load lyrics and models 
-
-    alignmentErrors = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, usePersistentFiles=False)
+    
+    htkParser = HtkConverter()
+    htkParser.load(MODEL_URI, HMM_LIST_URI)
+    
+    alignmentErrors = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles)
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
         
@@ -200,7 +205,7 @@ def main(argv):
 
 
 if __name__ == '__main__':
-#     main(sys.argv)
+#     doitOneChunk(sys.argv)
     evalDirPattern(sys.argv)
 
 

@@ -149,7 +149,7 @@ def loadScore(pathToComposition):
     return makamScore
 
 
-def main(argv):
+def doitOneChunk(argv):
         if len(argv) != 2:
             print ("usage: {} <path to symbtTr.txt and symbTr.tsv>".format(argv[0]) )
             sys.exit();
@@ -172,7 +172,7 @@ if __name__ == '__main__':
         
         print "in Makam Score"
         
-        main(sys.argv)
+        doitOneChunk(sys.argv)
           
       
          
