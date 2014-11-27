@@ -30,6 +30,7 @@ from htk_converter import HtkConverter
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError
+from PraatVisualiser import openAlignmentInPraat2
 
 # TODO: read mfccs with matlab htk_read
 # sys.path.append('/Users/joro/Downloads/python-matlab-bridge-master')
@@ -115,7 +116,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
 
 #################### evaluate
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, 1)
-    return alignmentErrors
+    return alignmentErrors, detectedWordList
 
 
 def evalDirPattern(argv):
@@ -166,7 +167,7 @@ def evalDirPattern(argv):
 def doitOneChunk(argv):
     
     if len(argv) != 4 and  len(argv) != 5 :
-            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext>".format(argv[0]) )
+            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <usePersistentFiles=False>".format(argv[0]) )
             sys.exit();
     
     
@@ -192,14 +193,14 @@ def doitOneChunk(argv):
     htkParser = HtkConverter()
     htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    alignmentErrors = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles)
+    alignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles)
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
         
     print "mean : ", mean, "st dev: " , stDev
 
-
-
+    ### OPTIONAL : open in praat
+    openAlignmentInPraat2(detectedWordList,  URIrecordingNoExt + '.TextGrid', URIrecordingNoExt + '.wav')
 
 
 

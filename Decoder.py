@@ -230,6 +230,7 @@ class Decoder(object):
     
     def decodeAudio( self, observationFeatures, usePersistentFiles):
         ''' decode path for given exatrcted features for audio
+        HERE is decided which decoding scheme (based on WITH_DURATION parameter)
         '''
         self.hmmNetwork.usePersistentFiles = usePersistentFiles
         # TODO: double check that features are in same dimension as model
@@ -257,7 +258,7 @@ class Decoder(object):
         # duration-HMM
         else:
         
-            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
+            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(0)
         
             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
@@ -316,7 +317,7 @@ class Decoder(object):
         startTs = float(currWordBeginFrame) / NUM_FRAMES_PERSECOND
         endTs = float(currWordEndFrame) / NUM_FRAMES_PERSECOND
         
-        detectedWord = startTs, endTs, word_.text
+        detectedWord = [startTs, endTs, word_.text]
         print detectedWord
         
         return detectedWord
