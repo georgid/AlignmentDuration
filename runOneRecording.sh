@@ -7,6 +7,8 @@
 #$ -M georgi.dzhambazov@upf.edu
 #$ -e error.out
 #$ -o output.out
+
+# A SCRIPT THAT RUNS on HPC
 echo "downloading fresh source code..."
 rm -rf AlignmentDuration
 git clone https://github.com/georgid/AlignmentDuration.git
@@ -22,6 +24,9 @@ rm -rf AlignmentEvaluation
 git clone https://github.com/georgid/AlignmentEvaluation.git
 rm -rf utilsLyrics
 git clone https://github.com/georgid/utilsLyrics.git
+
+echo "downloading datasets..."
+git clone 
 
 module load python/2.7.5
 echo "python after loading module: "

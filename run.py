@@ -35,8 +35,8 @@ def doit(argv):
 		pattern  = patterns[i]
 		
 		print "doing command ...\nDoit  " + URI_score + " " +  URI_testFile  + " " + pattern
-# 		mean, stDev  = evalDirPattern([ 'dummy', URI_score, URI_testFile, pattern])
-# 		totalMean  += mean 
+		mean, stDev  = evalDirPattern([ 'dummy', URI_score, URI_testFile, pattern])
+		totalMean  += mean 
 	
 	print 'total mean: ' , totalMean/len(scores)
 	
