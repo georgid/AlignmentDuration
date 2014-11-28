@@ -3,12 +3,17 @@ Created on Nov 28, 2014
 
 @author: joro
 '''
+
+
 import sys
+print 'SYS PATH is: ', sys.path
 import os
 import glob
 import logging
 from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT
 from Utilz import getMeanAndStDevError
+
+
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 

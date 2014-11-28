@@ -25,8 +25,12 @@ NUM_FRAMES_PERSECOND = 100.0
 
 # if false, use transition probabilities from htkModels
 WITH_DURATIONS= True
-
 ONLY_MIDDLE_STATE = True
+
+# WITH_DURATIONS= False
+# ONLY_MIDDLE_STATE = False
+
+
 
 if WITH_DURATIONS:
     pathHMM = os.path.join(parentDir, 'HMMDuration')
@@ -37,8 +41,8 @@ else:
 if pathHMM not in sys.path:    
     sys.path.append(pathHMM)
 
-if WITH_DURATIONS:
-    from hmm.continuous.DurationPdf import MINIMAL_PROB
+# if WITH_DURATIONS:
+#     from hmm.continuous.DurationPdf import MINIMAL_PROB
 
 from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
@@ -253,7 +257,7 @@ class Decoder(object):
         # duration-HMM
         else:
         
-            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(0)
+            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
         
             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
