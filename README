@@ -38,10 +38,8 @@ git clone https://github.com/georgid/utilsLyrics.git
 
 USAGE: python  <pathToComposition> <whichSection> <URI_recording_no_ext>
 
-EXAMPLE: Doit.main() - one chunk
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/Doit.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ 3 /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin
+EXAMPLE: doitOneChunk()
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ 3 /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin
 
-
-EXAMPLE: Doit.evalDirPattern()
-
+EXAMPLE: doitOneRecording()
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/Doit.py   /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Aksam

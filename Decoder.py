@@ -13,10 +13,6 @@ pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from Utilz import writeListOfListToTextFile, writeListToTextFile
 
-# htkModelParser = os.path.join(parentDir, 'htk2s3')
-# sys.path.append(htkModelParser)
-
-
 
 import numpy
 
@@ -48,7 +44,6 @@ from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
 print 'SYS PATH is: ', sys.path
-
 
 
 #DEBUG: 

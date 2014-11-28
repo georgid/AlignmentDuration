@@ -1,6 +1,6 @@
 
-from Doit import evalDirPattern
 import sys
+from doitOneRecording import doitOneRecording
 
 def doit(argv):
 	
@@ -35,7 +35,7 @@ def doit(argv):
 		pattern  = patterns[i]
 		
 		print "doing command ...\nDoit  " + URI_score + " " +  URI_testFile  + " " + pattern
-		mean, stDev  = evalDirPattern([ 'dummy', URI_score, URI_testFile, pattern])
+		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern])
 		totalMean  += mean 
 	
 	print 'total mean: ' , totalMean/len(scores)
