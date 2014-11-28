@@ -156,7 +156,7 @@ def evalDirPattern(argv):
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logging.info("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection  = int(URIrecordingNoExt.split("_")[-2])
-            currAlignmentErrors = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles)
+            currAlignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles)
             totalErrors.extend(currAlignmentErrors)
           
         
