@@ -36,7 +36,7 @@ git clone https://github.com/georgid/utilsLyrics.git
 
 
 
-USAGE: python  <pathToComposition> <whichSection> <URI_recording_no_ext>
+USAGE:
 
 EXAMPLE: doitOneChunk()
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ 3 /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin

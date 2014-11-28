@@ -4,8 +4,8 @@ from doitOneRecording import doitOneRecording
 
 def doit(argv):
 	
-	if len(argv) != 3  :
-            print ("usage: {}  <pathToCompositions>  <pathToRecordings>".format(argv[0]) )
+	if len(argv) != 3 and len(argv) != 4  :
+            print ("usage: {}  <pathToCompositions>  <pathToRecordings> <usePersistentFiles=False>".format(argv[0]) )
             sys.exit();
 	
 	# todo: adjust these params
@@ -15,6 +15,9 @@ def doit(argv):
 # 	path_testFile = pathToScores
 	path_testFile  = argv[2]
 	
+	usePersistentFiles = False
+	if len(argv) == 4:
+		usePersistentFiles = argv[3]
 	
 	scores = ['nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', \
 	'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/', \
@@ -35,7 +38,7 @@ def doit(argv):
 		pattern  = patterns[i]
 		
 		print "doing command ...\nDoit  " + URI_score + " " +  URI_testFile  + " " + pattern
-		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern])
+		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, usePersistentFiles])
 		totalMean  += mean 
 	
 	print 'total mean: ' , totalMean/len(scores)

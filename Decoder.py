@@ -24,9 +24,9 @@ numDimensions = 25
 NUM_FRAMES_PERSECOND = 100.0
 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= False
+WITH_DURATIONS= True
 
-ONLY_MIDDLE_STATE = False
+ONLY_MIDDLE_STATE = True
 
 if WITH_DURATIONS:
     pathHMM = os.path.join(parentDir, 'HMMDuration')
