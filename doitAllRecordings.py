@@ -31,18 +31,26 @@ def doit(argv):
 	subpaths = ['/goekhan/', '/goekhan/', '/barbaros/', '/barbaros/', '/safiye/', '/safiye/', '/guelen/', '/guelen/' ]
 	patterns = ['02_Kimseye', '02_Gel', '02_Gel', '02_Koklasam',   '01_Aksam' ,    '01_Bakmiyor', '01_Aksam', '01_Olmaz' ]
 	
+	outputFileHandle = open('alignError.out', 'w', 'utf-8')
+
+	
 	totalMean  = 0
 	for i in range(len(scores)):
 		URI_score = pathToScores + scores[i]
 		URI_testFile = path_testFile + subpaths[i]
 		pattern  = patterns[i]
 		
-		print "doing command ...\nDoit  " + URI_score + " " +  URI_testFile  + " " + pattern
+		print "doing command ...\n doitOneRecording  " + URI_score + " " +  URI_testFile  + " " + pattern
 		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, usePersistentFiles])
-		totalMean  += mean 
+		listLine = URI_score + " " + pattern + " " + str(mean) + '\n'
+        outputFileHandle.write(listLine)
+        totalMean  += mean 
 	
-	print 'total mean: ' , totalMean/len(scores)
+	result = 'total mean: ' + str(totalMean/len(scores))
+	print result
 	
+	outputFileHandle.write(result)
+	outputFileHandle.close()
 
 if __name__ == '__main__':
 	doit(sys.argv)

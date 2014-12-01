@@ -43,3 +43,6 @@ python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOn
 
 EXAMPLE: doitOneRecording()
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py   /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Aksam
+
+EXAMPLE: doitAllRecordings()
+python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/
