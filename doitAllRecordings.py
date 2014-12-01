@@ -31,7 +31,7 @@ def doit(argv):
 	subpaths = ['/goekhan/', '/goekhan/', '/barbaros/', '/barbaros/', '/safiye/', '/safiye/', '/guelen/', '/guelen/' ]
 	patterns = ['02_Kimseye', '02_Gel', '02_Gel', '02_Koklasam',   '01_Aksam' ,    '01_Bakmiyor', '01_Aksam', '01_Olmaz' ]
 	
-	outputFileHandle = open('alignError.out', 'w', 'utf-8')
+	outputFileHandle = open('alignError.out', 'w')
 
 	
 	totalMean  = 0
