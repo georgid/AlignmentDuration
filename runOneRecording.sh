@@ -31,7 +31,7 @@ git clone
 module load python/2.7.5
 echo "python after loading module: "
 which python
-source /homedtic/giorgid/env/bin/activate
+source /homedtic/georgid/env/bin/activate
 echo "python after loading vrit env: "
 which python
-/homedtic/giorgid/env/bin/python AlignmentDuration/run.py   /homedtic/giorgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/giorgid/ISTANBUL/
+/homedtic/georgid/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/

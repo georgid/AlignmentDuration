@@ -50,10 +50,6 @@ from hmm.continuous.GMHMM  import GMHMM
 print 'SYS PATH is: ', sys.path
 
 
-#DEBUG: 
-PATH_CHI = '/Users/joro/Downloads/chi'
-PATH_PSI = '/Users/joro/Downloads/psi'
-
 class Decoder(object):
     '''
     holds structures used in decoding and decoding result
@@ -259,8 +255,8 @@ class Decoder(object):
         
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
         
-            writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
-            writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
+#             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
+#             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
                 
             self.path =  Path(chiBackPointer, psiBackPointer)
         
