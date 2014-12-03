@@ -24,11 +24,11 @@ numDimensions = 25
 NUM_FRAMES_PERSECOND = 100.0
 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= True
-ONLY_MIDDLE_STATE = True
+# WITH_DURATIONS= True
+# ONLY_MIDDLE_STATE = True
 
-# WITH_DURATIONS= False
-# ONLY_MIDDLE_STATE = False
+WITH_DURATIONS= False
+ONLY_MIDDLE_STATE = False
 
 
 
@@ -223,12 +223,12 @@ class Decoder(object):
 
         
     
-    def decodeAudio( self, observationFeatures, usePersistentFiles):
+    def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme (based on WITH_DURATION parameter)
         '''
-        self.hmmNetwork.usePersistentFiles = usePersistentFiles
-        # TODO: double check that features are in same dimension as model
+        self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_recording_noExt )
+        # double check that features are in same dimension as model
         if observationFeatures.shape[1] != numDimensions:
             sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
 #         observationFeatures = observationFeatures[0:100,:]

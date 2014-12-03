@@ -90,7 +90,7 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
     
     
     observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
-    decoder.decodeAudio(observationFeatures, usePersistentFiles)
+    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt)
     
     
     detectedWordList = decoder.path2ResultWordList()
