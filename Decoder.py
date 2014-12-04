@@ -24,11 +24,11 @@ numDimensions = 25
 NUM_FRAMES_PERSECOND = 100.0
 
 # if false, use transition probabilities from htkModels
-# WITH_DURATIONS= True
-# ONLY_MIDDLE_STATE = True
+WITH_DURATIONS= True
+ONLY_MIDDLE_STATE = True
 
-WITH_DURATIONS= False
-ONLY_MIDDLE_STATE = False
+#WITH_DURATIONS= False
+#ONLY_MIDDLE_STATE = False
 
 
 

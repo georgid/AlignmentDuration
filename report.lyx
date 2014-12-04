@@ -902,24 +902,6 @@ durations dtw-3states
 \begin_inset Text
 
 \begin_layout Plain Layout
-durations
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-no_dur_Viterbi
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -929,7 +911,25 @@ no_dur_Viterbi
 \begin_inset Text
 
 \begin_layout Plain Layout
-duration Viterbi ALPHA = 0.99OVER_MAX_DUR_FACTOR = 1.3
+no_dur only middle state
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+duration ALPHA = 0.99,OVER_MAX_DUR_FACTOR = 1.3
 \end_layout
 
 \end_inset
@@ -1279,7 +1279,7 @@ Koklasam
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.19
 \end_layout
 
 \end_inset
@@ -1288,7 +1288,7 @@ Koklasam
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.33
 \end_layout
 
 \end_inset
@@ -1371,7 +1371,7 @@ Gel
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.07
 \end_layout
 
 \end_inset
@@ -1380,7 +1380,7 @@ Gel
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.11
 \end_layout
 
 \end_inset
@@ -1463,7 +1463,7 @@ Bakmiyor
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.28
 \end_layout
 
 \end_inset
@@ -1472,7 +1472,7 @@ Bakmiyor
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.61
 \end_layout
 
 \end_inset
@@ -1555,7 +1555,7 @@ Akşam
 \begin_inset Text
 
 \begin_layout Plain Layout
-0,17
+0.17
 \end_layout
 
 \end_inset
@@ -1739,7 +1739,7 @@ Olmaz
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.33
 \end_layout
 
 \end_inset
@@ -1748,7 +1748,7 @@ Olmaz
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.81
 \end_layout
 
 \end_inset

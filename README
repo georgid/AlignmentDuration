@@ -39,13 +39,13 @@ git clone https://github.com/georgid/utilsLyrics.git
 USAGE:
 
 EXAMPLE: doitOneChunk()
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ 3 /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ 3 /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin True
 
 EXAMPLE: doitOneRecording()
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py   /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Aksam
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py   /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Aksam True
 
 EXAMPLE: doitAllRecordings()
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitAllRecordings.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitAllRecordings.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/ True
 
 (on hpc)
-python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/
+python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True
