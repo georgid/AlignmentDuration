@@ -20,4 +20,7 @@ which python
 rm error.out
 rm output.out
 
-/homedtic/georgid/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True
+HOME_DTIC=/homedtic/georgid/
+#/homedtic/georgid/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True
+
+$HOME_DTIC/env/bin/python AlignmentDuration/doitOneRecording.py   $HOME_DTIC/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ $HOME_DTIC/ISTANBUL/barbaros/ 01_Gel True
