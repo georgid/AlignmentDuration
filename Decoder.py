@@ -56,7 +56,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, ALPHA = 1, numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -68,12 +68,12 @@ class Decoder(object):
         self.hmmNetwork = []
                 
 
-        self._constructHmmNetwork(numStates, withModels)
+        self._constructHmmNetwork(numStates, ALPHA, withModels)
         
         # Path class object
         self.path = None
         
-    def _constructHmmNetwork(self,  numStates, withModels ):
+    def _constructHmmNetwork(self,  numStates, ALPHA, withModels ):
         '''
         top level-function: costruct self.hmmNEtwork that confirms to guyz's code 
         '''
@@ -99,6 +99,7 @@ class Decoder(object):
         
         if  WITH_DURATIONS:
             self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,None,means,covars,weights,pi,init_type='user',verbose=True)
+            self.hmmNetwork.setALPHA(ALPHA)
         else:
             self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,transMAtrix,means,covars,weights,pi,init_type='user',verbose=True)
 
@@ -259,7 +260,7 @@ class Decoder(object):
 #             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
                 
             self.path =  Path(chiBackPointer, psiBackPointer)
-        
+            print "\n"
          # DEBUG
 #         self.path.printDurations()
 #         writeListToTextFile(self.path.pathRaw, None , '/tmp/path')

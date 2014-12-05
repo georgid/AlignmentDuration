@@ -1,11 +1,15 @@
 
 import sys
 from doitOneRecording import doitOneRecording
+import logging
+from datetime import datetime
+import os
+
 
 def doit(argv):
 	
-	if len(argv) != 3 and len(argv) != 4  :
-            print ("usage: {}  <pathToCompositions>  <pathToRecordings> <usePersistentFiles=False>".format(argv[0]) )
+	if len(argv) != 4 and len(argv) != 5  :
+            print ("usage: {}  <pathToCompositions>  <pathToRecordings> <ALPHA> <usePersistentFiles=False>".format(argv[0]) )
             sys.exit();
 	
 	# todo: adjust these params
@@ -15,9 +19,10 @@ def doit(argv):
 # 	path_testFile = pathToScores
 	path_testFile  = argv[2]
 	
+	ALPHA = argv[3]
 	usePersistentFiles = False
-	if len(argv) == 4:
-		usePersistentFiles = argv[3]
+	if len(argv) == 5:
+		usePersistentFiles = argv[4]
 	
 	scores = ['nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', \
 	'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/', \
@@ -31,26 +36,38 @@ def doit(argv):
 	subpaths = ['/goekhan/', '/goekhan/', '/barbaros/', '/barbaros/', '/safiye/', '/safiye/', '/guelen/', '/guelen/' ]
 	patterns = ['02_Kimseye', '02_Gel', '02_Gel', '02_Koklasam',   '01_Aksam' ,    '01_Bakmiyor', '01_Aksam', '01_Olmaz' ]
 	
-	outputFileHandle = open('alignError.out', 'w')
-
+	currTime = datetime.now().strftime('%Y-%m-%d--%H-%M-%S')	
+	filename = os.path.join(os.getcwdu(),   'alignError_' + currTime + '.out') 
+	outputFileHandle = open(filename, 'a')
 	
-	totalMean  = 0
+	
+	outputFileHandle.write('\n'  + str(ALPHA) )
+	totalMean  = 0.0
 	for i in range(len(scores)):
+
 		URI_score = pathToScores + scores[i]
 		URI_testFile = path_testFile + subpaths[i]
 		pattern  = patterns[i]
 		
-		print "doing command ...\n doitOneRecording  " + URI_score + " " +  URI_testFile  + " " + pattern
-		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, usePersistentFiles])
-		listLine = URI_score + " " + pattern + " " + str(mean) + '\n'
-        outputFileHandle.write(listLine)
-        totalMean  += mean 
+		logging.info("doing command ...\n doitOneRecording  " + URI_score + " " +  URI_testFile  + " " + pattern)
+		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, ALPHA, usePersistentFiles])
+
+		listLine = '\n' + subpaths[i] + " " + pattern + " " + str(mean) +   " " + str(stDev) 
+		outputFileHandle.write(listLine)
+		totalMean  += mean 
 	
-	result = 'total mean: ' + str(totalMean/len(scores))
+	result = '\n' + 'total mean: ' + str(totalMean/len(scores)) + '\n'
 	print result
 	
 	outputFileHandle.write(result)
 	outputFileHandle.close()
+	print 'written to file ' + filename 
+	
+	
 
+	
 if __name__ == '__main__':
 	doit(sys.argv)
+	
+	
+	

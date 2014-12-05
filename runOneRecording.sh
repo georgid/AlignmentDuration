@@ -21,6 +21,9 @@ rm error.out
 rm output.out
 
 HOME_DTIC=/homedtic/georgid/
-#/homedtic/georgid/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True
 
-$HOME_DTIC/env/bin/python AlignmentDuration/doitOneRecording.py   $HOME_DTIC/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ $HOME_DTIC/ISTANBUL/barbaros/ 01_Gel True
+$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecParams.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/
+
+# /homedtic/georgid/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True
+
+# $HOME_DTIC/env/bin/python AlignmentDuration/doitOneRecording.py   $HOME_DTIC/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ $HOME_DTIC/ISTANBUL/barbaros/ 02_Gel True

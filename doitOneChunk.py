@@ -101,11 +101,11 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
 
 
 
-def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles):
+def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, ALPHA, usePersistentFiles):
     lyrics = loadLyrics(pathToComposition, whichSection)
     lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
-    decoder = Decoder(lyricsWithModels)
+    decoder = Decoder(lyricsWithModels, ALPHA)
 #  TODO: DEBUG: do not load models
 #  decoder = Decoder(lyrics, withModels=False, numStates=86)
 #################### decode
@@ -124,8 +124,8 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
 
 def doitOneChunk(argv):
     
-    if len(argv) != 4 and  len(argv) != 5 :
-            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <usePersistentFiles=False>".format(argv[0]) )
+    if len(argv) != 5 and  len(argv) != 6 :
+            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <ALPHA> <usePersistentFiles=False>".format(argv[0]) )
             sys.exit();
     
     
@@ -141,8 +141,10 @@ def doitOneChunk(argv):
     whichSection = 5
     whichSection = int(argv[2])
     
+    ALPHA = float(argv[4])
+    
     usePersistentFiles = False
-    if len(argv) == 5: usePersistentFiles = argv[4]
+    if len(argv) == 6: usePersistentFiles = argv[5]
     
     set_printoptions(threshold='nan') 
     
@@ -151,7 +153,7 @@ def doitOneChunk(argv):
     htkParser = HtkConverter()
     htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    alignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles)
+    alignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, ALPHA, usePersistentFiles)
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
         

@@ -35,8 +35,8 @@ def doitOneRecording(argv):
     '''
     for a list of recordings, select those which name contains pattern and evlauate total error 
     ''' 
-    if len(argv) != 4 and  len(argv) != 5 :
-            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <usePersistentFiles=False>".format(argv[0]) )
+    if len(argv) != 5 and  len(argv) != 6 :
+            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <ALPHA> <usePersistentFiles=False>".format(argv[0]) )
             sys.exit();
     
     os.chdir(argv[2])
@@ -55,8 +55,10 @@ def doitOneRecording(argv):
         
     pathToComposition  = argv[1]
     
+    ALPHA = float(argv[4])
+    
     usePersistentFiles = False
-    if len(argv) == 5: usePersistentFiles = argv[4]
+    if len(argv) == 6: usePersistentFiles = argv[5]
         
      
     totalErrors = []
@@ -68,7 +70,7 @@ def doitOneRecording(argv):
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logging.info("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection  = int(URIrecordingNoExt.split("_")[-2])
-            currAlignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, usePersistentFiles)
+            currAlignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, ALPHA, usePersistentFiles)
             totalErrors.extend(currAlignmentErrors)
           
         

@@ -35,17 +35,26 @@ git clone https://github.com/georgid/AlignmentEvaluation.git
 git clone https://github.com/georgid/utilsLyrics.git
 
 
+implementational logic is in doitOneChunk.alignOneChunk().
+Both doitOneRecording and  doitAllRecordings are calling it behind the scenes
+
 
 USAGE:
 
 EXAMPLE: doitOneChunk()
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ 3 /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin True
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/ 3 /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin 1 True
 
 EXAMPLE: doitOneRecording()
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py   /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Aksam True
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py   /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/ 01_Aksam 1 True
 
 EXAMPLE: doitAllRecordings()
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitAllRecordings.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/ True
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitAllRecordings.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/ 1 True
 
 (on hpc)
-python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True
+python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ 1 True
+
+EXAMPLE: 
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitAllRecParams.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/
+
+(on hpc)
+python AlignmentDuration/doitAllRecParams.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/
