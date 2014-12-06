@@ -314,7 +314,7 @@ For
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\delta_{t}(i)=max_{d}\{\delta_{t-d}(i-1)p_{i}(d)\Pi_{s=t-d+1}^{t}b_{i}(O_{s})\}$
+\begin_inset Formula $\delta_{t}(i)=max_{d}\{\delta_{t-d}(i-1)p_{i}(d)^{\alpha}[\Pi_{s=t-d+1}^{t}b_{i}(O_{s})]^{1-\alpha}\}$
 \end_inset
 
 
@@ -394,6 +394,16 @@ Note that becasue in forced alignment the source state could be only the
 \noun off
 \color none
 Thus no maximization over transition form source states in nesessary
+\end_layout
+
+\begin_layout Standard
+To be able to control the influence of the duration we have introduced a
+ weighting factor 
+\begin_inset Formula $\alpha$
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Standard

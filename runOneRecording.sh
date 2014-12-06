@@ -19,6 +19,7 @@ which python
 
 rm error.out
 rm output.out
+rm alignError*
 
 HOME_DTIC=/homedtic/georgid/
 

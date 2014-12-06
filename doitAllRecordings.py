@@ -50,16 +50,25 @@ def doit(argv):
 		pattern  = patterns[i]
 		
 		logging.info("doing command ...\n doitOneRecording  " + URI_score + " " +  URI_testFile  + " " + pattern)
-		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, ALPHA, usePersistentFiles])
-
+# 		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, ALPHA, usePersistentFiles])
+		mean = 2
+		stDev = 3
 		listLine = '\n' + subpaths[i] + " " + pattern + " " + str(mean) +   " " + str(stDev) 
+		
+		if outputFileHandle.closed:
+			outputFileHandle = open(filename, 'a')
 		outputFileHandle.write(listLine)
+		outputFileHandle.close()
+		
 		totalMean  += mean 
 	
 	result = '\n' + 'total mean: ' + str(totalMean/len(scores)) + '\n'
 	print result
 	
+	if outputFileHandle.closed:
+		outputFileHandle = open(filename, 'a')
 	outputFileHandle.write(result)
+	
 	outputFileHandle.close()
 	print 'written to file ' + filename 
 	
