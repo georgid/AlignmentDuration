@@ -39,6 +39,7 @@ def doit(argv):
 	currTime = datetime.now().strftime('%Y-%m-%d--%H-%M-%S')	
 	filename = os.path.join(os.getcwdu(),   'alignError_' + currTime + '.out') 
 	outputFileHandle = open(filename, 'a')
+	logging.info("\n Output file is: " + filename )
 	
 	
 	outputFileHandle.write('\n'  + str(ALPHA) )
