@@ -5,7 +5,6 @@ Created on Oct 27, 2014
 '''
 import os
 import sys
-from eyed3.utils import LoggingAction
 import logging
 
 
