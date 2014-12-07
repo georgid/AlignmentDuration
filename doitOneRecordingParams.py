@@ -14,7 +14,7 @@ def runWithParameters(argv):
     
     for ALPHA in ALPHAs:
         logging.info("ALPHA = " + str(ALPHA))
-        doitOneRecording([argv[0], argv[1], argv[2], ALPHA, True]  )
+        doitOneRecording([argv[0], argv[1], argv[2], argv[3], ALPHA, True]  )
         
             
             
