@@ -5,6 +5,8 @@ Created on Oct 27, 2014
 '''
 import os
 import sys
+from eyed3.utils import LoggingAction
+import logging
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -282,8 +284,13 @@ class Decoder(object):
         numdecodedStates = len(self.path.indicesStateStarts)
         
         if numStates != numdecodedStates:
-            sys.exit("detected path has {} states, but stateNetwork transcript has {} states".format( numdecodedStates, numStates ) )
-        
+            logging.warn("detected path has {} states, but stateNetwork transcript has {} states".format( numdecodedStates, numStates ) )
+            # num misssed states in the beginning of the path
+            howManyMissedStates = numStates - numdecodedStates
+            # WORKAROUND: assume missed states start at time 0
+            for i in range(howManyMissedStates):
+                self.path.indicesStateStarts[:0] = [0]
+            
         detectedWordList = []
         
         for word_ in self.lyricsWithModels.listWords:
