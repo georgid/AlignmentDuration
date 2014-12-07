@@ -3,7 +3,7 @@ Created on Dec 5, 2014
 
 @author: joro
 '''
-from doitAllRecordings import doit
+from doitOneRecording import doitOneRecording
 import logging
 import sys
 import numpy
@@ -14,7 +14,7 @@ def runWithParameters(argv):
     
     for ALPHA in ALPHAs:
         logging.info("ALPHA = " + str(ALPHA))
-        doit([argv[0], argv[1], argv[2], ALPHA, True]  )
+        doitOneRecording([argv[0], argv[1], argv[2], ALPHA, True]  )
         
             
             

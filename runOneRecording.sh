@@ -7,6 +7,8 @@
 #$ -M georgi.dzhambazov@upf.edu
 #$ -e error.out
 #$ -o output.out
+#$ -cwd
+#$ -N allRecordingsParams
 
 # A SCRIPT THAT RUNS on HPC
 
