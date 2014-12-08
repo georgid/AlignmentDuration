@@ -26,10 +26,8 @@ NUM_FRAMES_PERSECOND = 100.0
 
 # if false, use transition probabilities from htkModels
 WITH_DURATIONS= True
-ONLY_MIDDLE_STATE = False
 
 #WITH_DURATIONS= False
-#ONLY_MIDDLE_STATE = False
 
 
 
@@ -57,7 +55,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, ALPHA = 1, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, params, numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -69,7 +67,7 @@ class Decoder(object):
         self.hmmNetwork = []
                 
 
-        self._constructHmmNetwork(numStates, ALPHA, withModels)
+        self._constructHmmNetwork(numStates, params.ALPHA, withModels)
         
         # Path class object
         self.path = None

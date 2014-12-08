@@ -5,8 +5,8 @@
 #$ -l h_vmem=10G
 #$ -m bea
 #$ -M georgi.dzhambazov@upf.edu
-#$ -e allRecordingsParamsError.out
-#$ -o allRecordingsParamsOutput.out
+#$ -e allRecordingsParams3StatesError.out
+#$ -o allRecordingsParams3StatesOutput.out
 #$ -cwd
 #$ -N allRecordingsParams
 
@@ -22,7 +22,7 @@ which python
 
 HOME_DTIC=/homedtic/georgid/
 
-$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecParams.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True True
+$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecParams.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/with3States/ISTANBUL/ False True
 
 # /homedtic/georgid/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True
 

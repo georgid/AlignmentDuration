@@ -8,10 +8,11 @@ from MakamScore import MakamScore
 import glob
 import numpy
 import sys
-from Decoder import Decoder, ONLY_MIDDLE_STATE
 from LyricsWithModels import LyricsWithModels
 from numpy.core.arrayprint import set_printoptions
 import logging
+from Parameters import Parameters
+from Decoder import Decoder
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -101,11 +102,11 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
 
 
 
-def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, ALPHA, usePersistentFiles):
+def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles):
     lyrics = loadLyrics(pathToComposition, whichSection)
-    lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, ONLY_MIDDLE_STATE)
+    lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, params.ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
-    decoder = Decoder(lyricsWithModels, ALPHA)
+    decoder = Decoder(lyricsWithModels, params)
 #  TODO: DEBUG: do not load models
 #  decoder = Decoder(lyrics, withModels=False, numStates=86)
 #################### decode
@@ -143,6 +144,12 @@ def doitOneChunk(argv):
     
     ALPHA = float(argv[4])
     
+    WITH_DURATIONS =  True
+    
+    ONLY_MIDDLE_STATE = True
+    
+    params = Parameters(ALPHA, ONLY_MIDDLE_STATE, WITH_DURATIONS)
+    
     usePersistentFiles = False
     if len(argv) == 6: usePersistentFiles = argv[5]
     
@@ -153,7 +160,7 @@ def doitOneChunk(argv):
     htkParser = HtkConverter()
     htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    alignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, ALPHA, usePersistentFiles)
+    alignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
         
