@@ -5,8 +5,8 @@
 #$ -l h_vmem=10G
 #$ -m bea
 #$ -M georgi.dzhambazov@upf.edu
-#$ -e error.out
-#$ -o output.out
+#$ -e allRecordingsParams.out
+#$ -o allRecordingsParams.out
 #$ -cwd
 #$ -N allRecordingsParams
 
@@ -19,9 +19,6 @@ source /homedtic/georgid/env/bin/activate
 echo "python after loading vrit env: "
 which python
 
-rm error.out
-rm output.out
-rm alignError*
 
 HOME_DTIC=/homedtic/georgid/
 

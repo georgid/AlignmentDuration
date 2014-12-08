@@ -19,9 +19,6 @@ source /homedtic/georgid/env/bin/activate
 echo "python after loading vrit env: "
 which python
 
-rm error.out
-rm output.out
-rm alignError*
 
 HOME_DTIC=/homedtic/georgid/
 

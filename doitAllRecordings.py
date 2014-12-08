@@ -39,7 +39,9 @@ def doit(argv):
 	currTime = datetime.now().strftime('%Y-%m-%d--%H-%M-%S')	
 	filename = os.path.join(os.getcwdu(),   'alignError_' + currTime + '.out') 
 	outputFileHandle = open(filename, 'a')
+	
 	logging.info("\n Output file is: " + filename )
+	print "\n Output file is: ",  filename
 	
 	
 	outputFileHandle.write('\n'  + str(ALPHA) )
@@ -52,7 +54,9 @@ def doit(argv):
 		
 		logging.info("doing command ...\n doitOneRecording  " + URI_score + " " +  URI_testFile  + " " + pattern)
 		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, ALPHA, usePersistentFiles])
-	
+		logging.info( "( mean: "   + mean + ", st dev: " + stDev +   " ALPHA: "+ ALPHA  )
+		print "( mean: "  ",", mean, ", st dev: " , stDev ,   " ALPHA: ", ALPHA
+		
 		listLine = '\n' + subpaths[i] + " " + pattern + " " + str(mean) +   " " + str(stDev) 
 		
 		if outputFileHandle.closed:
@@ -64,6 +68,7 @@ def doit(argv):
 	
 	result = '\n' + 'total mean: ' + str(totalMean/len(scores)) + '\n'
 	print result
+	logging.info( result  )
 	
 	if outputFileHandle.closed:
 		outputFileHandle = open(filename, 'a')
