@@ -14,7 +14,12 @@ def runWithParameters(argv):
     
     for ALPHA in ALPHAs:
         logging.info("ALPHA = " + str(ALPHA))
-        doit([argv[0], argv[1], argv[2], ALPHA, argv[3] ]  )
+        if argv[3] == 'False': 
+            usePersistent =  False
+        elif argv[3] == 'True':
+            usePersistent =  True
+
+        doit([argv[0], argv[1], argv[2], ALPHA, usePersistent ]  )
         
             
             
