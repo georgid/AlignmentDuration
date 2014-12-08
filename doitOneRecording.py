@@ -75,7 +75,9 @@ def doitOneRecording(argv):
           
         
     mean, stDev, median = getMeanAndStDevError(totalErrors)
-    logging.info( "( mean: "  ",", mean, ", st dev: " , stDev ,   " ALPHA: ", ALPHA  )
+    infoA = "( mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
+
+    logging.info(infoA)
     return mean, stDev
 
 

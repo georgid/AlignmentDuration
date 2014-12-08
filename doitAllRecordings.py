@@ -54,8 +54,11 @@ def doit(argv):
 		
 		logging.info("doing command ...\n doitOneRecording  " + URI_score + " " +  URI_testFile  + " " + pattern)
 		mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, ALPHA, usePersistentFiles])
-		logging.info( "( mean: "   + mean + ", st dev: " + stDev +   " ALPHA: "+ ALPHA  )
-		print "( mean: "  ",", mean, ", st dev: " , stDev ,   " ALPHA: ", ALPHA
+		
+		infoA = "( mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
+		
+		logging.info(infoA)
+		print infoA
 		
 		listLine = '\n' + subpaths[i] + " " + pattern + " " + str(mean) +   " " + str(stDev) 
 		
