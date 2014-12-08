@@ -4,6 +4,7 @@ Created on Oct 8, 2014
 @author: joro
 '''
 from Phonetizer import Phonetizer
+import sys
 class Phoneme:
     def __init__(self, phonemeID):
         self.ID = phonemeID;
@@ -21,6 +22,15 @@ class Phoneme:
     
     def setHTKModel(self, hmmModel):
         self.htkModel = hmmModel
+        
+    def getNumStates(self):
+        try: self.htkModel
+        except NameError:
+            sys.exit("cannot get numsttes. phoneme {} has no model assigned ", self.ID)
+        
+        return len(self.htkModel.states)
+            
+            
     
     def __str__(self):
         return self.ID

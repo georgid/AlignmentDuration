@@ -112,7 +112,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     detectedWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
 
 ### VISUALIZE
-#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+    decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
 #################### evaluate
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, 1)

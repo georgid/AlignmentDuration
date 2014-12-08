@@ -8,6 +8,7 @@ import os
 import sys
 from StateWithDur import StateWithDur
 from htk_converter import HtkConverter
+from Decoder import getTransMatrixForPhoneme
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 
@@ -36,7 +37,8 @@ class LyricsWithModels(Lyrics):
         if ONLY_MIDDLE_STATE:
             self._phonemes2stateNetworkOnlyMiddle()
         else:
-            self._phonemes2stateNetwork()
+#             self._phonemes2stateNetwork()
+            self._phonemes2stateNetworkWeights()
 
         
 
@@ -76,13 +78,60 @@ class LyricsWithModels(Lyrics):
             currStateCount = len(phoneme.htkModel.states)
             stateCount += currStateCount
             
-            
+            # assign durations
             for (numState, state ) in phoneme.htkModel.states:
                  currStateWithDur = StateWithDur(state.mixtures)
+                 
                  dur = float(phoneme.getDuration()) / float(currStateCount)
+                 
                  currStateWithDur.setDuration( dur )
                  self.statesNetwork.append(currStateWithDur)
-   
+                 
+    def _phonemes2stateNetworkWeights(self):
+        '''
+        expand to self.statesNetwork. 
+        each state gets 1/n-th of total num of states. 
+        @DEBUG: NOT used right now 
+        '''
+        
+        self.statesNetwork = []
+        stateCount = 0
+        
+        for phoneme in self.phonemesNetwork:
+            
+            phoneme.setNumFirstState(stateCount)
+            # update
+            currStateCount = len(phoneme.htkModel.states)
+            stateCount += currStateCount
+            
+            
+            currTransMatrix = getTransMatrixForPhoneme( phoneme)
+            
+            # sanity check
+            if not currStateCount ==  currTransMatrix.shape[0]:
+                sys.exit("Error on reading htk model: transMatrix for phoneme {} has not same num states as states ", phoneme.ID)
+            
+            waitProbs = []
+            for currState in range(currStateCount):
+                currWaitProb =  currTransMatrix[currState, currState]
+                waitProbs.append(currWaitProb)
+            
+            statesList = phoneme.htkModel.states
+            # assign durations
+            for  i, (numState, state ) in enumerate(statesList):
+                 currStateWithDur = StateWithDur(state.mixtures)
+                 
+                 # normalize to sum to one
+                 weigthState = float(waitProbs[i]) / float(sum(waitProbs))
+                 dur = float(phoneme.getDuration()) * float(weigthState)
+                 
+                 currStateWithDur.setDuration( dur )
+                 self.statesNetwork.append(currStateWithDur)
+        
+        
+
+                 
+               
     def _phonemes2stateNetworkOnlyMiddle(self):
         '''
         expand to self.statesNetwork . TAKE ONLY middle state for now
@@ -121,10 +170,12 @@ class LyricsWithModels(Lyrics):
                 for phoneme_ in syllable_.phonemes:
                     print "\t phoneme: " , phoneme_
                     countPhonemeFirstState =  phoneme_.numFirstState
-                    print "\t\t state: {} duration (in Frames): {} DURATION RESULT: {}, t_end: {}".format(countPhonemeFirstState, 
-                                                                                                self.statesNetwork[countPhonemeFirstState].durationInFrames,
-                                                                                                 resultPath.durations[countPhonemeFirstState], 
-                                                                                                 resultPath.endingTimes[countPhonemeFirstState])
+
+                    for nextState in range(phoneme_.getNumStates()):
+                        print "\t\t state: {} duration (in Frames): {} DURATION RESULT: {}, t_end: {}".format(countPhonemeFirstState + nextState, 
+                                                                                                self.statesNetwork[countPhonemeFirstState + nextState].durationInFrames,
+                                                                                                 resultPath.durations[countPhonemeFirstState + nextState], 
+                                                                                                 resultPath.endingTimes[countPhonemeFirstState + nextState])
             
                 
     def printStates(self):

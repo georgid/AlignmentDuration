@@ -5,8 +5,8 @@
 #$ -l h_vmem=10G
 #$ -m bea
 #$ -M georgi.dzhambazov@upf.edu
-#$ -e allRecordingsParams.out
-#$ -o allRecordingsParams.out
+#$ -e allRecordingsParamsError.out
+#$ -o allRecordingsParamsOutput.out
 #$ -cwd
 #$ -N allRecordingsParams
 

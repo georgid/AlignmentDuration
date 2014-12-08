@@ -26,7 +26,7 @@ NUM_FRAMES_PERSECOND = 100.0
 
 # if false, use transition probabilities from htkModels
 WITH_DURATIONS= True
-ONLY_MIDDLE_STATE = True
+ONLY_MIDDLE_STATE = False
 
 #WITH_DURATIONS= False
 #ONLY_MIDDLE_STATE = False
@@ -125,12 +125,10 @@ class Decoder(object):
         for phoneme in sequencePhonemes:
             currNumStates =   phoneme.htkModel.tmat.numStates - 2
             
-            vector_ = phoneme.htkModel.tmat.vector
-            currTransMat = numpy.reshape(vector_ ,(len(vector_ )**0.5, len(vector_ )**0.5))
-            
     #         disregard 1st and last states from transMat because they are the non-emitting states
-       
-            transMAtrix[counterOverallStateNum : counterOverallStateNum + currNumStates, counterOverallStateNum : counterOverallStateNum + currNumStates ] = currTransMat[1:-1,1:-1]
+            currTransMat = getTransMatrixForPhoneme(phoneme)
+            
+            transMAtrix[counterOverallStateNum : counterOverallStateNum + currNumStates, counterOverallStateNum : counterOverallStateNum + currNumStates ] = currTransMat
            
             # transition probability to next state
             #         TODO: here multiply by [0,1] matrix next state. check if it exists
@@ -146,6 +144,8 @@ class Decoder(object):
             
             
         return transMAtrix
+    
+
     
     def _constructHMMNetworkParameters(self,  numStates,  withModels=True, sequenceStates=None):
         '''
@@ -324,5 +324,14 @@ class Decoder(object):
         
         return detectedWord
     
-             
+def getTransMatrixForPhoneme( phoneme):
+    '''
+    read the trans matrix from model. 
+    3x3 or 1x1 matrix for emitting states only as numpy array
+    '''
+    vector_ = phoneme.htkModel.tmat.vector
+    currTransMat = numpy.reshape(vector_ ,(len(vector_ )**0.5, len(vector_ )**0.5))
+
+    #         disregard 1st and last states from transMat because they are the non-emitting states
+    return currTransMat[1:-1,1:-1]
         
