@@ -34,6 +34,14 @@ class LyricsWithModels(Lyrics):
         # list of class type StateWithDur
         self.statesNetwork = []
         
+        if ONLY_MIDDLE_STATE=='True':
+            ONLY_MIDDLE_STATE  = True
+        elif ONLY_MIDDLE_STATE=='False':
+            ONLY_MIDDLE_STATE  = False
+        else:
+            sys.exit("param ONLY_MIDDLE_STATE ={}. ONly True/False expected".format( ONLY_MIDDLE_STATE))
+
+        
         if ONLY_MIDDLE_STATE:
             self._phonemes2stateNetworkOnlyMiddle()
         else:

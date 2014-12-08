@@ -67,7 +67,7 @@ class Decoder(object):
         self.hmmNetwork = []
                 
 
-        self._constructHmmNetwork(numStates, params.ALPHA, withModels)
+        self._constructHmmNetwork(numStates, float(params.ALPHA), withModels)
         
         # Path class object
         self.path = None
