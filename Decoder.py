@@ -46,8 +46,8 @@ if pathHMM not in sys.path:
 from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
-print 'SYS PATH is: ', sys.path
-
+logger = logging.getLogger("decoder")
+logger.setLevel(logging.DEBUG)
 
 class Decoder(object):
     '''
@@ -197,17 +197,18 @@ class Decoder(object):
       
         
         
-    def duration2numFrameDuration(self, observationFeatures):
+    def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt):
         '''
-        helper method. 
+        get relative tempo (numFramesPerMinUnit) for given audio chunk
         setDuration HowManyFrames for each state in hmm
         '''
         # TODO: read from score
 #         self.bpm = 60
 #         durationMinUnit = (1. / (self.bpm/60) ) * (1. / MINIMAL_DURATION_UNIT) 
 #         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
-        totalDur = self.lyricsWithModels.getTotalDuration()
-        numFramesPerMinUnit   = float(len(observationFeatures)) / float(totalDur)
+        totalScoreDur = self.lyricsWithModels.getTotalDuration()
+        numFramesPerMinUnit   = float(len(observationFeatures)) / float(totalScoreDur)
+        logger.debug("numFramesPerMinUnit = {} for audiochunk {} ".format( numFramesPerMinUnit, URI_recording_noExt))
         numFramesDurationsList = []
         
         for  i, stateWithDur_ in enumerate (self.lyricsWithModels.statesNetwork):
@@ -234,7 +235,7 @@ class Decoder(object):
 #         observationFeatures = observationFeatures[0:100,:]
         
         if  WITH_DURATIONS:
-            listDurations = self.duration2numFrameDuration(observationFeatures)
+            listDurations = self.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
         
             self.hmmNetwork.setDurForStates(listDurations) 
         

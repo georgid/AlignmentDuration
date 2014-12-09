@@ -85,7 +85,8 @@ def loadMFCCs(URI_recording_noExt):
     
     mfccsFeatrues = numpy.loadtxt(URI_recording_mfc_txt , delimiter=','  ) 
     
-    return mfccsFeatrues 
+    return mfccsFeatrues
+
 
 def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
     
@@ -103,6 +104,9 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
 
 
 def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles):
+    '''
+    top most logic method
+    '''
     lyrics = loadLyrics(pathToComposition, whichSection)
     lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, params.ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
@@ -125,8 +129,8 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
 
 def doitOneChunk(argv):
     
-    if len(argv) != 5 and  len(argv) != 6 :
-            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <ALPHA> <usePersistentFiles=False>".format(argv[0]) )
+    if len(argv) != 6 and  len(argv) != 7 :
+            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <ALPHA> <ONLY_MIDDLE_STATE> <usePersistentFiles=False>".format(argv[0]) )
             sys.exit();
     
     
@@ -146,12 +150,12 @@ def doitOneChunk(argv):
     
     WITH_DURATIONS =  True
     
-    ONLY_MIDDLE_STATE = True
+    ONLY_MIDDLE_STATE = argv[5]
     
-    params = Parameters(ALPHA, ONLY_MIDDLE_STATE, WITH_DURATIONS)
+    params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
     usePersistentFiles = False
-    if len(argv) == 6: usePersistentFiles = argv[5]
+    if len(argv) == 7: usePersistentFiles = argv[6]
     
     set_printoptions(threshold='nan') 
     
