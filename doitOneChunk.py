@@ -102,6 +102,13 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
 #  TODO: DEBUG: do not load models
 #  decoder = Decoder(lyrics, withModels=False, numStates=86)
 #################### decode
+    if usePersistentFiles=='True':
+        usePersistentFiles = True
+    elif usePersistentFiles=='False':
+        usePersistentFiles = False
+    else: 
+        sys.exit("usePersistentFiles can be only True or False") 
+        
     detectedWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
 
 ### VISUALIZE
@@ -133,7 +140,7 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
 def doitOneChunk(argv):
     
     if len(argv) != 6 and  len(argv) != 7 :
-            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <ALPHA> <ONLY_MIDDLE_STATE> <usePersistentFiles=False>".format(argv[0]) )
+            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <ALPHA> <ONLY_MIDDLE_STATE> <usePersistentFiles=True>".format(argv[0]) )
             sys.exit();
     
     
@@ -151,18 +158,14 @@ def doitOneChunk(argv):
     
     ALPHA = float(argv[4])
     
-    WITH_DURATIONS =  True
     
     ONLY_MIDDLE_STATE = argv[5]
     
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
-    usePersistentFiles = False
+    usePersistentFiles = 'True'
     if len(argv) == 7:
-        if argv[6] == 'False': 
-                usePersistentFiles =  False
-        elif argv[6] == 'True':
-                usePersistentFiles =  True
+        usePersistentFiles =  argv[6]
     
    
     

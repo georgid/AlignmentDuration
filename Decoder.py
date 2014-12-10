@@ -232,7 +232,9 @@ class Decoder(object):
             URI_bmap = URI_recording_noExt + '.dur_bmap'
         else:             
             URI_bmap = URI_recording_noExt + '.bmap'
-
+        
+        
+        
         self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_bmap )
         # double check that features are in same dimension as model
         if observationFeatures.shape[1] != numDimensions:

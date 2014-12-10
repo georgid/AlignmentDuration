@@ -13,7 +13,7 @@ import os
 
 def doit(argv):
     if len(argv) != 5 and len(argv) != 6:
-        print ("usage: {}  <pathToCompositions>  <pathToRecordings> <ALPHA>  <ONLY_MIDDLE_STATE> <usePersistentFiles=False>".format(argv[0]) )
+        print ("usage: {}  <pathToCompositions>  <pathToRecordings> <ALPHA>  <ONLY_MIDDLE_STATE> <usePersistentFiles=True>".format(argv[0]) )
         sys.exit();
 
     pathToScores = argv[1]
@@ -25,7 +25,7 @@ def doit(argv):
     
     ONLY_MIDDLE_STATE = argv[4]
     
-    usePersistentFiles = False
+    usePersistentFiles = 'True'
         
     if len(argv) == 6:
         usePersistentFiles = argv[5]

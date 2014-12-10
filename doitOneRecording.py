@@ -37,7 +37,7 @@ def doitOneRecording(argv):
     for a list of recordings, select those which name contains pattern and evlauate total error 
     ''' 
     if len(argv) != 6 and  len(argv) != 7 :
-            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <ALPHA>  <ONLY_MIDDLE_STATE> <usePersistentFiles=False> ".format(argv[0]) )
+            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <ALPHA>  <ONLY_MIDDLE_STATE> <usePersistentFiles=True> ".format(argv[0]) )
             sys.exit();
     
     os.chdir(argv[2])
@@ -63,12 +63,9 @@ def doitOneRecording(argv):
     
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
-    usePersistentFiles = False
+    usePersistentFiles = 'True'
     if len(argv) == 7:
-        if argv[6] == 'False': 
-                usePersistentFiles =  False
-        elif argv[6] == 'True':
-                usePersistentFiles =  True
+        usePersistentFiles =  argv[6]
         
      
     totalErrors = []
