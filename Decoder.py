@@ -27,7 +27,7 @@ NUM_FRAMES_PERSECOND = 100.0
 # if false, use transition probabilities from htkModels
 WITH_DURATIONS= True
 
-#WITH_DURATIONS= False
+# WITH_DURATIONS= False
 
 
 
@@ -55,7 +55,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, params, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, ALPHA, numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -67,7 +67,7 @@ class Decoder(object):
         self.hmmNetwork = []
                 
 
-        self._constructHmmNetwork(numStates, float(params.ALPHA), withModels)
+        self._constructHmmNetwork(numStates, float(ALPHA), withModels)
         
         # Path class object
         self.path = None
@@ -126,7 +126,7 @@ class Decoder(object):
     #         disregard 1st and last states from transMat because they are the non-emitting states
             currTransMat = getTransMatrixForPhoneme(phoneme)
             
-            transMAtrix[counterOverallStateNum : counterOverallStateNum + currNumStates, counterOverallStateNum : counterOverallStateNum + currNumStates ] = currTransMat
+            transMAtrix[counterOverallStateNum : counterOverallStateNum + currNumStates, counterOverallStateNum : counterOverallStateNum + currNumStates ] = currTransMat[1:-1,1:-1]
            
             # transition probability to next state
             #         TODO: here multiply by [0,1] matrix next state. check if it exists
@@ -228,7 +228,12 @@ class Decoder(object):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme (based on WITH_DURATION parameter)
         '''
-        self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_recording_noExt )
+        if self.lyricsWithModels.ONLY_MIDDLE_STATE:
+            URI_bmap = URI_recording_noExt + '.dur_bmap'
+        else:             
+            URI_bmap = URI_recording_noExt + '.bmap'
+
+        self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_bmap )
         # double check that features are in same dimension as model
         if observationFeatures.shape[1] != numDimensions:
             sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
@@ -331,6 +336,5 @@ def getTransMatrixForPhoneme( phoneme):
     vector_ = phoneme.htkModel.tmat.vector
     currTransMat = numpy.reshape(vector_ ,(len(vector_ )**0.5, len(vector_ )**0.5))
 
-    #         disregard 1st and last states from transMat because they are the non-emitting states
-    return currTransMat[1:-1,1:-1]
+    return currTransMat
         

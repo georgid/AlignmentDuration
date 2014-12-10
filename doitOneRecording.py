@@ -64,8 +64,11 @@ def doitOneRecording(argv):
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
     usePersistentFiles = False
-    if len(argv) == 7: usePersistentFiles = argv[6]
-    
+    if len(argv) == 7:
+        if argv[6] == 'False': 
+                usePersistentFiles =  False
+        elif argv[6] == 'True':
+                usePersistentFiles =  True
         
      
     totalErrors = []

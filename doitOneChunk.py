@@ -88,18 +88,6 @@ def loadMFCCs(URI_recording_noExt):
     return mfccsFeatrues
 
 
-def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
-    
-    
-    observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
-    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt)
-    
-    
-    detectedWordList = decoder.path2ResultWordList()
-   
-
-    return detectedWordList
-
 
 
 
@@ -110,7 +98,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     lyrics = loadLyrics(pathToComposition, whichSection)
     lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, params.ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
-    decoder = Decoder(lyricsWithModels, params)
+    decoder = Decoder(lyricsWithModels, params.ALPHA)
 #  TODO: DEBUG: do not load models
 #  decoder = Decoder(lyrics, withModels=False, numStates=86)
 #################### decode
@@ -123,6 +111,21 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, 1)
     return alignmentErrors, detectedWordList
 
+
+
+
+
+def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
+    
+    
+    observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
+    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt)
+    
+    
+    detectedWordList = decoder.path2ResultWordList()
+   
+
+    return detectedWordList
 
 
 
@@ -155,7 +158,13 @@ def doitOneChunk(argv):
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
     usePersistentFiles = False
-    if len(argv) == 7: usePersistentFiles = argv[6]
+    if len(argv) == 7:
+        if argv[6] == 'False': 
+                usePersistentFiles =  False
+        elif argv[6] == 'True':
+                usePersistentFiles =  True
+    
+   
     
     set_printoptions(threshold='nan') 
     

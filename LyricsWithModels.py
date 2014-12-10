@@ -40,7 +40,8 @@ class LyricsWithModels(Lyrics):
             ONLY_MIDDLE_STATE  = False
         else:
             sys.exit("param ONLY_MIDDLE_STATE ={}. ONly True/False expected".format( ONLY_MIDDLE_STATE))
-
+        
+        self.ONLY_MIDDLE_STATE = ONLY_MIDDLE_STATE
         
         if ONLY_MIDDLE_STATE:
             self._phonemes2stateNetworkOnlyMiddle()
@@ -114,6 +115,7 @@ class LyricsWithModels(Lyrics):
             
             
             currTransMatrix = getTransMatrixForPhoneme( phoneme)
+            currTransMatrix = currTransMatrix[1:-1,1:-1]
             
             # sanity check
             if not currStateCount ==  currTransMatrix.shape[0]:
