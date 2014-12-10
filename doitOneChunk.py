@@ -47,6 +47,42 @@ MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 ANNOTATION_EXT = '.TextGrid'    
 
 
+
+
+
+
+def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles):
+    '''
+    top most logic method
+    '''
+    lyrics = loadLyrics(pathToComposition, whichSection)
+    lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, params.ONLY_MIDDLE_STATE)
+#     lyricsWithModels.printPhonemeNetwork()
+    decoder = Decoder(lyricsWithModels, params.ALPHA)
+#  TODO: DEBUG: do not load models
+#  decoder = Decoder(lyrics, withModels=False, numStates=86)
+#################### decode
+    if usePersistentFiles=='True':
+        usePersistentFiles = True
+    elif usePersistentFiles=='False':
+        usePersistentFiles = False
+    else: 
+        sys.exit("usePersistentFiles can be only True or False") 
+        
+    detectedWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
+
+### VISUALIZE
+#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+
+#################### evaluate
+    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, 1)
+    return alignmentErrors, detectedWordList
+
+
+
+
+
+
 def loadLyrics(pathToComposition, whichSection):
 
 
@@ -87,36 +123,6 @@ def loadMFCCs(URI_recording_noExt):
     
     return mfccsFeatrues
 
-
-
-
-
-def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles):
-    '''
-    top most logic method
-    '''
-    lyrics = loadLyrics(pathToComposition, whichSection)
-    lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, params.ONLY_MIDDLE_STATE)
-#     lyricsWithModels.printPhonemeNetwork()
-    decoder = Decoder(lyricsWithModels, params.ALPHA)
-#  TODO: DEBUG: do not load models
-#  decoder = Decoder(lyrics, withModels=False, numStates=86)
-#################### decode
-    if usePersistentFiles=='True':
-        usePersistentFiles = True
-    elif usePersistentFiles=='False':
-        usePersistentFiles = False
-    else: 
-        sys.exit("usePersistentFiles can be only True or False") 
-        
-    detectedWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
-
-### VISUALIZE
-#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
-
-#################### evaluate
-    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, 1)
-    return alignmentErrors, detectedWordList
 
 
 
