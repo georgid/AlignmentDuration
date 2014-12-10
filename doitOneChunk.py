@@ -70,7 +70,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
         sys.exit("usePersistentFiles can be only True or False") 
         
     detectedWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
-
+    
 ### VISUALIZE
 #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
@@ -79,6 +79,18 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     return alignmentErrors, detectedWordList
 
 
+
+
+def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
+    
+    
+    observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
+    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt)
+    
+    detectedWordList = decoder.path2ResultWordList()
+   
+
+    return detectedWordList
 
 
 
@@ -128,17 +140,6 @@ def loadMFCCs(URI_recording_noExt):
 
 
 
-def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
-    
-    
-    observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
-    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt)
-    
-    
-    detectedWordList = decoder.path2ResultWordList()
-   
-
-    return detectedWordList
 
 
 

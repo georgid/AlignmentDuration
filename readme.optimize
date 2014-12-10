@@ -12,3 +12,9 @@ when parsing sections consecutively keep index of  syllable of last parsed secio
 
 
 LyricsWithModels.LyricsWithModels._linkToModels
+
+
+The slowest thing is the loop in  _DUrationHMM.viterbi_forced_Dur()
+      for t in range(self.MAX_DUR,len(observations)):
+            for currState in xrange(self.n):
+                self._calcCurrStatePhi(t, currState) # get max duration quantities

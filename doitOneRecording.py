@@ -78,6 +78,7 @@ def doitOneRecording(argv):
             logging.info("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection  = int(URIrecordingNoExt.split("_")[-2])
             currAlignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
+            continue
             totalErrors.extend(currAlignmentErrors)
           
         

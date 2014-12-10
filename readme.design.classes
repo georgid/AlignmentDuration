@@ -21,6 +21,16 @@ extend Lyrics with  modeling-related info :
 - phonemes network (utility field) with links to trained models of class type htkModel from project HtkModelParser
 - statesNetwork of class type StateWithDur inherited from htkModelParser (utility field for fast access to states when decoding)
 
+in init is calling the method to generate stateNetwork 
+
+self._phonemes2stateNetworkOnlyMiddle()
+        else:
+#             self._phonemes2stateNetwork()
+            self._phonemes2stateNetworkWeights()
+
+DEBUG: 
+LyricsWithModels.LyricsWithModels.printWordsAndStatesAndDurations
+
 
 Phoneme
 ------------------

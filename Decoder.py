@@ -71,6 +71,59 @@ class Decoder(object):
         
         # Path class object
         self.path = None
+    
+    def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt):
+        ''' decode path for given exatrcted features for audio
+        HERE is decided which decoding scheme (based on WITH_DURATION parameter)
+        '''
+        if self.lyricsWithModels.ONLY_MIDDLE_STATE:
+            URI_bmap = URI_recording_noExt + '.dur_bmap'
+        else:             
+            URI_bmap = URI_recording_noExt + '.bmap'
+        
+        
+        
+        self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_bmap )
+        # double check that features are in same dimension as model
+        if observationFeatures.shape[1] != numDimensions:
+            sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
+#         observationFeatures = observationFeatures[0:100,:]
+        
+        if  WITH_DURATIONS:
+            listDurations = self.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
+        
+            self.hmmNetwork.setDurForStates(listDurations) 
+        
+#         if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
+#             chiBackPointer = numpy.loadtxt(PATH_CHI)
+#             psiBackPointer = numpy.loadtxt(PATH_PSI)
+#                
+#         else:
+
+        # standard viterbi forced alignment
+        if not WITH_DURATIONS:
+            path_, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
+            self.path =  Path(None, None)
+            self.path.setPatRaw(path_)
+            
+        # duration-HMM
+        else:
+        
+            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
+        
+#             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
+#             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
+                
+            self.path =  Path(chiBackPointer, psiBackPointer)
+            print "\n"
+         # DEBUG
+#         self.path.printDurations()
+#         writeListToTextFile(self.path.pathRaw, None , '/tmp/path')
+        
+    
+    
+    
+    
         
     def _constructHmmNetwork(self,  numStates, ALPHA, withModels ):
         '''
@@ -200,6 +253,7 @@ class Decoder(object):
     def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt):
         '''
         get relative tempo (numFramesPerMinUnit) for given audio chunk
+        and
         setDuration HowManyFrames for each state in hmm
         '''
         # TODO: read from score
@@ -208,6 +262,7 @@ class Decoder(object):
 #         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
         totalScoreDur = self.lyricsWithModels.getTotalDuration()
         numFramesPerMinUnit   = float(len(observationFeatures)) / float(totalScoreDur)
+        numFramesPerMinUnit = 3.67
         logger.debug("numFramesPerMinUnit = {} for audiochunk {} ".format( numFramesPerMinUnit, URI_recording_noExt))
         numFramesDurationsList = []
         
@@ -224,55 +279,7 @@ class Decoder(object):
 
         
     
-    def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt):
-        ''' decode path for given exatrcted features for audio
-        HERE is decided which decoding scheme (based on WITH_DURATION parameter)
-        '''
-        if self.lyricsWithModels.ONLY_MIDDLE_STATE:
-            URI_bmap = URI_recording_noExt + '.dur_bmap'
-        else:             
-            URI_bmap = URI_recording_noExt + '.bmap'
-        
-        
-        
-        self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_bmap )
-        # double check that features are in same dimension as model
-        if observationFeatures.shape[1] != numDimensions:
-            sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
-#         observationFeatures = observationFeatures[0:100,:]
-        
-        if  WITH_DURATIONS:
-            listDurations = self.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
-        
-            self.hmmNetwork.setDurForStates(listDurations) 
-        
-#         if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
-#             chiBackPointer = numpy.loadtxt(PATH_CHI)
-#             psiBackPointer = numpy.loadtxt(PATH_PSI)
-#                
-#         else:
-
-        # standard viterbi forced alignment
-        if not WITH_DURATIONS:
-            path_, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
-            self.path =  Path(None, None)
-            self.path.setPatRaw(path_)
-            
-        # duration-HMM
-        else:
-        
-            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
-        
-#             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
-#             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
-                
-            self.path =  Path(chiBackPointer, psiBackPointer)
-            print "\n"
-         # DEBUG
-#         self.path.printDurations()
-#         writeListToTextFile(self.path.pathRaw, None , '/tmp/path')
-        
-    
+ 
   
     
 

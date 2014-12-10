@@ -58,3 +58,8 @@ python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitAl
 
 (on hpc)
 python AlignmentDuration/doitAllRecParams.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/
+
+
+loading persistent files: 
+extension to load observation probabilities for all states and all observations for a given file is in 
+Decoder.Decoder.decodeAudio
