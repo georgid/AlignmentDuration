@@ -46,8 +46,8 @@ class LyricsWithModels(Lyrics):
         if ONLY_MIDDLE_STATE:
             self._phonemes2stateNetworkOnlyMiddle()
         else:
-            self._phonemes2stateNetwork()
-#             self._phonemes2stateNetworkWeights()
+#             self._phonemes2stateNetwork()
+            self._phonemes2stateNetworkWeights()
 
         
 
