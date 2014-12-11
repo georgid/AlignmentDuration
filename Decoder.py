@@ -262,7 +262,7 @@ class Decoder(object):
 #         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
         totalScoreDur = self.lyricsWithModels.getTotalDuration()
         numFramesPerMinUnit   = float(len(observationFeatures)) / float(totalScoreDur)
-        numFramesPerMinUnit = 3.67
+#         numFramesPerMinUnit = 3.67
         logger.debug("numFramesPerMinUnit = {} for audiochunk {} ".format( numFramesPerMinUnit, URI_recording_noExt))
         numFramesDurationsList = []
         
