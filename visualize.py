@@ -1,6 +1,9 @@
 
 # coding: utf-8
 
+'''
+visualizes errors for different as graph. matplotlib
+'''
 # In[2]:
 
 import matplotlib.pylab as plt

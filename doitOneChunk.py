@@ -12,7 +12,8 @@ from LyricsWithModels import LyricsWithModels
 from numpy.core.arrayprint import set_printoptions
 import logging
 from Parameters import Parameters
-from Decoder import Decoder
+from Decoder import Decoder, WITH_DURATIONS
+from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWord, testT
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -58,6 +59,8 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     lyrics = loadLyrics(pathToComposition, whichSection)
     lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, params.ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
+    
+    
     decoder = Decoder(lyricsWithModels, params.ALPHA)
 #  TODO: DEBUG: do not load models
 #  decoder = Decoder(lyrics, withModels=False, numStates=86)
@@ -72,7 +75,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     detectedWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
     
 ### VISUALIZE
-#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+    decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
 #################### evaluate
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, 1)
@@ -85,7 +88,26 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
     
     
     observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
-    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt)
+    
+    if WITH_DURATIONS:
+        decoder.lyricsWithModels.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
+        
+        totalDuration = 0
+        # duration of initial silence 
+        countFirstStateFirstWord = decoder.lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
+        
+        for i in range(countFirstStateFirstWord):
+            totalDuration += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
+            
+            
+        grTruthWordList = expandlyrics2Words (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork,totalDuration,  _constructTimeStampsForWord)
+        writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + "gtDur.txt" )
+        
+#     TODO: could be done easier with this code, and check last method in Word
+#         grTruthWordList =    testT(decoder.lyricsWithModels)
+
+    
+    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
     
     detectedWordList = decoder.path2ResultWordList()
    
@@ -186,14 +208,22 @@ def doitOneChunk(argv):
     alignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
+    writeListOfListToTextFile(detectedWordList, None, '/Users/joro/Downloads/test.txt')
         
     print "mean : ", mean, "st dev: " , stDev
+    print detectedWordList 
 
     ### OPTIONAL : open in praat
-    openAlignmentInPraat2(detectedWordList,  URIrecordingNoExt + '.TextGrid', URIrecordingNoExt + '.wav')
+    # openAlignmentInPraat2(detectedWordList,  URIrecordingNoExt + '.TextGrid', URIrecordingNoExt + '.wav')
 
 
 if __name__ == '__main__':
-    doitOneChunk(sys.argv)
+        doitOneChunk(sys.argv)
+    
+#     for ALPHA in range(0.1,0.3):
+#         b  = '/Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/01_Olmaz_6_nakarat2'
+#         a = '/Users/joro/Documents/Phd/UPF//turkish-makam-lyrics-2-audio-test-data/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey/'
+#         
+#         doitOneChunk(a, 6, b,  ALPHA, False, True)
 
 

@@ -8,6 +8,7 @@ Created on Oct 21, 2014
 import sys
 import os
 import glob
+from Constants import NUMSTATES_SIL, NUMSTATES_PHONEME
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir,  os.path.pardir)) 
@@ -32,8 +33,7 @@ def getIndicesPhonemes(makamScore, whichSection ):
 #       consists of tuples startIndices and word identities
         indicesBeginWords = []
         
-        NUMSTATES_SIL = 3
-        NUMSTATES_PHONEME = 3
+
         
         # start with sil, +1 to satisfy indexing in matlab
         currBeginIndex = NUMSTATES_SIL + 1
@@ -56,7 +56,7 @@ def getIndicesPhonemes(makamScore, whichSection ):
               
             
     
-def getIndicesPhonemes_durations(makamScore, whichSection):
+def getBeginIndicesWords_Withdurations(makamScore, whichSection):
         ''' same as getIndicesPhonemes but with durations.
         Assume phoneme.Durations are calculated.  
         '''
@@ -82,7 +82,7 @@ def getIndicesPhonemes_durations(makamScore, whichSection):
             wordTotalDur = 0 
             for syllable_ in word_.syllables:
                 for phoneme_ in syllable_.phonemes:
-                    currDuration = NUMSTATES_PHONEME * phoneme_.getDuration()
+                    currDuration = NUMSTATES_PHONEME * phoneme_.getDurationInMinUnit()
                     wordTotalDur = wordTotalDur + currDuration  
             
             currBeginIndex  = currBeginIndex + wordTotalDur
@@ -103,7 +103,7 @@ def serializeIndices( makamScore, whichSection, withDurations, URI_IndicesFile):
     helper method
     '''
     if withDurations:
-           indices =  getIndicesPhonemes_durations(makamScore, whichSection)
+           indices =  getBeginIndicesWords_Withdurations(makamScore, whichSection)
              
     else:
  

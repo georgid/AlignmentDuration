@@ -352,7 +352,7 @@ and a duration backpointer
 \end_layout
 
 \begin_layout Standard
-Note that becasue in forced alignment the source state could be only the
+Note that because in forced alignment the source state could be only the
  preivous state form the network (
 \family roman
 \series medium
@@ -553,14 +553,14 @@ For
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\delta_{t}(i)=max(\{\delta(i)*,\kappa_{t}(i)\}$
+\begin_inset Formula $\delta_{t}(i)=max\{\delta(i)*,\kappa_{t}(i)\}$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-where reduced-duration delta:
+where a reduced-duration delta is defined as:
 \end_layout
 
 \begin_layout Standard
@@ -4715,6 +4715,12 @@ When is duration information useful compared to baseline with no duration:
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="10" columns="10">
 <features rotate="0" tabularvalignment="middle">
@@ -6545,6 +6551,23 @@ Kimseye
 
 \end_layout
 
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Duration system wiht best parameters compared with baseline
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 
 \color red
@@ -6579,8 +6602,9 @@ The inclusion of duration leads to slight improvement only for one-two songs.
 \end_layout
 
 \begin_layout Itemize
-when using all 3states these two songs are even slightly better, at a different
- level of alpha = 0.91 (but the others are significantly worse).
+when using all 3states (compared to one state) these two songs are even
+ slightly better, at a different level of alpha = 0.91 (but the others are
+ significantly worse).
  Then At alpha = .97 the overall results are best and comparable to ONLY_middle
  state.
 \end_layout

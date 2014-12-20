@@ -1,6 +1,7 @@
  Design of Classes 
 
 
+SCORE (LYRICS + DURATIONS) MODELING package:
 
 MakamScore
 ------------ 
@@ -11,14 +12,20 @@ each Lyrics item  is of object type Lyrics
 
 Lyrics
 -------
- is a holder of a list of words: each Word in turn contains a list of object type Syllable
+is a holder of a list of words: 
+fields: 
+-listWords
+-phonemesNetwork
+
+each Word in turn contains a list of object type Syllable
 Each syllable in turn contains a list of Phoneme objects
+
 
 
 LyricsWithModels
 ---------------------
 extend Lyrics with  modeling-related info : 
-- phonemes network (utility field) with links to trained models of class type htkModel from project HtkModelParser
+- phonemes network (inherited). Adds links to trained models of class type htkModel from project HtkModelParser
 - statesNetwork of class type StateWithDur inherited from htkModelParser (utility field for fast access to states when decoding)
 
 in init is calling the method to generate stateNetwork 
@@ -29,8 +36,7 @@ self._phonemes2stateNetworkOnlyMiddle()
             self._phonemes2stateNetworkWeights()
 
 DEBUG: 
-LyricsWithModels.LyricsWithModels.printWordsAndStatesAndDurations
-
+LyricsWithModels.LyricsWithModels.printWordsAndStatesAndDurations - can be used after decoding to compare ground truth with result 
 
 Phoneme
 ------------------
@@ -38,6 +44,17 @@ fields:
 -duration
 -htkModel
 
+LyricsParsing
+======================
+helper class:
+methods for parsing/looping in Lyrics.wordList and
+LyricsWithModels.statesNetwork
+
+
+--------------------------------------------------------------------
+-----------------------------------------------------------------------
+---------------------------------------------------------------------
+package of DECODING LOGIC 
 
 Decoder
 ---------------

@@ -89,7 +89,7 @@ class Syllable():
                 # sanity check
                 if vowelDuration <= 0:
                     sys.exit("phoneme {} of syllable {} has duration of zero or less units. ".format(phoneme.ID, self.text)  )
-                self.phonemes[self.getPositionVowel()].setDuration(vowelDuration)
+                self.phonemes[self.getPositionVowel()].setDurationInMinUnit(vowelDuration)
                 
         def __str__(self):
                 syllalbeTest = self.text.encode('utf-8','replace')

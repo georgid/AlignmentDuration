@@ -5,6 +5,7 @@ Created on Oct 8, 2014
 '''
 from Phonetizer import Phonetizer
 import sys
+import numpy
 class Phoneme:
     def __init__(self, phonemeID):
         self.ID = phonemeID;
@@ -14,14 +15,24 @@ class Phoneme:
     def setNumFirstState(self, numFirstState):
             self.numFirstState = numFirstState
         
-    def setDuration(self, duration):
+    def setDurationInMinUnit(self, duration):
         self.duration = duration
         
-    def getDuration(self):
+    def getDurationInMinUnit(self):
+        '''
+        in MIN_UNIT
+        '''
         return self.duration
     
     def setHTKModel(self, hmmModel):
         self.htkModel = hmmModel
+    
+#     def getStates(self):
+#         try: self.htkModel
+#         except NameError:
+#             sys.exit(" phoneme {} has no model assigned ", self.ID)
+#         
+#         return self.htkModel.states
         
     def getNumStates(self):
         try: self.htkModel
@@ -47,5 +58,20 @@ class Phoneme:
         self.ID == Phonetizer.METUlookupTable.get('I') ):
             return True
         return False
+    
+    def getTransMatrix(self):
+        '''
+        read the trans matrix from model. 
+        3x3 or 1x1 matrix for emitting states only as numpy array
+        '''
+        
+        try: self.htkModel
+        except NameError:
+            sys.exit("  phoneme {} has no model assigned ", self.ID)
+        
+        vector_ = self.htkModel.tmat.vector
+        currTransMat = numpy.reshape(vector_ ,(len(vector_ )**0.5, len(vector_ )**0.5))
+    
+        return currTransMat  
     
         

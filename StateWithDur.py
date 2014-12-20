@@ -26,10 +26,20 @@ class StateWithDur(State):
         '''
         State.__init__(self, mixtures)
                                 
-    def setDuration(self, duration):
+    def setDurationInMinUnit(self, duration):
+        ''' in MinUNIT'''
+        
         self.duration = duration
     
     def setDurationInFrames(self, durationInFrames):
         self.durationInFrames = durationInFrames
+        
+    def getDurationInFrames(self):
+        
+        try: self.durationInFrames
+        except NameError:
+            sys.exit("no durationInframes assigned to state {} has no model assigned ", self.ID)
+            
+        return self.durationInFrames
         
         

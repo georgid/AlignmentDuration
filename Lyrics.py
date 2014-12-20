@@ -31,7 +31,7 @@ class Lyrics(object):
         ''' list of words (Word []) to list of phonemes (Phoneme [])
         '''
       
-        phonemeSil = Phoneme("sil"); phonemeSil.setDuration('1')
+        phonemeSil = Phoneme("sil"); phonemeSil.setDurationInMinUnit('1')
         self.phonemesNetwork.append(phonemeSil)
         
         # start word after sil phoneme
@@ -46,7 +46,7 @@ class Lyrics(object):
             # update index
 #             currNumPhoneme += word_.getNumPhonemes()
         
-        phonemeSil2 = Phoneme("sil"); phonemeSil2.setDuration('1')
+        phonemeSil2 = Phoneme("sil"); phonemeSil2.setDurationInMinUnit('1')
         self.phonemesNetwork.append(phonemeSil2)
     
     def _calcPhonemeDurs(self):

@@ -6,6 +6,8 @@ Created on Oct 27, 2014
 import os
 import sys
 import logging
+from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWordDetected
+from Constants import numDimensions, numMixtures
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -16,13 +18,6 @@ from Utilz import writeListOfListToTextFile, writeListToTextFile
 
 
 import numpy
-
-# TODO: read from models
-numMixtures = 9
-numDimensions = 25
-
-# TODO: read from feat extraction parameters
-NUM_FRAMES_PERSECOND = 100.0
 
 # if false, use transition probabilities from htkModels
 WITH_DURATIONS= True
@@ -72,7 +67,7 @@ class Decoder(object):
         # Path class object
         self.path = None
     
-    def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt):
+    def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt, listDurations):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme (based on WITH_DURATION parameter)
         '''
@@ -84,15 +79,18 @@ class Decoder(object):
         
         
         self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_bmap )
+        
         # double check that features are in same dimension as model
         if observationFeatures.shape[1] != numDimensions:
             sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
 #         observationFeatures = observationFeatures[0:100,:]
         
         if  WITH_DURATIONS:
-            listDurations = self.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
         
-            self.hmmNetwork.setDurForStates(listDurations) 
+            transMatrix = self.lyricsWithModels.phonemesNetwork[0].getTransMatrix()
+            self.hmmNetwork.setWaitProbSilState(transMatrix[2,2])
+            
+            self.hmmNetwork.setDurForStates(listDurations)
         
 #         if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
 #             chiBackPointer = numpy.loadtxt(PATH_CHI)
@@ -177,7 +175,7 @@ class Decoder(object):
             currNumStates =   phoneme.htkModel.tmat.numStates - 2
             
     #         disregard 1st and last states from transMat because they are the non-emitting states
-            currTransMat = getTransMatrixForPhoneme(phoneme)
+            currTransMat = phoneme.getTransMatrix()
             
             transMAtrix[counterOverallStateNum : counterOverallStateNum + currNumStates, counterOverallStateNum : counterOverallStateNum + currNumStates ] = currTransMat[1:-1,1:-1]
            
@@ -212,15 +210,15 @@ class Decoder(object):
         
         weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
         
-        # start probs : allow to start only at first state
+        # start probs :
         pi = numpy.zeros((numStates), dtype=numpy.double)
         
         # avoid log(0) 
-#         pi.fill(MINIMAL_PROB)
         pi.fill(sys.float_info.min)
-        
+#          allow to start only at first state
         pi[0] = 1
         
+        # equal prob. for states to start
 #         pi = numpy.ones( (numStates)) *(1.0/numStates)
         
         if not withModels:
@@ -250,36 +248,9 @@ class Decoder(object):
       
         
         
-    def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt):
-        '''
-        get relative tempo (numFramesPerMinUnit) for given audio chunk
-        and
-        setDuration HowManyFrames for each state in hmm
-        '''
-        # TODO: read from score
-#         self.bpm = 60
-#         durationMinUnit = (1. / (self.bpm/60) ) * (1. / MINIMAL_DURATION_UNIT) 
-#         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
-        totalScoreDur = self.lyricsWithModels.getTotalDuration()
-        numFramesPerMinUnit   = float(len(observationFeatures)) / float(totalScoreDur)
-#         numFramesPerMinUnit = 3.67
-        logger.debug("numFramesPerMinUnit = {} for audiochunk {} ".format( numFramesPerMinUnit, URI_recording_noExt))
-        numFramesDurationsList = []
-        
-        for  i, stateWithDur_ in enumerate (self.lyricsWithModels.statesNetwork):
-            # numFrames per phoneme
-            numFramesPerState = round(float(stateWithDur_.duration) * numFramesPerMinUnit)
-            numFramesDurationsList.append(numFramesPerState)
-            stateWithDur_.setDurationInFrames(numFramesPerState)
-            
-        return numFramesDurationsList
-        
-        
-
 
         
-    
- 
+        
   
     
 
@@ -302,48 +273,14 @@ class Decoder(object):
             # WORKAROUND: assume missed states start at time 0
             for i in range(howManyMissedStates):
                 self.path.indicesStateStarts[:0] = [0]
-            
-        detectedWordList = []
+        dummy= 0
+        detectedWordList = expandlyrics2Words (self.lyricsWithModels, self.path, dummy, _constructTimeStampsForWordDetected)
         
-        for word_ in self.lyricsWithModels.listWords:
-            countFirstState = word_.syllables[0].phonemes[0].numFirstState
-
-            lastPhoneme = word_.syllables[-1].phonemes[-1]
-            if lastPhoneme.ID != 'sp':
-                sys.exit('In Decode. \n last state for word {} is not sp. Sorry - not implemented.'.format(word_.text))
-            
-            countLastState = lastPhoneme.numFirstState
-
-            detectedWord = self._constructTimeStampsForWord( word_, countFirstState, countLastState)
-           
-            detectedWordList.append( detectedWord)
-        return detectedWordList
+        return detectedWordList 
+        
     
     
-    def _constructTimeStampsForWord(self,  word_, countFirstState, countLastState):
-        '''
-        helper method
-        '''
-        currWordBeginFrame = self.path.indicesStateStarts[countFirstState]
-        currWordEndFrame = self.path.indicesStateStarts[countLastState]
-    #             # debug:
-    #             print self.pathRaw[currWordBeginFrame]
-    # timestamp:
-        startTs = float(currWordBeginFrame) / NUM_FRAMES_PERSECOND
-        endTs = float(currWordEndFrame) / NUM_FRAMES_PERSECOND
-        
-        detectedWord = [startTs, endTs, word_.text]
-        print detectedWord
-        
-        return detectedWord
-    
-def getTransMatrixForPhoneme( phoneme):
-    '''
-    read the trans matrix from model. 
-    3x3 or 1x1 matrix for emitting states only as numpy array
-    '''
-    vector_ = phoneme.htkModel.tmat.vector
-    currTransMat = numpy.reshape(vector_ ,(len(vector_ )**0.5, len(vector_ )**0.5))
 
-    return currTransMat
+    
+
         

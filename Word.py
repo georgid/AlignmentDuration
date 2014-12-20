@@ -6,6 +6,7 @@ Created on Oct 8, 2014
 
 from Syllable import Syllable
 from Phoneme import Phoneme
+from StateWithDur import StateWithDur
 
 class Word():
         ''' just a list of syllables. order  matters '''
@@ -20,8 +21,8 @@ class Word():
 #             # consequtive number of first phoneme from phonemeNetwork in Lyrics context
 #             self.numFirstPhoneme = -1
 #             
-#         def setNumFirstPhoneme(self, numFirstPhoneme):
-#             self.numFirstPhoneme = numFirstPhoneme
+        def setNumFirstPhoneme(self, numFirstPhoneme):
+            self.numFirstPhoneme = numFirstPhoneme
 
            
         def __str__(self):
@@ -32,6 +33,26 @@ class Word():
             for syllable in self.syllables:
                  numPhonemes += syllable.getNumPhonemes()
             return numPhonemes
+        
+        
+        def getDurationForWord(self, statesNetwork):
+            '''
+            @deprecated
+            '''
+            
+            durationNumFrames = 0
+            for syllable_ in self.syllables:
+                 for phoneme_ in syllable_:
+                     
+                     indexFirstSt = phoneme_.numFirstState
+                     
+                     for whichState in phoneme_.getNumStates():
+                         stateDurInFrames = statesNetwork[indexFirstSt  + whichState].getDurationInFrames()
+                         durationNumFrames += stateDurInFrames
+ 
+                         
+
+
             
             
             
