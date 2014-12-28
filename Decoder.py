@@ -41,8 +41,8 @@ if pathHMM not in sys.path:
 from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
-logger = logging.getLogger("decoder")
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 class Decoder(object):
     '''
@@ -108,7 +108,7 @@ class Decoder(object):
         else:
         
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
-        
+            
 #             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
 #             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
                 

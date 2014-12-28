@@ -10,10 +10,10 @@ import numpy
 import sys
 from LyricsWithModels import LyricsWithModels
 from numpy.core.arrayprint import set_printoptions
-import logging
 from Parameters import Parameters
-from Decoder import Decoder, WITH_DURATIONS
+from Decoder import Decoder, WITH_DURATIONS, logger
 from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWord, testT
+from Constants import NUM_FRAMES_PERSECOND
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -32,6 +32,7 @@ from htk_converter import HtkConverter
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError
+from TextGrid_Parsing import TextGrid2WordList
 from PraatVisualiser import openAlignmentInPraat2
 
 # TODO: read mfccs with matlab htk_read
@@ -47,7 +48,7 @@ MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
 ANNOTATION_EXT = '.TextGrid'    
 
-
+EVALLEVEL = 1
 
 
 
@@ -78,7 +79,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
 #################### evaluate
-    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, 1)
+    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, EVALLEVEL)
     return alignmentErrors, detectedWordList
 
 
@@ -92,15 +93,26 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
     if WITH_DURATIONS:
         decoder.lyricsWithModels.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
         
-        totalDuration = 0
         # duration of initial silence 
-        countFirstStateFirstWord = decoder.lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
+#         finalSilFram = 0
+#         countFirstStateFirstWord = decoder.lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
+#         
+#         for i in range(countFirstStateFirstWord):
+#             finalSilFram += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
+#         # TODO: here read EndTs sil from TextGrid. see _evalAlignmentError(URIrecordingNoExt + '.TextGrid'
         
-        for i in range(countFirstStateFirstWord):
-            totalDuration += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
+        annotationURI = URI_recording_noExt + '.TextGrid'
+        annotationTokenListA = TextGrid2WordList(annotationURI, EVALLEVEL)     
+    
+        annoTsAndToken =  annotationTokenListA[0]
+        if annoTsAndToken[2] != "" and not(annoTsAndToken[2].isspace()): # skip empty phrases
+                logger.warn("annotaiton {} starts with non-sil token ".format(annotationURI))
+                finalSilFram =  float(annoTsAndToken[0]) * NUM_FRAMES_PERSECOND
+        else:
+            finalSilFram = float(annoTsAndToken[1]) * NUM_FRAMES_PERSECOND
+        
             
-            
-        grTruthWordList = expandlyrics2Words (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork,totalDuration,  _constructTimeStampsForWord)
+        grTruthWordList = expandlyrics2Words (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
         writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + "gtDur.txt" )
         
 #     TODO: could be done easier with this code, and check last method in Word
@@ -110,8 +122,9 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
     
     detectedWordList = decoder.path2ResultWordList()
-   
-
+    
+    
+    
     return detectedWordList
 
 

@@ -40,8 +40,6 @@ def _constructTimeStampsForWord(  word_, countFirstState, countLastState, states
         helper method. timestamps for word based on durations read from score 
         '''
         
-       
-                         
         currWordBeginFrame = totalDuration
         for currState in range(countFirstState, countLastState + 1):                 
             totalDuration += statesNetwork[currState].getDurationInFrames()
