@@ -7,9 +7,10 @@ Created on Dec 8, 2014
 
 import sys
 from doitOneRecording import doitOneRecording
-import logging
 from datetime import datetime
 import os
+from Decoder import logger
+from Utilz import getMeanAndStDevError
 
 def doit(argv):
     if len(argv) != 5 and len(argv) != 6:
@@ -46,24 +47,24 @@ def doit(argv):
     filename = os.path.join(os.getcwdu(),   'alignError_' + currTime + '.out') 
     outputFileHandle = open(filename, 'a')
     
-    logging.info("\n Output file is: " + filename )
-    print "\n Output file is: ",  filename
+    logger.info("\n Output file is: " + filename )
     
     
     outputFileHandle.write('\n'  + str(ALPHA) )
-    totalMean  = 0.0
+    totalErrors  = [] 
     for i in range(len(scores)):
 
         URI_score = pathToScores + scores[i]
         URI_testFile = path_testFile + subpaths[i]
         pattern  = patterns[i]
         
-        logging.info("doing command ...\n doitOneRecording  " + URI_score + " " +  URI_testFile  + " " + pattern)
-        mean, stDev  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, ALPHA, ONLY_MIDDLE_STATE, usePersistentFiles])
+        logger.info("doing command ...\n doitOneRecording  " + URI_score + " " +  URI_testFile  + " " + pattern)
+        mean, stDev, errorsForRecording  = doitOneRecording([ 'dummy', URI_score, URI_testFile, pattern, ALPHA, ONLY_MIDDLE_STATE, usePersistentFiles])
+        totalErrors.extend(errorsForRecording)
         
         infoA = "( mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
         
-        logging.info(infoA)
+        logger.info(infoA)
         print infoA
         
         listLine = '\n' + subpaths[i] + " " + pattern + " " + str(mean) +   " " + str(stDev) 
@@ -73,11 +74,11 @@ def doit(argv):
         outputFileHandle.write(listLine)
         outputFileHandle.close()
         
-        totalMean  += mean 
-    
-    result = '\n' + 'total mean: ' + str(totalMean/len(scores)) + '\n'
+        
+    mean, stDev, median  = getMeanAndStDevError(totalErrors)
+    result = '\n' + 'total mean: ' + str(mean) + '\n'
     print result
-    logging.info( result  )
+    logger.info( result  )
     
     if outputFileHandle.closed:
         outputFileHandle = open(filename, 'a')

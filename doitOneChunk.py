@@ -33,7 +33,7 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError
 from TextGrid_Parsing import TextGrid2WordList
-from PraatVisualiser import openAlignmentInPraat2
+from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat
 
 # TODO: read mfccs with matlab htk_read
 # sys.path.append('/Users/joro/Downloads/python-matlab-bridge-master')
@@ -73,14 +73,14 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     else: 
         sys.exit("usePersistentFiles can be only True or False") 
         
-    detectedWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
+    detectedWordList, grTruthWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
     
 ### VISUALIZE
-    decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
 #################### evaluate
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, EVALLEVEL)
-    return alignmentErrors, detectedWordList
+    return alignmentErrors, detectedWordList, grTruthWordList
 
 
 
@@ -93,39 +93,17 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
     if WITH_DURATIONS:
         decoder.lyricsWithModels.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
         
-        # duration of initial silence 
-#         finalSilFram = 0
-#         countFirstStateFirstWord = decoder.lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
-#         
-#         for i in range(countFirstStateFirstWord):
-#             finalSilFram += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
-#         # TODO: here read EndTs sil from TextGrid. see _evalAlignmentError(URIrecordingNoExt + '.TextGrid'
-        
-        annotationURI = URI_recording_noExt + '.TextGrid'
-        annotationTokenListA = TextGrid2WordList(annotationURI, EVALLEVEL)     
-    
-        annoTsAndToken =  annotationTokenListA[0]
-        if annoTsAndToken[2] != "" and not(annoTsAndToken[2].isspace()): # skip empty phrases
-                logger.warn("annotaiton {} starts with non-sil token ".format(annotationURI))
-                finalSilFram =  float(annoTsAndToken[0]) * NUM_FRAMES_PERSECOND
-        else:
-            finalSilFram = float(annoTsAndToken[1]) * NUM_FRAMES_PERSECOND
-        
-            
-        grTruthWordList = expandlyrics2Words (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
-        writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + "gtDur.txt" )
-        
-#     TODO: could be done easier with this code, and check last method in Word
-#         grTruthWordList =    testT(decoder.lyricsWithModels)
 
+
+    grTruthWordList  = getGroundTruthDurations(URI_recording_noExt, decoder)
     
+    detectedWordList = []
     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
-    
     detectedWordList = decoder.path2ResultWordList()
+     
     
     
-    
-    return detectedWordList
+    return detectedWordList, grTruthWordList
 
 
 
@@ -144,8 +122,34 @@ def loadLyrics(pathToComposition, whichSection):
     return lyrics
     
 
+def getGroundTruthDurations(URI_recording_noExt, decoder):
+        
+                # duration of initial silence 
+#         finalSilFram = 0
+#         countFirstStateFirstWord = decoder.lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
+#         
+#         for i in range(countFirstStateFirstWord):
+#             finalSilFram += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
 
-     
+        
+        annotationURI = URI_recording_noExt + '.TextGrid'
+        annotationTokenListA = TextGrid2WordList(annotationURI, EVALLEVEL)     
+    
+        annoTsAndToken =  annotationTokenListA[0]
+        if annoTsAndToken[2] != "" and not(annoTsAndToken[2].isspace()): # skip empty phrases
+                logger.warn("annotaiton {} starts with non-sil token ".format(annotationURI))
+                finalSilFram =  float(annoTsAndToken[0]) * NUM_FRAMES_PERSECOND
+        else:
+            finalSilFram = float(annoTsAndToken[1]) * NUM_FRAMES_PERSECOND
+        
+            
+        grTruthWordList = expandlyrics2Words (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
+        writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + "gtDur.txt" )
+        
+#     TODO: could be done easier with this code, and check last method in Word
+#         grTruthWordList =    testT(decoder.lyricsWithModels)
+        return grTruthWordList
+    
 
 def loadMFCCsWithMatlab(URI_recording_noExt):
     print 'calling matlab'
@@ -218,16 +222,30 @@ def doitOneChunk(argv):
     htkParser = HtkConverter()
     htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    alignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
+    alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
     writeListOfListToTextFile(detectedWordList, None, '/Users/joro/Downloads/test.txt')
         
-    print "mean : ", mean, "st dev: " , stDev
-    print detectedWordList 
+    logger.info("mean : {} st dev: {} ".format( mean,stDev))
 
-    ### OPTIONAL : open in praat
-    # openAlignmentInPraat2(detectedWordList,  URIrecordingNoExt + '.TextGrid', URIrecordingNoExt + '.wav')
+
+    ### OPTIONAL############# : PRAAT
+    pathToAudioFile = URIrecordingNoExt + '.wav'
+    URIGrTruth =  URIrecordingNoExt + '.TextGrid'
+    
+    tierNameWordAligned = '"wordAligned"'
+    tierNamePhonemeAligned =  '"dummy1"'
+    
+    # detected
+    alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGrid(detectedWordList,  URIGrTruth, pathToAudioFile, tierNameWordAligned, tierNamePhonemeAligned )
+    
+    # gr truth
+    addAlignmentResultToTextGrid(grTruthDurationWordList,  URIGrTruth, pathToAudioFile, '"grTruthDuration"', '"dummy2"')
+    
+    # open both
+    openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
+    
 
 
 if __name__ == '__main__':

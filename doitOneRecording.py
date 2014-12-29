@@ -7,7 +7,6 @@ Created on Nov 28, 2014
 
 import sys
 from Parameters import Parameters
-print 'SYS PATH is: ', sys.path
 import os
 import glob
 import logging
@@ -77,7 +76,7 @@ def doitOneRecording(argv):
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logging.info("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection  = int(URIrecordingNoExt.split("_")[-2])
-            currAlignmentErrors, detectedWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
+            currAlignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
             totalErrors.extend(currAlignmentErrors)
           
         
@@ -85,7 +84,7 @@ def doitOneRecording(argv):
     infoA = "( mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
 
     logging.info(infoA)
-    return mean, stDev
+    return mean, stDev, totalErrors
 
 
 
