@@ -10,7 +10,8 @@ from Parameters import Parameters
 import os
 import glob
 import logging
-from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT
+from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT,\
+    visualiseInPraat
 from Utilz import getMeanAndStDevError
 
 
@@ -78,6 +79,9 @@ def doitOneRecording(argv):
             whichSection  = int(URIrecordingNoExt.split("_")[-2])
             currAlignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
             totalErrors.extend(currAlignmentErrors)
+            
+            visualiseInPraat(URIrecordingNoExt, detectedWordList, grTruthDurationWordList)
+
           
         
     mean, stDev, median = getMeanAndStDevError(totalErrors)

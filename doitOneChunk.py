@@ -48,7 +48,7 @@ MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
 ANNOTATION_EXT = '.TextGrid'    
 
-EVALLEVEL = 1
+EVALLEVEL = 2
 
 
 
@@ -76,7 +76,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     detectedWordList, grTruthWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
     
 ### VISUALIZE
-#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+    decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
 #################### evaluate
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, EVALLEVEL)
@@ -169,7 +169,7 @@ def loadMFCCs(URI_recording_noExt):
     if not os.path.exists(URI_recording_mfc_txt):
 #       loadMFCCsWithMatlab(URI_recording_noExt)
         sys.exit('file {} not found. extract features with data.m in Matlab'.format(URI_recording_mfc_txt))
-    
+    logger.debug("reading MFCCs from {} ...".format(URI_recording_mfc_txt))
     mfccsFeatrues = numpy.loadtxt(URI_recording_mfc_txt , delimiter=','  ) 
     
     return mfccsFeatrues
@@ -183,6 +183,20 @@ def loadMFCCs(URI_recording_noExt):
 
 
 
+
+def visualiseInPraat(URIrecordingNoExt, detectedWordList, grTruthDurationWordList):
+    ### OPTIONAL############# : PRAAT
+    pathToAudioFile = URIrecordingNoExt + '.wav'
+    URIGrTruth = URIrecordingNoExt + '.TextGrid'
+    tierNameWordAligned = '"wordAligned"'
+    tierNamePhonemeAligned = '"dummy1"'
+# detected
+    alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGrid(detectedWordList, URIGrTruth, pathToAudioFile, tierNameWordAligned, tierNamePhonemeAligned)
+# gr truth
+    addAlignmentResultToTextGrid(grTruthDurationWordList, URIGrTruth, pathToAudioFile, '"grTruthDuration"', '"dummy2"')
+# open both
+    openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
+
 def doitOneChunk(argv):
     
     if len(argv) != 6 and  len(argv) != 7 :
@@ -190,21 +204,10 @@ def doitOneChunk(argv):
             sys.exit();
     
     
-    URIrecordingNoExt = '/Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/goekhan/02_Gel_3_zemin'
-    URIrecordingNoExt = '/Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL//goekhan/02_Kimseye_5_nakarat'
     URIrecordingNoExt = argv[3]
-
-            
-    pathToComposition = '/Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/'
-    pathToComposition = '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi'
     pathToComposition = argv[1]
-    
-    whichSection = 5
     whichSection = int(argv[2])
-    
     ALPHA = float(argv[4])
-    
-    
     ONLY_MIDDLE_STATE = argv[5]
     
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
@@ -213,7 +216,6 @@ def doitOneChunk(argv):
     if len(argv) == 7:
         usePersistentFiles =  argv[6]
     
-   
     
     set_printoptions(threshold='nan') 
     
@@ -230,21 +232,7 @@ def doitOneChunk(argv):
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
 
 
-    ### OPTIONAL############# : PRAAT
-    pathToAudioFile = URIrecordingNoExt + '.wav'
-    URIGrTruth =  URIrecordingNoExt + '.TextGrid'
-    
-    tierNameWordAligned = '"wordAligned"'
-    tierNamePhonemeAligned =  '"dummy1"'
-    
-    # detected
-    alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGrid(detectedWordList,  URIGrTruth, pathToAudioFile, tierNameWordAligned, tierNamePhonemeAligned )
-    
-    # gr truth
-    addAlignmentResultToTextGrid(grTruthDurationWordList,  URIGrTruth, pathToAudioFile, '"grTruthDuration"', '"dummy2"')
-    
-    # open both
-    openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
+    visualiseInPraat(URIrecordingNoExt, detectedWordList, grTruthDurationWordList)
     
 
 

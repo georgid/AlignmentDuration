@@ -1,6 +1,6 @@
 '''
 Created on Dec 16, 2014
-
+Utility class: logic for parsing statesNetwork, phoeneNetwork  
 @author: joro
 '''
 import sys
@@ -8,10 +8,11 @@ from Constants import NUM_FRAMES_PERSECOND, NUMSTATES_SIL, NUMSTATES_PHONEME
 
 def expandlyrics2Words (lyricsWithModels, path, totalDuration, func):
     '''
-    path stands for path or statesNetwork
+    expand @path to words and corresponding timestamps
+    @param path stands for path or statesNetwork
     '''
 
-    detectedWordList = []
+    wordList = []
 
 
        
@@ -24,10 +25,10 @@ def expandlyrics2Words (lyricsWithModels, path, totalDuration, func):
         
         countLastState = lastPhoneme.numFirstState
 
-        detectedWord, totalDuration = func( word_, countFirstState, countLastState, path, totalDuration)
+        currWord, totalDuration = func( word_, countFirstState, countLastState, path, totalDuration)
        
-        detectedWordList.append( detectedWord)
-    return detectedWordList
+        wordList.append( currWord)
+    return wordList
 
 
 
@@ -75,6 +76,9 @@ def _constructTimeStampsForWordDetected(  word_, countFirstState, countLastState
         
     
 def testT(lyricsWithModels):
+        '''
+        parsing of words template function 
+        '''
     
         indicesBeginWords = []
         

@@ -37,6 +37,8 @@ self._phonemes2stateNetworkOnlyMiddle()
 
 DEBUG: 
 LyricsWithModels.LyricsWithModels.printWordsAndStatesAndDurations - can be used after decoding to compare ground truth with result 
+ - called from doitOneChunk.alignOneChunk()
+
 
 Phoneme
 ------------------
