@@ -33,7 +33,7 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError
 from TextGrid_Parsing import TextGrid2WordList
-from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat
+from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat, addAlignmentResultToTextGridFIle
 
 # TODO: read mfccs with matlab htk_read
 # sys.path.append('/Users/joro/Downloads/python-matlab-bridge-master')
@@ -51,6 +51,45 @@ ANNOTATION_EXT = '.TextGrid'
 EVALLEVEL = 2
 
 
+
+
+def doitOneChunk(argv):
+    
+    if len(argv) != 6 and  len(argv) != 7 :
+            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <ALPHA> <ONLY_MIDDLE_STATE> <usePersistentFiles=True>".format(argv[0]) )
+            sys.exit();
+    
+    
+    URIrecordingNoExt = argv[3]
+    pathToComposition = argv[1]
+    whichSection = int(argv[2])
+    ALPHA = float(argv[4])
+    ONLY_MIDDLE_STATE = argv[5]
+    
+    params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
+    
+    usePersistentFiles = 'True'
+    if len(argv) == 7:
+        usePersistentFiles =  argv[6]
+    
+    
+    set_printoptions(threshold='nan') 
+    
+    ################## load lyrics and models 
+    
+    htkParser = HtkConverter()
+    htkParser.load(MODEL_URI, HMM_LIST_URI)
+    
+    alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
+        
+    mean, stDev, median = getMeanAndStDevError(alignmentErrors)
+#     writeListOfListToTextFile(detectedWordList, None, '/Users/joro/Downloads/test.txt')
+        
+    logger.info("mean : {} st dev: {} ".format( mean,stDev))
+
+
+    visualiseInPraat(URIrecordingNoExt, detectedWordList, False, grTruthDurationWordList)
+    
 
 
 def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles):
@@ -85,8 +124,12 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
 
 
 
+
 def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
-    
+    '''
+    decoder : 
+    WITH_DURAITON flag triggered here
+    '''    
     
     observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
     
@@ -151,6 +194,7 @@ def getGroundTruthDurations(URI_recording_noExt, decoder):
         return grTruthWordList
     
 
+
 def loadMFCCsWithMatlab(URI_recording_noExt):
     print 'calling matlab'
 #     mlab = Matlab(matlab='/Applications/MATLAB_R2009b.app/bin/matlab')
@@ -177,63 +221,27 @@ def loadMFCCs(URI_recording_noExt):
 
 
 
-
-
-
-
-
-
-
-def visualiseInPraat(URIrecordingNoExt, detectedWordList, grTruthDurationWordList):
+def visualiseInPraat(URIrecordingNoExt, detectedWordList, isDetectionInFile, grTruthDurationWordList=[]):
     ### OPTIONAL############# : PRAAT
     pathToAudioFile = URIrecordingNoExt + '.wav'
     URIGrTruth = URIrecordingNoExt + '.TextGrid'
-    tierNameWordAligned = '"wordAligned"'
+    tierNameWordAligned = '"wordDurationAligned"'
     tierNamePhonemeAligned = '"dummy1"'
-# detected
-    alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGrid(detectedWordList, URIGrTruth, pathToAudioFile, tierNameWordAligned, tierNamePhonemeAligned)
 # gr truth
-    addAlignmentResultToTextGrid(grTruthDurationWordList, URIGrTruth, pathToAudioFile, '"grTruthDuration"', '"dummy2"')
+    if grTruthDurationWordList != None and grTruthDurationWordList != []:
+        addAlignmentResultToTextGrid(grTruthDurationWordList, URIGrTruth, pathToAudioFile, '"grTruthDuration"', '"dummy2"')
+
+# detected
+    if isDetectionInFile and os.path.isfile(detectedWordList):
+        alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGridFIle(detectedWordList, URIGrTruth, tierNameWordAligned, tierNamePhonemeAligned)
+    else:
+        alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGrid(detectedWordList, URIGrTruth, pathToAudioFile, tierNameWordAligned, tierNamePhonemeAligned)
+
+
 # open both
     openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
 
-def doitOneChunk(argv):
-    
-    if len(argv) != 6 and  len(argv) != 7 :
-            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <ALPHA> <ONLY_MIDDLE_STATE> <usePersistentFiles=True>".format(argv[0]) )
-            sys.exit();
-    
-    
-    URIrecordingNoExt = argv[3]
-    pathToComposition = argv[1]
-    whichSection = int(argv[2])
-    ALPHA = float(argv[4])
-    ONLY_MIDDLE_STATE = argv[5]
-    
-    params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
-    
-    usePersistentFiles = 'True'
-    if len(argv) == 7:
-        usePersistentFiles =  argv[6]
-    
-    
-    set_printoptions(threshold='nan') 
-    
-    ################## load lyrics and models 
-    
-    htkParser = HtkConverter()
-    htkParser.load(MODEL_URI, HMM_LIST_URI)
-    
-    alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
-        
-    mean, stDev, median = getMeanAndStDevError(alignmentErrors)
-    writeListOfListToTextFile(detectedWordList, None, '/Users/joro/Downloads/test.txt')
-        
-    logger.info("mean : {} st dev: {} ".format( mean,stDev))
 
-
-    visualiseInPraat(URIrecordingNoExt, detectedWordList, grTruthDurationWordList)
-    
 
 
 if __name__ == '__main__':

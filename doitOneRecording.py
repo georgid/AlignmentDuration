@@ -30,7 +30,22 @@ sys.path.append(pathUtils )
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 
+def getSectionNumberFromName(URIrecordingNoExt):
 
+    underScoreTokens  = URIrecordingNoExt.split("_")
+    index = -1
+    while (-1 * index) <= len(underScoreTokens):
+        token = str(underScoreTokens[index])
+        if token.startswith('meyan') or token.startswith('zemin') or \
+        token.startswith('nakarat'):
+            break
+        index -=1
+    
+    try:
+        whichSection = underScoreTokens[index-1]
+    except Exception:
+        sys.exit("please put the number of section before its name: e.g. *_2_meyan_* in the file name ")
+    return int(whichSection)
 
 def doitOneRecording(argv):
     '''
@@ -76,11 +91,12 @@ def doitOneRecording(argv):
     for  URI_annotation in listAnnoFiles :
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logging.info("PROCESSING {}".format(URIrecordingNoExt) )
-            whichSection  = int(URIrecordingNoExt.split("_")[-2])
+            whichSection = getSectionNumberFromName(URIrecordingNoExt) 
+            
             currAlignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
             totalErrors.extend(currAlignmentErrors)
             
-            visualiseInPraat(URIrecordingNoExt, detectedWordList, grTruthDurationWordList)
+            visualiseInPraat(URIrecordingNoExt, detectedWordList, False, grTruthDurationWordList)
 
           
         
