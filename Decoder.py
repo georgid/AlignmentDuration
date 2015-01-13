@@ -62,10 +62,10 @@ class Decoder(object):
         of class HMM
         '''
         self.hmmNetwork = []
-        self.hmmNetwork.logger.setLevel(loggingLevel)
                 
 
         self._constructHmmNetwork(numStates, float(ALPHA), withModels)
+        self.hmmNetwork.logger.setLevel(loggingLevel)
         
         # Path class object
         self.path = None
