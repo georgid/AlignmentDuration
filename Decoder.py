@@ -42,7 +42,9 @@ from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+loggingLevel = logging.INFO
+
+logger.setLevel(loggingLevel)
 
 class Decoder(object):
     '''
@@ -60,6 +62,7 @@ class Decoder(object):
         of class HMM
         '''
         self.hmmNetwork = []
+        self.hmmNetwork.logger.setLevel(loggingLevel)
                 
 
         self._constructHmmNetwork(numStates, float(ALPHA), withModels)
