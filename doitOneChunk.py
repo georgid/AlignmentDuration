@@ -101,7 +101,7 @@ def doitOneChunk(argv):
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
 
 
-    visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
+    #visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
 
     
 
@@ -149,7 +149,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     detectedWordList, grTruthWordList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
     
 ### VISUALIZE
-    decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
 #################### evaluate
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, evalLevel)
