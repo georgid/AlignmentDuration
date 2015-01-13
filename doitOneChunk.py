@@ -13,7 +13,7 @@ from numpy.core.arrayprint import set_printoptions
 from Parameters import Parameters
 from Decoder import Decoder, WITH_DURATIONS, logger
 from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWord, testT
-from Constants import NUM_FRAMES_PERSECOND
+from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -27,11 +27,16 @@ pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
 from htk_converter import HtkConverter
 
+# Alignment with HTK
+pathAlignmentStep = os.path.join(parentDir, 'AlignmentStep')
+if not pathAlignmentStep in sys.path:
+    sys.path.append(pathAlignmentStep)
+from Aligner import Aligner 
 
 #  evaluation  
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
-from WordLevelEvaluator import _evalAlignmentError
+from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases
 from TextGrid_Parsing import TextGrid2WordList
 from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat, addAlignmentResultToTextGridFIle
 
@@ -47,52 +52,81 @@ HMM_LIST_URI = modelDIR +'/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
 ANNOTATION_EXT = '.TextGrid'    
+AUDIO_EXT = '.wav'
 
-EVALLEVEL = 2
+
+
 
 
 
 
 def doitOneChunk(argv):
     
-    if len(argv) != 6 and  len(argv) != 7 :
-            print ("usage: {}  <pathToComposition> <whichSection> <URI_recording_no_ext> <ALPHA> <ONLY_MIDDLE_STATE> <usePersistentFiles=True>".format(argv[0]) )
+    if len(argv) != 7 and  len(argv) != 8 :
+            print ("usage: {}  <pathToComposition> <URI_recording_no_ext> <withDuration=1> <ALPHA> <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True>".format(argv[0]) )
             sys.exit();
     
     
-    URIrecordingNoExt = argv[3]
+    URIrecordingNoExt = argv[2]
+    whichSection = getSectionNumberFromName(URIrecordingNoExt) 
+
     pathToComposition = argv[1]
-    whichSection = int(argv[2])
+    withDuration = int(argv[3])
     ALPHA = float(argv[4])
     ONLY_MIDDLE_STATE = argv[5]
     
+    evalLevel = tierAliases.wordLevel
+    evalLevel = int(argv[6])
+
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
     usePersistentFiles = 'True'
-    if len(argv) == 7:
-        usePersistentFiles =  argv[6]
+    if len(argv) == 8:
+        usePersistentFiles =  argv[7]
     
     
     set_printoptions(threshold='nan') 
     
     ################## load lyrics and models 
+    if withDuration == 1:
+        htkParser = HtkConverter()
+        htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    htkParser = HtkConverter()
-    htkParser.load(MODEL_URI, HMM_LIST_URI)
-    
-    alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
+    alignmentErrors, detectedWordList, grTruthDurationWordList = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
+
+        
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
 #     writeListOfListToTextFile(detectedWordList, None, '/Users/joro/Downloads/test.txt')
-        
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
 
 
-    visualiseInPraat(URIrecordingNoExt, detectedWordList, False, grTruthDurationWordList)
+    visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
+
     
 
 
-def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles):
+def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser):
+    '''
+    call alignment method depending on whether duration or new model selected 
+    '''
+    if withDuration == 1:
+        alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles)
+        return alignmentErrors, detectedWordList, grTruthDurationWordList
+    
+    elif withDuration == 0:
+        withSynthesis = 1
+        URIrecordingAnno = URIrecordingNoExt + ANNOTATION_EXT
+        URIrecordingWav = URIrecordingNoExt + AUDIO_EXTENSION
+        lyrics = loadLyrics(pathToComposition, whichSection).__str__()
+        outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyrics, URIrecordingAnno, '/tmp/', withSynthesis)
+        alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
+    
+    return alignmentErrors, outputHTKPhoneAlignedURI, [] 
+
+
+
+def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles):
     '''
     top most logic method
     '''
@@ -112,20 +146,37 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     else: 
         sys.exit("usePersistentFiles can be only True or False") 
         
-    detectedWordList, grTruthWordList = decodeAudioChunk(URIrecordingNoExt, decoder, usePersistentFiles)
+    detectedWordList, grTruthWordList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
     
 ### VISUALIZE
     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
 #################### evaluate
-    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, EVALLEVEL)
+    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, evalLevel)
     return alignmentErrors, detectedWordList, grTruthWordList
 
 
 
 
+def getSectionNumberFromName(URIrecordingNoExt):
 
-def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
+    underScoreTokens  = URIrecordingNoExt.split("_")
+    index = -1
+    while (-1 * index) <= len(underScoreTokens):
+        token = str(underScoreTokens[index])
+        if token.startswith('meyan') or token.startswith('zemin') or \
+        token.startswith('nakarat'):
+            break
+        index -=1
+    
+    try:
+        whichSection = underScoreTokens[index-1]
+    except Exception:
+        sys.exit("please put the number of section before its name: e.g. *_2_meyan_* in the file name ")
+    return int(whichSection)
+
+
+def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFiles):
     '''
     decoder : 
     WITH_DURAITON flag triggered here
@@ -138,7 +189,7 @@ def decodeAudioChunk( URI_recording_noExt, decoder, usePersistentFiles):
         
 
 
-    grTruthWordList  = getGroundTruthDurations(URI_recording_noExt, decoder)
+    grTruthWordList  = getGroundTruthDurations(URI_recording_noExt, decoder, evalLevel)
     
     detectedWordList = []
     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
@@ -165,7 +216,7 @@ def loadLyrics(pathToComposition, whichSection):
     return lyrics
     
 
-def getGroundTruthDurations(URI_recording_noExt, decoder):
+def getGroundTruthDurations(URI_recording_noExt, decoder, evalLevel):
         
                 # duration of initial silence 
 #         finalSilFram = 0
@@ -175,8 +226,8 @@ def getGroundTruthDurations(URI_recording_noExt, decoder):
 #             finalSilFram += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
 
         
-        annotationURI = URI_recording_noExt + '.TextGrid'
-        annotationTokenListA = TextGrid2WordList(annotationURI, EVALLEVEL)     
+        annotationURI = URI_recording_noExt + ANNOTATION_EXT
+        annotationTokenListA = TextGrid2WordList(annotationURI, evalLevel)     
     
         annoTsAndToken =  annotationTokenListA[0]
         if annoTsAndToken[2] != "" and not(annoTsAndToken[2].isspace()): # skip empty phrases
@@ -221,10 +272,10 @@ def loadMFCCs(URI_recording_noExt):
 
 
 
-def visualiseInPraat(URIrecordingNoExt, detectedWordList, isDetectionInFile, grTruthDurationWordList=[]):
+def visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList=[]):
     ### OPTIONAL############# : PRAAT
     pathToAudioFile = URIrecordingNoExt + '.wav'
-    URIGrTruth = URIrecordingNoExt + '.TextGrid'
+    URIGrTruth = URIrecordingNoExt + ANNOTATION_EXT
     tierNameWordAligned = '"wordDurationAligned"'
     tierNamePhonemeAligned = '"dummy1"'
 # gr truth
@@ -232,13 +283,18 @@ def visualiseInPraat(URIrecordingNoExt, detectedWordList, isDetectionInFile, grT
         addAlignmentResultToTextGrid(grTruthDurationWordList, URIGrTruth, pathToAudioFile, '"grTruthDuration"', '"dummy2"')
 
 # detected
-    if isDetectionInFile and os.path.isfile(detectedWordList):
+    if withDuration == '1':
+        isDetectedInFile = False
+    elif withDuration == '0':
+        isDetectedInFile = True
+        
+    if isDetectedInFile and os.path.isfile(detectedWordList):
         alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGridFIle(detectedWordList, URIGrTruth, tierNameWordAligned, tierNamePhonemeAligned)
     else:
         alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGrid(detectedWordList, URIGrTruth, pathToAudioFile, tierNameWordAligned, tierNamePhonemeAligned)
 
 
-# open both
+# open final TextGrid in Praat 
     openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
 
 

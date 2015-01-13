@@ -11,7 +11,7 @@ import os
 import glob
 import logging
 from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT,\
-    visualiseInPraat
+    visualiseInPraat, getSectionNumberFromName, alignDependingOnWithDuration
 from Utilz import getMeanAndStDevError
 
 
@@ -30,29 +30,14 @@ sys.path.append(pathUtils )
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 
-def getSectionNumberFromName(URIrecordingNoExt):
 
-    underScoreTokens  = URIrecordingNoExt.split("_")
-    index = -1
-    while (-1 * index) <= len(underScoreTokens):
-        token = str(underScoreTokens[index])
-        if token.startswith('meyan') or token.startswith('zemin') or \
-        token.startswith('nakarat'):
-            break
-        index -=1
-    
-    try:
-        whichSection = underScoreTokens[index-1]
-    except Exception:
-        sys.exit("please put the number of section before its name: e.g. *_2_meyan_* in the file name ")
-    return int(whichSection)
 
 def doitOneRecording(argv):
     '''
     for a list of recordings, select those which name contains pattern and evlauate total error 
     ''' 
-    if len(argv) != 6 and  len(argv) != 7 :
-            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <ALPHA>  <ONLY_MIDDLE_STATE> <usePersistentFiles=True> ".format(argv[0]) )
+    if len(argv) != 8 and  len(argv) != 9 :
+            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <withDuration=1> <ALPHA>  <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True> ".format(argv[0]) )
             sys.exit();
     
     os.chdir(argv[2])
@@ -70,33 +55,39 @@ def doitOneRecording(argv):
         print file
         
     pathToComposition  = argv[1]
-    
-    ALPHA = float(argv[4])
+    withDuration = int(argv[4])
+
+    ALPHA = float(argv[5])
     
      
-    ONLY_MIDDLE_STATE = argv[5]
+    ONLY_MIDDLE_STATE = argv[6]
     
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
+    evalLevel = int(argv[7])
+    
     usePersistentFiles = 'True'
-    if len(argv) == 7:
-        usePersistentFiles =  argv[6]
+    if len(argv) == 9:
+        usePersistentFiles =  argv[8]
         
-     
+         
     totalErrors = []
     
-    htkParser = HtkConverter()
-    htkParser.load(MODEL_URI, HMM_LIST_URI)
+    htkParser = None
+    if withDuration == 1:
+        htkParser = HtkConverter()
+        htkParser.load(MODEL_URI, HMM_LIST_URI)
     
     for  URI_annotation in listAnnoFiles :
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logging.info("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection = getSectionNumberFromName(URIrecordingNoExt) 
             
-            currAlignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, usePersistentFiles)
+            currAlignmentErrors, detectedWordList, grTruthDurationWordList = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
+
             totalErrors.extend(currAlignmentErrors)
             
-            visualiseInPraat(URIrecordingNoExt, detectedWordList, False, grTruthDurationWordList)
+            visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
 
           
         
