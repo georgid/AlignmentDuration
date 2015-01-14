@@ -112,14 +112,14 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     '''
     call alignment method depending on whether duration or new model selected 
     '''
-    Phonetizer.initLookupTable()
+    withSynthesis = 1
+    Phonetizer.initLookupTable(withSynthesis)
     
     if withDuration == 1:
         alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles)
         return alignmentErrors, detectedWordList, grTruthDurationWordList
     
     elif withDuration == 0:
-        withSynthesis = 1
         URIrecordingAnno = URIrecordingNoExt + ANNOTATION_EXT
         URIrecordingWav = URIrecordingNoExt + AUDIO_EXTENSION
         lyrics = loadLyrics(pathToComposition, whichSection).__str__()

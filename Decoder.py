@@ -52,7 +52,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, ALPHA, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, ALPHA,  numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -63,7 +63,7 @@ class Decoder(object):
         '''
         self.hmmNetwork = []
                 
-
+        
         self._constructHmmNetwork(numStates, float(ALPHA), withModels)
         self.hmmNetwork.logger.setLevel(loggingLevel)
         

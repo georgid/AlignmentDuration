@@ -6,7 +6,6 @@ Created on Oct 8, 2014
 from Phoneme import Phoneme
 import sys
 from Phonetizer import Phonetizer
-from PhonetizerOlder import PhonetizerOlder
 
 #     64 for 64th note
 MINIMAL_DURATION_UNIT = 64

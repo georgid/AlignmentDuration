@@ -14,12 +14,16 @@ if not pathUtils in sys.path:
 from Utilz import loadTextFile
 
 
-def readLookupTable():
+def readLookupTable(withSynthesis):
         '''
         read lookup table from file
         '''
-        lookupTableURI= os.path.join(os.path.dirname(os.path.realpath(__file__)) , 'grapheme2METUphonemeLookupTable' )
-        
+        if not withSynthesis:
+            lookupTableURI= os.path.join(os.path.dirname(os.path.realpath(__file__)) , 'grapheme2METUphonemeLookupTable' )
+        else:
+            lookupTableURI= os.path.join(os.path.dirname(os.path.realpath(__file__)) , 'grapheme2METUphonemeLookupTableSYNTH' )
+            
+
         lookupTableRaw = loadTextFile(lookupTableURI)
         lookupTable = dict()
         for lineTable in lookupTableRaw:
@@ -63,11 +67,14 @@ def combineDiacriticsChars( listA, utfCode):
 
 class Phonetizer(object):
     lookupTable = {}
+    withSynthesis = 0
     
     @staticmethod
-    def initLookupTable():
+    def initLookupTable(withSynthesis):
         if not Phonetizer.lookupTable:
-            Phonetizer.lookupTable = readLookupTable()
+            Phonetizer.lookupTable = readLookupTable(withSynthesis)
+            Phonetizer.withSynthesis = withSynthesis
+        
     
 #     def __init__(self):
 #         
@@ -117,6 +124,6 @@ class Phonetizer(object):
 
 
 if __name__=="__main__":
-     Phonetizer.initLookupTable()
+     Phonetizer.initLookupTable(1)
      print Phonetizer.lookupTable
     
