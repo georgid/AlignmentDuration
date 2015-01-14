@@ -74,9 +74,12 @@ Decoder
 
 Phonetizer
 -----------------
-grapheme2phoneme(word) 
-turkishlyrics2PhoneticDict parses all words and turns them into a HTK-format dictionary. 
-HTK takes the sequence of words (mlf file) and the dict and  expands them internally  
+grapheme2phoneme(word) - used to do the expansion of the graphemes (in a syllable) to phonemes 
+
+For all entities of lyrics the g2p rules are the same, so Phonetizer should be instantiated only once on highest level  
+   
+
+
 
 
 OTHERS: 

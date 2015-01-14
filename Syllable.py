@@ -3,9 +3,10 @@ Created on Oct 8, 2014
 
 @author: joro
 '''
-from Phonetizer import Phonetizer
 from Phoneme import Phoneme
 import sys
+from Phonetizer import Phonetizer
+from PhonetizerOlder import PhonetizerOlder
 
 #     64 for 64th note
 MINIMAL_DURATION_UNIT = 64
@@ -38,8 +39,12 @@ class Syllable():
             make sure text has no whitespaces
             '''
             
-            METUtext = Phonetizer.turkishScriptWord2METUScriptWord(self.text)
-            phonemeIDs = Phonetizer.grapheme2Phoneme(METUtext)
+#             METUtext = PhonetizerOlder.turkishScriptWord2METUScriptWord(self.text)
+#             phonemeIDs = PhonetizerOlder.grapheme2Phoneme(METUtext)
+#           
+            if not Phonetizer.lookupTable:
+                sys.exit("Phonetizer.lookupTable not defined. do Phonetizer.initlookupTable at beginning of all code")   
+            phonemeIDs = Phonetizer.grapheme2Phoneme(self.text)
             
             self.phonemes = []
             for phonemeID in phonemeIDs:
@@ -81,7 +86,7 @@ class Syllable():
             if vowelPos == -1:
                 for phoneme in self.phonemes:
 #                     no vowel => equal duration for all
-                    phoneme.setDuration(self.duration / self.getNumPhonemes())
+                    phoneme.duration = (self.duration / self.getNumPhonemes())
             else: # one vowel
                 for phoneme in self.phonemes:
                        phoneme.duration = CONSONANT_DURATION

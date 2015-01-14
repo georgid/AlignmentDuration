@@ -39,7 +39,7 @@ class SymbTrParser(object):
         # list of Syllable(s)
         self.listSyllables =[]
         self._loadSyllables( pathToSymbTrFile)
-
+        
 
         # section boundaries.                 #  triples of sectin name, start note, end note 
         self.sectionboundaries = []
@@ -146,7 +146,8 @@ class SymbTrParser(object):
             words = self.syllable2WordOneSection(currSectionBoundary[1], currSectionBoundary[2])
             
             # store lyrics
-            lyricsAllSections.append(Lyrics(words) )
+            lyrics = Lyrics(words) 
+            lyricsAllSections.append(lyrics)
             
         return lyricsAllSections
           

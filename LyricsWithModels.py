@@ -24,11 +24,11 @@ class LyricsWithModels(Lyrics):
     '''
 
 
-    def __init__(self, listWords, htkParser, ONLY_MIDDLE_STATE  ):
+    def __init__(self, lyrics, htkParser, ONLY_MIDDLE_STATE  ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
-        Lyrics.__init__(self, listWords)
+        Lyrics.__init__(self, lyrics.listWords)
         
         self._linkToModels(htkParser)
         

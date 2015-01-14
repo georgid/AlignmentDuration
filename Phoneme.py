@@ -48,14 +48,14 @@ class Phoneme:
     
     def isVowel(self):
         
-        if (self.ID == Phonetizer.METUlookupTable.get('a') or
-        self.ID == Phonetizer.METUlookupTable.get('o') or
-        self.ID == Phonetizer.METUlookupTable.get('O') or
-        self.ID == Phonetizer.METUlookupTable.get('e') or
-        self.ID == Phonetizer.METUlookupTable.get('i') or
-        self.ID == Phonetizer.METUlookupTable.get('u') or
-        self.ID == Phonetizer.METUlookupTable.get('U') or
-        self.ID == Phonetizer.METUlookupTable.get('I') ):
+        if (self.ID == Phonetizer.lookupTable.get('a') or
+        self.ID == Phonetizer.lookupTable.get('o') or
+        self.ID == Phonetizer.lookupTable.get('O') or
+        self.ID == Phonetizer.lookupTable.get('e') or
+        self.ID == Phonetizer.lookupTable.get('i') or
+        self.ID == Phonetizer.lookupTable.get('u') or
+        self.ID == Phonetizer.lookupTable.get('U') or
+        self.ID == Phonetizer.lookupTable.get('I') ):
             return True
         return False
     

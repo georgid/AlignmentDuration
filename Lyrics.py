@@ -10,6 +10,7 @@ class Lyrics(object):
     '''
     Lyrics data structures
     appends sil at start and end of sequence
+
     '''
 
 
@@ -18,7 +19,6 @@ class Lyrics(object):
         Word[]
         '''
         self.listWords = listWords
-        
         '''
         Phoneme []
         '''

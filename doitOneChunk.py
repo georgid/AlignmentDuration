@@ -14,6 +14,7 @@ from Parameters import Parameters
 from Decoder import Decoder, WITH_DURATIONS, logger
 from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWord, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
+from Phonetizer import Phonetizer
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -88,6 +89,7 @@ def doitOneChunk(argv):
     set_printoptions(threshold='nan') 
     
     ################## load lyrics and models 
+    htkParser = None
     if withDuration == 1:
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
@@ -110,6 +112,8 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     '''
     call alignment method depending on whether duration or new model selected 
     '''
+    Phonetizer.initLookupTable()
+    
     if withDuration == 1:
         alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles)
         return alignmentErrors, detectedWordList, grTruthDurationWordList
@@ -130,8 +134,10 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     '''
     top most logic method
     '''
+    
+    
     lyrics = loadLyrics(pathToComposition, whichSection)
-    lyricsWithModels = LyricsWithModels(lyrics.listWords, htkParser, params.ONLY_MIDDLE_STATE)
+    lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
     
     

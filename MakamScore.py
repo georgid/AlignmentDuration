@@ -24,8 +24,6 @@ import codecs
 
 import glob
 from SymbTrParser import SymbTrParser
-from Phonetizer import Phonetizer
-from Phoneme import Phoneme
 # from utils.Utils import writeListToTextFile
 
 
@@ -145,7 +143,8 @@ def loadScore(pathToComposition):
     os.chdir(pathToComposition)
     pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
     pathToSectionTsv = os.path.join(pathToComposition, glob.glob("*.sections.tsv")[0])
-    makamScore = MakamScore(pathTotxt, pathToSectionTsv)
+    phonetizer = Phonetizer2() 
+    makamScore = MakamScore(pathTotxt, pathToSectionTsv, phonetizer)
     return makamScore
 
 

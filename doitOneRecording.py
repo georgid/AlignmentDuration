@@ -87,7 +87,7 @@ def doitOneRecording(argv):
 
             totalErrors.extend(currAlignmentErrors)
             
-            visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
+#             visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
 
           
         
