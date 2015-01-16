@@ -13,25 +13,25 @@ from Decoder import logger
 from Utilz import getMeanAndStDevError
 
 def doit(argv):
-    if len(argv) != 5 and len(argv) != 6:
-        print ("usage: {}  <pathToCompositions>  <pathToRecordings> <ALPHA>  <ONLY_MIDDLE_STATE> <usePersistentFiles=True>".format(argv[0]) )
+    if len(argv) != 6 and len(argv) != 7:
+        print ("usage: {}  <pathToCompositions>  <pathToRecordings> <withDurations> <ALPHA> <ONLY_MIDDLE_STATE> <usePersistentFiles=True>".format(argv[0]) )
         sys.exit();
 
     pathToScores = argv[1]
 
     path_testFile  = argv[2]
     
-    ALPHA = argv[3]
+    withDuration = argv[3]
+    ALPHA = argv[4]
     
     
-    ONLY_MIDDLE_STATE = argv[4]
-    withDuration = 1
+    ONLY_MIDDLE_STATE = argv[5]
     evalLevel = 2
     
     usePersistentFiles = 'True'
         
-    if len(argv) == 6:
-        usePersistentFiles = argv[5]
+    if len(argv) == 7:
+        usePersistentFiles = argv[6]
     
     compositionNames = ['nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', \
     'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/', \
@@ -108,7 +108,7 @@ def doit(argv):
        #############################
     for compositionName, recordingDir in zip(compositionNames, recordingDirs):
     
-#     this is old one
+#     for a-capella ISTANBUL data 
 #     for i in range(len(compositionNames)):
 #         
 #         

@@ -55,7 +55,13 @@ def doitOneRecording(argv):
         print file
         
     pathToComposition  = argv[1]
-    withDuration = int(argv[4])
+    withDuration = argv[4]
+    if withDuration=='True':
+        withDuration = True
+    elif withDuration=='False':
+        withDuration = False
+    else: 
+        sys.exit("withDuration can be only True or False")  
 
     ALPHA = float(argv[5])
     
@@ -74,7 +80,7 @@ def doitOneRecording(argv):
     totalErrors = []
     
     htkParser = None
-    if withDuration == 1:
+    if withDuration:
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
     

@@ -45,11 +45,12 @@ USAGE:
 EXAMPLE: doitOneChunk()
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/safiye/01_Aksam_3_nakarat 0 0.97 False 1
 
+# with re-synthesized audio
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/  /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim/06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim_1_zemin_from_62_393939_to_77_827796 False 0.97 False 2
 
 EXAMPLE: doitOneRecording() 
-# with synthesized audio
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py  /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis//ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim/ 06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim_ 0 0.97 False 2
-
+# with re-synthesized audio
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py  /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/ /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis//ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim/ 06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim_ False 0.97 False
 
 EXAMPLE: doitAllRecordings()
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitAllRecordings.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/ 1 True

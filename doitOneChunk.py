@@ -16,12 +16,15 @@ from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWord, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
 
+from visualize import visualiseInPraat
+
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from Utilz import writeListOfListToTextFile, writeListToTextFile,\
-    getMeanAndStDevError
+    getMeanAndStDevError, getSectionNumberFromName
 
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
@@ -39,7 +42,7 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases
 from TextGrid_Parsing import TextGrid2WordList
-from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat, addAlignmentResultToTextGridFIle
+
 
 # TODO: read mfccs with matlab htk_read
 # sys.path.append('/Users/joro/Downloads/python-matlab-bridge-master')
@@ -72,7 +75,14 @@ def doitOneChunk(argv):
     whichSection = getSectionNumberFromName(URIrecordingNoExt) 
 
     pathToComposition = argv[1]
-    withDuration = int(argv[3])
+    withDuration = argv[3]
+    if withDuration=='True':
+        withDuration = True
+    elif withDuration=='False':
+        withDuration = False
+    else: 
+        sys.exit("withDuration can be only True or False")  
+    
     ALPHA = float(argv[4])
     ONLY_MIDDLE_STATE = argv[5]
     
@@ -90,7 +100,7 @@ def doitOneChunk(argv):
     
     ################## load lyrics and models 
     htkParser = None
-    if withDuration == 1:
+    if withDuration:
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
     
@@ -103,7 +113,7 @@ def doitOneChunk(argv):
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
 
 
-    #visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
+    visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
 
     
 
@@ -115,11 +125,11 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     withSynthesis = 1
     Phonetizer.initLookupTable(withSynthesis)
     
-    if withDuration == 1:
+    if withDuration:
         alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles)
         return alignmentErrors, detectedWordList, grTruthDurationWordList
     
-    elif withDuration == 0:
+    else:
         URIrecordingAnno = URIrecordingNoExt + ANNOTATION_EXT
         URIrecordingWav = URIrecordingNoExt + AUDIO_EXTENSION
         lyrics = loadLyrics(pathToComposition, whichSection).__str__()
@@ -164,22 +174,6 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
 
 
 
-def getSectionNumberFromName(URIrecordingNoExt):
-
-    underScoreTokens  = URIrecordingNoExt.split("_")
-    index = -1
-    while (-1 * index) <= len(underScoreTokens):
-        token = str(underScoreTokens[index])
-        if token.startswith('meyan') or token.startswith('zemin') or \
-        token.startswith('nakarat'):
-            break
-        index -=1
-    
-    try:
-        whichSection = underScoreTokens[index-1]
-    except Exception:
-        sys.exit("please put the number of section before its name: e.g. *_2_meyan_* in the file name ")
-    return int(whichSection)
 
 
 def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFiles):
@@ -278,30 +272,6 @@ def loadMFCCs(URI_recording_noExt):
 
 
 
-def visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList=[]):
-    ### OPTIONAL############# : PRAAT
-    pathToAudioFile = URIrecordingNoExt + '.wav'
-    URIGrTruth = URIrecordingNoExt + ANNOTATION_EXT
-    tierNameWordAligned = '"wordDurationAligned"'
-    tierNamePhonemeAligned = '"dummy1"'
-# gr truth
-    if grTruthDurationWordList != None and grTruthDurationWordList != []:
-        addAlignmentResultToTextGrid(grTruthDurationWordList, URIGrTruth, pathToAudioFile, '"grTruthDuration"', '"dummy2"')
-
-# detected
-    if withDuration == '1':
-        isDetectedInFile = False
-    elif withDuration == '0':
-        isDetectedInFile = True
-        
-    if isDetectedInFile and os.path.isfile(detectedWordList):
-        alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGridFIle(detectedWordList, URIGrTruth, tierNameWordAligned, tierNamePhonemeAligned)
-    else:
-        alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGrid(detectedWordList, URIGrTruth, pathToAudioFile, tierNameWordAligned, tierNamePhonemeAligned)
-
-
-# open final TextGrid in Praat 
-    openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
 
 
 
