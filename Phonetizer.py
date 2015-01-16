@@ -71,6 +71,7 @@ class Phonetizer(object):
     
     @staticmethod
     def initLookupTable(withSynthesis):
+        # if not yet created:
         if not Phonetizer.lookupTable:
             Phonetizer.lookupTable = readLookupTable(withSynthesis)
             Phonetizer.withSynthesis = withSynthesis

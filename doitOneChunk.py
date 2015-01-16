@@ -122,7 +122,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     '''
     call alignment method depending on whether duration or new model selected 
     '''
-    withSynthesis = 1
+    withSynthesis = True
     Phonetizer.initLookupTable(withSynthesis)
     
     if withDuration:

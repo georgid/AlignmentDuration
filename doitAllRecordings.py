@@ -124,9 +124,7 @@ def doit(argv):
         mean, stDev, errorsForRecording  = doitOneRecording([ 'dummy', URI_Composition, URI_Recording, pattern, withDuration, ALPHA, ONLY_MIDDLE_STATE, evalLevel, usePersistentFiles])
         totalErrors.extend(errorsForRecording)
         
-        infoA = "( mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
-        
-        logger.info(infoA)
+
         
         listLine = '\n' + URI_Recording + " " + pattern + " " + str(mean) +   " " + str(stDev) 
         
@@ -138,7 +136,7 @@ def doit(argv):
         
     mean, stDev, median  = getMeanAndStDevError(totalErrors)
     result = '\n' + 'total mean: ' + str(mean) + '\n'
-    print result
+    
     logger.info( result  )
     
     if outputFileHandle.closed:

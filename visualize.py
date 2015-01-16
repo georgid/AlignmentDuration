@@ -8,6 +8,7 @@ visualizes errors for different as graph. matplotlib
 '''
 import sys
 import os
+from Phonetizer import Phonetizer
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 
 #  evaluation  
@@ -32,15 +33,20 @@ def visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthD
     URIGrTruth = URIrecordingNoExt + ANNOTATION_EXT
     
     if withDuration:
-        wordsAlignedSuffix = '.wordsDurationAligned'
-        phonemesAlignedSuffix = '.phonemesDurationAligned'
+        if Phonetizer.withSynthesis:
+            wordsAlignedSuffix = '.wordsDurationSynthAligned'
+            phonemesAlignedSuffix = '.phonemesDurationSynthAligned'
+        else:
+            wordsAlignedSuffix = '.wordsDurationAligned'
+            phonemesAlignedSuffix = '.phonemesDurationAligned'
     else:
         wordsAlignedSuffix = '.wordsAligned'
         phonemesAlignedSuffix = '.phonemesAligned'
     
 # gr truth
     if grTruthDurationWordList != None and grTruthDurationWordList != []:
-        addAlignmentResultToTextGrid(grTruthDurationWordList, URIGrTruth, pathToAudioFile, '"grTruthDuration"', '"dummy"')
+        grTruthDurationSuffix = '.grTruthDuration'
+        addAlignmentResultToTextGrid(grTruthDurationWordList, URIGrTruth, grTruthDurationSuffix)
 
 # detected
     if not withDuration and os.path.isfile(detectedWordList):

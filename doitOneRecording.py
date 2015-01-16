@@ -13,6 +13,8 @@ import logging
 from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT,\
     visualiseInPraat, getSectionNumberFromName, alignDependingOnWithDuration
 from Utilz import getMeanAndStDevError
+from genericpath import isfile
+from Decoder import logger
 
 
 
@@ -46,13 +48,19 @@ def doitOneRecording(argv):
         
 # get annot files with starting pattern
     pattern = argv[3] + '*'   + ANNOTATION_EXT
-    listAnnoFiles = glob.glob(pattern) 
+    listAnnoFilesAll = glob.glob(pattern) 
         
-    for i in range(len(listAnnoFiles)) :
-        listAnnoFiles[i] = os.path.join(argv[2], listAnnoFiles[i])
+
+    for i in range(len(listAnnoFilesAll)) :
+        listAnnoFilesAll[i] = os.path.join(argv[2], listAnnoFilesAll[i])
+        
+#     listAnnoFiles = []
+#         if not isfile( os.path.splitext(listAnnoFilesAll[i])[0] +  ".notUsed"):
+#             listAnnoFiles.append(listAnnoFilesAll[i])
+    listAnnoFiles = listAnnoFilesAll
     
     for file in listAnnoFiles:
-        print file
+        logger.debug(file)
         
     pathToComposition  = argv[1]
     withDuration = argv[4]
@@ -86,21 +94,21 @@ def doitOneRecording(argv):
     
     for  URI_annotation in listAnnoFiles :
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
-            logging.info("PROCESSING {}".format(URIrecordingNoExt) )
+            logger.debug("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection = getSectionNumberFromName(URIrecordingNoExt) 
             
             currAlignmentErrors, detectedWordList, grTruthDurationWordList = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
 
             totalErrors.extend(currAlignmentErrors)
             
-#             visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
+            visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
 
           
         
     mean, stDev, median = getMeanAndStDevError(totalErrors)
-    infoA = "( mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
+    infoA = "Total  mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
 
-    logging.info(infoA)
+    logger.info(infoA)
     return mean, stDev, totalErrors
 
 
