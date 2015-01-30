@@ -1,0 +1,25 @@
+report: 
+
+TO make sure state sequence covers whole audio
+-setting only the initial prob of first state to be diff. than zero assures the optimal path will be at first state.
+
+we backtrack starting at the very last state.
+
+
+Current state: 
+testing only duraations with no ObsProbs. 
+
+Current parameteres:
+
+FIXED:
+= Only at middle state - check bookmark in code
+=   distribution type: Normal ( allows for 2*maxD(state) (DurationHMM.getWaitLogLik() )
+silence has on ly one middle state
+
+-no normalisation of durationPDF
+-equalLEngth (no time to test weighted)
+
+ADJUSTABLE: 
+	- then play with ALPHA (start at > 0.9)
+	- let currMax be 30% on top of note duration (in _calcCurrStatePhi and initPhis)
+	

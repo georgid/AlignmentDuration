@@ -17,7 +17,11 @@ if not pathEvaluation in sys.path:
     sys.path.append(pathEvaluation)
 
 
-from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat, addAlignmentResultToTextGridFIle
+from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat, addAlignmentResultToTextGridFIle, \
+ mlf2TabFormat, _alignmentResult2TextGrid
+
+from tab2PraatAndOpenWithPRaat import tab2PraatAndOpenWithPRaat 
+
 
 # In[2]:
 
@@ -27,7 +31,8 @@ ANNOTATION_EXT = '.TextGrid'
 
 
 
-def visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList=[]):
+
+def visualiseInPraat(URIrecordingNoExt,  withDuration, detectedWordList = [], grTruthDurationWordList=[]):
     ### OPTIONAL############# : PRAAT
     pathToAudioFile = URIrecordingNoExt + '.wav'
     URIGrTruth = URIrecordingNoExt + ANNOTATION_EXT
@@ -45,18 +50,35 @@ def visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthD
     
 # gr truth
     if grTruthDurationWordList != None and grTruthDurationWordList != []:
-        grTruthDurationSuffix = '.grTruthDuration'
-        addAlignmentResultToTextGrid(grTruthDurationWordList, URIGrTruth, grTruthDurationSuffix)
+        grTruthDurationfileExtension = '.grTruthDuration'
+        grTruthDurationfileExtension = '.phrases'
+        
+        tokenList2TextGrid(grTruthDurationWordList, URIrecordingNoExt, grTruthDurationfileExtension, URIGrTruth)
 
 # detected
-    if not withDuration and os.path.isfile(detectedWordList):
-        alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGridFIle(detectedWordList, URIGrTruth, wordsAlignedSuffix, phonemesAlignedSuffix)
-    else:
-        alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGrid(detectedWordList, URIGrTruth, wordsAlignedSuffix)
-        # TODO: add phone-level 
+    if detectedWordList != None and detectedWordList != []:
+        if not withDuration and os.path.isfile(detectedWordList):
+            alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGridFIle(detectedWordList, URIGrTruth, wordsAlignedSuffix, phonemesAlignedSuffix)
+        else:
+            tokenList2TextGrid(detectedWordList, URIrecordingNoExt, wordsAlignedSuffix, URIGrTruth)
+         
+        # TODO: add phone-level for detected
+        
 
 # open final TextGrid in Praat 
-    openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
+#     openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
+
+
+def tokenList2TextGrid(tokenList, URIrecordingNoExt, fileExtension, URIGrTruthTextGrid):
+    # textGrid 2 tsv file. Praat script has to read from tsv 
+    tokenAlignedfileName=  mlf2TabFormat(tokenList, URIrecordingNoExt, fileExtension)
+     
+    if os.path.isfile(URIGrTruthTextGrid):
+         alignedResultPath, fileNameWordAnno = _alignmentResult2TextGrid(URIGrTruthTextGrid, tokenAlignedfileName) 
+    else:
+#  if no Textgrid groundTruthAnnotation present : open with Praat
+        tab2PraatAndOpenWithPRaat(['dummy', tokenAlignedfileName] )
+    
 
 def plotStuff():
     # In[14]:

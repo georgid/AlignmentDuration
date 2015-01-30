@@ -4,7 +4,7 @@ Created on Oct 13, 2014
 @author: joro
 '''
 import os
-from MakamScore import MakamScore
+from MakamScore import  loadLyrics
 import glob
 import numpy
 import sys
@@ -113,7 +113,7 @@ def doitOneChunk(argv):
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
 
 
-    visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
+    visualiseInPraat(URIrecordingNoExt, withDuration, detectedWordList, grTruthDurationWordList)
 
     
 
@@ -144,8 +144,6 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     '''
     top most logic method
     '''
-    
-    
     lyrics = loadLyrics(pathToComposition, whichSection)
     lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
@@ -168,7 +166,8 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
 #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
 
 #################### evaluate
-    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + '.TextGrid', detectedWordList, evalLevel)
+    alignmentErrors = [2, 3, 4]
+    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedWordList, evalLevel)
     return alignmentErrors, detectedWordList, grTruthWordList
 
 
@@ -188,57 +187,50 @@ def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFile
         decoder.lyricsWithModels.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
         
 
-
+    grTruthWordList = []
     grTruthWordList  = getGroundTruthDurations(URI_recording_noExt, decoder, evalLevel)
     
     detectedWordList = []
     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
     detectedWordList = decoder.path2ResultWordList()
-     
+        
     
     
     return detectedWordList, grTruthWordList
 
 
 
-
-def loadLyrics(pathToComposition, whichSection):
-
-
-#     expand phoneme list from transcript
-    os.chdir(pathToComposition)
-    pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
-    pathToSectionTsv =  os.path.join(pathToComposition, glob.glob("*sections.tsv")[0])
-    makamScore = MakamScore(pathTotxt, pathToSectionTsv )
-    
-    # phoneme IDs
-    lyrics = makamScore.getLyricsForSection(whichSection)
-    return lyrics
     
 
 def getGroundTruthDurations(URI_recording_noExt, decoder, evalLevel):
         
-                # duration of initial silence 
-#         finalSilFram = 0
-#         countFirstStateFirstWord = decoder.lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
-#         
-#         for i in range(countFirstStateFirstWord):
-#             finalSilFram += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
-
-        
         annotationURI = URI_recording_noExt + ANNOTATION_EXT
-        annotationTokenListA = TextGrid2WordList(annotationURI, evalLevel)     
-    
-        annoTsAndToken =  annotationTokenListA[0]
-        if annoTsAndToken[2] != "" and not(annoTsAndToken[2].isspace()): # skip empty phrases
-                logger.warn("annotaiton {} starts with non-sil token ".format(annotationURI))
-                finalSilFram =  float(annoTsAndToken[0]) * NUM_FRAMES_PERSECOND
-        else:
-            finalSilFram = float(annoTsAndToken[1]) * NUM_FRAMES_PERSECOND
+
+        ##### visualize duration of initial silence 
+
+        try:
+            annotationTokenListA = TextGrid2WordList(annotationURI, evalLevel)     
+            
+            # just copy duration of silence in groundTruth 
+            annoTsAndToken =  annotationTokenListA[0]
+            if annoTsAndToken[2] != "" and not(annoTsAndToken[2].isspace()): # skip empty phrases
+                    logger.warn("annotaiton {} starts with non-sil token ".format(annotationURI))
+                    finalSilFram =  float(annoTsAndToken[0]) * NUM_FRAMES_PERSECOND
+            else:
+                finalSilFram = float(annoTsAndToken[1]) * NUM_FRAMES_PERSECOND
+            
+        
+        except :
+        # if no Gr Truth annotation file (or needed layer) present - take from model    
+            finalSilFram = 0
+            countFirstStateFirstWord = decoder.lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
+             
+            for i in range(countFirstStateFirstWord):
+                finalSilFram += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
         
             
         grTruthWordList = expandlyrics2Words (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
-        writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + "gtDur.txt" )
+#         writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + "gtDur.txt" )
         
 #     TODO: could be done easier with this code, and check last method in Word
 #         grTruthWordList =    testT(decoder.lyricsWithModels)

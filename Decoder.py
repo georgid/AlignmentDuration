@@ -42,6 +42,7 @@ from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
 logger = logging.getLogger(__name__)
+loggingLevel = logging.DEBUG
 loggingLevel = logging.INFO
 
 logger.setLevel(loggingLevel)
@@ -75,7 +76,7 @@ class Decoder(object):
         HERE is decided which decoding scheme (based on WITH_DURATION parameter)
         '''
         if self.lyricsWithModels.ONLY_MIDDLE_STATE:
-            URI_bmap = URI_recording_noExt + '.dur_bmap'
+            URI_bmap = URI_recording_noExt + '.bmap_onlyMiddleState'
         else:             
             URI_bmap = URI_recording_noExt + '.bmap'
         

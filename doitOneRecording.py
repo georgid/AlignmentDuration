@@ -11,7 +11,8 @@ import os
 import glob
 import logging
 from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT,\
-    visualiseInPraat, getSectionNumberFromName, alignDependingOnWithDuration
+    visualiseInPraat, getSectionNumberFromName, alignDependingOnWithDuration,\
+    AUDIO_EXT
 from Utilz import getMeanAndStDevError
 from genericpath import isfile
 from Decoder import logger
@@ -33,13 +34,12 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 
 
-
 def doitOneRecording(argv):
     '''
     for a list of recordings, select those which name contains pattern and evlauate total error 
     ''' 
     if len(argv) != 8 and  len(argv) != 9 :
-            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <withDuration=1> <ALPHA>  <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True> ".format(argv[0]) )
+            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <withDuration=True/False> <ALPHA>  <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True> ".format(argv[0]) )
             sys.exit();
     
     os.chdir(argv[2])
@@ -47,19 +47,19 @@ def doitOneRecording(argv):
     
         
 # get annot files with starting pattern
-    pattern = argv[3] + '*'   + ANNOTATION_EXT
-    listAnnoFilesAll = glob.glob(pattern) 
+    pattern = argv[3] + '*'   + AUDIO_EXT
+    listAudioFilesAll = glob.glob(pattern) 
         
 
-    for i in range(len(listAnnoFilesAll)) :
-        listAnnoFilesAll[i] = os.path.join(argv[2], listAnnoFilesAll[i])
+    for i in range(len(listAudioFilesAll)) :
+        listAudioFilesAll[i] = os.path.join(argv[2], listAudioFilesAll[i])
         
-#     listAnnoFiles = []
-#         if not isfile( os.path.splitext(listAnnoFilesAll[i])[0] +  ".notUsed"):
-#             listAnnoFiles.append(listAnnoFilesAll[i])
-    listAnnoFiles = listAnnoFilesAll
+#     listAudioFiles = []
+#         if not isfile( os.path.splitext(listAudioFilesAll[i])[0] +  ".notUsed"):
+#             listAudioFiles.append(listAudioFilesAll[i])
+    listAudioFiles = listAudioFilesAll
     
-    for file in listAnnoFiles:
+    for file in listAudioFiles:
         logger.debug(file)
         
     pathToComposition  = argv[1]
@@ -92,7 +92,7 @@ def doitOneRecording(argv):
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    for  URI_annotation in listAnnoFiles :
+    for  URI_annotation in listAudioFiles :
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logger.debug("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection = getSectionNumberFromName(URIrecordingNoExt) 
@@ -101,14 +101,15 @@ def doitOneRecording(argv):
 
             totalErrors.extend(currAlignmentErrors)
             
-            visualiseInPraat(URIrecordingNoExt, detectedWordList, withDuration, grTruthDurationWordList)
+            visualiseInPraat(URIrecordingNoExt, withDuration, detectedWordList, grTruthDurationWordList)
 
-          
-        
-    mean, stDev, median = getMeanAndStDevError(totalErrors)
-    infoA = "Total  mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
+    mean = []
+    stDev =  []     
+    if len(totalErrors) != 0:    
+        mean, stDev, median = getMeanAndStDevError(totalErrors)
+        infoA = "Total  mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
 
-    logger.info(infoA)
+        logger.info(infoA)
     return mean, stDev, totalErrors
 
 

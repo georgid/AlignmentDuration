@@ -10,6 +10,8 @@ import sys
 from Word import Word
 from Syllable import Syllable, MINIMAL_DURATION_UNIT
 from Lyrics import Lyrics
+from _SymbTrParserBase import _SymbTrParserBase
+from Phonetizer import Phonetizer
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 pathUtils = os.path.join(parentDir, 'utilsLyrics') 
@@ -22,7 +24,7 @@ sys.path.append(pathUtils )
 from Utilz import  loadTextFile
 
 
-class SymbTrParser(object):
+class SymbTrParser(_SymbTrParserBase):
     '''
     Parses lyrics from symbTr v 1.0 and Sections from tsv file
     a list of syllables is parsed. 
@@ -32,17 +34,11 @@ class SymbTrParser(object):
 
 
     
-    def __init__(self, pathToSymbTrFile):
+    def __init__(self, pathToSymbTrFile, URI_SectionFile):
         '''
         Constructor
         '''
-        # list of Syllable(s)
-        self.listSyllables =[]
-        self._loadSyllables( pathToSymbTrFile)
-        
-
-        # section boundaries.                 #  triples of sectin name, start note, end note 
-        self.sectionboundaries = []
+        _SymbTrParserBase.__init__(self,pathToSymbTrFile,URI_SectionFile)
         
         
    
@@ -96,7 +92,8 @@ class SymbTrParser(object):
                      self.listSyllables.append(currSyllable)
                 
                 # init next syllable. 
-                currSyllable = Syllable(tokens[11], tokens[0])
+                text = tokens[11].replace('_',' ')
+                currSyllable = Syllable(text, tokens[0])
                 # init duration.
                 syllTotalDuration = currDuration
         
@@ -116,28 +113,16 @@ class SymbTrParser(object):
 #                         self.listSyllables.append(tupleSyllable)
             
      
-   ##################################################################################
 
-    def _loadSectionBoundaries(self, pathToTsvFile):
-            
-            allLines = loadTextFile(pathToTsvFile)
-
-            for line in allLines[1:]:
-                #  triples of sectin name, start note number, end note number 
-                tokens = line.strip().split("\t")
-                tmpTriplet = tokens[0], int(tokens[1]), int(tokens[2]) 
-                self.sectionboundaries.append(tmpTriplet)
-       
        
      ##################################################################################
    
      
      
-    def syllables2Words(self): 
+    def syllables2Lyrics(self): 
         """
         construct words from syllables for all  sections
         """  
-        lyricsAllSections = []
         words = []
               
         for currSectionBoundary in self.sectionboundaries:
@@ -147,9 +132,8 @@ class SymbTrParser(object):
             
             # store lyrics
             lyrics = Lyrics(words) 
-            lyricsAllSections.append(lyrics)
+            self.sectionLyrics.append(lyrics)
             
-        return lyricsAllSections
           
 
 # begin index does not update, because no change in aranagme. 
@@ -271,17 +255,12 @@ class SymbTrParser(object):
 #################################################################################
 
 if __name__ == "__main__":
-    pathTxt=  '/Volumes/IZOTOPE/sertan_sarki/muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik/muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik.txt'
-    pathTsv= '/Volumes/IZOTOPE/sertan_sarki/muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik/muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik.sections.tsv'    
     
-    pathTxt=  '/Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/safiye/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey.txt'
-    pathTsv= '/Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey.sections.tsv'
+    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.txt'
+    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.sections.tsv'
     
-    symbTrParser = SymbTrParser(pathTxt)
-    symbTrParser._loadSectionBoundaries( pathTsv)
+    Phonetizer.initLookupTable(False)
+    symbTrParser = SymbTrParser(pathTxt, pathTsv)
+        
+    symbTrParser.syllables2Lyrics()
     
-#     symbTrParser.syllablesToWords()
-    
-    
-    lyricsAllSections = symbTrParser.syllables2Words()
-    print "DONE. otivam da si miq zybite"

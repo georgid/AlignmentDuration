@@ -10,6 +10,8 @@ Created on Mar 3, 2014
 import os
 import sys
 import imp
+from Phonetizer import Phonetizer
+from Decoder import logger
 
 # trick to make terminal NOT assume ascii
 reload(sys).setdefaultencoding("utf-8")
@@ -19,7 +21,7 @@ pathUtils = os.path.join(parentDir, 'utilsLyrics')
 
 sys.path.append(pathUtils )
 
-from Utilz import writeListToTextFile
+from Utilz import writeListToTextFile, findFileByExtensions
 import codecs
 
 import glob
@@ -67,12 +69,11 @@ class MakamScore():
     groups together section names and lyrics 
     '''
     def _loadSectionsAndSyllablesFromSymbTr(self, pathToSymbTrFile, pathToSectionTsvFile):
-        symbTrParser = SymbTrParser(pathToSymbTrFile)
+        symbTrParser = SymbTrParser(pathToSymbTrFile, pathToSectionTsvFile)
        
-        symbTrParser._loadSectionBoundaries(pathToSectionTsvFile)
-        
         # list of Word object
-        lyricsAllSections = symbTrParser.syllables2Words()
+        symbTrParser.syllables2Lyrics()
+        lyricsAllSections = symbTrParser.sectionLyrics
         
         # for each section part
         for currSectionBoundary,currSectionLyrics in zip(symbTrParser.sectionboundaries, lyricsAllSections):
@@ -88,7 +89,10 @@ class MakamScore():
             sys.exit("section withNumber {} not present in score. Chech your .sections.tsv file".format(sectionNumber) )
 
         #python indexing starts from zero
-        return self.sectionToLyricsMap[sectionNumber-1][1]
+        lyrics = self.sectionToLyricsMap[sectionNumber][1]
+        if not lyrics.listWords:
+            logger.warn("no lyrics for demanded section {} : {}".format(sectionNumber, self.sectionToLyricsMap[sectionNumber][0] ) )
+        return lyrics 
  
   
    ##################################################################################
@@ -130,35 +134,34 @@ class MakamScore():
                
 
 
+def loadLyrics(pathToComposition, whichSection):
 
-
+    Phonetizer.initLookupTable(False)
     
-     ##################################################################################
-    
-
-def loadScore(pathToComposition):
-    '''
-    load all score-related info into an object
-    '''
     os.chdir(pathToComposition)
+
     pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
-    pathToSectionTsv = os.path.join(pathToComposition, glob.glob("*.sections.tsv")[0])
-    phonetizer = Phonetizer2() 
-    makamScore = MakamScore(pathTotxt, pathToSectionTsv, phonetizer)
-    return makamScore
+    
+    listExtensions = ["sections.txt", "sections.tsv", "sections.json"]
+    sectionFile = findFileByExtensions(pathToComposition, listExtensions)
+        
+    pathToSectionTsv = os.path.join(pathToComposition, sectionFile)
+    makamScore = MakamScore(pathTotxt, pathToSectionTsv )
+    
+    # phoneme IDs
+    lyrics = makamScore.getLyricsForSection(whichSection)
+    return lyrics
 
 
-def doitOneChunk(argv):
+def testMakamScore(argv):
         if len(argv) != 2:
-            print ("usage: {} <path to symbtTr.txt and symbTr.tsv>".format(argv[0]) )
+            print ("usage: {} <path to symbtTr.txt and symbTr.sections.tsv>".format(argv[0]) )
             sys.exit();
         pathToComposition = argv[1]
         
-        makamScore = loadScore(pathToComposition)
+        lyrics = loadLyrics(pathToComposition, whichSection=0)
         
-        makamScore.printSectionsAndLyrics()
-        # is this needed? 
-        
+        print lyrics
         
      
       
@@ -170,8 +173,13 @@ if __name__ == '__main__':
         # only for unit testing purposes
         
         print "in Makam Score"
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi/']
         
-        doitOneChunk(sys.argv)
+        
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
+        
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/']
+        testMakamScore(a)
           
       
          

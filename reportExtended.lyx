@@ -4757,7 +4757,7 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-duration reference ALPHA = 1 /score deviation error
+duration reference ALPHA = 1 (score deviation error)
 \end_layout
 
 \end_inset
@@ -4787,7 +4787,7 @@ duration reference ALPHA = 1 /score deviation error
 \uwave off
 \noun off
 \color none
-ALPHA = 0.97, equal
+ALPHA = 0.97, only middle state=false, equal
 \end_layout
 
 \end_inset

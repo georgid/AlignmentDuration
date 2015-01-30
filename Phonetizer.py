@@ -125,6 +125,6 @@ class Phonetizer(object):
 
 
 if __name__=="__main__":
-     Phonetizer.initLookupTable(1)
+     Phonetizer.initLookupTable(False)
      print Phonetizer.lookupTable
     

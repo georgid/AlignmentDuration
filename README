@@ -45,8 +45,11 @@ USAGE:
 EXAMPLE: doitOneChunk()
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/safiye/01_Aksam_3_nakarat 0 0.97 False 1
 
+
 # with re-synthesized audio
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/  /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim/06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim_1_zemin_from_62_393939_to_77_827796 False 0.97 False 2
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik_short/  /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik_short/1-05_Ruzgar_Soyluyor_Simdi_O_Yerlerde/1-05_Ruzgar_Soyluyor_Simdi_O_Yerlerde_2_zemin_from_16_459_to_38_756510 True 0.97 False 2
 
 EXAMPLE: doitOneRecording() 
 # with re-synthesized audio
