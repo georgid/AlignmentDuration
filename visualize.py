@@ -51,7 +51,6 @@ def visualiseInPraat(URIrecordingNoExt,  withDuration, detectedWordList = [], gr
 # gr truth
     if grTruthDurationWordList != None and grTruthDurationWordList != []:
         grTruthDurationfileExtension = '.grTruthDuration'
-        grTruthDurationfileExtension = '.phrases'
         
         tokenList2TextGrid(grTruthDurationWordList, URIrecordingNoExt, grTruthDurationfileExtension, URIGrTruth)
 
