@@ -132,8 +132,12 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     else:
         URIrecordingAnno = URIrecordingNoExt + ANNOTATION_EXT
         URIrecordingWav = URIrecordingNoExt + AUDIO_EXTENSION
-        lyrics = loadLyrics(pathToComposition, whichSection).__str__()
-        outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyrics, URIrecordingAnno, '/tmp/', withSynthesis)
+        lyrics = loadLyrics(pathToComposition, whichSection)
+        if not lyrics:
+            logger.warn("skipping section {} with no lyrics ...".format(whichSection))
+            return [], [], []
+    
+        outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyrics.__str__(), URIrecordingAnno, '/tmp/', withSynthesis)
         alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
     
     return alignmentErrors, outputHTKPhoneAlignedURI, [] 
@@ -145,6 +149,9 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     top most logic method
     '''
     lyrics = loadLyrics(pathToComposition, whichSection)
+    if not lyrics:
+        logger.warn("skipping section {} with no lyrics ...".format(whichSection))
+        return [], [], []
     lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
 #     lyricsWithModels.printPhonemeNetwork()
     

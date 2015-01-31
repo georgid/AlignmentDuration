@@ -42,56 +42,41 @@ def doit(argv):
     'ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses', \
     'segah--sarki--curcuna--olmaz_ilac--haci_arif_bey'
     ]
+    
     subpaths = ['/goekhan/', '/goekhan/', '/barbaros/', '/barbaros/', '/safiye/', '/safiye/', '/guelen/', '/guelen/' ]
     patterns = ['02_Kimseye', '02_Gel', '02_Gel', '02_Koklasam',   '01_Aksam' ,    '01_Bakmiyor', '01_Aksam', '01_Olmaz' ]
-    
+#     TODO: take only unique 
     
     ############################# doit for a list of recordings: MALE  ###############################        
     
-    compositionNamesMale = ['nihavent--sarki--aksak--gel_guzelim--faiz_kapanci',
+    
+
+    
+    compositionNames = [  'segah--sarki--curcuna--olmaz_ilac--haci_arif_bey',
+                                'ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses',
+                            'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci',
+                                'nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey',
                                 'nihavent--sarki--aksak--koklasam_saclarini--artaki_candan',
-                                'nihavent--sarki--aksak--koklasam_saclarini--artaki_candan', 
-                            'nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi',
-                             'segah--sarki--curcuna--olmaz_ilac--haci_arif_bey'
-                             ] 
-                             
+                        'nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi',
+                        'nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', 
+                        'nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin',
+                        'ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi'
+                    ]
+    
+    recordingDirs =  [ '21_Recep_Birgit_-_Olmaz_Ilac_Sine-i_Sad_Pareme',
+                      '06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim',
+                      '18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya',
+                      '04_Hamiyet_Yuceses_-_Bakmiyor_Cesm-i_Siyah_Feryade',
+                      '2-15_Nihavend_Aksak_Sarki',
+                      '03_Bekir_Unluataer_-_Kimseye_Etmem_Sikayet_Aglarim_Ben_Halime', 
+                      'Melihat_Gulses',
+                      '05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var',
+                                            'Sakin--Gec--Kalma'
+                      ]                          
                      
                             
-                            
-    recordingDirsMale = ['18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya',
-                             '20_Koklasam_Saclarini', 
-                             '2-15_Nihavend_Aksak_Sarki',
-                         '03_Bekir_Unluataer_-_Kimseye_Etmem_Sikayet_Aglarim_Ben_Halime', 
-                         '21_Recep_Birgit_-_Olmaz_Ilac_Sine-i_Sad_Pareme'
-                        ]
-                          
-                          
-  ############################# doit  for a list of recordings : FEMALE #############################
-    compositionNamesFemale = ['nihavent--sarki--turkaksagi--nerelerde_kaldin--ismail_hakki_efendi',
-                                                        'muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik',
-                                                        'nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey' , 
-                                                        'huzzam--sarki--curcuna--kusade_taliim--sevki_bey', 
-                                                        'ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses'
-                                                        
-
-                      ]                        
-    recordingDirsFemale = [
-                         '3-12_Nerelerde_Kaldin', 
-                         '1-05_Ruzgar_Soyluyor_Simdi_O_Yerlerde', 
-                         '04_Hamiyet_Yuceses_-_Bakmiyor_Cesm-i_Siyah_Feryade', 
-                         '06_Kusade_Talihim',
-                         '06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim'
-                         
-                         ]       
-    
         
-        
-        ######### both male and female ##################
-    compositionNames = compositionNamesFemale
-    recordingDirs = recordingDirsFemale
-
-    compositionNames.extend(compositionNamesMale)
-    recordingDirs.extend(recordingDirsMale)                  
+                  
 
 
     
@@ -120,7 +105,11 @@ def doit(argv):
         URI_Recording =  os.path.join(URI_Composition, recordingDir)
         pattern = recordingDir + '_'
 
-        logger.info("doing command ...\n doitOneRecording  " + URI_Composition + " " +  URI_Recording  + " " + pattern)
+        command = [ 'python', '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py', URI_Composition, URI_Recording, pattern, withDuration, str(ALPHA), ONLY_MIDDLE_STATE, str(evalLevel), usePersistentFiles]
+        commandStr = " ".join(command)
+        logger.info("{} ".format(commandStr ))
+        
+#         continue
         mean, stDev, errorsForRecording  = doitOneRecording([ 'dummy', URI_Composition, URI_Recording, pattern, withDuration, ALPHA, ONLY_MIDDLE_STATE, evalLevel, usePersistentFiles])
         totalErrors.extend(errorsForRecording)
         

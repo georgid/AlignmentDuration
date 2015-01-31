@@ -1,4 +1,5 @@
 cd /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/
+cd /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentEvaluation/
 cd /Users/joro/Documents/Phd/UPF/voxforge/myScripts/utilsLyrics
 cd /Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/
 

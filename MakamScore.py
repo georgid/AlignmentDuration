@@ -85,13 +85,14 @@ class MakamScore():
         convenience getter
         '''
         
-        if sectionNumber >  len(self.sectionToLyricsMap):
-            sys.exit("section withNumber {} not present in score. Chech your .sections.tsv file".format(sectionNumber) )
+        if sectionNumber >=  len(self.sectionToLyricsMap) or sectionNumber < 0:
+            sys.exit("section withNumber {} not present in score. Check your .sections.tsv file".format(sectionNumber) )
 
         #python indexing starts from zero
         lyrics = self.sectionToLyricsMap[sectionNumber][1]
         if not lyrics.listWords:
-            logger.warn("no lyrics for demanded section {} : {}".format(sectionNumber, self.sectionToLyricsMap[sectionNumber][0] ) )
+            logger.warn("no lyrics for demanded section {} : {}".format(sectionNumber, self.sectionToLyricsMap[sectionNumber][0] ))
+            return None
         return lyrics 
  
   
@@ -114,7 +115,8 @@ class MakamScore():
         list of all phonemes. print to file @param outputFileName
         '''    
         lyrics = self.getLyricsForSection(whichSection)
-    
+        if not lyrics:
+            sys.exit("no lyrics")
         
         writeListToTextFile(lyrics.phonemesNetwork, None,  outputFileName )
         return lyrics.phonemesNetwork
@@ -128,6 +130,9 @@ class MakamScore():
         '''
         
         lyrics = self.getLyricsForSection(whichSection)
+        if not lyrics:
+            sys.exit("no lyrics")
+            
         lyrics.printSyllables
         
      
@@ -143,12 +148,14 @@ def loadLyrics(pathToComposition, whichSection):
     pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
     
     listExtensions = ["sections.txt", "sections.tsv", "sections.json"]
-    sectionFile = findFileByExtensions(pathToComposition, listExtensions)
+    sectionFiles = findFileByExtensions(pathToComposition, listExtensions)
+    sectionFile = sectionFiles[0]
         
     pathToSectionTsv = os.path.join(pathToComposition, sectionFile)
     makamScore = MakamScore(pathTotxt, pathToSectionTsv )
     
     # phoneme IDs
+    
     lyrics = makamScore.getLyricsForSection(whichSection)
     return lyrics
 
@@ -159,10 +166,10 @@ def testMakamScore(argv):
             sys.exit();
         pathToComposition = argv[1]
         
+        for whichSection in range(10): 
+            lyrics = loadLyrics(pathToComposition, whichSection)
+            print lyrics
         lyrics = loadLyrics(pathToComposition, whichSection=0)
-        
-        print lyrics
-        
      
       
 
@@ -179,6 +186,9 @@ if __name__ == '__main__':
         a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
         
         a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/']
+        
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey/']
+
         testMakamScore(a)
           
       
