@@ -97,11 +97,11 @@ def doitOneRecording(argv):
             logger.debug("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection = getSectionNumberFromName(URIrecordingNoExt) 
             
-            currAlignmentErrors, detectedWordList, grTruthDurationWordList = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
+            currAlignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
 
             totalErrors.extend(currAlignmentErrors)
             
-            visualiseInPraat(URIrecordingNoExt, withDuration, detectedWordList, grTruthDurationWordList)
+#             visualiseInPraat(URIrecordingNoExt, withDuration, detectedWordList, grTruthDurationWordList)
 
     mean = []
     stDev =  []     

@@ -98,28 +98,31 @@ def doit(argv):
     subpaths = ['/idil/', '/idil/', '/idil/', '/guelen/', '/guelen/', '/barbaros/',  '/safiye/','/barbaros/','/goekhan/'    ]
     patterns = [  'Melihat_Gulses', '05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var',  'Sakin--Gec--Kalma', '01_Olmaz', '01_Aksam',  '02_Gel', '01_Bakmiyor', '02_Koklasam','02_Kimseye']
 
-#     for compositionName, recordingDir in zip(compositionNames, recordingDirs):
+   
+    for compositionName, recordingDir in zip(compositionNames, recordingDirs):
     
-    for i in range(len(compositionNames)):
-         
-         
-        URI_Composition = pathToScores + compositionNames[i]
-        URI_Recording = path_testFile + subpaths[i]
-        pattern  = patterns[i]
-        pattern = pattern + '_'
+# #     for acapella data
+#     for i in range(len(compositionNames)):
+#          
+#          
+#         URI_Composition = pathToScores + compositionNames[i]
+#         URI_Recording = path_testFile + subpaths[i]
+#         pattern  = patterns[i]
+#         pattern = pattern + '_'
+# # end acapella data
 
 #     for synthesis data 
+        URI_Composition = os.path.join(pathToScores, compositionName)
+        URI_Recording =  os.path.join(URI_Composition, recordingDir)
+        pattern = recordingDir + '_'
 
-#         URI_Composition = os.path.join(pathToScores, compositionName)
-#         URI_Recording =  os.path.join(URI_Composition, recordingDir)
-#         pattern = recordingDir + '_'
 # end of synthesis data
 
         command = [ 'python', '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py', URI_Composition, URI_Recording, pattern, withDuration, str(ALPHA), ONLY_MIDDLE_STATE, str(evalLevel), usePersistentFiles]
         commandStr = " ".join(command)
         logger.info("{} ".format(commandStr ))
         
-        continue
+#         continue
         mean, stDev, errorsForRecording  = doitOneRecording([ 'dummy', URI_Composition, URI_Recording, pattern, withDuration, ALPHA, ONLY_MIDDLE_STATE, evalLevel, usePersistentFiles])
         totalErrors.extend(errorsForRecording)
         

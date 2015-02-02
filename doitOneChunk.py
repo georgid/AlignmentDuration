@@ -16,7 +16,7 @@ from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWord, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
 
-from visualize import visualiseInPraat
+from visualize import visualiseInPraat, determineSuffix
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
@@ -42,7 +42,7 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases
 from TextGrid_Parsing import TextGrid2WordList
-
+from PraatVisualiser import mlf2TabFormat
 
 # TODO: read mfccs with matlab htk_read
 # sys.path.append('/Users/joro/Downloads/python-matlab-bridge-master')
@@ -104,8 +104,7 @@ def doitOneChunk(argv):
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    alignmentErrors, detectedWordList, grTruthDurationWordList = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
-
+    alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
         
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
@@ -113,7 +112,7 @@ def doitOneChunk(argv):
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
 
 
-    visualiseInPraat(URIrecordingNoExt, withDuration, detectedWordList, grTruthDurationWordList)
+#     visualiseInPraat(URIrecordingNoExt, withDuration, detectedAlignedfileName,  detectedWordList, grTruthDurationWordList)
 
     
 
@@ -125,22 +124,32 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     withSynthesis = True
     Phonetizer.initLookupTable(withSynthesis)
     
+    wordsAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration)
+    
+    
     if withDuration:
         alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles)
-        return alignmentErrors, detectedWordList, grTruthDurationWordList
-    
+        
+            
     else:
         URIrecordingAnno = URIrecordingNoExt + ANNOTATION_EXT
         URIrecordingWav = URIrecordingNoExt + AUDIO_EXTENSION
         lyrics = loadLyrics(pathToComposition, whichSection)
+#         in case  we are at no-lyrics section
         if not lyrics:
             logger.warn("skipping section {} with no lyrics ...".format(whichSection))
             return [], [], []
     
         outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyrics.__str__(), URIrecordingAnno, '/tmp/', withSynthesis)
         alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
+        detectedWordList = outputHTKPhoneAlignedURI
+        grTruthDurationWordList = []
     
-    return alignmentErrors, outputHTKPhoneAlignedURI, [] 
+    detectedAlignedfileName =  mlf2TabFormat(detectedWordList, URIrecordingNoExt, wordsAlignedSuffix)
+        
+    return alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName
+    
+
 
 
 
