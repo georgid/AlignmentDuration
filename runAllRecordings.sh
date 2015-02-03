@@ -23,5 +23,5 @@ which python
 HOME_DTIC=/homedtic/georgid/
 
 
-#$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data/  /homedtic/georgid/ISTANBUL/ True
-$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecordings.py $HOME_DTIC//turkish-makam-lyrics-2-audio-test-data-synthesis/ $HOME_DTIC//turkish-makam-lyrics-2-audio-test-data-synthesis/  0.97 False True
+$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/turkish-makam-lyrics-2-audio-test-data-synthesis/  /homedtic/georgid/ISTANBUL/ True 0.97 False True
+#$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecordings.py $HOME_DTIC//turkish-makam-lyrics-2-audio-test-data-synthesis/ $HOME_DTIC//turkish-makam-lyrics-2-audio-test-data-synthesis/ True 0.97 False True

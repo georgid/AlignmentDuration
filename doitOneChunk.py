@@ -138,7 +138,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 #         in case  we are at no-lyrics section
         if not lyrics:
             logger.warn("skipping section {} with no lyrics ...".format(whichSection))
-            return [], [], []
+            return [], [], [], []
     
         outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyrics.__str__(), URIrecordingAnno, '/tmp/', withSynthesis)
         alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)

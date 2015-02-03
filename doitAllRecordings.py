@@ -32,7 +32,7 @@ def doit(argv):
         
     if len(argv) == 7:
         usePersistentFiles = argv[6]
-    
+    # old list. with no acapella equivalent.
     compositionNames = ['nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', \
     'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/', \
     'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/', \
@@ -99,22 +99,23 @@ def doit(argv):
     patterns = [  'Melihat_Gulses', '05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var',  'Sakin--Gec--Kalma', '01_Olmaz', '01_Aksam',  '02_Gel', '01_Bakmiyor', '02_Koklasam','02_Kimseye']
 
    
-    for compositionName, recordingDir in zip(compositionNames, recordingDirs):
     
 # #     for acapella data
-#     for i in range(len(compositionNames)):
-#          
-#          
-#         URI_Composition = pathToScores + compositionNames[i]
-#         URI_Recording = path_testFile + subpaths[i]
-#         pattern  = patterns[i]
-#         pattern = pattern + '_'
-# # end acapella data
+    for i in range(len(compositionNames)):
+          
+          
+        URI_Composition = pathToScores + compositionNames[i]
+        URI_Recording = path_testFile + subpaths[i]
+        pattern  = patterns[i]
+        pattern = pattern + '_'
+# end acapella data
 
 #     for synthesis data 
-        URI_Composition = os.path.join(pathToScores, compositionName)
-        URI_Recording =  os.path.join(URI_Composition, recordingDir)
-        pattern = recordingDir + '_'
+#     for compositionName, recordingDir in zip(compositionNames, recordingDirs):
+# 
+#         URI_Composition = os.path.join(pathToScores, compositionName)
+#         URI_Recording =  os.path.join(URI_Composition, recordingDir)
+#         pattern = recordingDir + '_'
 
 # end of synthesis data
 
