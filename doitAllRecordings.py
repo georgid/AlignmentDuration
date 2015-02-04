@@ -13,8 +13,8 @@ from Decoder import logger
 from Utilz import getMeanAndStDevError
 
 def doit(argv):
-    if len(argv) != 6 and len(argv) != 7:
-        print ("usage: {}  <pathToCompositions>  <pathToRecordings> <withDurations> <ALPHA> <ONLY_MIDDLE_STATE> <usePersistentFiles=True>".format(argv[0]) )
+    if len(argv) != 7 and len(argv) != 8:
+        print ("usage: {}  <pathToCompositions>  <pathToRecordings> <withDurations> <ALPHA> <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True>".format(argv[0]) )
         sys.exit();
 
     pathToScores = argv[1]
@@ -26,12 +26,12 @@ def doit(argv):
     
     
     ONLY_MIDDLE_STATE = argv[5]
-    evalLevel = 2
+    evalLevel = int(argv[6])
     
     usePersistentFiles = 'True'
         
-    if len(argv) == 7:
-        usePersistentFiles = argv[6]
+    if len(argv) == 8:
+        usePersistentFiles = argv[7]
     # old list. with no acapella equivalent.
     compositionNames = ['nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', \
     'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/', \
@@ -65,7 +65,8 @@ def doit(argv):
                     
                     ]
     
-    recordingDirs =  [  'Melihat_Gulses',
+    recordingDirs =  [ 
+                       'Melihat_Gulses',
                       '05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var',
                                             'Sakin--Gec--Kalma', 
                       '21_Recep_Birgit_-_Olmaz_Ilac_Sine-i_Sad_Pareme',
@@ -95,8 +96,12 @@ def doit(argv):
     
        #############################
 #     for a-capella ISTANBUL data 
-    subpaths = ['/idil/', '/idil/', '/idil/', '/guelen/', '/guelen/', '/barbaros/',  '/safiye/','/barbaros/','/goekhan/'    ]
-    patterns = [  'Melihat_Gulses', '05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var',  'Sakin--Gec--Kalma', '01_Olmaz', '01_Aksam',  '02_Gel', '01_Bakmiyor', '02_Koklasam','02_Kimseye']
+    subpaths = [
+                '/idil/', '/idil/', '/idil/', 
+                '/guelen/', '/guelen/', '/barbaros/',  '/safiye/','/barbaros/','/goekhan/'    ]
+    patterns = [  
+                'Melihat_Gulses', '05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var',  'Sakin--Gec--Kalma', 
+                '01_Olmaz', '01_Aksam',  '02_Gel', '01_Bakmiyor', '02_Koklasam','02_Kimseye']
 
    
     

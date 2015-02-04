@@ -1827,7 +1827,7 @@ durations dtw-3states
 \begin_inset Text
 
 \begin_layout Plain Layout
-no_dur 
+no_dur_HMMVIterbi 
 \end_layout
 
 \end_inset
@@ -2135,7 +2135,7 @@ Gel
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.08
+0.04
 \end_layout
 
 \end_inset
@@ -2144,7 +2144,7 @@ Gel
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.12
+00.6
 \end_layout
 
 \end_inset
@@ -2222,7 +2222,7 @@ Koklasam
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.29
+0.17
 \end_layout
 
 \end_inset
@@ -2231,7 +2231,7 @@ Koklasam
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.49
+0.39
 \end_layout
 
 \end_inset
@@ -2396,7 +2396,7 @@ Bakmiyor
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.73
+1.61
 \end_layout
 
 \end_inset
@@ -2405,7 +2405,7 @@ Bakmiyor
 \begin_inset Text
 
 \begin_layout Plain Layout
-1.65
+1.99
 \end_layout
 
 \end_inset
@@ -2483,7 +2483,7 @@ Akşam
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.37
+0.3
 \end_layout
 
 \end_inset
@@ -2492,7 +2492,7 @@ Akşam
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.69
+0.58
 \end_layout
 
 \end_inset
@@ -2566,7 +2566,7 @@ Olmaz
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.44
+0.82
 \end_layout
 
 \end_inset
@@ -2575,7 +2575,7 @@ Olmaz
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.99
+1.08
 \end_layout
 
 \end_inset

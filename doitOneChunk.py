@@ -18,6 +18,7 @@ from Phonetizer import Phonetizer
 
 from visualize import visualiseInPraat, determineSuffix
 
+
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 
@@ -119,12 +120,12 @@ def doitOneChunk(argv):
 
 def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser):
     '''
-    call alignment method depending on whether duration or new model selected 
+    call alignment method depending on whether duration or htk  selected 
     '''
-    withSynthesis = True
+    withSynthesis = False
     Phonetizer.initLookupTable(withSynthesis)
     
-    wordsAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration)
+    tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, evalLevel)
     
     
     if withDuration:
@@ -145,7 +146,8 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         detectedWordList = outputHTKPhoneAlignedURI
         grTruthDurationWordList = []
     
-    detectedAlignedfileName =  mlf2TabFormat(detectedWordList, URIrecordingNoExt, wordsAlignedSuffix)
+    # store decoding results in a file
+    detectedAlignedfileName =  mlf2TabFormat(detectedWordList, URIrecordingNoExt, tokenLevelAlignedSuffix)
         
     return alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName
     

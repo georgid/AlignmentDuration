@@ -22,6 +22,8 @@ from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat, a
 
 from tab2PraatAndOpenWithPRaat import tab2PraatAndOpenWithPRaat 
 
+from TextGrid_Parsing import tier_names
+
 
 # In[2]:
 
@@ -29,25 +31,27 @@ import matplotlib.pylab as plt
 import numpy as np
 ANNOTATION_EXT = '.TextGrid'  
 
-def determineSuffix(withDuration):
+def determineSuffix(withDuration, evalLevel):
+    
+    evalLevelToken = tier_names[evalLevel]
     if withDuration:
         if Phonetizer.withSynthesis:
-            wordsAlignedSuffix = '.wordsDurationSynthAligned'
+            tokenAlignedSuffix =  '.' + evalLevelToken + 'DurationSynthAligned'
             phonemesAlignedSuffix = '.phonemesDurationSynthAligned'
         else:
-            wordsAlignedSuffix = '.wordsDurationAligned'
+            tokenAlignedSuffix = '.' + evalLevelToken + 'DurationAligned'
             phonemesAlignedSuffix = '.phonemesDurationAligned'
     else:
-        wordsAlignedSuffix = '.wordsAligned'
+        tokenAlignedSuffix = '.' + evalLevelToken + 'Aligned'
         phonemesAlignedSuffix = '.phonemesAligned'
-    return wordsAlignedSuffix, phonemesAlignedSuffix
+    return tokenAlignedSuffix, phonemesAlignedSuffix
 
 def visualiseInPraat(URIrecordingNoExt,  withDuration, detectedFileName, detectedWordList = [], grTruthDurationWordList=[]):
     ### OPTIONAL############# : PRAAT
     pathToAudioFile = URIrecordingNoExt + '.wav'
     URIGrTruth = URIrecordingNoExt + ANNOTATION_EXT
     
-    wordsAlignedSuffix, phonemesAlignedSuffix = determineSuffix
+    AlignedSuffix, phonemesAlignedSuffix = determineSuffix
     
 # gr truth
 # TODO: what to do with detection.
