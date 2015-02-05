@@ -19,6 +19,7 @@ from Utilz import writeListOfListToTextFile, writeListToTextFile
 
 import numpy
 
+# use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
 WITH_DURATIONS= True
 
@@ -73,7 +74,7 @@ class Decoder(object):
     
     def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt, listDurations):
         ''' decode path for given exatrcted features for audio
-        HERE is decided which decoding scheme (based on WITH_DURATION parameter)
+        HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
         if self.lyricsWithModels.ONLY_MIDDLE_STATE:
             URI_bmap = URI_recording_noExt + '.bmap_onlyMiddleState'
@@ -90,7 +91,8 @@ class Decoder(object):
 #         observationFeatures = observationFeatures[0:100,:]
         
         if  WITH_DURATIONS:
-        
+            
+            # transMatrix for 0 state which is silence
             transMatrix = self.lyricsWithModels.phonemesNetwork[0].getTransMatrix()
             self.hmmNetwork.setWaitProbSilState(transMatrix[2,2])
             

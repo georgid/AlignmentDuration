@@ -38,8 +38,8 @@ def doitOneRecording(argv):
     '''
     for a list of recordings, select those which name contains pattern and evlauate total error 
     ''' 
-    if len(argv) != 8 and  len(argv) != 9 :
-            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <withDuration=True/False> <ALPHA>  <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True> ".format(argv[0]) )
+    if len(argv) != 9 and  len(argv) != 10 :
+            print ("usage: {}  <pathToComposition>  <pathToRecordings> <pattern> <withDuration=True/False> <withSynthesis> <ALPHA>  <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True> ".format(argv[0]) )
             sys.exit();
     
     os.chdir(argv[2])
@@ -70,19 +70,29 @@ def doitOneRecording(argv):
         withDuration = False
     else: 
         sys.exit("withDuration can be only True or False")  
+    
+    withSynthesis = argv[5]
+    if withSynthesis=='True':
+        withSynthesis = True
+    elif withSynthesis=='False':
+        withSynthesis = False
+    else: 
+        sys.exit("withSynthesis can be only True or False")  
 
-    ALPHA = float(argv[5])
+    
+        
+    ALPHA = float(argv[6])
     
      
-    ONLY_MIDDLE_STATE = argv[6]
+    ONLY_MIDDLE_STATE = argv[7]
     
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
-    evalLevel = int(argv[7])
+    evalLevel = int(argv[8])
     
     usePersistentFiles = 'True'
-    if len(argv) == 9:
-        usePersistentFiles =  argv[8]
+    if len(argv) == 10:
+        usePersistentFiles =  argv[9]
         
          
     totalErrors = []
@@ -97,7 +107,7 @@ def doitOneRecording(argv):
             logger.debug("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection = getSectionNumberFromName(URIrecordingNoExt) 
             
-            currAlignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
+            currAlignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
 
             totalErrors.extend(currAlignmentErrors)
             

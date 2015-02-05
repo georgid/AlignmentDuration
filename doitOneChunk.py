@@ -67,8 +67,8 @@ AUDIO_EXT = '.wav'
 
 def doitOneChunk(argv):
     
-    if len(argv) != 7 and  len(argv) != 8 :
-            print ("usage: {}  <pathToComposition> <URI_recording_no_ext> <withDuration=1> <ALPHA> <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True>".format(argv[0]) )
+    if len(argv) != 8 and  len(argv) != 9 :
+            print ("usage: {}  <pathToComposition> <URI_recording_no_ext> <withDuration=True> <withSynthesis> <ALPHA> <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True>".format(argv[0]) )
             sys.exit();
     
     
@@ -84,17 +84,26 @@ def doitOneChunk(argv):
     else: 
         sys.exit("withDuration can be only True or False")  
     
-    ALPHA = float(argv[4])
-    ONLY_MIDDLE_STATE = argv[5]
+    withSynthesis = argv[4]
+    if withSynthesis=='True':
+        withSynthesis = True
+    elif withSynthesis=='False':
+        withSynthesis = False
+    else: 
+        sys.exit("withSynthesis can be only True or False")  
+    
+    
+    ALPHA = float(argv[5])
+    ONLY_MIDDLE_STATE = argv[6]
     
     evalLevel = tierAliases.wordLevel
-    evalLevel = int(argv[6])
+    evalLevel = int(argv[7])
 
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
     usePersistentFiles = 'True'
-    if len(argv) == 8:
-        usePersistentFiles =  argv[7]
+    if len(argv) == 9:
+        usePersistentFiles =  argv[8]
     
     
     set_printoptions(threshold='nan') 
@@ -105,7 +114,7 @@ def doitOneChunk(argv):
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser)
+    alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
         
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
@@ -118,11 +127,11 @@ def doitOneChunk(argv):
     
 
 
-def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, evalLevel, params, usePersistentFiles, htkParser):
+def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser):
     '''
     call alignment method depending on whether duration or htk  selected 
     '''
-    withSynthesis = False
+
     Phonetizer.initLookupTable(withSynthesis)
     
     tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, evalLevel)
@@ -164,7 +173,9 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
         logger.warn("skipping section {} with no lyrics ...".format(whichSection))
         return [], [], []
     lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
-#     lyricsWithModels.printPhonemeNetwork()
+    
+    # score-derived phoneme  durations
+    lyricsWithModels.printPhonemeNetwork()
     
     
     decoder = Decoder(lyricsWithModels, params.ALPHA)
@@ -224,7 +235,7 @@ def getGroundTruthDurations(URI_recording_noExt, decoder, evalLevel):
         
         annotationURI = URI_recording_noExt + ANNOTATION_EXT
 
-        ##### visualize duration of initial silence 
+        ##### get duration of initial silence 
 
         try:
             annotationTokenListA = TextGrid2WordList(annotationURI, evalLevel)     
@@ -248,7 +259,8 @@ def getGroundTruthDurations(URI_recording_noExt, decoder, evalLevel):
         
             
         grTruthWordList = expandlyrics2Words (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
-#         writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + "gtDur.txt" )
+        grTruthDurationfileExtension = '.grTruthDuration'
+        writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + grTruthDurationfileExtension )
         
 #     TODO: could be done easier with this code, and check last method in Word
 #         grTruthWordList =    testT(decoder.lyricsWithModels)

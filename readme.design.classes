@@ -34,6 +34,8 @@ self._phonemes2stateNetworkOnlyMiddle()
         else:
 #             self._phonemes2stateNetwork()
             self._phonemes2stateNetworkWeights()
+            
+NOTE: for handling duration information see Decoder
 
 DEBUG: 
 LyricsWithModels.LyricsWithModels.printWordsAndStatesAndDurations - can be used after decoding to compare ground truth with result 
@@ -67,7 +69,8 @@ Decoder
  methods: 
  duration2numFrameDuration(self, observationFeatures) - get relative tempo (numFramesPerMinUnit) for given audio chunk
  
- decodeAudio - a wrapper for hmm._BaseHMM._viterbiForced
+ decodeAudio - a wrapper for hmm._BaseHMM._viterbiForced. assigns the exponential distribution to sil states at beginning and end
+ 
  path - result
 
 

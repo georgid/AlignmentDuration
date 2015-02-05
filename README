@@ -43,8 +43,7 @@ Both doitOneRecording and  doitAllRecordings are calling it behind the scenes
 USAGE:
 
 EXAMPLE: doitOneChunk()
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/  /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/safiye/01_Aksam_3_nakarat 0 0.97 False 1
-
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/idil/05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var_0_zemin_from_69_5205_to_84_2 True False 0.97 False 2
 
 # with re-synthesized audio
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/  /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim/06_Semahat_Ozdenses_-_Aksam_Oldu_Huzunlendim_1_zemin_from_62_393939_to_77_827796 False 0.97 False 2

@@ -43,11 +43,20 @@ class Syllable():
 #           
             if not Phonetizer.lookupTable:
                 sys.exit("Phonetizer.lookupTable not defined. do Phonetizer.initlookupTable at beginning of all code")   
-            phonemeIDs = Phonetizer.grapheme2Phoneme(self.text)
             
             self.phonemes = []
-            for phonemeID in phonemeIDs:
-                self.phonemes.append(Phoneme(phonemeID))
+            
+            # instrument
+            if self.text == '_SAZ_':
+                self.phonemes.append(Phoneme('sil'))
+            
+            # text from lyrics
+            else:
+                phonemeIDs = Phonetizer.grapheme2Phoneme(self.text)
+                
+                for phonemeID in phonemeIDs:
+                    self.phonemes.append(Phoneme(phonemeID))
+            
             if self.hasShortPauseAtEnd:
                 self.phonemes.append(Phoneme('sp'))
            
@@ -79,7 +88,10 @@ class Syllable():
             if self.phonemes is None:
                 self.expandToPhonemes()
                 
-            vowelPos = self.getPositionVowel()
+            if self.phonemes[0].ID == 'sil':
+                vowelPos = 0
+            else:    
+                vowelPos = self.getPositionVowel()
             
             # if no vowel in syllable - equal division. just in case
             if vowelPos == -1:
@@ -93,7 +105,7 @@ class Syllable():
                 # sanity check
                 if vowelDuration <= 0:
                     sys.exit("phoneme {} of syllable {} has duration of zero or less units. ".format(phoneme.ID, self.text)  )
-                self.phonemes[self.getPositionVowel()].setDurationInMinUnit(vowelDuration)
+                self.phonemes[vowelPos].setDurationInMinUnit(vowelDuration)
                 
         def __str__(self):
                 syllalbeTest = self.text.encode('utf-8','replace')

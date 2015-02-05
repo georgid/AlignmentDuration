@@ -13,8 +13,8 @@ from Decoder import logger
 from Utilz import getMeanAndStDevError
 
 def doit(argv):
-    if len(argv) != 7 and len(argv) != 8:
-        print ("usage: {}  <pathToCompositions>  <pathToRecordings> <withDurations> <ALPHA> <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True>".format(argv[0]) )
+    if len(argv) != 8 and len(argv) != 9:
+        print ("usage: {}  <pathToCompositions>  <pathToRecordings> <withDurations> <withSynthesis> <ALPHA> <ONLY_MIDDLE_STATE> <evalLevel> <usePersistentFiles=True>".format(argv[0]) )
         sys.exit();
 
     pathToScores = argv[1]
@@ -22,16 +22,17 @@ def doit(argv):
     path_testFile  = argv[2]
     
     withDuration = argv[3]
-    ALPHA = argv[4]
+    withSynthesis = argv[4]
+    ALPHA = argv[5]
     
     
-    ONLY_MIDDLE_STATE = argv[5]
-    evalLevel = int(argv[6])
+    ONLY_MIDDLE_STATE = argv[6]
+    evalLevel = int(argv[7])
     
     usePersistentFiles = 'True'
         
-    if len(argv) == 8:
-        usePersistentFiles = argv[7]
+    if len(argv) == 9:
+        usePersistentFiles = argv[8]
     # old list. with no acapella equivalent.
     compositionNames = ['nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', \
     'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/', \
@@ -124,12 +125,12 @@ def doit(argv):
 
 # end of synthesis data
 
-        command = [ 'python', '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py', URI_Composition, URI_Recording, pattern, withDuration, str(ALPHA), ONLY_MIDDLE_STATE, str(evalLevel), usePersistentFiles]
+        command = [ 'python', '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py', URI_Composition, URI_Recording, pattern, withDuration, withSynthesis, str(ALPHA), ONLY_MIDDLE_STATE, str(evalLevel), usePersistentFiles]
         commandStr = " ".join(command)
         logger.info("{} ".format(commandStr ))
         
 #         continue
-        mean, stDev, errorsForRecording  = doitOneRecording([ 'dummy', URI_Composition, URI_Recording, pattern, withDuration, ALPHA, ONLY_MIDDLE_STATE, evalLevel, usePersistentFiles])
+        mean, stDev, errorsForRecording  = doitOneRecording([ 'dummy', URI_Composition, URI_Recording, pattern, withDuration, withSynthesis,  ALPHA, ONLY_MIDDLE_STATE, evalLevel, usePersistentFiles])
         totalErrors.extend(errorsForRecording)
         
 
