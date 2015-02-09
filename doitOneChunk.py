@@ -144,9 +144,11 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     else:
         URIrecordingAnno = URIrecordingNoExt + ANNOTATION_EXT
         URIrecordingWav = URIrecordingNoExt + AUDIO_EXTENSION
-        lyrics = loadLyrics(pathToComposition, whichSection)
+        # new makamScore used
+        lyricsObj = loadLyrics(pathToComposition, whichSection)
+        lyrics = lyricsObj.__str__()
 #         in case  we are at no-lyrics section
-        if not lyrics:
+        if not lyrics or lyrics =='_SAZ_':
             logger.warn("skipping section {} with no lyrics ...".format(whichSection))
             return [], [], [], []
     
@@ -155,7 +157,8 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         detectedWordList = outputHTKPhoneAlignedURI
         grTruthDurationWordList = []
     
-    # store decoding results in a file
+    # store decoding results in a file FIXME: if with duration it is not mlf 
+    detectedAlignedfileName = []
     detectedAlignedfileName =  mlf2TabFormat(detectedWordList, URIrecordingNoExt, tokenLevelAlignedSuffix)
         
     return alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName
@@ -168,14 +171,16 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     '''
     top most logic method
     '''
+    logger.info("aligning audio {}".format(URIrecordingNoExt))
+
     lyrics = loadLyrics(pathToComposition, whichSection)
     if not lyrics:
         logger.warn("skipping section {} with no lyrics ...".format(whichSection))
         return [], [], []
     lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
     
-    # score-derived phoneme  durations
-    lyricsWithModels.printPhonemeNetwork()
+    # DEBUG: score-derived phoneme  durations
+#     lyricsWithModels.printPhonemeNetwork()
     
     
     decoder = Decoder(lyricsWithModels, params.ALPHA)
@@ -216,22 +221,28 @@ def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFile
         decoder.lyricsWithModels.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
         
 
-    grTruthWordList = []
-    grTruthWordList  = getGroundTruthDurations(URI_recording_noExt, decoder, evalLevel)
+    refDurationsWordList = []
+    refDurationsWordList  = getReferenceDurations(URI_recording_noExt, decoder, evalLevel)
     
     detectedWordList = []
     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
     detectedWordList = decoder.path2ResultWordList()
-        
+   
+
+#       use to calc score deviations
+#     detectedWordList = refDurationsWordList
     
-    
-    return detectedWordList, grTruthWordList
+    return detectedWordList, refDurationsWordList
 
 
 
     
 
-def getGroundTruthDurations(URI_recording_noExt, decoder, evalLevel):
+def getReferenceDurations(URI_recording_noExt, decoder, evalLevel):
+        '''
+        timestamps of words according to reference durations read from score. Used to obtain so called 'score-deviation' metric
+        not used in decoding 
+        '''
         
         annotationURI = URI_recording_noExt + ANNOTATION_EXT
 

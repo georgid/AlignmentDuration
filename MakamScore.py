@@ -147,7 +147,7 @@ def loadLyrics(pathToComposition, whichSection):
 
     pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
     
-    listExtensions = ["sections.txt", "sections.tsv", "sections.json"]
+    listExtensions = [ "sections.json", "sections.tsv", "sections.txt"]
     sectionFiles = findFileByExtensions(pathToComposition, listExtensions)
     sectionFile = sectionFiles[0]
         
@@ -159,6 +159,24 @@ def loadLyrics(pathToComposition, whichSection):
     lyrics = makamScore.getLyricsForSection(whichSection)
     return lyrics
 
+def loadMakamScore(pathToComposition):
+    '''
+    same as loadLyrics, but return MakamScore, so that all lyrics can be shown if needed
+    '''
+    Phonetizer.initLookupTable(False)
+    
+    os.chdir(pathToComposition)
+
+    pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
+    
+    listExtensions = [ "sections.json", "sections.tsv", "sections.txt"]
+    sectionFiles = findFileByExtensions(pathToComposition, listExtensions)
+    sectionFile = sectionFiles[0]
+        
+    pathToSectionTsv = os.path.join(pathToComposition, sectionFile)
+    makamScore = MakamScore(pathTotxt, pathToSectionTsv )
+    return makamScore
+    
 
 def testMakamScore(argv):
         if len(argv) != 2:
@@ -166,10 +184,9 @@ def testMakamScore(argv):
             sys.exit();
         pathToComposition = argv[1]
         
-        for whichSection in range(10): 
-            lyrics = loadLyrics(pathToComposition, whichSection)
-            print lyrics
-        lyrics = loadLyrics(pathToComposition, whichSection=0)
+        makamScore = loadMakamScore(pathToComposition)
+        makamScore.printSectionsAndLyrics()
+#         lyrics = loadLyrics(pathToComposition, whichSection=0)
      
       
 
@@ -180,14 +197,19 @@ if __name__ == '__main__':
         # only for unit testing purposes
         
         print "in Makam Score"
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi/']
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi/']
         
         
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
         
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/']
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/']
         
         a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey/']
+        
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/rast--sarki--curcuna--nihansin_dideden--haci_faik_bey/']
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/rast--sarki--sofyan--gelmez_oldu--dramali_hasan/']
+        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
+
 
         testMakamScore(a)
           

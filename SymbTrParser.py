@@ -71,7 +71,7 @@ class SymbTrParser(_SymbTrParserBase):
             line = line.replace('\r','') 
             
             tokens = line.split("\t")
-            if len(tokens) != 12:
+            if len(tokens) < 12:
                 print "TOKENS ARE 11, no syllable ";  sys.exit()
             
             # sanity check  MINIMAL_DURATION of embelishments. 
@@ -101,11 +101,11 @@ class SymbTrParser(_SymbTrParserBase):
         currTxtToken = tokens[11]
         
         # skip ARANAGME sections
-        if currTxtToken.startswith(u'ARANA\u011eME') or currTxtToken.startswith(u'ARANAGME'): #             or tokens[1] == '8':             # skip embellishments. they dont count in duration
-            return None,None
+#         if currTxtToken.startswith(u'ARANA\u011eME') or currTxtToken.startswith(u'ARANAGME'): #             or tokens[1] == '8':             # skip embellishments. they dont count in duration
+#             return None,None
         
          # '' (no lyrics at note) so still at same syllable
-        elif currTxtToken == '' and not (currSyllable is None) and not (syllTotalDuration is None):
+        if currTxtToken == '' and not (currSyllable is None) and not (syllTotalDuration is None):
             syllTotalDuration = syllTotalDuration + currDuration 
         
         elif currTxtToken.startswith('.'):
@@ -149,7 +149,7 @@ class SymbTrParser(_SymbTrParserBase):
         '''
             
         currTxtToken = tokens[11]
-        if currTxtToken.startswith('SAZ') or currTxtToken.startswith('.') :
+        if currTxtToken.startswith('SAZ') or currTxtToken.startswith('.') or  currTxtToken.startswith(u'ARANA\u011eME') or currTxtToken.startswith(u'ARANAGME'):
             # space indicates end of word, it is stripped later by the code
             currSyllable = Syllable("_SAZ_ ", tokens[0])
         else:

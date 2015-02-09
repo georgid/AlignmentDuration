@@ -70,11 +70,12 @@ class LyricsWithModels(Lyrics):
 
         # redefine sil model so that it has only middle state 
         for currHmmModel in htkParser.hmms:
-            if currHmmModel.name == 'sil' and not len(currHmmModel.states)==1 :
+            if currHmmModel.name == 'sil': 
+                if not len(currHmmModel.states)==1 :
                 
-                middleState = currHmmModel.states[1]
-                currHmmModel.states = []
-                currHmmModel.states.append(middleState)
+                    middleState = currHmmModel.states[1]
+                    currHmmModel.states = []
+                    currHmmModel.states.append(middleState)
                 
                 # HARD CODE first and last phoneme, they are sil
                 self.phonemesNetwork[0].setHTKModel(currHmmModel)
@@ -211,12 +212,15 @@ class LyricsWithModels(Lyrics):
         and
         setDuration HowManyFrames for each state in statesNetwork
         '''
-        # TODO: read from score
+        # TODO: read bpm  from score, but make sure recordings are performed with same bpm as indicated in score
 #         self.bpm = 60
 #         durationMinUnit = (1. / (self.bpm/60) ) * (1. / MINIMAL_DURATION_UNIT) 
 #         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
+        
         totalScoreDur = self.getTotalDuration()
-        numFramesPerMinUnit   = float(len(observationFeatures) - 2 * AVRG_TIME_SIL * NUM_FRAMES_PERSECOND) / float(totalScoreDur)
+#         numFramesPerMinUnit   = float(len(observationFeatures) - 2 * AVRG_TIME_SIL * NUM_FRAMES_PERSECOND) / float(totalScoreDur)
+        numFramesPerMinUnit   = float(len(observationFeatures) ) / float(totalScoreDur)
+
         
         # DEBUG: hardcoded read from groundTruth for kimseye
         # numFramesPerMinUnit = 3.67
@@ -225,7 +229,7 @@ class LyricsWithModels(Lyrics):
         
         for  i, stateWithDur_ in enumerate (self.statesNetwork):
 
-        # HARD CODE 1st and last state are silence
+        # HARD CODE 1st and last state are silence. since it is exponential distrib, some MAX duration assigned
             if i == 0 or i == len(self.statesNetwork) - 1:
                 durINFramesSIL = MAX_TIME_SIL*NUM_FRAMES_PERSECOND
                 stateWithDur_.setDurationInFrames(durINFramesSIL)   
