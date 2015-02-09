@@ -171,12 +171,15 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     '''
     top most logic method
     '''
-    logger.info("aligning audio {}".format(URIrecordingNoExt))
 
     lyrics = loadLyrics(pathToComposition, whichSection)
-    if not lyrics:
+    lyricsStr = lyrics.__str__()
+    
+    if not lyricsStr or lyricsStr =='_SAZ_':
         logger.warn("skipping section {} with no lyrics ...".format(whichSection))
         return [], [], []
+
+    logger.info("aligning audio {}".format(URIrecordingNoExt))
     lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
     
     # DEBUG: score-derived phoneme  durations
