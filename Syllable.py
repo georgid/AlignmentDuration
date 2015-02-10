@@ -6,10 +6,12 @@ Created on Oct 8, 2014
 from Phoneme import Phoneme
 import sys
 from Phonetizer import Phonetizer
+from Decoder import logger
 
 #     64 for 64th note
 MINIMAL_DURATION_UNIT = 64
-#  consonant duration fixed to  32-th 
+
+#  consonant duration fixed to  32-th note 
 CONSONANT_DURATION = MINIMAL_DURATION_UNIT / 32
 
 class Syllable():
@@ -82,16 +84,25 @@ class Syllable():
         
         def calcPhonemeDurations(self):
             '''
+            consonant handling policy
             all consonant durations set to 1 unit, the rest for the vowel.
             
             '''
             if self.phonemes is None:
                 self.expandToPhonemes()
-                
+            
+            # vowel pos.    
             if self.phonemes[0].ID == 'sil':
                 vowelPos = 0
             else:    
                 vowelPos = self.getPositionVowel()
+            
+            # sanity check: Workaraound: reduce consonant duration for syllables with very short note value. 
+            #copy to local var
+            consonant_duration = CONSONANT_DURATION
+            while (self.getNumPhonemes() - 1) * consonant_duration >= self.duration:
+                logger.warn("Syllable {} has very short duration: {} . reducing the fixed duration of consonants".format(self.text, self.duration) )
+                consonant_duration /=2
             
             # if no vowel in syllable - equal division. just in case
             if vowelPos == -1:
@@ -100,11 +111,9 @@ class Syllable():
                     phoneme.duration = (self.duration / self.getNumPhonemes())
             else: # one vowel
                 for phoneme in self.phonemes:
-                       phoneme.duration = CONSONANT_DURATION
-                vowelDuration = self.duration - (self.getNumPhonemes() - 1) * CONSONANT_DURATION
-                # sanity check
-                if vowelDuration <= 0:
-                    sys.exit("phoneme {} of syllable {} has duration of zero or less units. ".format(phoneme.ID, self.text)  )
+                       phoneme.duration = consonant_duration
+                vowelDuration = self.duration - (self.getNumPhonemes() - 1) * consonant_duration
+
                 self.phonemes[vowelPos].setDurationInMinUnit(vowelDuration)
                 
         def __str__(self):
