@@ -31,20 +31,7 @@ import matplotlib.pylab as plt
 import numpy as np
 ANNOTATION_EXT = '.TextGrid'  
 
-def determineSuffix(withDuration, evalLevel):
-    
-    evalLevelToken = tier_names[evalLevel]
-    if withDuration:
-        if Phonetizer.withSynthesis:
-            tokenAlignedSuffix =  '.' + evalLevelToken + 'DurationSynthAligned'
-            phonemesAlignedSuffix = '.phonemesDurationSynthAligned'
-        else:
-            tokenAlignedSuffix = '.' + evalLevelToken + 'DurationAligned'
-            phonemesAlignedSuffix = '.phonemesDurationAligned'
-    else:
-        tokenAlignedSuffix = '.' + evalLevelToken + 'Aligned'
-        phonemesAlignedSuffix = '.phonemesAligned'
-    return tokenAlignedSuffix, phonemesAlignedSuffix
+
 
 def visualiseInPraat(URIrecordingNoExt,  withDuration, detectedFileName, detectedWordList = [], grTruthDurationWordList=[]):
     ### OPTIONAL############# : PRAAT

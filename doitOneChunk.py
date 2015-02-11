@@ -16,7 +16,6 @@ from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWord, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
 
-from visualize import visualiseInPraat, determineSuffix
 
 
 # file parsing tools as external lib 
@@ -41,9 +40,9 @@ from Aligner import Aligner
 #  evaluation  
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
-from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases
+from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
 from TextGrid_Parsing import TextGrid2WordList
-from PraatVisualiser import mlf2TabFormat
+from PraatVisualiser import tokenList2TabFile
 
 # TODO: read mfccs with matlab htk_read
 # sys.path.append('/Users/joro/Downloads/python-matlab-bridge-master')
@@ -134,7 +133,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
     Phonetizer.initLookupTable(withSynthesis)
     
-    tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, evalLevel)
+    tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     
     
     if withDuration:
@@ -159,7 +158,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     
     # store decoding results in a file FIXME: if with duration it is not mlf 
     detectedAlignedfileName = []
-    detectedAlignedfileName =  mlf2TabFormat(detectedWordList, URIrecordingNoExt, tokenLevelAlignedSuffix)
+    detectedAlignedfileName =  tokenList2TabFile(detectedWordList, URIrecordingNoExt, tokenLevelAlignedSuffix)
         
     return alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName
     
@@ -228,12 +227,12 @@ def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFile
     refDurationsWordList  = getReferenceDurations(URI_recording_noExt, decoder, evalLevel)
     
     detectedWordList = []
-    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
-    detectedWordList = decoder.path2ResultWordList()
-   
+#     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
+#     detectedWordList = decoder.path2ResultWordList()
+    
 
 #       use to calc score deviations
-#     detectedWordList = refDurationsWordList
+    detectedWordList = refDurationsWordList
     
     return detectedWordList, refDurationsWordList
 

@@ -10,8 +10,7 @@ from Parameters import Parameters
 import os
 import glob
 import logging
-from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT,\
-    visualiseInPraat, getSectionNumberFromName, alignDependingOnWithDuration,\
+from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT, getSectionNumberFromName, alignDependingOnWithDuration,\
     AUDIO_EXT
 from Utilz import getMeanAndStDevError
 from genericpath import isfile
