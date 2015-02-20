@@ -20,7 +20,7 @@ class Lyrics(object):
         '''
         self.listWords = listWords
         '''
-        Phoneme [] : list of phonemes
+        Phoneme []
         '''
         self.phonemesNetwork =  []
         
@@ -28,16 +28,10 @@ class Lyrics(object):
         self._calcPhonemeDurs()
     
     def _words2Phonemes(self):
-        ''' convert list of words (Word []) to 
-        @return: self.phonemesNetwork: 
+        ''' list of words (Word []) to list of phonemes (Phoneme [])
         '''
       
-#         TODO: set duration distribution type
-        phonemeSil = Phoneme("sil"); 
-        
-        # does this matter when expo distribution?
-        phonemeSil.setDurationInMinUnit('1')
-        
+        phonemeSil = Phoneme("sil"); phonemeSil.setDurationInMinUnit('1')
         self.phonemesNetwork.append(phonemeSil)
         
         # start word after sil phoneme
@@ -86,7 +80,7 @@ class Lyrics(object):
     
     def printPhonemeNetwork(self):
         '''
-        debug: score-derived phoneme  duration 
+        debug:  
         '''
                
         for i, phoneme in enumerate(self.phonemesNetwork):

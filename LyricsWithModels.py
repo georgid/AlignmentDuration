@@ -21,7 +21,6 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.ar
 class LyricsWithModels(Lyrics):
     '''
     lyrics with each Phoneme having a link to a model of class type htkModel from htkModelParser
-    No handling of duration information. For it see Decoder.Decoder.decodeAudio 
     '''
 
 
@@ -58,31 +57,22 @@ class LyricsWithModels(Lyrics):
         '''
         load links to trained models   
         '''
+        # take only middle state of sil model: 
+        for currHmmModel in htkParser.hmms:
+            if currHmmModel.name == 'sil' and not len(currHmmModel.states)==1 :
+                middleState = currHmmModel.states[1]
+                currHmmModel.states = []
+                currHmmModel.states.append(middleState) 
+                
+                
         
-    #link each phoneme from transcript to a model
-            # FIXME: DO A MORE OPTIMAL WAY like ismember()
-        for phonemeFromTranscript in    self.phonemesNetwork[1:-1]:
+        # FIXME: DO A MORE OPTIMAL WAY like ismember()
+        for phonemeFromTranscript in    self.phonemesNetwork:
             for currHmmModel in htkParser.hmms:
                 if currHmmModel.name == phonemeFromTranscript.ID:
                     
                     phonemeFromTranscript.setHTKModel(currHmmModel) 
-
-
-        # redefine sil model so that it has only middle state 
-        for currHmmModel in htkParser.hmms:
-            if currHmmModel.name == 'sil': 
-                if not len(currHmmModel.states)==1 :
-                
-                    middleState = currHmmModel.states[1]
-                    currHmmModel.states = []
-                    currHmmModel.states.append(middleState)
-                
-                # HARD CODE first and last phoneme, they are sil
-                self.phonemesNetwork[0].setHTKModel(currHmmModel)
-                self.phonemesNetwork[-1].setHTKModel(currHmmModel)
-                
-           
-           # DEBUG: 
+            
 #         for phonemeFromTranscript in    self.phonemesNetwork:
 #             phonemeFromTranscript.htkModel.display()
     #         (numState, state )  = phonemeFromTranscript.htkModel.states[1]
@@ -188,7 +178,7 @@ class LyricsWithModels(Lyrics):
     
     def printWordsAndStatesAndDurations(self, resultPath):
         '''
-        debug: print ground truth and detected word beginning states
+        debug word begining states
         '''
         
         for word_ in self.listWords:
@@ -203,7 +193,9 @@ class LyricsWithModels(Lyrics):
                                                                                                 self.statesNetwork[countPhonemeFirstState + nextState].durationInFrames,
                                                                                                  resultPath.durations[countPhonemeFirstState + nextState], 
                                                                                                  resultPath.endingTimes[countPhonemeFirstState + nextState])
+
                     
+
                 
                 
     def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt):
@@ -212,15 +204,12 @@ class LyricsWithModels(Lyrics):
         and
         setDuration HowManyFrames for each state in statesNetwork
         '''
-        # TODO: read bpm  from score, but make sure recordings are performed with same bpm as indicated in score
+        # TODO: read from score
 #         self.bpm = 60
 #         durationMinUnit = (1. / (self.bpm/60) ) * (1. / MINIMAL_DURATION_UNIT) 
 #         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
-        
         totalScoreDur = self.getTotalDuration()
-#         numFramesPerMinUnit   = float(len(observationFeatures) - 2 * AVRG_TIME_SIL * NUM_FRAMES_PERSECOND) / float(totalScoreDur)
-        numFramesPerMinUnit   = float(len(observationFeatures) ) / float(totalScoreDur)
-
+        numFramesPerMinUnit   = float(len(observationFeatures) - 2 * AVRG_TIME_SIL * NUM_FRAMES_PERSECOND) / float(totalScoreDur)
         
         # DEBUG: hardcoded read from groundTruth for kimseye
         # numFramesPerMinUnit = 3.67
@@ -229,7 +218,7 @@ class LyricsWithModels(Lyrics):
         
         for  i, stateWithDur_ in enumerate (self.statesNetwork):
 
-        # HARD CODE 1st and last state are silence. since it is exponential distrib, some MAX duration assigned
+        # HARD CODE 1st and last state are silence
             if i == 0 or i == len(self.statesNetwork) - 1:
                 durINFramesSIL = MAX_TIME_SIL*NUM_FRAMES_PERSECOND
                 stateWithDur_.setDurationInFrames(durINFramesSIL)   
