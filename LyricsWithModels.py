@@ -81,7 +81,8 @@ class LyricsWithModels(Lyrics):
         
     def _phonemes2stateNetwork(self):
         '''
-        expand to self.statesNetwork. 
+        expand self.phonemeNetwork to self.statesNetwork
+        assign phoneme a pointer to its initial state in the state network (serves as link among the two)
         each state gets 1/n-th of total num of states. 
         '''
         
@@ -181,6 +182,10 @@ class LyricsWithModels(Lyrics):
         debug word begining states
         '''
         
+        if resultPath == None:
+            logger.warn("printitg current lyrics with results not possible. resultPath is None. Make sure you decoded correctly! ")
+            return
+        
         for word_ in self.listWords:
             print word_ , ":" 
             for syllable_ in word_.syllables:
@@ -195,7 +200,27 @@ class LyricsWithModels(Lyrics):
                                                                                                  resultPath.endingTimes[countPhonemeFirstState + nextState])
 
                     
-
+    def  printWordsAndStates(self):
+        '''
+        debug word begining states
+        TODO: to reduce code: use lyrics parsing . or like previous
+        '''
+        
+        for word_ in self.listWords:
+            print word_ , ":" 
+            for syllable_ in word_.syllables:
+                for phoneme_ in syllable_.phonemes:
+                    print "\t phoneme: " , phoneme_
+                    countPhonemeFirstState =  phoneme_.numFirstState
+        
+        for nextState in range(phoneme_.getNumStates()):
+                        stateWithDur = self.statesNetwork[countPhonemeFirstState + nextState]
+                        try:
+                            currDurationInFrames = stateWithDur.durationInFrames
+                        except AttributeError:
+                            currDurationInFrames = 0
+                        print "\t\t state: {} duration (in Frames): {}".format(countPhonemeFirstState + nextState, currDurationInFrames)
+                                                                                               
                 
                 
     def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt):

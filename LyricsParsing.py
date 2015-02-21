@@ -6,7 +6,7 @@ Utility class: logic for parsing statesNetwork, phoeneNetwork
 import sys
 from Constants import NUM_FRAMES_PERSECOND, NUMSTATES_SIL, NUMSTATES_PHONEME
 
-def expandlyrics2Words (lyricsWithModels, path, totalDuration, func):
+def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
     '''
     expand @path to words and corresponding timestamps
     @param path stands for path or statesNetwork

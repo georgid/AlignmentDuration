@@ -51,6 +51,9 @@ class Syllable():
             # instrument
             if self.text == '_SAZ_':
                 self.phonemes.append(Phoneme('sil'))
+                # TODO: does sp at end of sp make sence? 
+                if self.hasShortPauseAtEnd:
+                    self.phonemes.append(Phoneme('sp'))
             
             # text from lyrics
             else:
@@ -59,8 +62,8 @@ class Syllable():
                 for phonemeID in phonemeIDs:
                     self.phonemes.append(Phoneme(phonemeID))
             
-            if self.hasShortPauseAtEnd:
-                self.phonemes.append(Phoneme('sp'))
+                if self.hasShortPauseAtEnd:
+                    self.phonemes.append(Phoneme('sp'))
            
             
         def getPhonemes(self):
@@ -77,6 +80,8 @@ class Syllable():
             check vowels in lookup table
             NOTE: assume only one vowel in syllable. this is true if no diphtongs in language 
             '''
+            if self.getNumPhonemes() == 0:
+                return -1
             for i, phoneme in enumerate(self.phonemes):
                 if phoneme.isVowel():
                     return i
@@ -90,6 +95,10 @@ class Syllable():
             '''
             if self.phonemes is None:
                 self.expandToPhonemes()
+            
+            if self.getNumPhonemes() == 0:
+                logger.warn("syllable with no phonemes!")
+                return
             
             # vowel pos.    
             if self.phonemes[0].ID == 'sil':

@@ -6,7 +6,7 @@ Created on Oct 27, 2014
 import os
 import sys
 import logging
-from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWordDetected
+from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWordDetected
 from Constants import numDimensions, numMixtures
 
 
@@ -46,7 +46,10 @@ logger = logging.getLogger(__name__)
 loggingLevel = logging.DEBUG
 loggingLevel = logging.INFO
 
+logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
 logger.setLevel(loggingLevel)
+
+
 
 class Decoder(object):
     '''
@@ -274,7 +277,7 @@ class Decoder(object):
             for i in range(howManyMissedStates):
                 self.path.indicesStateStarts[:0] = [0]
         dummy= 0
-        detectedWordList = expandlyrics2Words (self.lyricsWithModels, self.path, dummy, _constructTimeStampsForWordDetected)
+        detectedWordList = expandlyrics2WordList (self.lyricsWithModels, self.path, dummy, _constructTimeStampsForWordDetected)
         
         return detectedWordList 
         

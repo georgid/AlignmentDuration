@@ -26,8 +26,9 @@ from Utilz import  loadTextFile
 
 class SymbTrParser(_SymbTrParserBase):
     '''
-    Parses lyrics from symbTr v 1.0 and Sections from tsv file
-    a list of syllables is parsed. 
+    Parses lyrics from symbTr v 1.0 and Sections from tsv file.
+    
+    a list of syllables from column 12: soz1/söz1 is parsed. 
     Then concatenated into words if needed 
     TODO: take only section names from tsv file. parse sections from symbTr double spaces 
     '''
@@ -52,12 +53,15 @@ class SymbTrParser(_SymbTrParserBase):
     ignores all notes with no syllable!
     calculate syllable duration from the associated notes 
     '''
+
+   
+
     def _loadSyllables(self, pathToSymbTrFile):
              
         allLines = loadTextFile(pathToSymbTrFile)
         
         currSyllable = None
-        syllTotalDuration = None
+        currSyllTotalDuration = None
         
         # skip first line. 
         for  i in range( 1, len(allLines) ):
@@ -67,7 +71,7 @@ class SymbTrParser(_SymbTrParserBase):
             line = line.replace('\r','') 
             
             tokens = line.split("\t")
-            if len(tokens) != 12:
+            if len(tokens) < 12:
                 print "TOKENS ARE 11, no syllable ";  sys.exit()
             
             # sanity check  MINIMAL_DURATION of embelishments. 
@@ -75,40 +79,85 @@ class SymbTrParser(_SymbTrParserBase):
             if tokens[7] > MINIMAL_DURATION_UNIT and  tokens[1] == '8':
                 tokens[7] = MINIMAL_DURATION_UNIT
 
-            currDuration = float(tokens[6]) / float(tokens[7]) * MINIMAL_DURATION_UNIT
-            currTxtToken = tokens[11]
-                
-            # no syllalbe
-            if  currTxtToken.startswith('.') or currTxtToken.startswith('SAZ') or currTxtToken.startswith(u'ARANA\u011eME') or currTxtToken.startswith(u'ARANAGME') :
-#             or tokens[1] == '8':             # skip embellishments. they dont count in duration
-                 continue
-            
-            # start of a new syllalbe
-            elif currTxtToken != '':
 
-                if not(currSyllable is None) and not(syllTotalDuration is None):
-                # save last syllable and duration 
-                     currSyllable.setDuration(syllTotalDuration)
-                     self.listSyllables.append(currSyllable)
+            currDuration = float(tokens[6]) / float(tokens[7]) * MINIMAL_DURATION_UNIT
                 
-                # init next syllable. 
-                text = tokens[11].replace('_',' ')
-                currSyllable = Syllable(text, tokens[0])
-                # init duration.
-                syllTotalDuration = currDuration
-        
-            # no lyrics at note, so still  same syllable notes
-            else:
-                syllTotalDuration = syllTotalDuration + currDuration
+            currSyllable, currSyllTotalDuration = self.parseCurrTxtToken(currSyllable, currSyllTotalDuration, tokens, currDuration)
+            
+            
+        #end parsing loop
             
         # store last
-        currSyllable.setDuration(syllTotalDuration)
+        currSyllable.setDuration(currSyllTotalDuration)
         self.listSyllables.append(currSyllable)
+    
+    
+
+
+    def parseCurrTxtToken(self, currSyllable, syllTotalDuration, tokens, currDuration):
+        '''
+        parse  soz1/söz1 token containing the  syllable text. discriminate between cases
+        '''
+        currTxtToken = tokens[11]
+        
+        # skip ARANAGME sections
+#         if currTxtToken.startswith(u'ARANA\u011eME') or currTxtToken.startswith(u'ARANAGME'): #             or tokens[1] == '8':             # skip embellishments. they dont count in duration
+#             return None,None
+        
+         # '' (no lyrics at note) so still at same syllable
+        if currTxtToken == '' and not (currSyllable is None) and not (syllTotalDuration is None):
+            syllTotalDuration = syllTotalDuration + currDuration 
+        
+        elif currTxtToken.startswith('.'):
+            if not (currSyllable is None) and not (syllTotalDuration is None) and currSyllable.text ==  "_SAZ_ ":
+                syllTotalDuration = syllTotalDuration + currDuration
             
+            # new syllable starting with '.'
+            else:
+                currSyllable, syllTotalDuration = self.finishCurrentAndCreateNewSyllable(currSyllable, syllTotalDuration, tokens, currDuration)
+
+        
+        #  not '' and not '.'   thus new syllable starts
+        else:
+            currSyllable, syllTotalDuration = self.finishCurrentAndCreateNewSyllable(currSyllable, syllTotalDuration, tokens, currDuration)
+        
+      
+        return currSyllable, syllTotalDuration        
+
+
+    
+    
+    def finishCurrentAndCreateNewSyllable(self, currSyllable, syllTotalDuration, tokens, currDuration):
+        '''
+        when syllable finished
+        '''
+        if not (currSyllable is None) and not (syllTotalDuration is None): # save last syllable and duration
+            currSyllable.setDuration(syllTotalDuration)
+            self.listSyllables.append(currSyllable)
+    # init next syllable and its duration
+        currSyllable = self.createSyllable(tokens)
+        syllTotalDuration = currDuration
+        return currSyllable, syllTotalDuration
+
+
+
+    
+    def createSyllable(self, tokens):
+        '''
+        create new syllable
+        distinguish btw vocal syllable and instrumental syllable  
+        '''
             
-             
-              
-            
+        currTxtToken = tokens[11]
+        if currTxtToken.startswith('SAZ') or currTxtToken.startswith('.') or  currTxtToken.startswith(u'ARANA\u011eME') or currTxtToken.startswith(u'ARANAGME'):
+            # space indicates end of word, it is stripped later by the code
+            currSyllable = Syllable("_SAZ_ ", tokens[0])
+        else:
+            text = tokens[11].replace('_',' ')
+            currSyllable = Syllable(text, tokens[0])
+        
+        return currSyllable
+    
                     
 #                         self.listSyllables.append(tupleSyllable)
             
@@ -122,13 +171,14 @@ class SymbTrParser(_SymbTrParserBase):
     def syllables2Lyrics(self): 
         """
         construct words from syllables for all  sections
+        use Lyrics and Syllable classes.
         """  
         words = []
               
         for currSectionBoundary in self.sectionboundaries:
             
             # double empty space marks section end, but we dont use it for now             
-            words = self.syllable2WordOneSection(currSectionBoundary[1], currSectionBoundary[2])
+            words = self.syllable2LyricsOneSection(currSectionBoundary[1], currSectionBoundary[2])
             
             # store lyrics
             lyrics = Lyrics(words) 
@@ -137,12 +187,14 @@ class SymbTrParser(_SymbTrParserBase):
           
 
 # begin index does not update, because no change in aranagme. 
-    def syllable2WordOneSection(self, startNoteNumber, endNoteNumber):
+    def syllable2LyricsOneSection(self, startNoteNumber, endNoteNumber):
         """
              combine syllables into listWords. use Word and Syllable classes. 
                 for one section only .
-                add syllables until noteNumber of current Syllable reaches  @param endNoteNumber 
-            @param beginIndex - beginning current index syllable
+                add syllables until noteNumber of current Syllable reaches  
+            @param endNoteNumber:
+             
+            @param beginIndex: - beginning current index syllable
         """
         syllablesInCurrWord  = []
         listWords = []
@@ -157,6 +209,7 @@ class SymbTrParser(_SymbTrParserBase):
                     and self.listSyllables[beginIndex].noteNum <= endNoteNumber ): # while note number associated with syllable is less than last note number in section 
                     
                         currSyllable = self.listSyllables[beginIndex]
+                        
                         # construct new word at whitespace
                         if currSyllable.text[-1].isspace():
                             
@@ -164,15 +217,18 @@ class SymbTrParser(_SymbTrParserBase):
                             currSyllable.text = currSyllable.text.rstrip()
                             
                             currSyllable.setHasShortPauseAtEnd(True)
-                            
                             syllablesInCurrWord.append(currSyllable)
-                        
+                            
+                            # create new word
                             word = Word(syllablesInCurrWord)
-                            listWords.append(word)
+                            
+                            if not word.text == '_SAZ_':
+                                listWords.append(word)
                             
                             #restart counting
                             syllablesInCurrWord = []
-
+                        
+                        # still same word    
                         else:
                             syllablesInCurrWord.append(currSyllable)
                             
@@ -183,9 +239,10 @@ class SymbTrParser(_SymbTrParserBase):
         
     def _findSyllableIndex(self, noteNumberQuery):
         '''
-        find which syllable has  given note number. 
+        find which syllable has  queried note number 
+        @param noteNumberQuery:  
         used only for begin syllables
-        use bunary search
+        use binary search
         '''
         lo = 0
         high = len(self.listSyllables)
@@ -231,7 +288,7 @@ class SymbTrParser(_SymbTrParserBase):
                         # construct new word at whitespace
                         if currSyllable.text[-1].isspace():
                             
-                            # dont need whitespaces in sllables
+                            # dont need whitespaces in syllables
                             currSyllable.text = currSyllable.text.rstrip()
                             syllablesInCurrWord.append(currSyllable)
                         
@@ -259,8 +316,16 @@ if __name__ == "__main__":
     pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.txt'
     pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.sections.tsv'
     
+    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.txt'
+    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.sections.tsv'
+    
+    
+    
     Phonetizer.initLookupTable(False)
     symbTrParser = SymbTrParser(pathTxt, pathTsv)
         
     symbTrParser.syllables2Lyrics()
-    
+
+    # print them, put instrument as name
+    print symbTrParser.sectionLyrics[5]
+    print symbTrParser.sectionLyrics[0]

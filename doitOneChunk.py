@@ -12,7 +12,7 @@ from LyricsWithModels import LyricsWithModels
 from numpy.core.arrayprint import set_printoptions
 from Parameters import Parameters
 from Decoder import Decoder, WITH_DURATIONS, logger
-from LyricsParsing import expandlyrics2Words, _constructTimeStampsForWord, testT
+from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWord, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
 
@@ -147,11 +147,12 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         lyricsObj = loadLyrics(pathToComposition, whichSection)
         lyrics = lyricsObj.__str__()
 #         in case  we are at no-lyrics section
-        if not lyrics or lyrics =='_SAZ_':
+        if not lyrics or lyrics=='None' or  lyrics =='_SAZ_':
             logger.warn("skipping section {} with no lyrics ...".format(whichSection))
             return [], [], [], []
     
         outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyrics.__str__(), URIrecordingAnno, '/tmp/', withSynthesis)
+        alignmentErrors = []
         alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         detectedWordList = outputHTKPhoneAlignedURI
         grTruthDurationWordList = []
@@ -174,7 +175,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     lyrics = loadLyrics(pathToComposition, whichSection)
     lyricsStr = lyrics.__str__()
     
-    if not lyricsStr or lyricsStr =='_SAZ_':
+    if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
         logger.warn("skipping section {} with no lyrics ...".format(whichSection))
         return [], [], []
 
@@ -183,11 +184,13 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     
     # DEBUG: score-derived phoneme  durations
 #     lyricsWithModels.printPhonemeNetwork()
+    lyricsWithModels.printWordsAndStates()
+
     
     
     decoder = Decoder(lyricsWithModels, params.ALPHA)
 #  TODO: DEBUG: do not load models
-#  decoder = Decoder(lyrics, withModels=False, numStates=86)
+# decoder = Decoder(lyrics, withModels=False, numStates=86)
 #################### decode
     if usePersistentFiles=='True':
         usePersistentFiles = True
@@ -196,15 +199,16 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     else: 
         sys.exit("usePersistentFiles can be only True or False") 
         
-    detectedWordList, grTruthWordList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
+    detectedTokenList, scoreDevTokenList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
     
 ### VISUALIZE
 #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+    
 
 #################### evaluate
     alignmentErrors = [2, 3, 4]
-    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedWordList, evalLevel)
-    return alignmentErrors, detectedWordList, grTruthWordList
+    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel)
+    return alignmentErrors, detectedTokenList, scoreDevTokenList
 
 
 
@@ -227,9 +231,9 @@ def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFile
     refDurationsWordList  = getReferenceDurations(URI_recording_noExt, decoder, evalLevel)
     
     detectedWordList = []
-#     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
-#     detectedWordList = decoder.path2ResultWordList()
-    
+    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
+    detectedWordList = decoder.path2ResultWordList()
+     
 
 #       use to calc score deviations
     detectedWordList = refDurationsWordList
@@ -271,8 +275,8 @@ def getReferenceDurations(URI_recording_noExt, decoder, evalLevel):
                 finalSilFram += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
         
             
-        grTruthWordList = expandlyrics2Words (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
-        grTruthDurationfileExtension = '.grTruthDuration'
+        grTruthWordList = expandlyrics2WordList (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
+        grTruthDurationfileExtension = '.scoreDeviation'
         writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + grTruthDurationfileExtension )
         
 #     TODO: could be done easier with this code, and check last method in Word
