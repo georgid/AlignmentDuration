@@ -184,7 +184,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
     
     # DEBUG: score-derived phoneme  durations
 #     lyricsWithModels.printPhonemeNetwork()
-    lyricsWithModels.printWordsAndStates()
+#     lyricsWithModels.printWordsAndStates()
 
     
     
@@ -233,10 +233,10 @@ def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFile
     detectedWordList = []
     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
     detectedWordList = decoder.path2ResultWordList()
-     
+      
 
 #       use to calc score deviations
-    detectedWordList = refDurationsWordList
+#     detectedWordList = refDurationsWordList
     
     return detectedWordList, refDurationsWordList
 

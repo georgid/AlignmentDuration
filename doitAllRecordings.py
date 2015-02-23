@@ -74,7 +74,11 @@ def doit(argv):
                             'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci',
                                 'nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey',
                                 'nihavent--sarki--aksak--koklasam_saclarini--artaki_candan',
-                        'nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi'
+                        'nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi',
+                        'rast--turku--semai--gul_agaci--necip_mirkelamoglu',
+                        'rast--sarki--sofyan--gelmez_oldu--dramali_hasan',
+                        'rast--sarki--curcuna--nihansin_dideden--haci_faik_bey'
+                        
                     
                     ]
     
@@ -87,17 +91,20 @@ def doit(argv):
                       '18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya',
                       '04_Hamiyet_Yuceses_-_Bakmiyor_Cesm-i_Siyah_Feryade',
                       '2-15_Nihavend_Aksak_Sarki',
-                      '03_Bekir_Unluataer_-_Kimseye_Etmem_Sikayet_Aglarim_Ben_Halime'
+                      '03_Bekir_Unluataer_-_Kimseye_Etmem_Sikayet_Aglarim_Ben_Halime',
+                      'Semahat_Ozdenses',
+                      'Eda_Simsek',
+                      'Nurten_Demirkol'
                     
                       ]                          
                      
     
     subpaths = [
                 '/idil/', '/idil/', '/idil/', 
-                '/guelen/', '/guelen/', '/barbaros/',  '/safiye/','/barbaros/','/goekhan/'    ]
+                '/guelen/', '/guelen/', '/barbaros/',  '/safiye/','/barbaros/','/goekhan/', '/guelcin/', '/guelcin/', '/idil/'  ]
     patterns = [  
                 'Melihat_Gulses', '05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var',  'Sakin--Gec--Kalma', 
-                '01_Olmaz', '01_Aksam',  '02_Gel', '01_Bakmiyor', '02_Koklasam','02_Kimseye']
+                '01_Olmaz', '01_Aksam',  '02_Gel', '01_Bakmiyor', '02_Koklasam','02_Kimseye', 'Semahat_Ozdenses', 'Eda_Simsek', 'Nurten_Demirkol' ]
 
              
           

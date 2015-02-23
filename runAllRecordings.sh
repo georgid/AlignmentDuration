@@ -23,7 +23,7 @@ which python
 HOME_DTIC=/homedtic/georgid/
 
 # acapela
-$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/ True False 0.97 False 2 False
+$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/dataset12sarki-noSAZ/ True False 0.97 False 2 False
 
 # synthesis 
-$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/ True True 0.97 False 2 False
+$HOME_DTIC/env/bin/python AlignmentDuration/doitAllRecordings.py /homedtic/georgid/dataset12sarki-noSAZ/ True True 0.97 False 2 False
