@@ -24,7 +24,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.ar
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from Utilz import writeListOfListToTextFile, writeListToTextFile,\
-    getMeanAndStDevError, getSectionNumberFromName
+    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile
 
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
@@ -117,9 +117,8 @@ def doitOneChunk(argv):
         
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
-#     writeListOfListToTextFile(detectedWordList, None, '/Users/joro/Downloads/test.txt')
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
-
+    logger.info("result: {}".format(detectedAlignedfileName))
 
 #     visualiseInPraat(URIrecordingNoExt, withDuration, detectedAlignedfileName,  detectedWordList, grTruthDurationWordList)
 
@@ -135,9 +134,11 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     
     tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     
+   
     
     if withDuration:
-        alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles)
+
+        alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix)
         
             
     else:
@@ -158,8 +159,10 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         grTruthDurationWordList = []
     
     # store decoding results in a file FIXME: if with duration it is not mlf 
-    detectedAlignedfileName = []
-    detectedAlignedfileName =  tokenList2TabFile(detectedWordList, URIrecordingNoExt, tokenLevelAlignedSuffix)
+    detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
+    if not os.path.isfile(detectedAlignedfileName):
+        detectedAlignedfileName =  tokenList2TabFile(detectedWordList, URIrecordingNoExt, tokenLevelAlignedSuffix)
+        
         
     return alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName
     
@@ -167,43 +170,51 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
 
 
-def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles):
+def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix):
     '''
     top most logic method
     '''
-
+    
     lyrics = loadLyrics(pathToComposition, whichSection)
     lyricsStr = lyrics.__str__()
-    
-    if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
-        logger.warn("skipping section {} with no lyrics ...".format(whichSection))
-        return [], [], []
-
-    logger.info("aligning audio {}".format(URIrecordingNoExt))
-    lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
-    
-    # DEBUG: score-derived phoneme  durations
-#     lyricsWithModels.printPhonemeNetwork()
-#     lyricsWithModels.printWordsAndStates()
-
-    
-    
-    decoder = Decoder(lyricsWithModels, params.ALPHA)
-#  TODO: DEBUG: do not load models
-# decoder = Decoder(lyrics, withModels=False, numStates=86)
-#################### decode
-    if usePersistentFiles=='True':
-        usePersistentFiles = True
-    elif usePersistentFiles=='False':
-        usePersistentFiles = False
-    else: 
-        sys.exit("usePersistentFiles can be only True or False") 
         
-    detectedTokenList, scoreDevTokenList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
+    if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
+            logger.warn("skipping section {} with no lyrics ...".format(whichSection))
+            return [], [], []
     
-### VISUALIZE
-#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+    detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
+    if os.path.isfile(detectedAlignedfileName):
+        detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
+        # TODO: put scoreDev in a separate module
+        scoreDevTokenList = []
+    else:
+       
     
+        logger.info("aligning audio {}".format(URIrecordingNoExt))
+        lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
+        
+        # DEBUG: score-derived phoneme  durations
+    #     lyricsWithModels.printPhonemeNetwork()
+    #     lyricsWithModels.printWordsAndStates()
+    
+        
+        
+        decoder = Decoder(lyricsWithModels, params.ALPHA)
+    #  TODO: DEBUG: do not load models
+    # decoder = Decoder(lyrics, withModels=False, numStates=86)
+    #################### decode
+        if usePersistentFiles=='True':
+            usePersistentFiles = True
+        elif usePersistentFiles=='False':
+            usePersistentFiles = False
+        else: 
+            sys.exit("usePersistentFiles can be only True or False") 
+            
+        detectedTokenList, scoreDevTokenList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
+        
+    ### VISUALIZE
+    #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+        
 
 #################### evaluate
     alignmentErrors = [2, 3, 4]
