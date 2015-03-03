@@ -175,7 +175,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyricsStr, URIrecordingAnno, '/tmp/', withSynthesis)
         alignmentErrors = []
         alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
-        detectedWordList = outputHTKPhoneAlignedURI
+        detectedTokenList = outputHTKPhoneAlignedURI
         
         correctDuration, totalDuration = evalAccuracy(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         
@@ -183,7 +183,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     # store decoding results in a file FIXME: if with duration it is not mlf 
     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
     if not os.path.isfile(detectedAlignedfileName):
-        detectedAlignedfileName =  tokenList2TabFile(detectedWordList, URIrecordingNoExt, tokenLevelAlignedSuffix)
+        detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
         
         
     return alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev

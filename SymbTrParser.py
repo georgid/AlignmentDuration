@@ -222,6 +222,7 @@ class SymbTrParser(_SymbTrParserBase):
                             # create new word
                             word = Word(syllablesInCurrWord)
                             
+                            # ignore SAZ
 #                             if not word.text == '_SAZ_':
                             listWords.append(word)
                             
