@@ -96,20 +96,28 @@ def doitOneRecording(argv):
          
     totalErrors = []
     
-    htkParser = None
-    if withDuration:
-        htkParser = HtkConverter()
-        htkParser.load(MODEL_URI, HMM_LIST_URI)
+    totalCorrectDurationsReference = 0
+    totalCorrectDurations = 0
+    
+    totalDurations = 0
+    
+    
+#     htkParser = None
+#     if withDuration:
+    htkParser = HtkConverter()
+    htkParser.load(MODEL_URI, HMM_LIST_URI)
     
     for  URI_annotation in listAudioFiles :
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logger.debug("PROCESSING {}".format(URIrecordingNoExt) )
             whichSection = getSectionNumberFromName(URIrecordingNoExt) 
             
-            currAlignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
+            currAlignmentErrors,  detectedAlignedfileName, currCorrectDuration, currTotalDuration, currCorrectDurationRef = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
 
             totalErrors.extend(currAlignmentErrors)
-            
+            totalCorrectDurationsReference += currCorrectDurationRef
+            totalCorrectDurations += currCorrectDuration
+            totalDurations += currTotalDuration
 #             visualiseInPraat(URIrecordingNoExt, withDuration, detectedWordList, grTruthDurationWordList)
 
     mean = []
@@ -117,9 +125,12 @@ def doitOneRecording(argv):
     if len(totalErrors) != 0:    
         mean, stDev, median = getMeanAndStDevError(totalErrors)
         infoA = "Total  mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
-
         logger.info(infoA)
-    return mean, stDev, totalErrors
+        
+        
+    accuracy = totalCorrectDurations / totalDurations
+    logger.info("accuracy: {:.2f}".format(accuracy))
+    return mean, stDev, totalErrors, totalCorrectDurations, totalDurations, totalCorrectDurationsReference
 
 
 

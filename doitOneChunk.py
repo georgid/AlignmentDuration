@@ -41,6 +41,7 @@ from Aligner import Aligner
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
+from AccuracyEvaluator import _evalAccuracy, evalAccuracy
 from TextGrid_Parsing import TextGrid2WordList
 from PraatVisualiser import tokenList2TabFile
 
@@ -113,7 +114,7 @@ def doitOneChunk(argv):
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
+    alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
         
         
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
@@ -134,29 +135,50 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     
     tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     
-   
+    ##############################
+    ## load lyrics for section
+    lyrics = loadLyrics(pathToComposition, whichSection)
+    lyricsStr = lyrics.__str__()
+        
+    if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
+            logger.warn("skipping section {} with no lyrics ...".format(whichSection))
+            return [], 'dummy', 0, 0, 0
+    
+    logger.info("aligning audio {}".format(URIrecordingNoExt))
+    lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
+    
+    observationFeatures = loadMFCCs(URIrecordingNoExt) #     observationFeatures = observationFeatures[0:1000]
+    
+    if WITH_DURATIONS:
+            lyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)
+    
+    ##############
+    ## reference duration
+    correctDurationScoreDev, totalDuration  = getReferenceDurations(URIrecordingNoExt, lyricsWithModels, evalLevel)
     
     if withDuration:
 
-        alignmentErrors, detectedWordList, grTruthDurationWordList = alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix)
-        
+        alignmentErrors, detectedTokenList, correctDuration, totalDuration = alignOneChunk(URIrecordingNoExt, lyricsWithModels, params, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix)
+
             
     else:
         URIrecordingAnno = URIrecordingNoExt + ANNOTATION_EXT
         URIrecordingWav = URIrecordingNoExt + AUDIO_EXTENSION
         # new makamScore used
-        lyricsObj = loadLyrics(pathToComposition, whichSection)
-        lyrics = lyricsObj.__str__()
-#         in case  we are at no-lyrics section
-        if not lyrics or lyrics=='None' or  lyrics =='_SAZ_':
-            logger.warn("skipping section {} with no lyrics ...".format(whichSection))
-            return [], [], [], []
+#         lyricsObj = loadLyrics(pathToComposition, whichSection)
+#         lyrics = lyricsObj.__str__()
+# #         in case  we are at no-lyrics section
+#         if not lyrics or lyrics=='None' or  lyrics =='_SAZ_':
+#             logger.warn("skipping section {} with no lyrics ...".format(whichSection))
+#             return [], [], [], []
     
-        outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyrics.__str__(), URIrecordingAnno, '/tmp/', withSynthesis)
+        outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyricsStr, URIrecordingAnno, '/tmp/', withSynthesis)
         alignmentErrors = []
         alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         detectedWordList = outputHTKPhoneAlignedURI
-        grTruthDurationWordList = []
+        
+        correctDuration, totalDuration = evalAccuracy(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
+        
     
     # store decoding results in a file FIXME: if with duration it is not mlf 
     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
@@ -164,37 +186,29 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         detectedAlignedfileName =  tokenList2TabFile(detectedWordList, URIrecordingNoExt, tokenLevelAlignedSuffix)
         
         
-    return alignmentErrors, detectedWordList, grTruthDurationWordList, detectedAlignedfileName
+    return alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev
     
 
 
 
 
-def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser, params, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix):
+def alignOneChunk(URIrecordingNoExt, lyricsWithModels, params, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix):
     '''
     top most logic method
     '''
-    
-    lyrics = loadLyrics(pathToComposition, whichSection)
-    lyricsStr = lyrics.__str__()
+     
         
-    if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
-            logger.warn("skipping section {} with no lyrics ...".format(whichSection))
-            return [], [], []
-    
+    # read from file result
     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
     if os.path.isfile(detectedAlignedfileName):
         detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
-        # TODO: put scoreDev in a separate module
-        scoreDevTokenList = []
-    else:
+     
        
     
-        logger.info("aligning audio {}".format(URIrecordingNoExt))
-        lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
-        
+    else:
+             
         # DEBUG: score-derived phoneme  durations
-    #     lyricsWithModels.printPhonemeNetwork()
+#         lyricsWithModels.printPhonemeNetwork()
     #     lyricsWithModels.printWordsAndStates()
     
         
@@ -210,7 +224,7 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
         else: 
             sys.exit("usePersistentFiles can be only True or False") 
             
-        detectedTokenList, scoreDevTokenList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
+        detectedTokenList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
         
     ### VISUALIZE
     #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
@@ -219,7 +233,10 @@ def alignOneChunk(URIrecordingNoExt, pathToComposition, whichSection, htkParser,
 #################### evaluate
     alignmentErrors = [2, 3, 4]
     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel)
-    return alignmentErrors, detectedTokenList, scoreDevTokenList
+    
+    correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel )
+
+    return alignmentErrors, detectedTokenList, correctDuration, totalDuration
 
 
 
@@ -234,32 +251,25 @@ def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFile
     
     observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
     
-    if WITH_DURATIONS:
-        decoder.lyricsWithModels.duration2numFrameDuration(observationFeatures, URI_recording_noExt)
-        
-
-    refDurationsWordList = []
-    refDurationsWordList  = getReferenceDurations(URI_recording_noExt, decoder, evalLevel)
+       
     
     detectedWordList = []
     decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
     detectedWordList = decoder.path2ResultWordList()
-      
-
-#       use to calc score deviations
-#     detectedWordList = refDurationsWordList
+       
     
-    return detectedWordList, refDurationsWordList
+    return detectedWordList
 
 
 
     
 
-def getReferenceDurations(URI_recording_noExt, decoder, evalLevel):
+def getReferenceDurations(URI_recording_noExt, lyricsWithModels, evalLevel):
         '''
         timestamps of words according to reference durations read from score. Used to obtain so called 'score-deviation' metric
         not used in decoding 
         '''
+        
         
         annotationURI = URI_recording_noExt + ANNOTATION_EXT
 
@@ -280,19 +290,22 @@ def getReferenceDurations(URI_recording_noExt, decoder, evalLevel):
         except :
         # if no Gr Truth annotation file (or needed layer) present - take from model    
             finalSilFram = 0
-            countFirstStateFirstWord = decoder.lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
+            countFirstStateFirstWord = lyricsWithModels.listWords[0].syllables[0].phonemes[0].numFirstState
              
             for i in range(countFirstStateFirstWord):
-                finalSilFram += decoder.lyricsWithModels.statesNetwork[i].getDurationInFrames()
+                finalSilFram += lyricsWithModels.statesNetwork[i].getDurationInFrames()
         
             
-        grTruthWordList = expandlyrics2WordList (decoder.lyricsWithModels, decoder.lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
+        refTokenList = expandlyrics2WordList (lyricsWithModels, lyricsWithModels.statesNetwork, finalSilFram,  _constructTimeStampsForWord)
         grTruthDurationfileExtension = '.scoreDeviation'
-        writeListOfListToTextFile(grTruthWordList, None , URI_recording_noExt + grTruthDurationfileExtension )
+        writeListOfListToTextFile(refTokenList, None , URI_recording_noExt + grTruthDurationfileExtension )
         
 #     TODO: could be done easier with this code, and check last method in Word
-#         grTruthWordList =    testT(decoder.lyricsWithModels)
-        return grTruthWordList
+#         refTokenList =    testT(lyricsWithModels)
+
+        correctDuration, totalDuration = _evalAccuracy(annotationURI, refTokenList, evalLevel )
+
+        return correctDuration, totalDuration
     
 
 

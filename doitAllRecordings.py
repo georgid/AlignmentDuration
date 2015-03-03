@@ -46,6 +46,9 @@ def doit(argv):
         
 
     totalErrors  = [] 
+    totalCorrectDur = 0
+    totalCorrectDurReference = 0
+    totalDurations = 0
 
     # old list. with no acapella equivalent.
 #         compositionNames = ['nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', \
@@ -131,24 +134,34 @@ def doit(argv):
         logger.info("{} ".format(commandStr ))
         
 #         continue
-        mean, stDev, errorsForRecording  = doitOneRecording([ 'dummy', URI_Composition, URI_Recording, pattern, withDuration, withSynthesis,  ALPHA, ONLY_MIDDLE_STATE, evalLevel, usePersistentFiles])
+        mean, stDev, errorsForRecording, currCorrectDur, currTotalDuration, currCorrectDurationsReference  = doitOneRecording([ 'dummy', URI_Composition, URI_Recording, pattern, withDuration, withSynthesis,  ALPHA, ONLY_MIDDLE_STATE, evalLevel, usePersistentFiles])
+        
         totalErrors.extend(errorsForRecording)
+        totalCorrectDur += currCorrectDur
+        totalCorrectDurReference += currCorrectDurationsReference
+        totalDurations += currTotalDuration
         
-
+        currAcc = currCorrectDur/currTotalDuration
+        currAccStr = "{:.2f}".format(currAcc)
         
-        listLine = " ".join(['\n', str(mean), str(stDev), URI_Recording,  pattern])
-        resultSet.append((mean,listLine))
+        currAccScoreDev = currCorrectDurationsReference/currTotalDuration
+        currAccScoreDevStr = '{:.2f}'.format(currAccScoreDev)
+        
+        
+        
+        listLine = " ".join(['\n', currAccScoreDevStr,  currAccStr, str(mean), str(stDev), URI_Recording,  pattern])
+        resultSet.append((currAccScoreDev,listLine))
         
         
     sortedResultSet = sortResultSet(resultSet)
-    writeResultToFile(sortedResultSet,  totalErrors, ALPHA)
+    writeResultToFile(sortedResultSet,  totalErrors, totalCorrectDurReference, totalCorrectDur, totalDurations, ALPHA)
         
     
 def sortResultSet(resultSet):
     from operator import itemgetter
-    return sorted(resultSet,key=itemgetter(0))
+    return sorted(resultSet,key=itemgetter(0), reverse=True)
 
-def writeResultToFile(resultSet,  totalErrors, ALPHA):
+def writeResultToFile(resultSet,  totalErrors, totalCorrectDurReference, totalCorrectDur, totalDurations, ALPHA):
     
     currTime = datetime.now().strftime('%Y-%m-%d--%H-%M-%S')    
     filename = os.path.join(os.getcwdu(),   'alignError_' + currTime + '.out') 
@@ -156,7 +169,7 @@ def writeResultToFile(resultSet,  totalErrors, ALPHA):
     
     logger.info("\n Output file is: " + filename )
     
-    
+#     // write to file/
     outputFileHandle.write('\n'  + str(ALPHA) )
     
     for mean, listLine in resultSet:
@@ -168,7 +181,8 @@ def writeResultToFile(resultSet,  totalErrors, ALPHA):
          
     # total mean    
     mean, stDev, median  = getMeanAndStDevError(totalErrors)
-    result = '\n' + 'total mean: ' + str(mean) + '\n'
+    result = 'tatal scoreDev accuracy {:.2f} \n total accuracy: {:.2f} \n total mean: {} \n'.format( totalCorrectDurReference/ totalDurations,  totalCorrectDur/ totalDurations ,  mean )
+    
     
     logger.info( result  )
     

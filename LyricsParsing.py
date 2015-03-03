@@ -18,7 +18,8 @@ def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
        
     for word_ in lyricsWithModels.listWords:
         countFirstState = word_.syllables[0].phonemes[0].numFirstState
-
+        
+        # word ends at first state of last phonemene (assume it is sp)
         lastPhoneme = word_.syllables[-1].phonemes[-1]
         if lastPhoneme.ID != 'sp':
             sys.exit(' \n last state for word {} is not sp. Sorry - not implemented.'.format(word_.text))
@@ -59,7 +60,7 @@ def _constructTimeStampsForWord(  word_, countFirstState, countLastState, states
 
 def _constructTimeStampsForWordDetected(  word_, countFirstState, countLastState, path, dummy):
         '''
-        helper method. timestamps of detected word 
+        helper method. timestamps of detected word , read frames from path
         '''
         currWordBeginFrame = path.indicesStateStarts[countFirstState]
         currWordEndFrame = path.indicesStateStarts[countLastState]
