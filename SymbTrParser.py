@@ -222,8 +222,8 @@ class SymbTrParser(_SymbTrParserBase):
                             # create new word
                             word = Word(syllablesInCurrWord)
                             
-                            if not word.text == '_SAZ_':
-                                listWords.append(word)
+#                             if not word.text == '_SAZ_':
+                            listWords.append(word)
                             
                             #restart counting
                             syllablesInCurrWord = []
