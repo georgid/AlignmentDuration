@@ -103,7 +103,11 @@ class LyricsWithModels(Lyrics):
         for phoneme in self.phonemesNetwork:
             
             phoneme.setNumFirstState(stateCount)
+            
             # update state counter
+            
+            if not hasattr(phoneme, 'htkModel'):
+                sys.exit("phoneme {} has no htkModel assigned".format(phoneme.ID))
             currStateCount = len(phoneme.htkModel.states)
             stateCount += currStateCount
             

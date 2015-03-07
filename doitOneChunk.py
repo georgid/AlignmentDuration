@@ -130,8 +130,10 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     '''
     call alignment method depending on whether duration or htk  selected 
     '''
-
-    Phonetizer.initLookupTable(withSynthesis)
+    if withSynthesis:
+        Phonetizer.initLookupTable(withSynthesis,  'grapheme2METUphonemeLookupTableSYNTH')
+    else:
+        Phonetizer.initLookupTable(withSynthesis,  'grapheme2METUphonemeLookupTable')
     
     tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     

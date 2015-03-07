@@ -14,14 +14,11 @@ if not pathUtils in sys.path:
 from Utilz import loadTextFile
 
 
-def readLookupTable(withSynthesis):
+def readLookupTable(URItable):
         '''
         read lookup table from file
         '''
-        if not withSynthesis:
-            lookupTableURI= os.path.join(os.path.dirname(os.path.realpath(__file__)) , 'grapheme2METUphonemeLookupTable' )
-        else:
-            lookupTableURI= os.path.join(os.path.dirname(os.path.realpath(__file__)) , 'grapheme2METUphonemeLookupTableSYNTH' )
+        lookupTableURI= os.path.join(os.path.dirname(os.path.realpath(__file__)) , URItable)
             
 
         lookupTableRaw = loadTextFile(lookupTableURI)
@@ -31,15 +28,34 @@ def readLookupTable(withSynthesis):
             grapheme = tokens[0]
             if not isinstance(grapheme, unicode):
                     grapheme = unicode(grapheme,'utf-8')
+            #non-ascii represented by digit. becasue table is reuse din matlab, who does not understand utf 
             if len(grapheme) == 4 and grapheme[0].isdigit(): 
                 grapheme = "\u" + grapheme
                 grapheme = grapheme.decode('unicode-escape')
             
-            lookupTable[grapheme] = tokens[1].rstrip()
-            
-        return lookupTable
+            # one-to-one
+            if len(tokens) == 2:
+                phonemeTokens = tokens[1].rstrip().split()
+                
+                if len(phonemeTokens) == 1:
+                    lookupTable[grapheme] = phonemeTokens[0]
+                elif len(phonemeTokens) == 0:
+                    lookupTable[grapheme] = tokens[1].rstrip()
 
-      
+#              one-to-more, more are separated by space
+                else:
+                    lookupTable[grapheme] = phonemeTokens 
+            
+            # one-to-more
+            elif  len(tokens) > 2:
+                phonemes = []
+                for phonemeCurr in tokens[1:]:
+                    phonemes.append(phonemeCurr.strip())  
+                
+                lookupTable[grapheme] = phonemes
+
+        return lookupTable
+         
       
 def combineDiacriticsChars( listA, utfCode):
     '''
@@ -66,15 +82,22 @@ def combineDiacriticsChars( listA, utfCode):
 
 
 class Phonetizer(object):
-    lookupTable = {}
+    lookupTable = dict()
     withSynthesis = 0
+    phoneticDict = dict() 
     
     @staticmethod
-    def initLookupTable(withSynthesis):
+    def initLookupTable(withSynthesis, URItable):
         # if not yet created:
         if not Phonetizer.lookupTable:
-            Phonetizer.lookupTable = readLookupTable(withSynthesis)
+            Phonetizer.lookupTable = readLookupTable(URItable)
             Phonetizer.withSynthesis = withSynthesis
+    
+    @staticmethod    
+    def initPhoneticDict(URLdict):
+        # if not yet created:
+        if not Phonetizer.phoneticDict:
+            Phonetizer.phoneticDict = readLookupTable(URLdict)
         
     
 #     def __init__(self):
@@ -84,6 +107,16 @@ class Phonetizer(object):
 #         lookupTable = self.lookupTable
         
 
+    @staticmethod
+    def grapheme2phoneme(grapheme, phonemesList):
+        if grapheme in Phonetizer.lookupTable:
+            currPhoneme = Phonetizer.lookupTable[grapheme]
+            if currPhoneme != "":
+                phonemesList.append(currPhoneme)
+        else:
+            sys.exit("grapheme {0} not in graheme-to-phoneme lookup table".format(grapheme))
+        return phonemesList
+    
     @staticmethod
     def grapheme2Phoneme(word):
     #     wprd = word.lower()
@@ -112,12 +145,7 @@ class Phonetizer(object):
 
         for i in range(len(s)):
             s[i] = s[i].lower()
-            if s[i] in Phonetizer.lookupTable:
-                currPhoneme = Phonetizer.lookupTable[s[i]]
-                if currPhoneme != "":
-                        phonemesList.append(currPhoneme)
-            else:
-                sys.exit("grapheme {0} not in gpraheme-to-phoneme lookup table".format(s[i]) )
+            phonemesList = Phonetizer.grapheme2phoneme(s[i], phonemesList)
         
                 
         return phonemesList
@@ -125,6 +153,8 @@ class Phonetizer(object):
 
 
 if __name__=="__main__":
-     Phonetizer.initLookupTable(False)
-     print Phonetizer.lookupTable
+#      Phonetizer.initLookupTable(True, 'grapheme2METUphonemeLookupTableSYNTH' )
+    Phonetizer.initLookupTable(False, 'grapheme2METUphonemeLookupTable' )
+#     Phonetizer.initLookupTable(False, 'syl2phn46.txt' )
+    print Phonetizer.lookupTable
     

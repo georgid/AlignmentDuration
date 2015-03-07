@@ -186,7 +186,7 @@ class SymbTrParser(_SymbTrParserBase):
             
           
 
-# begin index does not update, because no change in aranagme. 
+
     def syllable2LyricsOneSection(self, startNoteNumber, endNoteNumber):
         """
              combine syllables into listWords. use Word and Syllable classes. 
@@ -213,14 +213,7 @@ class SymbTrParser(_SymbTrParserBase):
                         # construct new word at whitespace
                         if currSyllable.text[-1].isspace():
                             
-                            # dont need whitespaces in sllables
-                            currSyllable.text = currSyllable.text.rstrip()
-                            
-                            currSyllable.setHasShortPauseAtEnd(True)
-                            syllablesInCurrWord.append(currSyllable)
-                            
-                            # create new word
-                            word = Word(syllablesInCurrWord)
+                            word, syllablesInCurrWord = createWord(syllablesInCurrWord, currSyllable)
                             
                             # ignore SAZ
 #                             if not word.text == '_SAZ_':
@@ -237,6 +230,9 @@ class SymbTrParser(_SymbTrParserBase):
                         beginIndex = beginIndex + 1
                         
         return listWords
+  
+
+    
         
     def _findSyllableIndex(self, noteNumberQuery):
         '''
@@ -307,7 +303,18 @@ class SymbTrParser(_SymbTrParserBase):
         return listWords, beginIndex
         
      
+# begin index does not update, because no change in aranagme. 
 
+def createWord(syllablesInCurrWord, currSyllable):
+        '''
+        create a new word ending in currect syllable  
+        '''        
+        currSyllable.text = currSyllable.text.rstrip()
+        currSyllable.setHasShortPauseAtEnd(True)
+        syllablesInCurrWord.append(currSyllable)
+    # create new word
+        word = Word(syllablesInCurrWord)
+        return word, syllablesInCurrWord
     
 
 #################################################################################
@@ -322,7 +329,8 @@ if __name__ == "__main__":
     
     
     
-    Phonetizer.initLookupTable(False)
+    Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
+
     symbTrParser = SymbTrParser(pathTxt, pathTsv)
         
     symbTrParser.syllables2Lyrics()
