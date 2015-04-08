@@ -7,20 +7,37 @@ Created on Oct 21, 2014
 '''
 import sys
 import os
-import glob
-from Constants import NUMSTATES_SIL, NUMSTATES_PHONEME
+print sys.getdefaultencoding()
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir,  os.path.pardir)) 
+
 pathUtils = os.path.join(parentParentDir, 'utilsLyrics')
 
 sys.path.append(parentDir )
+
+import glob
+from LyricsWithModels import LyricsWithModels
+from doitOneChunk import loadMFCCs, HMM_LIST_URI, MODEL_URI
+
 sys.path.append(pathUtils )
 
-from MakamScore import MakamScore
+# parser of htk-build speech model
+pathHtkModelParser = os.path.join(parentParentDir, 'pathHtkModelParser')
+if pathHtkModelParser not in sys.path:
+    sys.path.append(pathHtkModelParser)
+from htk_converter import HtkConverter
+
+
+from Constants import NUMSTATES_SIL, NUMSTATES_PHONEME
+
+from MakamScore import MakamScore, loadMakamScore
 import imp
-from Utilz import writeListToTextFile
+from Utilz import writeListToTextFile, getBeginTsFromName
 import Syllable
+
+
+
 
               
               
@@ -120,38 +137,136 @@ def parseScoreAndSerialize(pathToComposition, whichSection, withDurations):
         prints sequence of phonemes, sequence of durarions. indices of word start positions 
         '''
         
-        makamScore = MakamScore.loadScore(pathToComposition)
+        makamScore = loadMakamScore(pathToComposition)
         
         # DEBUG
         makamScore.printSyllables(whichSection)
         
-        # 1. phoneme IDs and durations loaded
-        listPhonemes = makamScore.serializePhonemesForSection(whichSection, '/tmp/test.phn')
+        # 1. phoneme IDs 
+        listPhonemes = makamScore.serializePhonemesForSection(whichSection, pathToComposition + 'tmp.phn')
         listDurations = []
         
-
+        # ... and durations 
         for phoneme_ in listPhonemes :
             listDurations.append(phoneme_.duration)
-        writeListToTextFile(listDurations, None, '/tmp/test.durations')
+        writeListToTextFile(listDurations, None, pathToComposition + 'tmp.dur')
         
         # 2. indices
         
         
-        serializeIndices(makamScore, whichSection, withDurations, '/tmp/test.indices')
+#         serializeIndices(makamScore, whichSection, withDurations, '/tmp/test.indices')
         
 #       just for information   
 #         makamScore.printSectionsAndLyrics()
 
-                               
-     
+
+def parseScoreAndSerializeWithRealTempo2(pathToComposition, whichQuerySection, URIrecordingNoExt):
+    '''
+    needs lyrics for target recording and that it does not have silence at begin and end 
+    two mthods need to be implemented. 
+    '''
+    
+    onyMiddleState = False
+    makamScore = loadMakamScore(pathToComposition)
+    
+    htkParser = HtkConverter()
+    htkParser.load(MODEL_URI, HMM_LIST_URI)
+    
+    # tempo for target *
+    targetLyrics = makamScore.getLyricsForSection(2)
+
+    targetLyricsWithModels = LyricsWithModels(targetLyrics, htkParser, onyMiddleState )
+    observationFeatures = loadMFCCs(URIrecordingNoExt) #     observationFeatures = observationFeatures[0:1000]
+    targetLyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)                          
+    
+    # query
+    lyricsQuery = makamScore.getLyricsForSection(whichQuerySection)
+    
+    # **
+    LyricsWithModels.getLyricsWithModels(lyricsQuery);
+   
+
+def parseScoreAndSerializeWithRealTempo(pathToComposition, whichQuerySection, URIqueryRecordingNoExt, output_phonemesURI, output_durationsURI):
+    '''
+    limitation is it needs wav for URIqueryRecordingNoExt
+    '''
+    onyMiddleState = 'False'
+    makamScore = loadMakamScore(pathToComposition)
+    
+    htkParser = HtkConverter()
+    htkParser.load(MODEL_URI, HMM_LIST_URI)
+    
+    # query
+    lyricsQuery = makamScore.getLyricsForSection(whichQuerySection)
+  
+    queryLyricsWithModels = LyricsWithModels (lyricsQuery, htkParser, onyMiddleState )
+    observationFeatures = loadMFCCs(URIqueryRecordingNoExt) #     observationFeatures = observationFeatures[0:1000]
+    queryLyricsWithModels.duration2numFrameDuration(observationFeatures, URIqueryRecordingNoExt)                          
+    
+    # here expand lyrics
+    phonemeDurationsInFramesList = queryLyricsWithModels.getPhonemeDurationsInFrames()
+        
+    writeListToTextFile(queryLyricsWithModels.phonemesNetwork, None, output_phonemesURI )    
+    writeListToTextFile(phonemeDurationsInFramesList, None, output_durationsURI )    
+
 
 
 def mainDTWMatlab(argv):
         if len(argv) != 4:
             print ("usage: {} <dir of symbtTr.txt and symbTr.tsv> <whichSectionNumber> <hasDurations?>".format(argv[0]) )
             sys.exit();
+        
+        parseScoreAndSerialize(argv[1], int(argv[2]), int(argv[3]))
 
-        parseScoreAndSerialize(argv[1], int(argv[2]), int(argv[3]))   
+    
 
 if __name__ == '__main__':
-    mainDTWMatlab(sys.argv)
+#     mainDTWMatlab(sys.argv)
+
+        if len(sys.argv) != 4:
+            print ("usage: {} <dir of symbtTr.txt and symbTr.tsv> <whichSectionNumber> <URI_recordingQuery_to_get_tempo_from>".format(sys.argv[0]) )
+            sys.exit();
+            
+        URI_score_folder = sys.argv[1];   
+        whichSection = int(sys.argv[2]) 
+        
+        ################################
+        # get name of wav file for query 
+        URI_recordingQuery_notFull =  sys.argv[3];
+        URI_recordingQuery_notFull += '_' + str(whichSection); 
+        
+        recordingPath = os.path.dirname(URI_recordingQuery_notFull) 
+        
+        a = glob.glob(URI_recordingQuery_notFull + '*.wav')
+        print URI_recordingQuery_notFull
+        URI_recordingQuery_no_ext =  a[0]
+        URI_recordingQuery_no_ext = os.path.splitext(URI_recordingQuery_no_ext)[0]
+        #  get query wav done
+        #######################################
+        
+        
+        #########
+        # 1. TextGrid to tsv  to be opened in matlab
+        URI_Anno = URI_recordingQuery_no_ext + '.TextGrid'
+        whichLevel = 2; # phrases
+        initialTimeOffset = getBeginTsFromName(URI_recordingQuery_no_ext);
+#         initialTimeOffset = 10.5;
+
+
+
+        pathEvaluation = os.path.join(parentParentDir, 'AlignmentEvaluation')
+        if pathEvaluation not in sys.path:
+            sys.path.append(pathEvaluation)
+            
+        from WordLevelEvaluator import readNonEmptyTokensTextGrid
+
+        annotationTokenListA, annotationTokenListNoPauses =  readNonEmptyTokensTextGrid(URI_Anno, whichLevel, initialTimeOffset )
+        
+        # 2. phonemesList and its corresponding durations to tsv
+        output_phonemesURI = URI_score_folder + str(whichSection) + '.phn'
+        output_durationsURI = URI_score_folder + str(whichSection) + '.dur'
+        parseScoreAndSerializeWithRealTempo(URI_score_folder, whichSection, URI_recordingQuery_no_ext , output_phonemesURI, output_durationsURI)
+        
+        print output_phonemesURI
+        print output_durationsURI
+        
