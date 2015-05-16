@@ -186,7 +186,7 @@ def parseScoreAndSerializeWithRealTempo2(pathToComposition, whichQuerySection, U
     LyricsWithModels.getLyricsWithModels(lyricsQuery);
    
 
-def parseScoreAndSerializeWithRealTempo(pathToComposition, whichQuerySection, URIqueryRecordingNoExt, output_phonemesURI, output_durationsURI):
+def parseScoreAndSerializeWithRealTempo(pathToComposition, whichQuerySection, URIqueryRecordingNoExt, output_statesURI, output_durationsURI, tempoCoefficient):
     '''
     limitation is it needs wav for URIqueryRecordingNoExt
     '''
@@ -201,13 +201,14 @@ def parseScoreAndSerializeWithRealTempo(pathToComposition, whichQuerySection, UR
   
     queryLyricsWithModels = LyricsWithModels (lyricsQuery, htkParser, onyMiddleState )
     observationFeatures = loadMFCCs(URIqueryRecordingNoExt) #     observationFeatures = observationFeatures[0:1000]
-    queryLyricsWithModels.duration2numFrameDuration(observationFeatures, URIqueryRecordingNoExt)                          
+    queryLyricsWithModels.duration2numFrameDuration(observationFeatures, URIqueryRecordingNoExt, tempoCoefficient)                          
     
     # here expand lyrics
-    phonemeDurationsInFramesList = queryLyricsWithModels.getPhonemeDurationsInFrames()
+#     phonemeDurationsInFramesList = queryLyricsWithModels.phonemeDurationsInFrames2List()
+    stateDurationsInFramesList = queryLyricsWithModels.stateDurationInFrames2List()
         
-    writeListToTextFile(queryLyricsWithModels.phonemesNetwork, None, output_phonemesURI )    
-    writeListToTextFile(phonemeDurationsInFramesList, None, output_durationsURI )    
+    writeListToTextFile(queryLyricsWithModels.statesNetwork, None, output_statesURI )    
+    writeListToTextFile(stateDurationsInFramesList, None, output_durationsURI + "_" + str(tempoCoefficient))    
 
 
 
@@ -223,12 +224,12 @@ def mainDTWMatlab(argv):
 if __name__ == '__main__':
 #     mainDTWMatlab(sys.argv)
 
-        if len(sys.argv) != 4:
-            print ("usage: {} <dir of symbtTr.txt and symbTr.tsv> <whichSectionNumber> <URI_recordingQuery_to_get_tempo_from>".format(sys.argv[0]) )
+        if len(sys.argv) != 5:
+            print ("usage: {} <dir of symbtTr.txt and symbTr.tsv> <whichSectionNumber> <URI_recordingQuery_to_get_tempo_from> <tempoCoefficient>".format(sys.argv[0]) )
             sys.exit();
             
         URI_score_folder = sys.argv[1];   
-        whichSection = int(sys.argv[2]) 
+        whichSection = int(sys.argv[2])
         
         ################################
         # get name of wav file for query 
@@ -244,29 +245,14 @@ if __name__ == '__main__':
         #  get query wav done
         #######################################
         
-        
-        #########
-        # 1. TextGrid to tsv  to be opened in matlab
-        URI_Anno = URI_recordingQuery_no_ext + '.TextGrid'
-        whichLevel = 2; # phrases
-        initialTimeOffset = getBeginTsFromName(URI_recordingQuery_no_ext);
-#         initialTimeOffset = 10.5;
+        tempoCoefficient = int (sys.argv[4])  
 
-
-
-        pathEvaluation = os.path.join(parentParentDir, 'AlignmentEvaluation')
-        if pathEvaluation not in sys.path:
-            sys.path.append(pathEvaluation)
-            
-        from WordLevelEvaluator import readNonEmptyTokensTextGrid
-
-        annotationTokenListA, annotationTokenListNoPauses =  readNonEmptyTokensTextGrid(URI_Anno, whichLevel, initialTimeOffset )
         
         # 2. phonemesList and its corresponding durations to tsv
-        output_phonemesURI = URI_score_folder + str(whichSection) + '.phn'
+        output_statesURI = URI_score_folder + str(whichSection) + '.states'
         output_durationsURI = URI_score_folder + str(whichSection) + '.dur'
-        parseScoreAndSerializeWithRealTempo(URI_score_folder, whichSection, URI_recordingQuery_no_ext , output_phonemesURI, output_durationsURI)
+        parseScoreAndSerializeWithRealTempo(URI_score_folder, whichSection, URI_recordingQuery_no_ext , output_statesURI, output_durationsURI, tempoCoefficient)
         
-        print output_phonemesURI
+        print output_statesURI
         print output_durationsURI
         

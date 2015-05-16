@@ -31,18 +31,27 @@ from Utilz import writeListToTextFile, getBeginTsFromName
 if __name__ == '__main__':
     
     
-    if len(sys.argv) != 3:
-            print ("usage: {}   <URI_recordingQuery> <whichLevel>".format(sys.argv[0]) )
+    if len(sys.argv) != 4:
+            print ("usage: {}  <whichSectionNumber> <URI_recordingQuery_to_get_tempo_from> <whichLevel>".format(sys.argv[0]) )
             sys.exit();
             
     
+    whichSection = int(sys.argv[1]) 
         
     ################################
     # get name of wav file for query 
-    URI_recordingQuery_no_ext =  sys.argv[1];
+    URI_recordingQuery_notFull =  sys.argv[2];
+    URI_recordingQuery_notFull += '_' + str(whichSection); 
     
-     
-    whichLevel = int(sys.argv[2]) ; # phrases
+    recordingPath = os.path.dirname(URI_recordingQuery_notFull) 
+    
+    a = glob.glob(URI_recordingQuery_notFull + '*.wav')
+    URI_recordingQuery_no_ext =  a[0]
+    URI_recordingQuery_no_ext = os.path.splitext(URI_recordingQuery_no_ext)[0]
+    #  get query wav done
+    #######################################    
+    
+    whichLevel = int(sys.argv[3]) ; # phrases
         
         #########
     # 1. TextGrid to tsv  to be opened in matlab

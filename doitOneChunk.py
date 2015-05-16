@@ -19,7 +19,7 @@ from Phonetizer import Phonetizer
 
 
 # file parsing tools as external lib 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
@@ -51,9 +51,9 @@ from PraatVisualiser import tokenList2TabFile
 
 numpy.set_printoptions(threshold='nan')
 
-currDir = os.path.abspath(os.path.dirname(os.path.realpath(sys.argv[0])) )
+currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 modelDIR = currDir + '/model/'
-HMM_LIST_URI = modelDIR +'/monophones0'
+HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
 ANNOTATION_EXT = '.TextGrid'    
@@ -153,14 +153,14 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     
     if WITH_DURATIONS:
             lyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)
-    
+        
     ##############
     ## reference duration
     correctDurationScoreDev, totalDuration  = getReferenceDurations(URIrecordingNoExt, lyricsWithModels, evalLevel)
     
     if withDuration:
 
-        alignmentErrors, detectedTokenList, correctDuration, totalDuration = alignOneChunk(URIrecordingNoExt, lyricsWithModels, params, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix)
+        alignmentErrors, detectedTokenList, correctDuration, totalDuration = alignOneChunk(URIrecordingNoExt, lyricsWithModels, params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix)
 
             
     else:
@@ -194,9 +194,9 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
 
 
-def alignOneChunk(URIrecordingNoExt, lyricsWithModels, params, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix):
+def alignOneChunk(URIrecordingNoExt, lyricsWithModels, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix):
     '''
-    top most logic method
+    wrapper top-most logic method
     '''
      
         
@@ -204,18 +204,15 @@ def alignOneChunk(URIrecordingNoExt, lyricsWithModels, params, evalLevel, usePer
     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
     if os.path.isfile(detectedAlignedfileName):
         detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
-     
-       
-    
     else:
              
         # DEBUG: score-derived phoneme  durations
-#         lyricsWithModels.printPhonemeNetwork()
+        lyricsWithModels.printPhonemeNetwork()
     #     lyricsWithModels.printWordsAndStates()
     
         
         
-        decoder = Decoder(lyricsWithModels, params.ALPHA)
+        decoder = Decoder(lyricsWithModels, alpha)
     #  TODO: DEBUG: do not load models
     # decoder = Decoder(lyrics, withModels=False, numStates=86)
     #################### decode
@@ -256,7 +253,7 @@ def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFile
        
     
     detectedWordList = []
-    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.getDurationInFramesList())
+    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.stateDurationInFrames2List())
     detectedWordList = decoder.path2ResultWordList()
        
     

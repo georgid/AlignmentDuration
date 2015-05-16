@@ -12,8 +12,11 @@ from _SyllableBase import _SyllableBase
 #     64 for 64th note
 MINIMAL_DURATION_UNIT = 64
 
+
 #  consonant duration fixed to  32-th note 
 CONSONANT_DURATION = MINIMAL_DURATION_UNIT / 32
+# CONSONANT_DURATION = MINIMAL_DURATION_UNIT / 64
+
 
 class Syllable(_SyllableBase):
         ''' syllables class done because in symbolic file lyrics are represented as syllables
@@ -53,4 +56,48 @@ class Syllable(_SyllableBase):
             
                 if self.hasShortPauseAtEnd:
                     self.phonemes.append(Phoneme('sp'))
-           
+         
+        
+        def calcPhonemeDurations(self):
+            '''
+            consonant handling policy
+            all consonant durations set to 1 unit, the rest for the vowel.
+            
+                        '''
+            ##############
+            # prepare syllable : eg. find where is vowel and so on
+            #####################
+            if self.phonemes is None:
+                self.expandToPhonemes()
+            
+            if self.getNumPhonemes() == 0:
+                logger.warn("syllable with no phonemes!")
+                return
+            
+            # vowel pos.    
+            if self.phonemes[0].ID == 'sil':
+                vowelPos = 0
+            else:    
+                vowelPos = self.getPositionVowel()
+            
+            # sanity check: Workaraound: reduce consonant duration for syllables with very short note value. 
+            #copy to local var
+            consonant_duration = CONSONANT_DURATION
+            while (self.getNumPhonemes() - 1) * consonant_duration >= self.duration:
+                logger.warn("Syllable {} has very short duration: {} . reducing the fixed duration of consonants".format(self.text, self.duration) )
+                consonant_duration /=2
+            
+            #################
+            ## assign durations 
+            #############
+            # if no vowel in syllable - equal division. just in case
+            if vowelPos == -1:
+                for phoneme in self.phonemes:
+    #                     no vowel => equal duration for all
+                    phoneme.duration = (self.duration / self.getNumPhonemes())
+            else: # one vowel
+                for phoneme in self.phonemes:
+                       phoneme.duration = consonant_duration
+                vowelDuration = self.duration - (self.getNumPhonemes() - 1) * consonant_duration
+    
+                self.phonemes[vowelPos].setDurationInMinUnit(vowelDuration)   

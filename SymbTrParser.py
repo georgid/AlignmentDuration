@@ -181,7 +181,9 @@ class SymbTrParser(_SymbTrParserBase):
             words = self.syllable2LyricsOneSection(currSectionBoundary[1], currSectionBoundary[2])
             
             # store lyrics
-            lyrics = Lyrics(words) 
+            lyrics = Lyrics(words)
+            lyrics.calcPhonemeDurs()
+            
             self.sectionLyrics.append(lyrics)
             
           

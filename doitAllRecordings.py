@@ -130,10 +130,11 @@ def doit(argv):
 # end of synthesis data
 
         command = [ 'python', '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneRecording.py', URI_Composition, URI_Recording, pattern, withDuration, withSynthesis, str(ALPHA), ONLY_MIDDLE_STATE, str(evalLevel), usePersistentFiles]
+        
         commandStr = " ".join(command)
         logger.info("{} ".format(commandStr ))
         
-#         continue
+        continue
         mean, stDev, errorsForRecording, currCorrectDur, currTotalDuration, currCorrectDurationsReference  = doitOneRecording([ 'dummy', URI_Composition, URI_Recording, pattern, withDuration, withSynthesis,  ALPHA, ONLY_MIDDLE_STATE, evalLevel, usePersistentFiles])
         
         totalErrors.extend(errorsForRecording)

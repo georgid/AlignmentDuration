@@ -10,10 +10,14 @@ from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWordDete
 from Constants import numDimensions, numMixtures
 
 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
+
 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
-sys.path.append(pathUtils )
+
+if pathUtils not in sys.path:
+    sys.path.append(pathUtils )
+
 from Utilz import writeListOfListToTextFile, writeListToTextFile
 
 

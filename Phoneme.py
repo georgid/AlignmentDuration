@@ -48,15 +48,18 @@ class Phoneme:
     
     def isVowel(self):
         
-        if (self.ID == Phonetizer.lookupTable.get('a') or
-        self.ID == Phonetizer.lookupTable.get('o') or
-        self.ID == Phonetizer.lookupTable.get('O') or
-        self.ID == Phonetizer.lookupTable.get('e') or
-        self.ID == Phonetizer.lookupTable.get('i') or
-        self.ID == Phonetizer.lookupTable.get('u') or
-        self.ID == Phonetizer.lookupTable.get('U') or
-        self.ID == Phonetizer.lookupTable.get('I') ):
+        if (self.ID == 'AA' or
+        self.ID == 'A' or
+        self.ID == 'O' or
+        self.ID == 'OE' or
+        self.ID == 'E' or
+        self.ID == 'IY' or
+        self.ID == 'U' or
+        self.ID == 'UE' or
+        self.ID == 'I'
+        ):
             return True
+        
         return False
     
     def getTransMatrix(self):

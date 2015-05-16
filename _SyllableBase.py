@@ -13,17 +13,16 @@ import sys
 from Phonetizer import Phonetizer
 from Decoder import logger
 
-#     64 for 64th note
-MINIMAL_DURATION_UNIT = 64
 
-#  consonant duration fixed to  32-th note 
-CONSONANT_DURATION = MINIMAL_DURATION_UNIT / 32
 
 class _SyllableBase():
         ''' syllables class done because in symbolic file lyrics are represented as syllables
         BUT not meant to be used alone, instead Syllable is a part of a Word class
         '''
         def __init__(self, text, noteNum):
+            # strip commas: 
+            
+            text = text.replace(',','')
             self.text = text
             
 #             corresponding note num
@@ -39,6 +38,9 @@ class _SyllableBase():
             self.hasShortPauseAtEnd = hasShortPauseAtEnd
         def setDuration(self, duration):
             self.duration = duration
+            
+        def getDuration(self):
+            return self.duration
         
         def expandToPhonemes(self):
             '''
@@ -73,39 +75,9 @@ class _SyllableBase():
             '''
             consonant handling policy
             all consonant durations set to 1 unit, the rest for the vowel.
-            
-            '''
-            if self.phonemes is None:
-                self.expandToPhonemes()
-            
-            if self.getNumPhonemes() == 0:
-                logger.warn("syllable with no phonemes!")
-                return
-            
-            # vowel pos.    
-            if self.phonemes[0].ID == 'sil':
-                vowelPos = 0
-            else:    
-                vowelPos = self.getPositionVowel()
-            
-            # sanity check: Workaraound: reduce consonant duration for syllables with very short note value. 
-            #copy to local var
-            consonant_duration = CONSONANT_DURATION
-            while (self.getNumPhonemes() - 1) * consonant_duration >= self.duration:
-                logger.warn("Syllable {} has very short duration: {} . reducing the fixed duration of consonants".format(self.text, self.duration) )
-                consonant_duration /=2
-            
-            # if no vowel in syllable - equal division. just in case
-            if vowelPos == -1:
-                for phoneme in self.phonemes:
-#                     no vowel => equal duration for all
-                    phoneme.duration = (self.duration / self.getNumPhonemes())
-            else: # one vowel
-                for phoneme in self.phonemes:
-                       phoneme.duration = consonant_duration
-                vowelDuration = self.duration - (self.getNumPhonemes() - 1) * consonant_duration
+           '''
+            raise NotImplementedError("in class SyllableBase. expoandToPhonemes not implemented")
 
-                self.phonemes[vowelPos].setDurationInMinUnit(vowelDuration)
                 
         def __str__(self):
                 syllalbeTest = self.text.encode('utf-8','replace')

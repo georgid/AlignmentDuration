@@ -1,21 +1,21 @@
-a	NO  A
-ang	NO  A   NG
-an	NO  A   NN
-ai	NO  AI
-ao	NO  AO
-e	NO  E
-eng	NO  E   NG
-en	NO  E   NN
-ei	NO  EI
-er	NO  ER
-yi	NO  I
-o	NO  O
-ou	NO  OU
-wu	NO  U
-yu	NO  V
-yun	NO  V   NN
-yuan	NO  VE  NN
-yue	NO  VE
+a	A
+ang	A   NG
+an	A   NN
+ai	AI
+ao	AO
+e	E
+eng	E   NG
+en	E   NN
+ei	EI
+er	ER
+yi	I
+o	O
+ou	OU
+wu	U
+yu	V
+yun	V   NN
+yuan	VE  NN
+yue	VE
 ba	B   A
 bang	B   A   NG
 ban	B   A   NN

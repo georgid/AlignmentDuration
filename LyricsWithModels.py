@@ -30,7 +30,7 @@ class LyricsWithModels(Lyrics):
         being  linked to models, allows expansion to network of states 
         '''
         Lyrics.__init__(self, lyrics.listWords)
-        
+        lyrics.calcPhonemeDurs()
         self._linkToModels(htkParser)
         
         # list of class type StateWithDur
@@ -41,7 +41,8 @@ class LyricsWithModels(Lyrics):
         elif ONLY_MIDDLE_STATE=='False':
             ONLY_MIDDLE_STATE  = False
         else:
-            sys.exit("param ONLY_MIDDLE_STATE ={}. ONly True/False expected".format( ONLY_MIDDLE_STATE))
+            logger.error('LyricsWithModels: param ONLY_MIDDLE_STATE ={}. ONly True/False expected'.format( ONLY_MIDDLE_STATE))
+            sys.exit()
         
         self.ONLY_MIDDLE_STATE = ONLY_MIDDLE_STATE
         
@@ -111,19 +112,21 @@ class LyricsWithModels(Lyrics):
             currStateCount = len(phoneme.htkModel.states)
             stateCount += currStateCount
             
-            # assign durations
-            for (numState, state ) in phoneme.htkModel.states:
-                 currStateWithDur = StateWithDur(state.mixtures)
+            # assign duration and name to each state
+            for idxState, (numStateFromHtk, state ) in enumerate( phoneme.htkModel.states):
+                 currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState)
                  
                  dur = float(phoneme.getDurationInMinUnit()) / float(currStateCount)
                  
                  currStateWithDur.setDurationInMinUnit( dur )
                  self.statesNetwork.append(currStateWithDur)
                  
+                 
     def _phonemes2stateNetworkWeights(self):
         '''
         expand to self.statesNetwork. 
-        each state gets a part proportional to  the weighting probs
+        each state gets a part proportional to  the weighting probs.
+        NOTE USED!
         '''
         
         self.statesNetwork = []
@@ -151,11 +154,11 @@ class LyricsWithModels(Lyrics):
             
             statesList = phoneme.htkModel.states
             # assign durations
-            for  i, (numState, state ) in enumerate(statesList):
-                 currStateWithDur = StateWithDur(state.mixtures)
+            for idxState, (numStateFromHtk, state ) in enumerate( phoneme.htkModel.states):
+                 currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState)
                  
                  # normalize to sum to one
-                 weigthState = float(waitProbs[i]) / float(sum(waitProbs))
+                 weigthState = float(waitProbs[idxState]) / float(sum(waitProbs))
                  dur = float(phoneme.getDurationInMinUnit()) * float(weigthState)
                  
                  currStateWithDur.setDurationInMinUnit( dur )
@@ -181,16 +184,19 @@ class LyricsWithModels(Lyrics):
             
         
             if len( phoneme.htkModel.states) == 1:
-                (numState, state ) = phoneme.htkModel.states[0]
+                idxMiddleState = 0
             elif len( phoneme.htkModel.states) == 3:             
-                (numState, state ) = phoneme.htkModel.states[1]
+                idxMiddleState = 1
             else:
                 sys.exit("not implemented. only 3 or 1 state per phoneme supported")
             
-            currStateWithDur = StateWithDur(state.mixtures)
+            (numState, state ) = phoneme.htkModel.states[idxMiddleState]
+            currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxMiddleState)
             currStateWithDur.setDurationInMinUnit(phoneme.getDurationInMinUnit())
             
             self.statesNetwork.append(currStateWithDur)
+    
+    
     
     def printWordsAndStatesAndDurations(self, resultPath):
         '''
@@ -218,6 +224,7 @@ class LyricsWithModels(Lyrics):
     def  printWordsAndStates(self):
         '''
         debug word begining states
+        NOTE: code redundant with method  printWordsAndStatesAndDurations() 
         TODO: to reduce code: use lyrics parsing . or like previous
         '''
         
@@ -227,18 +234,19 @@ class LyricsWithModels(Lyrics):
                 for phoneme_ in syllable_.phonemes:
                     print "\t phoneme: " , phoneme_
                     countPhonemeFirstState =  phoneme_.numFirstState
-        
-        for nextState in range(phoneme_.getNumStates()):
-                        stateWithDur = self.statesNetwork[countPhonemeFirstState + nextState]
-                        try:
-                            currDurationInFrames = stateWithDur.durationInFrames
-                        except AttributeError:
-                            currDurationInFrames = 0
-                        print "\t\t state: {} duration (in Frames): {}".format(countPhonemeFirstState + nextState, currDurationInFrames)
-                                                                                               
+                    
+                    print " duration in min unit: {}".format(phoneme_.duration)
+                    for nextState in range(phoneme_.getNumStates()):
+                                    stateWithDur = self.statesNetwork[countPhonemeFirstState + nextState]
+                                    try:
+                                        currDurationInFrames = stateWithDur.durationInFrames
+                                    except AttributeError:
+                                        currDurationInFrames = 0
+                                    print "\t\t state: {} duration (in Frames): {}".format(countPhonemeFirstState + nextState, currDurationInFrames)
+                                                                                                           
                 
                 
-    def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt):
+    def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt, tempoCoefficient = 1.0):
         '''
         get relative tempo (numFramesPerMinUnit) for given audio chunk
         and
@@ -250,7 +258,9 @@ class LyricsWithModels(Lyrics):
 #         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
         totalScoreDur = self.getTotalDuration()
 #         numFramesPerMinUnit   = float(len(observationFeatures) - 2 * AVRG_TIME_SIL * NUM_FRAMES_PERSECOND) / float(totalScoreDur)
-        numFramesPerMinUnit   = float(len(observationFeatures) ) / float(totalScoreDur)
+        numFramesPerMinUnit   = float(tempoCoefficient * len(observationFeatures) ) / float(totalScoreDur)
+
+#         numFramesPerMinUnit   = float(tempoCoefficient)
 
         
         # DEBUG: hardcoded read from groundTruth for kimseye
@@ -260,22 +270,22 @@ class LyricsWithModels(Lyrics):
         
         for  i, stateWithDur_ in enumerate (self.statesNetwork):
 
-        # HARD CODE 1st and last state are silence
-            if i == 0 or i == len(self.statesNetwork) - 1:
-                durINFramesSIL = MAX_TIME_SIL*NUM_FRAMES_PERSECOND
-                stateWithDur_.setDurationInFrames(durINFramesSIL)   
-                
-            else:
-                # numFrames per phoneme
+#         # HARD CODE 1st and last state are silence
+#             if i == 0 or i == len(self.statesNetwork) - 1:
+#                 durINFramesSIL = MAX_TIME_SIL*NUM_FRAMES_PERSECOND
+#                 stateWithDur_.setDurationInFrames(durINFramesSIL)   
+#                 
+#             else:
+#                 # numFrames per phoneme
                 numFramesPerState = round(float(stateWithDur_.duration) * numFramesPerMinUnit)
                 stateWithDur_.setDurationInFrames(numFramesPerState)
         
         self.duratioInFramesSet = True
             
     
-    def getDurationInFramesList(self):
+    def stateDurationInFrames2List(self):
         '''
-        get Duration list (in NumFrames)
+        get Duration list for states ( in NumFrames)
         '''
         numFramesDurationsList = []
         
@@ -288,8 +298,55 @@ class LyricsWithModels(Lyrics):
             numFramesDurationsList.append(stateWithDur_.getDurationInFrames()) 
         
         return numFramesDurationsList
+    
         
         
+    def phonemeDurationsInFrames2List(self):
+        '''
+        get Duration list for phonemes (in NumFrames)
+        '''
+        
+        listDurations = []
+        totalDur = 0
+        for phoneme_ in self.phonemesNetwork:
+            
+            # print phoneme
+            
+            # get total dur of phoneme's states
+            phonemeDurInFrames = 0
+            countPhonemeFirstState= phoneme_.numFirstState
+            
+            for nextState in range(phoneme_.getNumStates()):
+                        stateWithDur = self.statesNetwork[countPhonemeFirstState + nextState]
+                        try:
+                            phonemeDurInFrames += stateWithDur.durationInFrames
+                        except AttributeError:
+                            print "no durationInFrames Attribute for stateWithDur"
+            
+            
+            listDurations.append(phonemeDurInFrames)
+            totalDur += phonemeDurInFrames
+        return listDurations
+        
+    def stateDurations2Network(self):
+        '''
+        make list with phoonemes and states (with so many repetition as durations)
+        '''
+        
+        stateNetworkWithDurs = []
+        if not self.duratioInFramesSet:
+            logger.warn("no duration in frames set. Please call first duration2numFrameDuration()")
+            return stateNetworkWithDurs
+        
+        
+        for  i, stateWithDur_ in enumerate (self.statesNetwork):
+            
+            durInFrames = stateWithDur_.getDurationInFrames()
+            for j in range(int(durInFrames)):
+                 stateNetworkWithDurs.append(stateWithDur_)
+        
+        return stateNetworkWithDurs
+     
         
     def printStates(self):
         '''

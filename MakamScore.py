@@ -101,9 +101,9 @@ class MakamScore():
         '''
         utility method to print all lyrics that are read from symbTr
         '''
-        for currSection in self.sectionToLyricsMap:
+        for idx,currSection in enumerate(self.sectionToLyricsMap):
     
-            print '\n' + str(currSection[0]) + ':'
+            print '\n'  + str(idx) + " " + str(currSection[0]) + ':'
 
             print currSection[1]
 #             for word in  currSection[1]:
@@ -196,22 +196,31 @@ def testMakamScore(argv):
 if __name__ == '__main__':
 
         # only for unit testing purposes
+        pathToScores = '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/'
         
+        #     for a-capella ISTANBUL data 
+        compositionNames = [ 
+                            'nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi', 
+                        'nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin',
+                        'ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi', 
+                        'segah--sarki--curcuna--olmaz_ilac--haci_arif_bey',
+                                'ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses',
+                            'nihavent--sarki--aksak--gel_guzelim--faiz_kapanci',
+                                'nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey',
+                                'nihavent--sarki--aksak--koklasam_saclarini--artaki_candan',
+                        'nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi',
+                        'rast--turku--semai--gul_agaci--necip_mirkelamoglu',
+                        'rast--sarki--sofyan--gelmez_oldu--dramali_hasan',
+                        'rast--sarki--curcuna--nihansin_dideden--haci_faik_bey'
+                        
+                    
+                    ]
+        
+        URI_Composition = os.path.join(pathToScores, compositionNames[6])
+         
         print "in Makam Score"
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi/']
-        
-        
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
-        
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/']
-        
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey/']
-        
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--sarki--curcuna--nihansin_dideden--haci_faik_bey/']
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--sarki--sofyan--gelmez_oldu--dramali_hasan/']
-#         a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
-
-
+ 
+        a = ['dummy', URI_Composition];
         testMakamScore(a)
           
       

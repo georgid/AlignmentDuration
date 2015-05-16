@@ -6,7 +6,7 @@
 import sys
 import os
 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 
 if not pathUtils in sys.path:
@@ -108,17 +108,27 @@ class Phonetizer(object):
         
 
     @staticmethod
-    def grapheme2phoneme(grapheme, phonemesList):
+    def grapheme2phonemeList(grapheme, phonemesList):
+        '''
+        map a grapheme to more-than-one-phoneme. used in JingJu 
+        '''
         if grapheme in Phonetizer.lookupTable:
             currPhoneme = Phonetizer.lookupTable[grapheme]
             if currPhoneme != "":
-                phonemesList.append(currPhoneme)
+                if isinstance(currPhoneme, list):
+                    phonemesList.extend(currPhoneme)
+                else:
+                    phonemesList.append(currPhoneme)
         else:
             sys.exit("grapheme {0} not in graheme-to-phoneme lookup table".format(grapheme))
         return phonemesList
     
     @staticmethod
     def grapheme2Phoneme(word):
+        '''
+        grapheme2phoneme for a whole word
+        '''
+        
     #     wprd = word.lower()
         s = list(word)
     
@@ -145,7 +155,7 @@ class Phonetizer(object):
 
         for i in range(len(s)):
             s[i] = s[i].lower()
-            phonemesList = Phonetizer.grapheme2phoneme(s[i], phonemesList)
+            phonemesList = Phonetizer.grapheme2phonemeList(s[i], phonemesList)
         
                 
         return phonemesList
@@ -154,7 +164,6 @@ class Phonetizer(object):
 
 if __name__=="__main__":
 #      Phonetizer.initLookupTable(True, 'grapheme2METUphonemeLookupTableSYNTH' )
-    Phonetizer.initLookupTable(False, 'grapheme2METUphonemeLookupTable' )
-#     Phonetizer.initLookupTable(False, 'syl2phn46.txt' )
+    Phonetizer.initLookupTable(False, 'phonemeMandarin2METUphonemeLookupTable' )
     print Phonetizer.lookupTable
     
