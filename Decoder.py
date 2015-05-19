@@ -48,7 +48,7 @@ from hmm.continuous.GMHMM  import GMHMM
 
 logger = logging.getLogger(__name__)
 loggingLevel = logging.DEBUG
-loggingLevel = logging.INFO
+# loggingLevel = logging.INFO
 
 logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
 logger.setLevel(loggingLevel)

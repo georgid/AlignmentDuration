@@ -209,9 +209,7 @@ def alignOneChunk(URIrecordingNoExt, lyricsWithModels, alpha, evalLevel, usePers
         # DEBUG: score-derived phoneme  durations
         lyricsWithModels.printPhonemeNetwork()
     #     lyricsWithModels.printWordsAndStates()
-    
-        
-        
+       
         decoder = Decoder(lyricsWithModels, alpha)
     #  TODO: DEBUG: do not load models
     # decoder = Decoder(lyrics, withModels=False, numStates=86)

@@ -9,20 +9,19 @@ import numpy
 class Phoneme:
     def __init__(self, phonemeID):
         self.ID = phonemeID;
-        self.duration = None;
+        self.durationInMinUnit = None;
+        self.durationInNumFrames = None;
         self.numFirstState = -1
             
     def setNumFirstState(self, numFirstState):
             self.numFirstState = numFirstState
         
     def setDurationInMinUnit(self, duration):
-        self.duration = duration
-        
-    def getDurationInMinUnit(self):
-        '''
-        in MIN_UNIT
-        '''
-        return self.duration
+        self.durationInMinUnit = duration
+   
+    def setDurationInNumFrames(self, dur):
+        self.durationInNumFrames =    dur; 
+      
     
     def setHTKModel(self, hmmModel):
         self.htkModel = hmmModel

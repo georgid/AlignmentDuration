@@ -32,7 +32,7 @@ class Lyrics(object):
         @return: self.phonemesNetwork: 
         '''
       
-#         TODO: set duration distribution type
+#         TODO: set durationInMinUnit distribution type
         phonemeSil = Phoneme("sil"); 
         
         # does this matter when expo distribution?
@@ -76,21 +76,22 @@ class Lyrics(object):
                     
     def getTotalDuration(self):
         '''
-        total duration of phonemes according to score. no pauses considered.
+        total durationInMinUnit of phonemes according to score. no pauses considered.
         '''
         totalDuration = 0    
-        for i, phoneme_ in enumerate(self.phonemesNetwork):
-           totalDuration +=  int(phoneme_.duration)
+        for word_ in self.listWords:
+            for syllable_ in word_.syllables:
+                totalDuration +=  int(syllable_.durationInMinUnit)
         return totalDuration
             
     
     def printPhonemeNetwork(self):
         '''
-        debug: score-derived phoneme  duration 
+        debug: score-derived phoneme  durationInMinUnit 
         '''
                
         for i, phoneme in enumerate(self.phonemesNetwork):
-            print "{}: {} {}".format(i, phoneme.ID, phoneme.duration)
+            print "{}: {} {}".format(i, phoneme.ID, phoneme.durationInMinUnit)
 #                         print "{}".format(phoneme.ID)
 
                  

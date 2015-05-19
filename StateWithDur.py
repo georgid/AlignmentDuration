@@ -17,8 +17,8 @@ from htk_models import State
 class StateWithDur(State):
     '''
     extends State with 
-    - duration (in minimal_duration unit)
-    - duration (in Frames)
+    - durationInMinUnit (in minimal_duration unit)
+    - durationInMinUnit (in Frames)
     '''
 
 
@@ -33,7 +33,7 @@ class StateWithDur(State):
     def setDurationInMinUnit(self, duration):
         ''' in MinUNIT'''
         
-        self.duration = duration
+        self.durationInMinUnit = duration
     
     def setDurationInFrames(self, durationInFrames):
         self.durationInFrames = durationInFrames

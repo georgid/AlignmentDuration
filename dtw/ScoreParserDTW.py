@@ -1,6 +1,6 @@
 '''
 matlab dtw with durations.
-extractes the sylable-duration and wordend info from given makamScore
+extractes the sylable-durationInMinUnit and wordend info from given makamScore
 Created on Oct 21, 2014
 
 @author: joro
@@ -99,7 +99,9 @@ def getBeginIndicesWords_Withdurations(makamScore, whichSection):
             wordTotalDur = 0 
             for syllable_ in word_.syllables:
                 for phoneme_ in syllable_.phonemes:
+# TODO: rewrite this line with getDurationInTimeFrame instead
                     currDuration = NUMSTATES_PHONEME * phoneme_.getDurationInMinUnit()
+
                     wordTotalDur = wordTotalDur + currDuration  
             
             currBeginIndex  = currBeginIndex + wordTotalDur
@@ -148,7 +150,7 @@ def parseScoreAndSerialize(pathToComposition, whichSection, withDurations):
         
         # ... and durations 
         for phoneme_ in listPhonemes :
-            listDurations.append(phoneme_.duration)
+            listDurations.append(phoneme_.durationInMinUnit)
         writeListToTextFile(listDurations, None, pathToComposition + 'tmp.dur')
         
         # 2. indices

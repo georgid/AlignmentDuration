@@ -88,7 +88,7 @@ class SymbTrParser(_SymbTrParserBase):
         #end parsing loop
             
         # store last
-        currSyllable.setDuration(currSyllTotalDuration)
+        currSyllable.setDurationInMinUnit(currSyllTotalDuration)
         self.listSyllables.append(currSyllable)
     
     
@@ -132,7 +132,7 @@ class SymbTrParser(_SymbTrParserBase):
         when syllable finished
         '''
         if not (currSyllable is None) and not (syllTotalDuration is None): # save last syllable and duration
-            currSyllable.setDuration(syllTotalDuration)
+            currSyllable.setDurationInMinUnit(syllTotalDuration)
             self.listSyllables.append(currSyllable)
     # init next syllable and its duration
         currSyllable = self.createSyllable(tokens)
@@ -181,9 +181,7 @@ class SymbTrParser(_SymbTrParserBase):
             words = self.syllable2LyricsOneSection(currSectionBoundary[1], currSectionBoundary[2])
             
             # store lyrics
-            lyrics = Lyrics(words)
-            lyrics.calcPhonemeDurs()
-            
+            lyrics = Lyrics(words)            
             self.sectionLyrics.append(lyrics)
             
           

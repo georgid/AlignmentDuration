@@ -28,7 +28,9 @@ class _SyllableBase():
 #             corresponding note num
             self.noteNum = int(noteNum)
             self.phonemes = None
-            self.duration = None
+            self.durationInMinUnit = None
+            self.durationInNumFrames =  None
+
             self.hasShortPauseAtEnd = False
             
         def setHasShortPauseAtEnd (self,hasShortPauseAtEnd): 
@@ -36,11 +38,14 @@ class _SyllableBase():
             set if this is last syllable in word
             '''
             self.hasShortPauseAtEnd = hasShortPauseAtEnd
-        def setDuration(self, duration):
-            self.duration = duration
+        def setDurationInMinUnit(self, duration):
+            self.durationInMinUnit = duration
             
-        def getDuration(self):
-            return self.duration
+        def getDurationInMinUnit(self):
+            return self.durationInMinUnit
+       
+        def setDurationInNumFrames(self, durInNumFrames):
+            self.durationInNumFrames =  durInNumFrames
         
         def expandToPhonemes(self):
             '''
@@ -81,4 +86,4 @@ class _SyllableBase():
                 
         def __str__(self):
                 syllalbeTest = self.text.encode('utf-8','replace')
-                return syllalbeTest + " duration: " + str(self.duration) + "\n" 
+                return syllalbeTest + " durationInMinUnit: " + str(self.durationInMinUnit) + "\n" 
