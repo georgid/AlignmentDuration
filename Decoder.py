@@ -47,8 +47,8 @@ from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
 logger = logging.getLogger(__name__)
-loggingLevel = logging.DEBUG
-# loggingLevel = logging.INFO
+# loggingLevel = logging.DEBUG
+loggingLevel = logging.INFO
 
 logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
 logger.setLevel(loggingLevel)
@@ -71,7 +71,6 @@ class Decoder(object):
         of class HMM
         '''
         self.hmmNetwork = []
-                
         
         self._constructHmmNetwork(numStates, float(ALPHA), withModels)
         self.hmmNetwork.logger.setLevel(loggingLevel)
@@ -79,7 +78,7 @@ class Decoder(object):
         # Path class object
         self.path = None
     
-    def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt, listDurations):
+    def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
@@ -88,38 +87,24 @@ class Decoder(object):
         else:             
             URI_bmap = URI_recording_noExt + '.bmap'
         
-        
-        
         self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_bmap )
         
         # double check that features are in same dimension as model
         if observationFeatures.shape[1] != numDimensions:
             sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
-#         observationFeatures = observationFeatures[0:100,:]
         
-        if  WITH_DURATIONS:
-            
-            # transMatrix for 0 state which is silence
-            transMatrix = self.lyricsWithModels.phonemesNetwork[0].getTransMatrix()
-            self.hmmNetwork.setWaitProbSilState(transMatrix[2,2])
-            
-            self.hmmNetwork.setDurForStates(listDurations)
         
-#         if os.path.exists(PATH_CHI) and os.path.exists(PATH_PSI): 
-#             chiBackPointer = numpy.loadtxt(PATH_CHI)
-#             psiBackPointer = numpy.loadtxt(PATH_PSI)
-#                
-#         else:
+        self.hmmNetwork.initDecodingParameters(observationFeatures)
 
         # standard viterbi forced alignment
         if not WITH_DURATIONS:
+            
             path_, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
             self.path =  Path(None, None)
             self.path.setPatRaw(path_)
             
         # duration-HMM
         else:
-        
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
             
 #             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
@@ -140,10 +125,7 @@ class Decoder(object):
         '''
         top level-function: costruct self.hmmNEtwork that confirms to guyz's code 
         '''
-        
-    #     sequencePhonemes = sequencePhonemes[0:4]
-        
-        
+
         ######## construct transition matrix
         #######
         if not WITH_DURATIONS:
@@ -151,21 +133,23 @@ class Decoder(object):
 
 #        DEBUG
 #  writeListOfListToTextFile(transMAtrix, None , '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/transMatrix')
-        
-        # construct means, covars, and all the rest params
-        #########
        
-        if numStates == None:
-            numStates = len(self.lyricsWithModels.statesNetwork) 
         
-        means, covars, weights, pi = self._constructHMMNetworkParameters(numStates,  withModels)
+        
         
         if  WITH_DURATIONS:
-            self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,None,means,covars,weights,pi,init_type='user',verbose=True)
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
             self.hmmNetwork.setALPHA(ALPHA)
+        
         else:
+            if numStates == None:
+                numStates = len(self.lyricsWithModels.statesNetwork) 
+        
+            # construct means, covars, and all the rest params
+            #########
+            means, covars, weights, pi = self._constructHMMNetworkParameters(numStates,  withModels)
             self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,transMAtrix,means,covars,weights,pi,init_type='user',verbose=True)
-
+        
 
         
     def  _constructTransMatrixHMMNetwork(self, sequencePhonemes):
@@ -211,7 +195,8 @@ class Decoder(object):
     
     def _constructHMMNetworkParameters(self,  numStates,  withModels=True, sequenceStates=None):
         '''
-        tranform other htkModel params to  format of gyuz's hmm class
+        tranform other htkModel params to  format of gyuz's hmm class.
+        similar code in method _DurationHMM_constructNetworkParams. This left here for GMM class without duration
         '''
         
        

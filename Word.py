@@ -6,7 +6,6 @@ Created on Oct 8, 2014
 
 from Syllable import Syllable
 from Phoneme import Phoneme
-from StateWithDur import StateWithDur
 
 class Word():
         ''' just a list of syllables. order  matters '''

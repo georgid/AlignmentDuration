@@ -32,13 +32,7 @@ class Lyrics(object):
         @return: self.phonemesNetwork: 
         '''
       
-#         TODO: set durationInMinUnit distribution type
-        phonemeSil = Phoneme("sil"); 
-        
-        # does this matter when expo distribution?
-        phonemeSil.setDurationInMinUnit('1')
-        
-#         self.phonemesNetwork.append(phonemeSil)
+
         
         # start word after sil phoneme
 #         currNumPhoneme = 1
@@ -52,8 +46,7 @@ class Lyrics(object):
             # update index
 #             currNumPhoneme += word_.getNumPhonemes()
         
-        phonemeSil2 = Phoneme("sil"); phonemeSil2.setDurationInMinUnit('1')
-#         self.phonemesNetwork.append(phonemeSil2)
+
     
     def calcPhonemeDurs(self):
         '''

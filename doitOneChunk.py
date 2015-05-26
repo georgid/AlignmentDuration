@@ -201,30 +201,30 @@ def alignOneChunk(URIrecordingNoExt, lyricsWithModels, alpha, evalLevel, usePers
      
         
     # read from file result
-    detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
-    if os.path.isfile(detectedAlignedfileName):
-        detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
-    else:
+#     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
+#     if os.path.isfile(detectedAlignedfileName):
+#         detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
+#     else:
              
-        # DEBUG: score-derived phoneme  durations
-        lyricsWithModels.printPhonemeNetwork()
-    #     lyricsWithModels.printWordsAndStates()
-       
-        decoder = Decoder(lyricsWithModels, alpha)
-    #  TODO: DEBUG: do not load models
-    # decoder = Decoder(lyrics, withModels=False, numStates=86)
-    #################### decode
-        if usePersistentFiles=='True':
-            usePersistentFiles = True
-        elif usePersistentFiles=='False':
-            usePersistentFiles = False
-        else: 
-            sys.exit("usePersistentFiles can be only True or False") 
-            
-        detectedTokenList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
+    # DEBUG: score-derived phoneme  durations
+#     lyricsWithModels.printPhonemeNetwork()
+    lyricsWithModels.printWordsAndStates()
+   
+    decoder = Decoder(lyricsWithModels, alpha)
+#  TODO: DEBUG: do not load models
+# decoder = Decoder(lyrics, withModels=False, numStates=86)
+#################### decode
+    if usePersistentFiles=='True':
+        usePersistentFiles = True
+    elif usePersistentFiles=='False':
+        usePersistentFiles = False
+    else: 
+        sys.exit("usePersistentFiles can be only True or False") 
         
-    ### VISUALIZE
-    #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+    detectedTokenList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
+    
+### VISUALIZE
+#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
         
 
 #################### evaluate
@@ -251,7 +251,7 @@ def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFile
        
     
     detectedWordList = []
-    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt, decoder.lyricsWithModels.stateDurationInFrames2List())
+    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt)
     detectedWordList = decoder.path2ResultWordList()
        
     

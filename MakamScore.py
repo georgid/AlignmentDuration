@@ -158,6 +158,7 @@ def loadLyrics(pathToComposition, whichSection):
     # phoneme IDs
     
     lyrics = makamScore.getLyricsForSection(whichSection)
+    makamScore.printSectionsAndLyrics()
     return lyrics
 
 def loadMakamScore(pathToComposition):

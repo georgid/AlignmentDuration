@@ -16,9 +16,7 @@ class Phoneme:
     def setNumFirstState(self, numFirstState):
             self.numFirstState = numFirstState
         
-    def setDurationInMinUnit(self, duration):
-        self.durationInMinUnit = duration
-   
+
     def setDurationInNumFrames(self, dur):
         self.durationInNumFrames =    dur; 
       
@@ -61,17 +59,21 @@ class Phoneme:
         
         return False
     
-    def getTransMatrix(self):
+    def getTransMatrix(self, htkModel):
         '''
         read the trans matrix from model. 
         3x3 or 1x1 matrix for emitting states only as numpy array
         '''
         
-        try: self.htkModel
+        try: htkModel
         except NameError:
-            sys.exit("  phoneme {} has no model assigned ", self.ID)
+            try: self.htkModel
+            except AttributeError:
+                sys.exit("  phoneme {} has no model assigned ", self.ID)
+            else:     htkModel = self.htkModel 
+
         
-        vector_ = self.htkModel.tmat.vector
+        vector_ = htkModel.tmat.vector
         currTransMat = numpy.reshape(vector_ ,(len(vector_ )**0.5, len(vector_ )**0.5))
     
         return currTransMat  

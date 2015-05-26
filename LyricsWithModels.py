@@ -6,12 +6,19 @@ Created on Oct 27, 2014
 from Lyrics import Lyrics
 import os
 import sys
-from StateWithDur import StateWithDur
+from Phoneme import Phoneme
+
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+HMMDurationPath = os.path.join(parentDir, 'HMMDuration')
+if not HMMDurationPath in sys.path:
+    sys.path.append(HMMDurationPath)
+    
+from hmm.StateWithDur import StateWithDur
+
 from htk_converter import HtkConverter
 from Decoder import logger
 from Constants import NUM_FRAMES_PERSECOND, AVRG_TIME_SIL, MAX_TIME_SIL
 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 
 # htkModelParser = os.path.join(parentDir, 'htk2s3')
 # sys.path.append(htkModelParser)
@@ -29,6 +36,10 @@ class LyricsWithModels(Lyrics):
         '''
         being  linked to models, allows expansion to network of states 
         '''
+        
+#       add a state 'sp' with exponential disrib at begining and end  
+        self.withPaddedSilence = True
+        
         Lyrics.__init__(self, lyrics.listWords)
         self._linkToModels(htkParser)
         
@@ -57,28 +68,26 @@ class LyricsWithModels(Lyrics):
        
     #link each phoneme from transcript to a model
             # FIXME: DO A MORE OPTIMAL WAY like ismember()
-        for phonemeFromTranscript in    self.phonemesNetwork[1:-1]:
+        for phonemeFromTranscript in    self.phonemesNetwork:
             for currHmmModel in htkParser.hmms:
                 if currHmmModel.name == phonemeFromTranscript.ID:
                     
                     phonemeFromTranscript.setHTKModel(currHmmModel) 
+            
+        ######## # create sp state
+            for currHmmModel in htkParser.hmms:
+                if currHmmModel.name == 'sp':
+                    spmodel = currHmmModel
+            
+        (numStateFromHtk, state)  = spmodel.states[0]
+        self.spState = StateWithDur(state.mixtures, 'sp', 0, distribType='exponential')
 
-
-        # redefine sil model so that it has only middle state 
-        # assign first and last phoneme 1-state sil
-        for currHmmModel in htkParser.hmms:
-            if currHmmModel.name == 'sil': 
-                if not len(currHmmModel.states)==1 :
-                
-                    middleState = currHmmModel.states[1]
-                    currHmmModel.states = []
-                    currHmmModel.states.append(middleState)
-                
-                # HARD CODE first and last phoneme, they are sil
-                self.phonemesNetwork[0].setHTKModel(currHmmModel)
-                self.phonemesNetwork[-1].setHTKModel(currHmmModel)
-                
-           
+        tmpPhoneme =  Phoneme('sp')
+        spTransMatrix = tmpPhoneme.getTransMatrix(spmodel)
+        self.spState.setWaitProb(spTransMatrix[1,1])
+        ######## end of create sp state   
+      
+        
            # DEBUG: 
 #         for phonemeFromTranscript in    self.phonemesNetwork:
 #             phonemeFromTranscript.htkModel.display()
@@ -96,12 +105,15 @@ class LyricsWithModels(Lyrics):
         self.statesNetwork = []
         stateCount = 0
         
+        if self.withPaddedSilence:           
+            self.statesNetwork.append(self.spState)
+            stateCount+=1
+        
         for phoneme in self.phonemesNetwork:
             
             phoneme.setNumFirstState(stateCount)
             
             # update state counter
-            
             if not hasattr(phoneme, 'htkModel'):
                 sys.exit("phoneme {} has no htkModel assigned".format(phoneme.ID))
             currStateCount = len(phoneme.htkModel.states)
@@ -115,7 +127,9 @@ class LyricsWithModels(Lyrics):
                     
                 currStateWithDur.setDurationInFrames( dur )
                 self.statesNetwork.append(currStateWithDur)
-                 
+          
+        if self.withPaddedSilence:           
+            self.statesNetwork.append(self.spState)      
                  
     def _phonemes2stateNetworkWeights(self):
         '''
@@ -241,7 +255,7 @@ class LyricsWithModels(Lyrics):
                                                                                                            
                 
                 
-    def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt, tempoCoefficient = 1.0):
+    def duration2numFrameDuration(self, observationFeatures, URI_recording_noExt,  tempoCoefficient = 1.0):
         '''
         get relative tempo (numFramesPerMinUnit) for given audio chunk
         and

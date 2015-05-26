@@ -14,8 +14,8 @@ MINIMAL_DURATION_UNIT = 64
 
 NUMFRAMESPESECOND = 100
 
-#  consonant durationInMinUnit fixed to  0.6 seconds 
-CONSONANT_DURATION = NUMFRAMESPESECOND * 0.6
+#  consonant durationInMinUnit fixed to  0.3 seconds 
+CONSONANT_DURATION = NUMFRAMESPESECOND * 0.3
 # CONSONANT_DURATION = MINIMAL_DURATION_UNIT / 64
 
 
@@ -43,10 +43,10 @@ class Syllable(_SyllableBase):
             
             # instrument
             if self.text == '_SAZ_':
+                # TODO: replace with other model instead of silence
                 self.phonemes.append(Phoneme('sil'))
                 # TODO: does sp at end of sp make sence? 
-                if self.hasShortPauseAtEnd:
-                    self.phonemes.append(Phoneme('sp'))
+                self.phonemes.append(Phoneme('sp'))
             
             # text from lyrics
             else:
