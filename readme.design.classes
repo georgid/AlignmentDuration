@@ -23,6 +23,21 @@ each Word in turn contains a list of object type Syllable
 Each syllable in turn contains a list of Phoneme objects
 
 
+Syllable
+-----------
+fields:
+durationInMinUnit - assigned from score. could be given from source other than score. 
+Absolute duration is not important as it gets rescaled according to tempo in lyricsWithModels.duration2numFrameDuration()
+Important is the ratio  between relative syllable durations
+ 
+text - 
+
+expandToPhonemes() - use grapheme2phoneme rules
+
+calcPhonemeDurs() - for each phoneme assign durations according to consonant handling policy. called in lyricsWithModels.duration2numFrameDuration() after 
+rescaling to tempo  
+
+
 
 LyricsWithModels
 ---------------------
@@ -33,15 +48,18 @@ extend Lyrics with  modeling-related info :
 fields: 
 withPaddedSilence - whether to add a 'sp' state at beginning and end (done in _phonemes2stateNetwork())
 
-in init is calling the method to generate stateNetwork 
 
-             self._phonemes2stateNetwork()
-            
-NOTE: for handling duration information see Decoder
+self._phonemes2stateNetwork()
+ called in duration2numFrameDuration  
+     1) generate stateNetwork
+     2) assign phoneme a pointer to its initial state in the state network (serves as link among the two)
+     3) each state gets 1/n-th of total num of states
+     	
 
 DEBUG: 
 LyricsWithModels.LyricsWithModels.printWordsAndStatesAndDurations - can be used after decoding to compare ground truth with result 
  - called from doitOneChunk.alignOneChunk()
+
 
 
 Phoneme
@@ -49,6 +67,7 @@ Phoneme
 fields:
 -duration
 -htkModel
+
 
 LyricsParsing
 ======================

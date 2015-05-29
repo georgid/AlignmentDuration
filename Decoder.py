@@ -61,7 +61,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, ALPHA,  numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, ALPHA, deviationInSec, numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -72,22 +72,19 @@ class Decoder(object):
         '''
         self.hmmNetwork = []
         
-        self._constructHmmNetwork(numStates, float(ALPHA), withModels)
+        self._constructHmmNetwork(numStates, float(ALPHA), float(deviationInSec), withModels)
         self.hmmNetwork.logger.setLevel(loggingLevel)
         
         # Path class object
         self.path = None
     
-    def decodeAudio( self, observationFeatures, usePersistentFiles, URI_recording_noExt):
+    def decodeAudio( self, observationFeatures, usePersistentFiles):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
-        if self.lyricsWithModels.ONLY_MIDDLE_STATE:
-            URI_bmap = URI_recording_noExt + '.bmap_onlyMiddleState'
-        else:             
-            URI_bmap = URI_recording_noExt + '.bmap'
+      
         
-        self.hmmNetwork.setPersitentFiles( usePersistentFiles, URI_bmap )
+        self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
         
         # double check that features are in same dimension as model
         if observationFeatures.shape[1] != numDimensions:
@@ -121,7 +118,7 @@ class Decoder(object):
     
     
         
-    def _constructHmmNetwork(self,  numStates, ALPHA, withModels ):
+    def _constructHmmNetwork(self,  numStates, ALPHA, deviationInSec,  withModels ):
         '''
         top level-function: costruct self.hmmNEtwork that confirms to guyz's code 
         '''
@@ -138,7 +135,7 @@ class Decoder(object):
         
         
         if  WITH_DURATIONS:
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions, deviationInSec)
             self.hmmNetwork.setALPHA(ALPHA)
         
         else:

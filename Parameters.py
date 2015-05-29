@@ -10,7 +10,7 @@ class Parameters(object):
     '''
 
 
-    def __init__(self, ALPHA,  ONLY_MIDDLE_STATE ):
+    def __init__(self, ALPHA,  ONLY_MIDDLE_STATE, deviationInSec ):
         '''
         Constructor
         '''
@@ -18,6 +18,8 @@ class Parameters(object):
         self.ALPHA = ALPHA
         
         self.ONLY_MIDDLE_STATE = ONLY_MIDDLE_STATE
+        
+        self.deviationInSec = deviationInSec
         
      
         

@@ -38,6 +38,7 @@ class _SyllableBase():
             set if this is last syllable in word
             '''
             self.hasShortPauseAtEnd = hasShortPauseAtEnd
+        
         def setDurationInMinUnit(self, duration):
             self.durationInMinUnit = duration
             

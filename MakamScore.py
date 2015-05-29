@@ -139,10 +139,13 @@ class MakamScore():
                
 
 
-def loadLyrics(pathToComposition, whichSection):
-
-    Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
-
+def loadLyrics(pathToComposition, whichSection, withSynthesis):
+    
+    
+    if withSynthesis:
+        Phonetizer.initLookupTable(withSynthesis,  'grapheme2METUphonemeLookupTableSYNTH')
+    else:
+        Phonetizer.initLookupTable(withSynthesis,  'grapheme2METUphonemeLookupTable')
     
     os.chdir(pathToComposition)
 

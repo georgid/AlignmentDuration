@@ -40,6 +40,10 @@ from Aligner import Aligner
 #  evaluation  
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
+
+pathHMM = os.path.join(parentDir, 'HMMDuration')
+from hmm.examples.tests  import loadSmallAudioFragment
+
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
 from AccuracyEvaluator import _evalAccuracy, evalAccuracy
 from TextGrid_Parsing import TextGrid2WordList
@@ -60,8 +64,7 @@ ANNOTATION_EXT = '.TextGrid'
 AUDIO_EXT = '.wav'
 
 
-
-
+deviationInSec = 0.07
 
 
 
@@ -99,7 +102,7 @@ def doitOneChunk(argv):
     evalLevel = tierAliases.wordLevel
     evalLevel = int(argv[7])
 
-    params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
+    params = Parameters(ALPHA, ONLY_MIDDLE_STATE, deviationInSec)
     
     usePersistentFiles = 'True'
     if len(argv) == 9:
@@ -130,37 +133,37 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     '''
     call alignment method depending on whether duration or htk  selected 
     '''
-    if withSynthesis:
-        Phonetizer.initLookupTable(withSynthesis,  'grapheme2METUphonemeLookupTableSYNTH')
-    else:
-        Phonetizer.initLookupTable(withSynthesis,  'grapheme2METUphonemeLookupTable')
-    
-    tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
-    
-    ##############################
-    ## load lyrics for section
-    lyrics = loadLyrics(pathToComposition, whichSection)
+    #### 1) load lyrics
+   
+    lyrics = loadLyrics(pathToComposition, whichSection, withSynthesis)
     lyricsStr = lyrics.__str__()
         
     if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
             logger.warn("skipping section {} with no lyrics ...".format(whichSection))
             return [], 'dummy', 0, 0, 0
     
-    logger.info("aligning audio {}".format(URIrecordingNoExt))
-    lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
+#     ###### 2) extract audio features
     
-    observationFeatures = loadMFCCs(URIrecordingNoExt) #     observationFeatures = observationFeatures[0:1000]
+    lyricsWithModels, obsFeatures = loadSmallAudioFragment(lyrics, URIrecordingNoExt, fromTs=-1, toTs=-1)
+
+#     lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
+#     
+#     logger.info("aligning audio {}".format(URIrecordingNoExt))
+#     observationFeatures = loadMFCCs(URIrecordingNoExt, fromTs=-1, toTs=-1) #     observationFeatures = observationFeatures[0:1000]
+#     
+#     if WITH_DURATIONS:
+#             lyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)
+        
     
-    if WITH_DURATIONS:
-            lyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)
         
     ##############
     ## reference duration
     correctDurationScoreDev, totalDuration  = getReferenceDurations(URIrecordingNoExt, lyricsWithModels, evalLevel)
     
+    tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     if withDuration:
 
-        alignmentErrors, detectedTokenList, correctDuration, totalDuration = alignOneChunk(URIrecordingNoExt, lyricsWithModels, params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix)
+        alignmentErrors, detectedTokenList, correctDuration, totalDuration = alignOneChunk(obsFeatures, lyricsWithModels, params.ALPHA, params.deviationInSec, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix)
 
             
     else:
@@ -183,6 +186,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         
     
     # store decoding results in a file FIXME: if with duration it is not mlf 
+    
     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
     if not os.path.isfile(detectedAlignedfileName):
         detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
@@ -194,7 +198,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
 
 
-def alignOneChunk(URIrecordingNoExt, lyricsWithModels, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix):
+def alignOneChunk(obsFeatures, lyricsWithModels, alpha, deviationInSec, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt=''):
     '''
     wrapper top-most logic method
     '''
@@ -210,7 +214,7 @@ def alignOneChunk(URIrecordingNoExt, lyricsWithModels, alpha, evalLevel, usePers
 #     lyricsWithModels.printPhonemeNetwork()
     lyricsWithModels.printWordsAndStates()
    
-    decoder = Decoder(lyricsWithModels, alpha)
+    decoder = Decoder(lyricsWithModels, alpha, deviationInSec)
 #  TODO: DEBUG: do not load models
 # decoder = Decoder(lyrics, withModels=False, numStates=86)
 #################### decode
@@ -221,7 +225,7 @@ def alignOneChunk(URIrecordingNoExt, lyricsWithModels, alpha, evalLevel, usePers
     else: 
         sys.exit("usePersistentFiles can be only True or False") 
         
-    detectedTokenList = decodeAudioChunk(URIrecordingNoExt, decoder, evalLevel, usePersistentFiles)
+    detectedTokenList = decodeAudioChunk(obsFeatures, decoder, evalLevel, usePersistentFiles)
     
 ### VISUALIZE
 #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
@@ -240,18 +244,17 @@ def alignOneChunk(URIrecordingNoExt, lyricsWithModels, alpha, evalLevel, usePers
 
 
 
-def decodeAudioChunk( URI_recording_noExt, decoder, evalLevel, usePersistentFiles):
+def decodeAudioChunk( obsFeatures, decoder, evalLevel, usePersistentFiles):
     '''
     decoder : 
     WITH_DURAITON flag triggered here
     '''    
     
-    observationFeatures = loadMFCCs(URI_recording_noExt) #     observationFeatures = observationFeatures[0:1000]
     
        
     
     detectedWordList = []
-    decoder.decodeAudio(observationFeatures, usePersistentFiles, URI_recording_noExt)
+    decoder.decodeAudio(obsFeatures, usePersistentFiles)
     detectedWordList = decoder.path2ResultWordList()
        
     
@@ -305,29 +308,6 @@ def getReferenceDurations(URI_recording_noExt, lyricsWithModels, evalLevel):
         return correctDuration, totalDuration
     
 
-
-def loadMFCCsWithMatlab(URI_recording_noExt):
-    print 'calling matlab'
-#     mlab = Matlab(matlab='/Applications/MATLAB_R2009b.app/bin/matlab')
-#     mlab.start()
-#     res = mlab.run_func('/Users/joro/Documents/Phd/UPF/voxforge/myScripts/lyrics_magic/matlab_htk/writeMFC.m', {'filename':URI_recording_noExt})
-#     print res['result']
-#     mlab.stop()
-
-def loadMFCCs(URI_recording_noExt): 
-    '''
-    for now lead extracted with HTK, read in matlab and seriqlized to txt file
-    '''
-    # first extract features with data.m in Matlab 
-    URI_recording_mfc_txt = URI_recording_noExt + '.mfc_txt'
-    
-    if not os.path.exists(URI_recording_mfc_txt):
-#       loadMFCCsWithMatlab(URI_recording_noExt)
-        sys.exit('file {} not found. extract features with data.m in Matlab'.format(URI_recording_mfc_txt))
-    logger.debug("reading MFCCs from {} ...".format(URI_recording_mfc_txt))
-    mfccsFeatrues = numpy.loadtxt(URI_recording_mfc_txt , delimiter=','  ) 
-    
-    return mfccsFeatrues
 
 
 
