@@ -110,7 +110,7 @@ class Phonetizer(object):
     @staticmethod
     def grapheme2phonemeList(grapheme, phonemesList):
         '''
-        map a grapheme to more-than-one-phoneme. used in JingJu 
+        map a grapheme to a list of phonemes. used in JingJu 
         '''
         if grapheme in Phonetizer.lookupTable:
             currPhoneme = Phonetizer.lookupTable[grapheme]

@@ -10,7 +10,6 @@ import numpy
 import sys
 from LyricsWithModels import LyricsWithModels
 from numpy.core.arrayprint import set_printoptions
-from Parameters import Parameters
 from Decoder import Decoder, WITH_DURATIONS, logger
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWord, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
@@ -42,6 +41,10 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
 
 pathHMM = os.path.join(parentDir, 'HMMDuration')
+if pathHMM not in sys.path:
+    sys.path.append(pathHMM)
+    
+from hmm.Parameters import Parameters
 from hmm.examples.tests  import loadSmallAudioFragment
 
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
@@ -63,8 +66,6 @@ MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 ANNOTATION_EXT = '.TextGrid'    
 AUDIO_EXT = '.wav'
 
-
-deviationInSec = 0.07
 
 
 
@@ -101,7 +102,8 @@ def doitOneChunk(argv):
     
     evalLevel = tierAliases.wordLevel
     evalLevel = int(argv[7])
-
+    
+    deviationInSec = 0.1
     params = Parameters(ALPHA, ONLY_MIDDLE_STATE, deviationInSec)
     
     usePersistentFiles = 'True'
@@ -144,21 +146,14 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     
 #     ###### 2) extract audio features
     
-    lyricsWithModels, obsFeatures = loadSmallAudioFragment(lyrics, URIrecordingNoExt, fromTs=-1, toTs=-1)
+    lyricsWithModels, obsFeatures = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, bool(withSynthesis), fromTs=-1, toTs=-1)
 
-#     lyricsWithModels = LyricsWithModels(lyrics, htkParser, params.ONLY_MIDDLE_STATE)
-#     
-#     logger.info("aligning audio {}".format(URIrecordingNoExt))
-#     observationFeatures = loadMFCCs(URIrecordingNoExt, fromTs=-1, toTs=-1) #     observationFeatures = observationFeatures[0:1000]
-#     
-#     if WITH_DURATIONS:
-#             lyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)
-        
-    
+ 
         
     ##############
     ## reference duration
-    correctDurationScoreDev, totalDuration  = getReferenceDurations(URIrecordingNoExt, lyricsWithModels, evalLevel)
+#     correctDurationScoreDev, totalDuration  = getReferenceDurations(URIrecordingNoExt, lyricsWithModels, evalLevel)
+    correctDurationScoreDev = 0
     
     tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     if withDuration:
@@ -225,40 +220,23 @@ def alignOneChunk(obsFeatures, lyricsWithModels, alpha, deviationInSec, evalLeve
     else: 
         sys.exit("usePersistentFiles can be only True or False") 
         
-    detectedTokenList = decodeAudioChunk(obsFeatures, decoder, evalLevel, usePersistentFiles)
+    detectedTokenList = decoder.decodeAudio(obsFeatures, usePersistentFiles)
     
 ### VISUALIZE
-#     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+    decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
         
 
 #################### evaluate
     alignmentErrors = [2, 3, 4]
-    alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel)
+#     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel)
     
-    correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel )
-
+#     correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel )
+    correctDuration = -1
+    totalDuration = -1
     return alignmentErrors, detectedTokenList, correctDuration, totalDuration
 
 
 
-
-
-
-def decodeAudioChunk( obsFeatures, decoder, evalLevel, usePersistentFiles):
-    '''
-    decoder : 
-    WITH_DURAITON flag triggered here
-    '''    
-    
-    
-       
-    
-    detectedWordList = []
-    decoder.decodeAudio(obsFeatures, usePersistentFiles)
-    detectedWordList = decoder.path2ResultWordList()
-       
-    
-    return detectedWordList
 
 
 

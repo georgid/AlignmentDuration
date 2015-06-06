@@ -24,10 +24,10 @@ class Lyrics(object):
         '''
         self.phonemesNetwork =  []
         
-        self._words2Phonemes()
+        self._graphemes2Phonemes()
         
     
-    def _words2Phonemes(self):
+    def _graphemes2Phonemes(self):
         ''' convert list of words (Word []) to 
         @return: self.phonemesNetwork: 
         '''

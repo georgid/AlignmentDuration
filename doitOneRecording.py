@@ -6,12 +6,11 @@ Created on Nov 28, 2014
 
 
 import sys
-from Parameters import Parameters
 import os
 import glob
 import logging
 from doitOneChunk import HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT, getSectionNumberFromName, alignDependingOnWithDuration,\
-    AUDIO_EXT
+    AUDIO_EXT, deviationInSec
 from Utilz import getMeanAndStDevError
 from genericpath import isfile
 from Decoder import logger
@@ -31,6 +30,12 @@ sys.path.append(pathUtils )
 #  evaluation  
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 sys.path.append(pathEvaluation)
+
+pathDuration = os.path.join(parentDir, 'HMMDuration')
+if not pathDuration in sys.path:
+    sys.path.append(pathDuration)
+
+from hmm.Parameters import Parameters
 
 
 def doitOneRecording(argv):
@@ -85,7 +90,7 @@ def doitOneRecording(argv):
      
     ONLY_MIDDLE_STATE = argv[7]
     
-    params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
+    params = Parameters(ALPHA, ONLY_MIDDLE_STATE, deviationInSec)
     
     evalLevel = int(argv[8])
     

@@ -22,6 +22,8 @@ fields:
 each Word in turn contains a list of object type Syllable
 Each syllable in turn contains a list of Phoneme objects
 
+On init, graphemes are expanded to phonemes
+
 
 Syllable
 -----------

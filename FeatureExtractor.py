@@ -12,7 +12,7 @@ import htkmfc
 from Constants import NUM_FRAMES_PERSECOND
 import subprocess
 from matplotlib.colors import NP_CLIP_OUT
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools/workspace')
 
 
@@ -44,28 +44,26 @@ def loadMFCCsWithMatlab(URI_recording_noExt):
 #     print res['result']
 #     mlab.stop()
 
-def loadMFCCs(URI_recording_noExt, fromTs, toTs): 
+def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs): 
     '''
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
     # resynthesize audio chunk:
-    melodiaInput = URI_recording_noExt + '.melodia.txt'
+    melodiaInput = URI_recording_noExt + '.melodia'
     URI_recording = URI_recording_noExt + '.wav'
     
     URIRecordingChunk = URI_recording_noExt + "_" + str(fromTs) + '_' + str(toTs) + '.wav'
     
-    if fromTs==-1 and toTs==-1:
-        # TODO
-        fromTs=0; toTs=2
-        sys.exit("fromTs and toTs not defined")
-        
-    hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, fromTs, toTs, THRESHOLD_PEAKS)
-    resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunk)
-
-
+    if withSynthesis: 
+    
+        hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, fromTs, toTs, THRESHOLD_PEAKS)
+        resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunk)
+    
+    else:
+         URIRecordingChunk = URI_recording_noExt + '.wav'
         
     # call htk to extract features
-    URImfcFile = _extractFeatures( URIRecordingChunk)
+    URImfcFile = _extractMFCCs( URIRecordingChunk)
     
     # read features form binary htk file
     logging.debug("reading MFCCs from {} ...".format(URImfcFile))
@@ -89,7 +87,7 @@ def loadMFCCs(URI_recording_noExt, fromTs, toTs):
     
     return mfccsFeatrues
 
-def _extractFeatures( URIRecordingChunk):
+def _extractMFCCs( URIRecordingChunk):
         baseNameAudioFile = os.path.splitext(os.path.basename(URIRecordingChunk))[0]
         dir_ = os.path.dirname(URIRecordingChunk)
         mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
@@ -104,6 +102,6 @@ def _extractFeatures( URIRecordingChunk):
 if __name__ == '__main__':
     
     URI_noExt =   '/Users/joro/Documents/Phd/UPF/arias/laosheng-erhuang_04'
-
-    loadMFCCs(URI_noExt, 55, 58)
+    withSynthesis = True
+    loadMFCCs(URI_noExt, withSynthesis, 55, 58)
         

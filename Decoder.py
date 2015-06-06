@@ -108,6 +108,7 @@ class Decoder(object):
 #             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
                 
             self.path =  Path(chiBackPointer, psiBackPointer)
+            detectedWordList = self.path2ResultWordList(self.path)
             print "\n"
          # DEBUG
 #         self.path.printDurations()
@@ -243,12 +244,13 @@ class Decoder(object):
       
         
         
-    def path2ResultWordList(self):
+    def path2ResultWordList(self, path):
         '''
         makes sense of path indices : maps numbers to states and phonemes, uses self.lyricsWithModels.statesNetwork and self.lyricsWithModels.listWords) 
         to be called after decoding
         '''
         # indices in pathRaw
+        self.path = path
         self.path._path2stateIndices()
         
         #sanity check
