@@ -61,7 +61,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, ALPHA, deviationInSec, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, ALPHA, numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -72,7 +72,7 @@ class Decoder(object):
         '''
         self.hmmNetwork = []
         
-        self._constructHmmNetwork(numStates, float(ALPHA), float(deviationInSec), withModels)
+        self._constructHmmNetwork(numStates, float(ALPHA), withModels)
         self.hmmNetwork.logger.setLevel(loggingLevel)
         
         # Path class object
@@ -119,7 +119,7 @@ class Decoder(object):
     
     
         
-    def _constructHmmNetwork(self,  numStates, ALPHA, deviationInSec,  withModels ):
+    def _constructHmmNetwork(self,  numStates, ALPHA,  withModels ):
         '''
         top level-function: costruct self.hmmNEtwork that confirms to guyz's code 
         '''
@@ -136,7 +136,7 @@ class Decoder(object):
         
         
         if  WITH_DURATIONS:
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions, deviationInSec)
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
             self.hmmNetwork.setALPHA(ALPHA)
         
         else:

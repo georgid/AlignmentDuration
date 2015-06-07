@@ -7,6 +7,7 @@ from Lyrics import Lyrics
 import os
 import sys
 from Phoneme import Phoneme
+from Constants import NUM_FRAMES_PERSECOND
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 HMMDurationPath = os.path.join(parentDir, 'HMMDuration')
@@ -17,8 +18,8 @@ from hmm.StateWithDur import StateWithDur
 
 from htk_converter import HtkConverter
 from Decoder import logger
-from Constants import NUM_FRAMES_PERSECOND, AVRG_TIME_SIL, MAX_TIME_SIL
 
+from hmm.Parameters import MAX_SILENCE_DURATION
 
 # htkModelParser = os.path.join(parentDir, 'htk2s3')
 # sys.path.append(htkModelParser)
@@ -32,7 +33,7 @@ class LyricsWithModels(Lyrics):
     '''
 
 
-    def __init__(self, lyrics, htkParser, ONLY_MIDDLE_STATE  ):
+    def __init__(self, lyrics, htkParser, ONLY_MIDDLE_STATE, deviationInSec  ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
@@ -56,7 +57,7 @@ class LyricsWithModels(Lyrics):
         
         self.ONLY_MIDDLE_STATE = ONLY_MIDDLE_STATE
         
-
+        self.deviationInSec = deviationInSec
 
         self.duratioInFramesSet = False
 
@@ -80,8 +81,9 @@ class LyricsWithModels(Lyrics):
                     spmodel = currHmmModel
             
         (numStateFromHtk, state)  = spmodel.states[0]
-        self.spState = StateWithDur(state.mixtures, 'sp', 0, distribType='exponential')
-
+        self.spState = StateWithDur(state.mixtures, 'sp', 0, distribType='exponential' )
+        self.spState.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
+            
         tmpPhoneme =  Phoneme('sp')
         spTransMatrix = tmpPhoneme.getTransMatrix(spmodel)
         self.spState.setWaitProb(spTransMatrix[1,1])
@@ -121,7 +123,7 @@ class LyricsWithModels(Lyrics):
             
             # assign durationInMinUnit and name to each state
             for idxState, (numStateFromHtk, state ) in enumerate( phoneme.htkModel.states):
-                currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState)
+                currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, 'normal' , self.deviationInSec)
                  
                 dur = float(phoneme.durationInNumFrames) / float(currStateCount)
                     
