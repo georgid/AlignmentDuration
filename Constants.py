@@ -13,8 +13,8 @@ numDimensions = 25
 # TODO: read from feat extraction parameters
 NUM_FRAMES_PERSECOND = 100.0
 
-# in seconds
-MAX_TIME_SIL = 1.0
+# in seconds : deprecated
+MAX_TIME_SIL = 0.77
 AVRG_TIME_SIL = 0.5
 
 NUMSTATES_SIL = 3

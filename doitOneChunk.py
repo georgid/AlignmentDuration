@@ -45,7 +45,8 @@ if pathHMM not in sys.path:
     sys.path.append(pathHMM)
     
 from hmm.Parameters import Parameters
-from hmm.examples.tests  import loadSmallAudioFragment
+from hmm.examples.main  import loadSmallAudioFragment
+from hmm.examples.tests import test_oracle
 
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
 from AccuracyEvaluator import _evalAccuracy, evalAccuracy
@@ -104,7 +105,7 @@ def doitOneChunk(argv):
     evalLevel = int(argv[7])
     
     deviationInSec = 0.1
-    params = Parameters(ALPHA, ONLY_MIDDLE_STATE, deviationInSec)
+    params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
     usePersistentFiles = 'True'
     if len(argv) == 9:
@@ -121,7 +122,9 @@ def doitOneChunk(argv):
     
     alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
         
-        
+    accuracy = correctDuration / totalDuration
+    logger.info("accuracy: {:.2f}".format(accuracy))
+    
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
     logger.info("result: {}".format(detectedAlignedfileName))
@@ -158,8 +161,9 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     if withDuration:
 
-        alignmentErrors, detectedTokenList, correctDuration, totalDuration = alignOneChunk(obsFeatures, lyricsWithModels, params.ALPHA, params.deviationInSec, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix)
-
+        alignmentErrors, detectedTokenList, correctDuration, totalDuration = alignOneChunk(obsFeatures, lyricsWithModels, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt)
+        correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel,-1,-1 )
+#         detectedTokenList = test_oracle(URIrecordingNoExt, pathToComposition, whichSection)
             
     else:
         URIrecordingAnno = URIrecordingNoExt + ANNOTATION_EXT
@@ -193,46 +197,44 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
 
 
-def alignOneChunk(obsFeatures, lyricsWithModels, alpha, deviationInSec, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt=''):
+def alignOneChunk(obsFeatures, lyricsWithModels, listNonVocalFragments, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt=''):
     '''
     wrapper top-most logic method
     '''
-     
         
-    # read from file result
-#     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
-#     if os.path.isfile(detectedAlignedfileName):
-#         detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
-#     else:
+#     read from file result
+    detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
+    if not os.path.isfile(detectedAlignedfileName):
              
     # DEBUG: score-derived phoneme  durations
 #     lyricsWithModels.printPhonemeNetwork()
-    lyricsWithModels.printWordsAndStates()
+#     lyricsWithModels.printWordsAndStates()
    
-    decoder = Decoder(lyricsWithModels, alpha, deviationInSec)
-#  TODO: DEBUG: do not load models
-# decoder = Decoder(lyrics, withModels=False, numStates=86)
-#################### decode
-    if usePersistentFiles=='True':
-        usePersistentFiles = True
-    elif usePersistentFiles=='False':
-        usePersistentFiles = False
-    else: 
-        sys.exit("usePersistentFiles can be only True or False") 
+        decoder = Decoder(lyricsWithModels, alpha)
+    #  TODO: DEBUG: do not load models
+    # decoder = Decoder(lyrics, withModels=False, numStates=86)
+    #################### decode
+        if usePersistentFiles=='True':
+            usePersistentFiles = True
+        elif usePersistentFiles=='False':
+            usePersistentFiles = False
+        else: 
+            sys.exit("usePersistentFiles can be only True or False") 
         
-    detectedTokenList = decoder.decodeAudio(obsFeatures, usePersistentFiles)
+        detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles)
+        
+    ### VISUALIZE result
+        decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
     
-### VISUALIZE
-    decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
-        
-
+    else:
+            detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
+   
 #################### evaluate
     alignmentErrors = [2, 3, 4]
 #     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel)
-    
-#     correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel )
-    correctDuration = -1
-    totalDuration = -1
+    correctDuration = 0
+    totalDuration = 0
+
     return alignmentErrors, detectedTokenList, correctDuration, totalDuration
 
 

@@ -87,12 +87,16 @@ Decoder
 ---------------
  fields:
  lyricsWithModels - its field statesNetwork is used in self.constructHMMNetworkParameters() to construct a self.hmmNetwork in form usable for decoding
- hmmNetwork - of type HMM for forced alignment
+ hmmNetwork - of type HMMDuration (HMM for forced alignment)
+ 
  
  methods: 
  duration2numFrameDuration(self, observationFeatures) - get relative tempo (numFramesPerMinUnit) for given audio chunk
  
- decodeAudio - a wrapper for hmm._BaseHMM._viterbiForced. assigns the exponential distribution to sil states at beginning and end
+ decodeAudio - a wrapper for hmm._BaseHMM._viterbiForced. 
+- assigns the exponential distribution to sil states at beginning and end
+- set nonvocal by setting self.hmmNetwork.setNonVocal(listNonVocalFragments): if listNonVocalFragments is empty then no predicted vocal fragments will be taken into account  
+ 
  
  path - result
 

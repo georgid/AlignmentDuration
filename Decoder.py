@@ -47,13 +47,14 @@ from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
 logger = logging.getLogger(__name__)
+# loggingLevel = logging.WARNING
 # loggingLevel = logging.DEBUG
 loggingLevel = logging.INFO
 
 logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
 logger.setLevel(loggingLevel)
 
-
+# other logger set in _Continuous
 
 class Decoder(object):
     '''
@@ -78,13 +79,14 @@ class Decoder(object):
         # Path class object
         self.path = None
     
-    def decodeAudio( self, observationFeatures, usePersistentFiles):
+    def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
       
         
         self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
+        self.hmmNetwork.setNonVocal(listNonVocalFragments)
         
         # double check that features are in same dimension as model
         if observationFeatures.shape[1] != numDimensions:
@@ -96,13 +98,14 @@ class Decoder(object):
         # standard viterbi forced alignment
         if not WITH_DURATIONS:
             
-            path_, psi, delta = self.hmmNetwork._viterbiForced(observationFeatures)
+            path_, psi, delta = self.hmmNetwork._viterbiForced(len(observationFeatures))
             self.path =  Path(None, None)
             self.path.setPatRaw(path_)
             
         # duration-HMM
         else:
-            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(observationFeatures)
+            lenObs = len(observationFeatures)
+            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(lenObs)
             
 #             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
 #             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
@@ -114,7 +117,7 @@ class Decoder(object):
 #         self.path.printDurations()
 #         writeListToTextFile(self.path.pathRaw, None , '/tmp/path')
         
-    
+            return detectedWordList
     
     
     

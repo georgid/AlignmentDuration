@@ -8,8 +8,9 @@ import os
 import sys
 from Phoneme import Phoneme
 from Constants import NUM_FRAMES_PERSECOND
-
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+import Queue
+import math
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 HMMDurationPath = os.path.join(parentDir, 'HMMDuration')
 if not HMMDurationPath in sys.path:
     sys.path.append(HMMDurationPath)
@@ -24,7 +25,10 @@ from hmm.Parameters import MAX_SILENCE_DURATION
 # htkModelParser = os.path.join(parentDir, 'htk2s3')
 # sys.path.append(htkModelParser)
 
-
+pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
+if pathEvaluation not in sys.path:
+    sys.path.append(pathEvaluation)
+from WordLevelEvaluator import readNonEmptyTokensTextGrid
 
 class LyricsWithModels(Lyrics):
     '''
@@ -38,7 +42,7 @@ class LyricsWithModels(Lyrics):
         being  linked to models, allows expansion to network of states 
         '''
         
-#       add a state 'sp' with exponential disrib at begining and end  
+#       flag to add a state 'sp' with exponential disrib at begining and end  
         self.withPaddedSilence = True
         
         Lyrics.__init__(self, lyrics.listWords)
@@ -126,6 +130,8 @@ class LyricsWithModels(Lyrics):
                 currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, 'normal' , self.deviationInSec)
                  
                 dur = float(phoneme.durationInNumFrames) / float(currStateCount)
+                if  dur < 0:
+                    sys.exit("duration for phoneme {}={}. please decrease fixed consonant duration or make sure audio fragment is not too short".format( dur, phoneme.ID ))
                     
                 currStateWithDur.setDurationInFrames( dur )
                 self.statesNetwork.append(currStateWithDur)
@@ -182,6 +188,7 @@ class LyricsWithModels(Lyrics):
     def _phonemes2stateNetworkOnlyMiddle(self):
         '''
         expand to self.statesNetwork . TAKE ONLY middle state for now
+        @deprecated
         '''
         
         self.statesNetwork = []
@@ -261,27 +268,104 @@ class LyricsWithModels(Lyrics):
         '''
         get relative tempo (numFramesPerMinUnit) for given audio chunk
         and
-        setDuration HowManyFrames for each phoneme in phonemesNetwork
+        setDuration HowManyFrames for each syllable based on tempo 
+        and
+        distribute phoneme durations in phonemesNetwork
         '''
-        # TODO: read from score
-#         self.bpm = 60
-#         durationMinUnit = (1. / (self.bpm/60) ) * (1. / MINIMAL_DURATION_UNIT) 
-#         numFramesPerMinUnit = NUM_FRAMES_PERSECOND * durationMinUnit
+
         totalScoreDur = self.getTotalDuration()
 #         numFramesPerMinUnit   = float(len(observationFeatures) - 2 * AVRG_TIME_SIL * NUM_FRAMES_PERSECOND) / float(totalScoreDur)
-        numFramesPerMinUnit   = float(tempoCoefficient * len(observationFeatures) ) / float(totalScoreDur)
+        lenObsFeatures = len(observationFeatures)
+        numFramesPerMinUnit   = float(tempoCoefficient * lenObsFeatures ) / float(totalScoreDur)
         logger.debug("numFramesPerMinUnit = {} for audiochunk {} ".format( numFramesPerMinUnit, URI_recording_noExt))
         
         for word_ in self.listWords:
             for syllable_ in word_.syllables:
 
                 numFramesInSyllable = round(float(syllable_.durationInMinUnit) * numFramesPerMinUnit)
+                if numFramesInSyllable == 0.0:
+                    sys.exit(" frames per syllable {} are 0.0. Check numFramesPerMinUnit={}".format(syllable_.text, numFramesPerMinUnit))
+                    
+                # TODO: set here syllables from score
                 syllable_.setDurationInNumFrames(numFramesInSyllable)
         
         # consonant-handling policy
         self.calcPhonemeDurs()
 
+        if self.ONLY_MIDDLE_STATE:
+            self._phonemes2stateNetworkOnlyMiddle()
+        else:
+            self._phonemes2stateNetwork()
+#             self._phonemes2stateNetworkWeights()
         
+        self.duratioInFramesSet = True
+    
+    
+    def duration2numFrameDurationSertanTempo(self, recordingMBID,  tempoCoefficient = 1.0):
+        '''
+        get relative tempo (numFramesPerMinUnit) for given audio chunk
+        and
+        setDuration HowManyFrames for each syllable based on tempo 
+        and
+        distribute phoneme durations in phonemesNetwork
+        '''
+
+        numFramesPerMinUnit  = float(tempoCoefficient) *  getTempo(recordingMBID)
+        logger.debug("numFramesPerMinUnit = {} for recording {} ".format( numFramesPerMinUnit, recordingMBID))
+        
+        for word_ in self.listWords:
+            for syllable_ in word_.syllables:
+
+                numFramesInSyllable = round(float(syllable_.durationInMinUnit) * numFramesPerMinUnit)
+                if numFramesInSyllable == 0.0:
+                    sys.exit(" frames per syllable {} are 0.0. Check numFramesPerMinUnit={}".format(syllable_.text, numFramesPerMinUnit))
+                    
+                # TODO: set here syllables from score
+                syllable_.setDurationInNumFrames(numFramesInSyllable)
+        
+        # consonant-handling policy
+        self.calcPhonemeDurs()
+
+        if self.ONLY_MIDDLE_STATE:
+            self._phonemes2stateNetworkOnlyMiddle()
+        else:
+            self._phonemes2stateNetwork()
+#             self._phonemes2stateNetworkWeights()
+        
+        self.duratioInFramesSet = True   
+        
+        
+    def setPhonemeDurs(self, textGridURI, fromPhonemeIdx, toPhonemeIdx):
+        '''
+        set durations read directly from textGrid  
+        '''
+        whichLevel = 0 #phonemes
+        annotationTokenListAll, annotationTokenListNoPauses = readNonEmptyTokensTextGrid(textGridURI, whichLevel, fromPhonemeIdx, toPhonemeIdx)
+        # read durations from annotation
+        
+        queueTokens = Queue.Queue()
+        for token in annotationTokenListNoPauses:
+            queueTokens.put(token)
+        # only first word
+#         self.listWords = [self.listWords[0]]
+        
+        for word_ in self.listWords:
+            for syllable in word_.syllables:
+#                 listDurations = []
+                for phoneme_ in syllable.phonemes:
+                    if queueTokens.empty():
+                        sys.exit("not enough phonemes in annotation at sylable {}".format(syllable.text))
+                    phonemeAnno = queueTokens.get()
+                    logger.debug("phoneme from annotation {} and  phoneme from lyrics {} ".format(phonemeAnno[2], phoneme_.ID ) )
+                    if phonemeAnno[2] != phoneme_.ID:
+                        sys.exit( "phoneme from annotation {} and  phoneme from lyrics  {} are  different".format(phonemeAnno[2], phoneme_.ID ))
+
+                    phoneme_.setbeginTs(float(phonemeAnno[0]))
+                    currDur = self.computeDurationInFrames( phonemeAnno)
+                    phoneme_.durationInNumFrames = currDur
+        
+        
+        # expand to states       
         if self.ONLY_MIDDLE_STATE:
             self._phonemes2stateNetworkOnlyMiddle()
         else:
@@ -290,6 +374,14 @@ class LyricsWithModels(Lyrics):
         
         self.duratioInFramesSet = True
         
+     
+    def computeDurationInFrames(self, phonemeAnno):
+        '''
+        compute Duration from annotation token 
+        '''
+        durationInSec = float(phonemeAnno[1]) - float(phonemeAnno[0])
+        durationInFrames = math.floor(durationInSec * NUM_FRAMES_PERSECOND)
+        return durationInFrames
             
     
     def stateDurationInFrames2List(self):
@@ -365,3 +457,33 @@ class LyricsWithModels(Lyrics):
         
         for i, state_ in enumerate(self.statesNetwork):
                 print "{} : {}".format(i, state_.display())
+
+
+def getTempo(recordingMBID):
+    '''
+    from Sertans algo
+    '''
+    
+    import json
+    URItempi = os.path.join(  os.path.dirname(os.path.realpath(__file__)) + '/tempi/', recordingMBID + ".json")
+    with  open(URItempi) as tempoFileHandle:
+        tempoData = json.load(tempoFileHandle)
+        data = tempoData['scoreInformed']
+        beatUnit = int(data['average']['BeatUnit']['value'])
+        avrgBpm = float(data['average']['Value'])
+#         relativeCoeff = float(data['relative']['Value'])
+               
+    # TODO: read from score
+    from Syllable import MINIMAL_DURATION_UNIT
+    bps = avrgBpm/60.0
+    timeMinUnit = beatUnit / (bps * MINIMAL_DURATION_UNIT) 
+    numFramesPerMinUnit = NUM_FRAMES_PERSECOND * timeMinUnit
+    return numFramesPerMinUnit
+
+if __name__=="__main__":
+#     numFramesPerMinUnit = getTempo('1701ceba-bd5a-477e-b883-5dacac67da43')
+    numFramesPerMinUnit = getTempo('9c26ff74-8541-4282-8a6e-5ba9aa5cc8a1')
+
+    
+    print numFramesPerMinUnit
+        

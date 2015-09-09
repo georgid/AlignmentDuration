@@ -58,6 +58,11 @@ if __name__ == '__main__':
             sys.path.append(pathEvaluation)
             
     from WordLevelEvaluator import readNonEmptyTokensTextGrid
+    startIdx = 1
+    endIdx = -1
+#     annotationTokenListA, annotationTokenListNoPauses =  readNonEmptyTokensTextGrid(URI_Anno, whichLevel, initialTimeOffset )
+    # the parameters start and endIdx might not make sense
+    annotationTokenListA, annotationTokenListNoPauses =  readNonEmptyTokensTextGrid(URI_Anno, whichLevel, startIdx, endIdx )
 
-    annotationTokenListA, annotationTokenListNoPauses =  readNonEmptyTokensTextGrid(URI_Anno, whichLevel, initialTimeOffset )
+    
     print URI_Anno + '.anno'

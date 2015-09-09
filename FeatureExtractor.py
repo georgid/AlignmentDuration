@@ -12,6 +12,8 @@ import htkmfc
 from Constants import NUM_FRAMES_PERSECOND
 import subprocess
 from matplotlib.colors import NP_CLIP_OUT
+from Cython.Compiler.Naming import self_cname
+from Decoder import logger
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools/workspace')
 
@@ -34,7 +36,7 @@ pathJingju = os.path.join(parentParentDir, 'Jingju')
 
 if pathJingju not in sys.path:
     sys.path.append(pathJingju )
-from ParametersAlgo import THRESHOLD_PEAKS
+from ParametersAlgo import ParametersAlgo
 
 def loadMFCCsWithMatlab(URI_recording_noExt):
     print 'calling matlab'
@@ -54,12 +56,17 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
     
     URIRecordingChunk = URI_recording_noExt + "_" + str(fromTs) + '_' + str(toTs) + '.wav'
     
-    if withSynthesis: 
+    logger.setLevel(logging.INFO)
+    logger.info("working on section: {}".format(URIRecordingChunk))
     
-        hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, fromTs, toTs, THRESHOLD_PEAKS)
-        resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunk)
+    if withSynthesis: 
+        if not os.path.isfile(URIRecordingChunk):
+            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, fromTs, toTs, ParametersAlgo.THRESHOLD_PEAKS)
+            resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunk)
     
     else:
+        # TODO take only part from audio with essentia
+         print "!!! extracting features from whole audio{}".format(URI_recording_noExt)
          URIRecordingChunk = URI_recording_noExt + '.wav'
         
     # call htk to extract features
@@ -85,7 +92,7 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
 #     UtilzNumpy.areArraysEqual(mfccsFeatrues, mfccsFeatrues2)
     
     
-    return mfccsFeatrues
+    return mfccsFeatrues, URIRecordingChunk
 
 def _extractMFCCs( URIRecordingChunk):
         baseNameAudioFile = os.path.splitext(os.path.basename(URIRecordingChunk))[0]

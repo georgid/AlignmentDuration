@@ -161,7 +161,8 @@ def loadLyrics(pathToComposition, whichSection, withSynthesis):
     # phoneme IDs
     
     lyrics = makamScore.getLyricsForSection(whichSection)
-    makamScore.printSectionsAndLyrics()
+    
+#     makamScore.printSectionsAndLyrics()
     return lyrics
 
 def loadMakamScore(pathToComposition):
@@ -179,6 +180,7 @@ def loadMakamScore(pathToComposition):
     sectionFile = sectionFiles[0]
         
     pathToSectionTsv = os.path.join(pathToComposition, sectionFile)
+    print "in load makam score"
     makamScore = MakamScore(pathTotxt, pathToSectionTsv )
     return makamScore
     
@@ -220,7 +222,7 @@ if __name__ == '__main__':
                     
                     ]
         
-        URI_Composition = os.path.join(pathToScores, compositionNames[6])
+        URI_Composition = os.path.join(pathToScores, compositionNames[11])
          
         print "in Makam Score"
  

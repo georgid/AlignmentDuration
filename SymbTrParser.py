@@ -30,7 +30,7 @@ class SymbTrParser(_SymbTrParserBase):
     
     a list of syllables from column 12: soz1/söz1 is parsed. 
     Then concatenated into words if needed 
-    TODO: take only section names from tsv file. parse sections from symbTr double spaces 
+    TODO: take only section names from tsv file. parse sections from symbTr double s 
     '''
 
 
@@ -57,6 +57,9 @@ class SymbTrParser(_SymbTrParserBase):
    
 
     def _loadSyllables(self, pathToSymbTrFile):
+        '''
+        top-most function
+        '''
              
         allLines = loadTextFile(pathToSymbTrFile)
         
@@ -80,9 +83,9 @@ class SymbTrParser(_SymbTrParserBase):
                 tokens[7] = MINIMAL_DURATION_UNIT
 
 
-            currDuration = float(tokens[6]) / float(tokens[7]) * MINIMAL_DURATION_UNIT
+            currNoteDuration = float(tokens[6]) / float(tokens[7]) * MINIMAL_DURATION_UNIT
                 
-            currSyllable, currSyllTotalDuration = self.parseCurrTxtToken(currSyllable, currSyllTotalDuration, tokens, currDuration)
+            currSyllable, currSyllTotalDuration = self.parseCurrTxtToken(currSyllable, currSyllTotalDuration, tokens, currNoteDuration)
             
             
         #end parsing loop
@@ -96,7 +99,7 @@ class SymbTrParser(_SymbTrParserBase):
 
     def parseCurrTxtToken(self, currSyllable, syllTotalDuration, tokens, currDuration):
         '''
-        parse  soz1/söz1 token containing the  syllable text. discriminate between cases
+        parse  the text: (soz1/söz1 token) containing the  syllable text. discriminate between cases of SAZ and so on
         '''
         currTxtToken = tokens[11]
         
@@ -108,14 +111,13 @@ class SymbTrParser(_SymbTrParserBase):
         if currTxtToken == '' and not (currSyllable is None) and not (syllTotalDuration is None):
             syllTotalDuration = syllTotalDuration + currDuration 
         
-        elif currTxtToken.startswith('.'):
+        elif currTxtToken.startswith('.'): #still in same _SAZ_ syllable
             if not (currSyllable is None) and not (syllTotalDuration is None) and currSyllable.text ==  "_SAZ_ ":
                 syllTotalDuration = syllTotalDuration + currDuration
             
             # new syllable starting with '.'
             else:
                 currSyllable, syllTotalDuration = self.finishCurrentAndCreateNewSyllable(currSyllable, syllTotalDuration, tokens, currDuration)
-
         
         #  not '' and not '.'   thus new syllable starts
         else:
@@ -134,7 +136,8 @@ class SymbTrParser(_SymbTrParserBase):
         if not (currSyllable is None) and not (syllTotalDuration is None): # save last syllable and duration
             currSyllable.setDurationInMinUnit(syllTotalDuration)
             self.listSyllables.append(currSyllable)
-    # init next syllable and its duration
+        
+        # init next syllable and its duration
         currSyllable = self.createSyllable(tokens)
         syllTotalDuration = currDuration
         return currSyllable, syllTotalDuration
@@ -150,7 +153,7 @@ class SymbTrParser(_SymbTrParserBase):
             
         currTxtToken = tokens[11]
         if currTxtToken.startswith('SAZ') or currTxtToken.startswith('.') or  currTxtToken.startswith(u'ARANA\u011eME') or currTxtToken.startswith(u'ARANAGME'):
-            # space indicates end of word, it is stripped later by the code
+            #  indicates end of word, it is stripped later by the code
             currSyllable = Syllable("_SAZ_ ", tokens[0])
         else:
             text = tokens[11].replace('_',' ')

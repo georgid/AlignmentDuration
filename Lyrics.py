@@ -55,17 +55,19 @@ class Lyrics(object):
         for word_ in self.listWords:
             for syllable in word_.syllables:
                 syllable.calcPhonemeDurations()
-                 
+    
+         
     
     def printSyllables(self):
         '''
         debug: print syllables 
         '''
-        
-        
         for word_ in self.listWords:
-                for syll in word_.syllables:
-                    print syll
+                for syllable_    in word_.syllables:
+                    print syllable_
+                    for phoneme_ in syllable_.phonemes:
+                        print "\t phoneme: " , phoneme_
+                    
                     
     def getTotalDuration(self):
         '''

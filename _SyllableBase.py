@@ -3,6 +3,7 @@ Created on Mar 5, 2015
 
 @author: joro
 '''
+from IPython.core.tests.simpleerr import sysexit
 '''
 Created on Oct 8, 2014
 
@@ -83,7 +84,20 @@ class _SyllableBase():
             all consonant durations set to 1 unit, the rest for the vowel.
            '''
             raise NotImplementedError("in class SyllableBase. expoandToPhonemes not implemented")
-
+        
+        
+        def setPhonemeDurations(self, listDurations):
+            if self.phonemes is None:
+                self.expandToPhonemes()
+            
+            if self.getNumPhonemes() == 0:
+                sys.exit("syllable with no phonemes!")
+                return
+            
+            if len(self.phonemes) != len(listDurations):
+                sys.exit("syllable {} has {} phonemes but given durations list has {}".format(self.text, len(self.phonemes), len(listDurations)))
+                for currPhoneme, currDuration in zip(self.phonemes, listDurations):
+                        currPhoneme.durationInNumFrames = currDuration
                 
         def __str__(self):
                 syllalbeTest = self.text.encode('utf-8','replace')
