@@ -62,11 +62,12 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, ALPHA, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, URIrecordingNoExt, ALPHA, numStates=None, withModels=True):
         '''
         Constructor
         '''
         self.lyricsWithModels = lyricsWithModels
+        self.URIrecordingNoExt = URIrecordingNoExt
         
         '''
         of class HMM
@@ -83,8 +84,7 @@ class Decoder(object):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
-      
-        
+
         self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
         self.hmmNetwork.setNonVocal(listNonVocalFragments)
         
@@ -110,12 +110,14 @@ class Decoder(object):
 #             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
 #             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
                 
-            self.path =  Path(chiBackPointer, psiBackPointer)
-            detectedWordList = self.path2ResultWordList(self.path)
+#             self.path =  Path(chiBackPointer, psiBackPointer)
+#             detectedWordList = self.path2ResultWordList(self.path)
+            
+            detectedWordList, self.path = self.backtrack(chiBackPointer, psiBackPointer )
+            
             print "\n"
          # DEBUG
 #         self.path.printDurations()
-#         writeListToTextFile(self.path.pathRaw, None , '/tmp/path')
         
             return detectedWordList
     
@@ -261,19 +263,42 @@ class Decoder(object):
         numdecodedStates = len(self.path.indicesStateStarts)
         
         if numStates != numdecodedStates:
-            logging.warn("detected path has {} states, but stateNetwork transcript has {} states".format( numdecodedStates, numStates ) )
+            logging.warn("detected path has {} states, but stateNetwork transcript has {} states \n \
+            WORKAROUND: adding missing states at beginning of path. This should not happen often ".format( numdecodedStates, numStates ) )
             # num misssed states in the beginning of the path
             howManyMissedStates = numStates - numdecodedStates
-            # WORKAROUND: assume missed states start at time 0
+            # WORKAROUND: assume missed states start at time 0. Append zeros
             for i in range(howManyMissedStates):
                 self.path.indicesStateStarts[:0] = [0]
         dummy= 0
         detectedWordList = expandlyrics2WordList (self.lyricsWithModels, self.path, dummy, _constructTimeStampsForWordDetected)
         
         return detectedWordList 
+    
+    
+    
+    def backtrack(self, chiBackPointer, psiBackPointer):
+        ''' 
+        backtrack optimal path of states from backpointers
+        interprete states to words      
+        '''
+        self.path =  Path(chiBackPointer, psiBackPointer )
         
+        pathUtils = os.path.join(parentDir, 'utilsLyrics')
+        if pathUtils not in sys.path:
+            sys.path.append(pathUtils )
     
-    
+        from Utilz import writeListToTextFile
+        writeListToTextFile(self.path.pathRaw, None , self.URIrecordingNoExt + '.path' )
+        
+        detectedWordList = self.path2ResultWordList(self.path)
+        
+        # DEBUG info
+    #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+        
+    #     if self.logger.level == logging.DEBUG:
+    #         path.printDurations()
+        return detectedWordList, self.path
 
     
 

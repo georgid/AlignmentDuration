@@ -14,6 +14,8 @@ from Decoder import Decoder, WITH_DURATIONS, logger
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWord, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
+from docutils.parsers.rst.directives import path
+from matplotlib.path import Path
 
 
 
@@ -23,7 +25,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from Utilz import writeListOfListToTextFile, writeListToTextFile,\
-    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile
+    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile
 
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
@@ -38,7 +40,10 @@ from Aligner import Aligner
 
 #  evaluation  
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
-sys.path.append(pathEvaluation)
+if pathEvaluation not in sys.path:
+    sys.path.append(pathEvaluation)
+    
+
 
 pathHMM = os.path.join(parentDir, 'HMMDuration')
 if pathHMM not in sys.path:
@@ -149,7 +154,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     
 #     ###### 2) extract audio features
     
-    lyricsWithModels, obsFeatures = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, bool(withSynthesis), fromTs=-1, toTs=-1)
+    lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, bool(withSynthesis), fromTs=-1, toTs=-1)
 
  
         
@@ -161,7 +166,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     if withDuration:
 
-        alignmentErrors, detectedTokenList, correctDuration, totalDuration = alignOneChunk(obsFeatures, lyricsWithModels, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt)
+        alignmentErrors, detectedTokenList = alignOneChunk(obsFeatures, lyricsWithModels, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt)
         correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel,-1,-1 )
 #         detectedTokenList = test_oracle(URIrecordingNoExt, pathToComposition, whichSection)
             
@@ -184,11 +189,11 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         correctDuration, totalDuration = evalAccuracy(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         
     
-    # store decoding results in a file FIXME: if with duration it is not mlf 
-    
     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
-    if not os.path.isfile(detectedAlignedfileName):
-        detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
+#     
+#     # store decoding results in a file FIXME: if with duration it is not mlf 
+#     if not os.path.isfile(detectedAlignedfileName):
+#         detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
         
         
     return alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev
@@ -210,7 +215,7 @@ def alignOneChunk(obsFeatures, lyricsWithModels, listNonVocalFragments, alpha, e
 #     lyricsWithModels.printPhonemeNetwork()
 #     lyricsWithModels.printWordsAndStates()
    
-        decoder = Decoder(lyricsWithModels, alpha)
+        decoder = Decoder(lyricsWithModels, URIrecordingNoExt, alpha)
     #  TODO: DEBUG: do not load models
     # decoder = Decoder(lyrics, withModels=False, numStates=86)
     #################### decode
@@ -222,22 +227,24 @@ def alignOneChunk(obsFeatures, lyricsWithModels, listNonVocalFragments, alpha, e
             sys.exit("usePersistentFiles can be only True or False") 
         
         detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles)
+        detectedPath = decoder.path.pathRaw
+        # store decoding results in a file FIXME: if with duration it is not mlf 
+        detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
         
-    ### VISUALIZE result
-        decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+        
+    ### VISUALIZE result 
+#         decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
     
     else:
             detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
+            detectedPath = readListTextFile(URIrecordingNoExt + '.path')
    
 #################### evaluate
     alignmentErrors = [2, 3, 4]
 #     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel)
-    correctDuration = 0
-    totalDuration = 0
+    
 
-    return alignmentErrors, detectedTokenList, correctDuration, totalDuration
-
-
+    return alignmentErrors, detectedTokenList, detectedPath
 
 
 

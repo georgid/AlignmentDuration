@@ -337,7 +337,8 @@ class LyricsWithModels(Lyrics):
         
     def setPhonemeDurs(self, textGridURI, fromPhonemeIdx, toPhonemeIdx):
         '''
-        set durations read directly from textGrid  
+        set durations read directly from textGrid. Used in oracle. 
+        does not consider empty tokens (silences) at beginning and end, but reads sp tokens 
         '''
         whichLevel = 0 #phonemes
         annotationTokenListAll, annotationTokenListNoPauses = readNonEmptyTokensTextGrid(textGridURI, whichLevel, fromPhonemeIdx, toPhonemeIdx)
@@ -348,17 +349,18 @@ class LyricsWithModels(Lyrics):
             queueTokens.put(token)
         # only first word
 #         self.listWords = [self.listWords[0]]
-        
+        idxTotalPhonemeAnno = 0
         for word_ in self.listWords:
             for syllable in word_.syllables:
 #                 listDurations = []
-                for phoneme_ in syllable.phonemes:
+                for idx, phoneme_ in enumerate(syllable.phonemes):
+                    idxTotalPhonemeAnno += idx
                     if queueTokens.empty():
                         sys.exit("not enough phonemes in annotation at sylable {}".format(syllable.text))
                     phonemeAnno = queueTokens.get()
                     logger.debug("phoneme from annotation {} and  phoneme from lyrics {} ".format(phonemeAnno[2], phoneme_.ID ) )
                     if phonemeAnno[2] != phoneme_.ID:
-                        sys.exit( "phoneme from annotation {} and  phoneme from lyrics  {} are  different".format(phonemeAnno[2], phoneme_.ID ))
+                        sys.exit( " phoneme idx {} from annotation {} and  phoneme from lyrics  {} are  different".format(idxTotalPhonemeAnno + fromPhonemeIdx, phonemeAnno[2], phoneme_.ID ))
 
                     phoneme_.setbeginTs(float(phonemeAnno[0]))
                     currDur = self.computeDurationInFrames( phonemeAnno)

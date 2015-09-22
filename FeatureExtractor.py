@@ -54,23 +54,25 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
     melodiaInput = URI_recording_noExt + '.melodia'
     URI_recording = URI_recording_noExt + '.wav'
     
-    URIRecordingChunk = URI_recording_noExt + "_" + str(fromTs) + '_' + str(toTs) + '.wav'
+    URIRecordingChunkResynthesized = URI_recording_noExt + "_" + str(fromTs) + '_' + str(toTs) + '.wav'
     
     logger.setLevel(logging.INFO)
-    logger.info("working on section: {}".format(URIRecordingChunk))
+    logger.info("working on section: {}".format(URIRecordingChunkResynthesized))
     
     if withSynthesis: 
-        if not os.path.isfile(URIRecordingChunk):
+        if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
+            logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
+
             hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, fromTs, toTs, ParametersAlgo.THRESHOLD_PEAKS)
-            resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunk)
+            resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     
     else:
         # TODO take only part from audio with essentia
          print "!!! extracting features from whole audio{}".format(URI_recording_noExt)
-         URIRecordingChunk = URI_recording_noExt + '.wav'
+         URIRecordingChunkResynthesized = URI_recording_noExt + '.wav'
         
     # call htk to extract features
-    URImfcFile = _extractMFCCs( URIRecordingChunk)
+    URImfcFile = _extractMFCCs( URIRecordingChunkResynthesized)
     
     # read features form binary htk file
     logging.debug("reading MFCCs from {} ...".format(URImfcFile))
@@ -82,7 +84,7 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
     mfccsFeatrues = np.hstack((mfccs, mfccDeltas))
         
     # first extract features with data.m in Matlab 
-#     URI_recording_mfc_txt = URIRecordingChunk + '.mfc_txt'
+#     URI_recording_mfc_txt = URIRecordingChunkResynthesized + '.mfc_txt'
 #     
 #     if not os.path.exists(URI_recording_mfc_txt):
 # #       loadMFCCsWithMatlab(URI_recording_noExt)
@@ -92,7 +94,7 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
 #     UtilzNumpy.areArraysEqual(mfccsFeatrues, mfccsFeatrues2)
     
     
-    return mfccsFeatrues, URIRecordingChunk
+    return mfccsFeatrues, URIRecordingChunkResynthesized
 
 def _extractMFCCs( URIRecordingChunk):
         baseNameAudioFile = os.path.splitext(os.path.basename(URIRecordingChunk))[0]
