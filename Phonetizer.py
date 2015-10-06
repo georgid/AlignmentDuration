@@ -100,12 +100,7 @@ class Phonetizer(object):
             Phonetizer.phoneticDict = readLookupTable(URLdict)
         
     
-#     def __init__(self):
-#         
-#         lookupTableURI= os.path.join(os.path.dirname(os.path.realpath(__file__)) , 'grapheme2METUphonemeLookupTable' )
-#         self.lookupTable = self._readLookupTable(lookupTableURI)
-#         lookupTable = self.lookupTable
-        
+       
 
     @staticmethod
     def grapheme2phonemeList(grapheme, phonemesList):

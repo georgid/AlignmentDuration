@@ -32,11 +32,11 @@ PATH_TO_HCOPY= '/usr/local/bin/HCopy'
 PATH_TO_CONFIG_FILES= '/Users/joro/Documents/Phd/UPF/voxforge/auto/scripts/input_files/'
 
 parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
-pathJingju = os.path.join(parentParentDir, 'Jingju')
+pathJingju = os.path.join(parentParentDir, 'JingjuAlignment')
 
 if pathJingju not in sys.path:
     sys.path.append(pathJingju )
-from ParametersAlgo import ParametersAlgo
+from hmm.ParametersAlgo import ParametersAlgo
 
 def loadMFCCsWithMatlab(URI_recording_noExt):
     print 'calling matlab'

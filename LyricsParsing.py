@@ -19,12 +19,20 @@ def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
     for word_ in lyricsWithModels.listWords:
         countFirstState = word_.syllables[0].phonemes[0].numFirstState
         
-        # word ends at first state of last phonemene (assume it is sp)
+        # word ends at first state of sp phonemene (assume it is sp)
+        lastSyll = word_.syllables[-1]
         lastPhoneme = word_.syllables[-1].phonemes[-1]
-        if lastPhoneme.ID != 'sp':
-            sys.exit(' \n last state for word {} is not sp. Sorry - not implemented.'.format(word_.text))
         
-        countLastState = lastPhoneme.numFirstState
+        if lastSyll.hasShortPauseAtEnd:
+
+            if lastPhoneme.ID != 'sp':
+                sys.exit(' \n last state for word {} is not sp. Sorry - not implemented.'.format(word_.text))
+            countLastState = lastPhoneme.numFirstState
+        else:
+            countLastState_ = lastPhoneme.numFirstState + lastPhoneme.getNumStates()
+            countLastState = min(countLastState_, len(lyricsWithModels.statesNetwork)-1) # make sure not outside of state network
+            
+        
 
         currWord, totalDuration = func( word_, countFirstState, countLastState, path, totalDuration)
        

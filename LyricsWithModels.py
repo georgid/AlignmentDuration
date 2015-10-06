@@ -335,29 +335,32 @@ class LyricsWithModels(Lyrics):
         self.duratioInFramesSet = True   
         
         
-    def setPhonemeDurs(self, textGridURI, fromPhonemeIdx, toPhonemeIdx):
+    def setPhonemeDurs(self,  phonemeListExtracted):
         '''
         set durations read directly from textGrid. Used in oracle. 
         does not consider empty tokens (silences) at beginning and end, but reads sp tokens 
         '''
-        whichLevel = 0 #phonemes
-        annotationTokenListAll, annotationTokenListNoPauses = readNonEmptyTokensTextGrid(textGridURI, whichLevel, fromPhonemeIdx, toPhonemeIdx)
-        # read durations from annotation
         
-        queueTokens = Queue.Queue()
-        for token in annotationTokenListNoPauses:
-            queueTokens.put(token)
+        queueAnnotationTokens = Queue.Queue()
+        for annoPhoneme in phonemeListExtracted:
+            if annoPhoneme[2] == '':
+                annoPhoneme[2] ='sil' 
+            queueAnnotationTokens.put(annoPhoneme)
         # only first word
 #         self.listWords = [self.listWords[0]]
+        
+        
+        fromPhonemeIdx = phonemeListExtracted[0][3]
+        # used for debug tracking
         idxTotalPhonemeAnno = 0
         for word_ in self.listWords:
             for syllable in word_.syllables:
 #                 listDurations = []
                 for idx, phoneme_ in enumerate(syllable.phonemes):
                     idxTotalPhonemeAnno += idx
-                    if queueTokens.empty():
+                    if queueAnnotationTokens.empty():
                         sys.exit("not enough phonemes in annotation at sylable {}".format(syllable.text))
-                    phonemeAnno = queueTokens.get()
+                    phonemeAnno = queueAnnotationTokens.get()
                     logger.debug("phoneme from annotation {} and  phoneme from lyrics {} ".format(phonemeAnno[2], phoneme_.ID ) )
                     if phonemeAnno[2] != phoneme_.ID:
                         sys.exit( " phoneme idx {} from annotation {} and  phoneme from lyrics  {} are  different".format(idxTotalPhonemeAnno + fromPhonemeIdx, phonemeAnno[2], phoneme_.ID ))

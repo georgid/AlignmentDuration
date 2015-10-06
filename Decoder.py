@@ -48,7 +48,7 @@ from hmm.continuous.GMHMM  import GMHMM
 
 logger = logging.getLogger(__name__)
 # loggingLevel = logging.WARNING
-# loggingLevel = logging.DEBUG
+loggingLevel = logging.DEBUG
 loggingLevel = logging.INFO
 
 logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
@@ -80,6 +80,7 @@ class Decoder(object):
         # Path class object
         self.path = None
     
+    
     def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
@@ -102,18 +103,15 @@ class Decoder(object):
             self.path =  Path(None, None)
             self.path.setPatRaw(path_)
             
-        # duration-HMM
-        else:
+        
+        else:   # duration-HMM
             lenObs = len(observationFeatures)
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(lenObs)
             
 #             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
 #             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
-                
-#             self.path =  Path(chiBackPointer, psiBackPointer)
-#             detectedWordList = self.path2ResultWordList(self.path)
-            
-            detectedWordList, self.path = self.backtrack(chiBackPointer, psiBackPointer )
+            withOracle = 0    
+            detectedWordList, self.path = self.backtrack(withOracle, chiBackPointer, psiBackPointer )
             
             print "\n"
          # DEBUG
@@ -121,8 +119,21 @@ class Decoder(object):
         
             return detectedWordList
     
+    def decodeWithOracle(self, lyricsWithModelsORacle, URIrecordingNoExt, fromTs, toTs):
+        '''
+        instead of bMap  set as oracle from annotation
+        '''
+   
+        
+        lenObservations = self.hmmNetwork.initDecodingParametersOracle(lyricsWithModelsORacle, URIrecordingNoExt, fromTs, toTs)
+        
+        chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(lenObservations)
+    #   
+        withOracle = 1  
+        detectedWordList, self.path = self.backtrack(withOracle, chiBackPointer, psiBackPointer)
+        return detectedWordList 
     
-    
+
         
     def _constructHmmNetwork(self,  numStates, ALPHA,  withModels ):
         '''
@@ -277,7 +288,7 @@ class Decoder(object):
     
     
     
-    def backtrack(self, chiBackPointer, psiBackPointer):
+    def backtrack(self, withOracle, chiBackPointer, psiBackPointer):
         ''' 
         backtrack optimal path of states from backpointers
         interprete states to words      
@@ -289,7 +300,13 @@ class Decoder(object):
             sys.path.append(pathUtils )
     
         from Utilz import writeListToTextFile
-        writeListToTextFile(self.path.pathRaw, None , self.URIrecordingNoExt + '.path' )
+
+        if withOracle:
+            outputURI = self.URIrecordingNoExt + '.path_oracle'
+        else:
+            outputURI = self.URIrecordingNoExt + '.path'
+        
+        writeListToTextFile(self.path.pathRaw, None , outputURI)
         
         detectedWordList = self.path2ResultWordList(self.path)
         

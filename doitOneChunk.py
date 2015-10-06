@@ -106,7 +106,7 @@ def doitOneChunk(argv):
     ALPHA = float(argv[5])
     ONLY_MIDDLE_STATE = argv[6]
     
-    evalLevel = tierAliases.wordLevel
+    evalLevel = tierAliases.words
     evalLevel = int(argv[7])
     
     deviationInSec = 0.1
@@ -152,12 +152,6 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
             logger.warn("skipping section {} with no lyrics ...".format(whichSection))
             return [], 'dummy', 0, 0, 0
     
-#     ###### 2) extract audio features
-    
-    lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, bool(withSynthesis), fromTs=-1, toTs=-1)
-
- 
-        
     ##############
     ## reference duration
 #     correctDurationScoreDev, totalDuration  = getReferenceDurations(URIrecordingNoExt, lyricsWithModels, evalLevel)
@@ -165,8 +159,11 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     
     tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
     if withDuration:
-
-        alignmentErrors, detectedTokenList = alignOneChunk(obsFeatures, lyricsWithModels, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt)
+        fromTs = -1
+        toTs = -1
+        withOracle = 0
+        oracleLyrics = 'dummy'
+        detectedTokenList = alignOneChunk( lyrics, withSynthesis, withOracle, oracleLyrics, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, fromTs,toTs, URIrecordingNoExt)
         correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel,-1,-1 )
 #         detectedTokenList = test_oracle(URIrecordingNoExt, pathToComposition, whichSection)
             
@@ -202,20 +199,28 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
 
 
-def alignOneChunk(obsFeatures, lyricsWithModels, listNonVocalFragments, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt=''):
+def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, fromTs, toTs,  URIrecordingNoExt=''):
     '''
     wrapper top-most logic method
     '''
+    if withOracle:
+
+        # synthesis not needed really in this setting. workaround because without synth takes whole recording  
+        withSynthesis = 1
         
 #     read from file result
-    detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
+    URIRecordingChunkNoExt = URIrecordingNoExt + "_" + str(fromTs) + '_' + str(toTs)
+    detectedAlignedfileName = URIRecordingChunkNoExt + tokenLevelAlignedSuffix
     if not os.path.isfile(detectedAlignedfileName):
-             
+        #     ###### 2) extract audio features
+        lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, bool(withSynthesis), fromTs, toTs)
+            #     lyricsWithModels, observationFeatures = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
+        
     # DEBUG: score-derived phoneme  durations
 #     lyricsWithModels.printPhonemeNetwork()
 #     lyricsWithModels.printWordsAndStates()
    
-        decoder = Decoder(lyricsWithModels, URIrecordingNoExt, alpha)
+        decoder = Decoder(lyricsWithModels, URIRecordingChunkNoExt, alpha)
     #  TODO: DEBUG: do not load models
     # decoder = Decoder(lyrics, withModels=False, numStates=86)
     #################### decode
@@ -226,25 +231,31 @@ def alignOneChunk(obsFeatures, lyricsWithModels, listNonVocalFragments, alpha, e
         else: 
             sys.exit("usePersistentFiles can be only True or False") 
         
-        detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles)
+        if withOracle:
+            detectedTokenList = decoder.decodeWithOracle(lyricsWithModelsORacle, URIrecordingNoExt, fromTs, toTs )
+        else:
+            detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles)
+        
         detectedPath = decoder.path.pathRaw
         # store decoding results in a file FIXME: if with duration it is not mlf 
-        detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
+        detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIRecordingChunkNoExt, tokenLevelAlignedSuffix)
         
         
     ### VISUALIZE result 
 #         decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
     
-    else:
+    else:   
+            print "{} already exists. No decoding".format(detectedAlignedfileName)
             detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
-            detectedPath = readListTextFile(URIrecordingNoExt + '.path')
+            if withOracle:
+                outputURI = URIRecordingChunkNoExt + '.path_oracle'
+            else:
+                outputURI = URIRecordingChunkNoExt + '.path'
+            
+            detectedPath = readListTextFile(outputURI)
    
-#################### evaluate
-    alignmentErrors = [2, 3, 4]
-#     alignmentErrors = _evalAlignmentError(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel)
-    
 
-    return alignmentErrors, detectedTokenList, detectedPath
+    return detectedTokenList, detectedPath
 
 
 
