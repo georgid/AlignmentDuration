@@ -6,18 +6,28 @@ Created on Oct 8, 2014
 from Phonetizer import Phonetizer
 import sys
 import numpy
+
 class Phoneme:
     def __init__(self, phonemeID):
         self.ID = phonemeID;
         self.durationInMinUnit = None;
         self.durationInNumFrames = None;
         self.numFirstState = -1
+        
+    def setNumStates(self, numStates):
+        self.numStates = numStates
     
-    def setbeginTs(self, beginTs):
+    def setBeginTs(self, beginTs):
         '''
         begin ts from annotation
         '''
         self.beginTs = beginTs
+    
+    def setEndTs(self, endTs):
+        '''
+        begin ts from annotation
+        '''
+        self.endTs = endTs
             
     def setNumFirstState(self, numFirstState):
             self.numFirstState = numFirstState
@@ -30,6 +40,9 @@ class Phoneme:
     def setHTKModel(self, hmmModel):
         self.htkModel = hmmModel
     
+    def setGMM(self, gmm):
+        self.gmm = gmm
+    
 #     def getStates(self):
 #         try: self.htkModel
 #         except NameError:
@@ -39,14 +52,17 @@ class Phoneme:
         
     def getNumStates(self):
         try: self.htkModel
-        except NameError:
-            sys.exit("cannot get numsttes. phoneme {} has no model assigned ", self.ID)
+        except AttributeError:
+            return self.numStates
         
         return len(self.htkModel.states)
             
             
     
     def __str__(self):
+        return self.ID
+     
+    def __repr__(self):
         return self.ID
     
     def isVowel(self):

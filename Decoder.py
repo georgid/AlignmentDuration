@@ -137,7 +137,7 @@ class Decoder(object):
         
     def _constructHmmNetwork(self,  numStates, ALPHA,  withModels ):
         '''
-        top level-function: costruct self.hmmNEtwork that confirms to guyz's code 
+        top level-function: construct self.hmmNEtwork that confirms to guyz's code 
         '''
 
         ######## construct transition matrix
@@ -148,8 +148,6 @@ class Decoder(object):
 #        DEBUG
 #  writeListOfListToTextFile(transMAtrix, None , '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/transMatrix')
        
-        
-        
         
         if  WITH_DURATIONS:
             self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
@@ -257,7 +255,7 @@ class Decoder(object):
         return means, covars, weights, pi
     
             
-      
+    
         
         
     def path2ResultWordList(self, path):

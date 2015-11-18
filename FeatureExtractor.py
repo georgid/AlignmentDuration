@@ -11,9 +11,8 @@ import logging
 import htkmfc
 from Constants import NUM_FRAMES_PERSECOND
 import subprocess
-from matplotlib.colors import NP_CLIP_OUT
-from Cython.Compiler.Naming import self_cname
 from Decoder import logger
+import essentia.standard
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools/workspace')
 
@@ -67,9 +66,13 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
             resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     
     else:
-        # TODO take only part from audio with essentia
-         print "!!! extracting features from whole audio{}".format(URI_recording_noExt)
-         URIRecordingChunkResynthesized = URI_recording_noExt + '.wav'
+        #### chop only part from audio with essentia
+        sampleRate = 44100
+        loader = essentia.standard.MonoLoader(filename = URI_recording, sampleRate = sampleRate)
+        audio = loader()
+        audioChunk = audio[fromTs*sampleRate : toTs*sampleRate]
+        monoWriter = essentia.standard.MonoWriter(filename=URIRecordingChunkResynthesized)
+        monoWriter(audioChunk)
         
     # call htk to extract features
     URImfcFile = _extractMFCCs( URIRecordingChunkResynthesized)

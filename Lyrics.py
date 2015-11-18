@@ -31,9 +31,7 @@ class Lyrics(object):
         ''' convert list of words (Word []) to 
         @return: self.phonemesNetwork: 
         '''
-      
-
-        
+  
         # start word after sil phoneme
 #         currNumPhoneme = 1
         

@@ -15,7 +15,7 @@ pathUtils = os.path.join(parentParentDir, 'utilsLyrics')
 sys.path.append(parentDir )
 
 import glob
-from LyricsWithModels import LyricsWithModels
+from LyricsWithHTKModels import LyricsWithHTKModels
 from doitOneChunk import HMM_LIST_URI, MODEL_URI
 from FeatureExtractor import loadMFCCs
 
@@ -51,7 +51,7 @@ def parseScoreAndSerializeStatesWithRealTempo(pathToComposition, whichQuerySecti
     lyricsQuery = makamScore.getLyricsForSection(whichQuerySection)
     deviationInSecDummy = 0.0
   
-    queryLyricsWithModels = LyricsWithModels (lyricsQuery, htkParser, onyMiddleState,deviationInSecDummy )
+    queryLyricsWithModels = LyricsWithHTKModels (lyricsQuery, htkParser, onyMiddleState,deviationInSecDummy )
     withSynthesis = False
 #     observationFeatures, URIRecordingChunk = loadMFCCs(URIqueryRecordingNoExt, withSynthesis, -1, -1) #     observationFeatures = observationFeatures[0:1000]
     

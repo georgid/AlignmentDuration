@@ -8,7 +8,7 @@ from MakamScore import  loadLyrics
 import glob
 import numpy
 import sys
-from LyricsWithModels import LyricsWithModels
+from LyricsWithHTKModels import LyricsWithHTKModels
 from numpy.core.arrayprint import set_printoptions
 from Decoder import Decoder, WITH_DURATIONS, logger
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWord, testT
@@ -50,7 +50,7 @@ if pathHMM not in sys.path:
     sys.path.append(pathHMM)
     
 from hmm.Parameters import Parameters
-from hmm.examples.main  import loadSmallAudioFragment
+from hmm.examples.main  import loadSmallAudioFragment, loadSmallAudioFragmentOracle
 from hmm.examples.tests import test_oracle
 
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
@@ -199,22 +199,25 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
 
 
-def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, fromTs, toTs,  URIrecordingNoExt=''):
+def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, fromTs, toTs,  URIrecordingNoExt=''):
     '''
     wrapper top-most logic method
     '''
-    if withOracle:
-
-        # synthesis not needed really in this setting. workaround because without synth takes whole recording  
-        withSynthesis = 1
+    withHTK = 0
         
 #     read from file result
     URIRecordingChunkNoExt = URIrecordingNoExt + "_" + str(fromTs) + '_' + str(toTs)
     detectedAlignedfileName = URIRecordingChunkNoExt + tokenLevelAlignedSuffix
     if not os.path.isfile(detectedAlignedfileName):
         #     ###### 2) extract audio features
-        lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, bool(withSynthesis), fromTs, toTs)
-            #     lyricsWithModels, observationFeatures = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
+        
+        if  withOracle:
+            
+
+            lyricsWithModelsORacle = loadSmallAudioFragmentOracle(lyrics, phonemesAnnoAll )
+            lyricsWithModels = lyricsWithModelsORacle
+        else:                      
+            lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, withHTK, URIrecordingNoExt, bool(withSynthesis), fromTs, toTs)
         
     # DEBUG: score-derived phoneme  durations
 #     lyricsWithModels.printPhonemeNetwork()
