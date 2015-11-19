@@ -203,7 +203,7 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
     '''
     wrapper top-most logic method
     '''
-    withHTK = 0
+    withHTK = 1
         
 #     read from file result
     URIRecordingChunkNoExt = URIrecordingNoExt + "_" + str(fromTs) + '_' + str(toTs)
