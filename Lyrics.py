@@ -4,7 +4,7 @@ Created on Oct 27, 2014
 @author: joro
 '''
 from Phoneme import Phoneme
-
+from Decoder import logger
 
 class Lyrics(object):
     '''
@@ -82,9 +82,9 @@ class Lyrics(object):
         '''
         debug: score-derived phoneme  durationInMinUnit 
         '''
-               
+        
         for i, phoneme in enumerate(self.phonemesNetwork):
-            print "{}: {} {}".format(i, phoneme.ID, phoneme.durationInMinUnit)
+            logger.info( "{}: {} {}".format(i, phoneme.ID, phoneme.durationInMinUnit) )
 #                         print "{}".format(phoneme.ID)
 
                  

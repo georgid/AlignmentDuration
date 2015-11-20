@@ -81,10 +81,13 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
     logging.debug("reading MFCCs from {} ...".format(URImfcFile))
     HTKFeat_reader =  htkmfc.open(URImfcFile, 'rb')
     mfccsFeatrues = HTKFeat_reader.getall()
-    mfccs = mfccsFeatrues[:,0:12]
 
-    mfccDeltas = mfccsFeatrues[:,13:] 
-    mfccsFeatrues = np.hstack((mfccs, mfccDeltas))
+#     mfccs = mfccsFeatrues[:,0:12]
+
+#     mfccDeltas = mfccsFeatrues[:,13:] 
+#     mfccsFeatrues = np.hstack((mfccs, mfccDeltas))
+        
+        
         
     # first extract features with data.m in Matlab 
 #     URI_recording_mfc_txt = URIRecordingChunkResynthesized + '.mfc_txt'
@@ -104,7 +107,7 @@ def _extractMFCCs( URIRecordingChunk):
         dir_ = os.path.dirname(URIRecordingChunk)
         mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
         
-        HCopyCommand = [PATH_TO_HCOPY, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FILES + 'wav_config_singing', URIRecordingChunk, mfcFileName]
+        HCopyCommand = [PATH_TO_HCOPY, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FILES + 'wav_config_singing_yile', URIRecordingChunk, mfcFileName]
 #         if not os.path.isfile(mfcFileName):
         pipe= subprocess.Popen(HCopyCommand)
         pipe.wait()

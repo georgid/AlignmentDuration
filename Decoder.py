@@ -7,7 +7,6 @@ import os
 import sys
 import logging
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWordDetected
-from Constants import numDimensions, numMixtures
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
@@ -62,7 +61,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, URIrecordingNoExt, ALPHA, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, URIrecordingNoExt, withHTK, ALPHA, numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -74,7 +73,7 @@ class Decoder(object):
         '''
         self.hmmNetwork = []
         
-        self._constructHmmNetwork(numStates, float(ALPHA), withModels)
+        self._constructHmmNetwork(numStates, withHTK, float(ALPHA), withModels)
         self.hmmNetwork.logger.setLevel(loggingLevel)
         
         # Path class object
@@ -90,8 +89,8 @@ class Decoder(object):
         self.hmmNetwork.setNonVocal(listNonVocalFragments)
         
         # double check that features are in same dimension as model
-        if observationFeatures.shape[1] != numDimensions:
-            sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
+        if observationFeatures.shape[1] != self.hmmNetwork.d:
+            sys.exit("dimension of feature vector should be {} but is {} ".format(self.hmmNetwork.d, observationFeatures.shape[1]) )
         
         
         self.hmmNetwork.initDecodingParameters(observationFeatures)
@@ -135,7 +134,7 @@ class Decoder(object):
     
 
         
-    def _constructHmmNetwork(self,  numStates, ALPHA,  withModels ):
+    def _constructHmmNetwork(self,  numStates, withHTK, ALPHA,  withModels ):
         '''
         top level-function: construct self.hmmNEtwork that confirms to guyz's code 
         '''
@@ -150,16 +149,20 @@ class Decoder(object):
        
         
         if  WITH_DURATIONS:
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, withHTK)
             self.hmmNetwork.setALPHA(ALPHA)
         
-        else:
+        else: # no-duration standard hmm decoding
             if numStates == None:
                 numStates = len(self.lyricsWithModels.statesNetwork) 
         
             # construct means, covars, and all the rest params
             #########
-            means, covars, weights, pi = self._constructHMMNetworkParameters(numStates,  withModels)
+            # TODO: read this from means
+            numMixtures = 9
+            numDimensions = 25 
+
+            means, covars, weights, pi = self._constructHMMNetworkParameters(numMixtures, numDimensions, numStates,  withModels)
             self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,transMAtrix,means,covars,weights,pi,init_type='user',verbose=True)
         
 
@@ -205,54 +208,6 @@ class Decoder(object):
     
 
     
-    def _constructHMMNetworkParameters(self,  numStates,  withModels=True, sequenceStates=None):
-        '''
-        tranform other htkModel params to  format of gyuz's hmm class.
-        similar code in method _DurationHMM_constructNetworkParams. This left here for GMM class without duration
-        '''
-        
-       
-        
-        means = numpy.empty((numStates, numMixtures, numDimensions))
-        
-        # init covars
-        covars = [[ numpy.matrix(numpy.eye(numDimensions,numDimensions)) for j in xrange(numMixtures)] for i in xrange(numStates)]
-        
-        weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
-        
-        # start probs :
-        pi = numpy.zeros((numStates), dtype=numpy.double)
-        
-        # avoid log(0) 
-        pi.fill(sys.float_info.min)
-#          allow to start only at first state
-        pi[0] = 1
-        
-        # equal prob. for states to start
-#         pi = numpy.ones( (numStates)) *(1.0/numStates)
-        
-        if not withModels:
-            return None, None, None, pi
-
-        
-        sequenceStates = self.lyricsWithModels.statesNetwork
-         
-        if sequenceStates==None:
-            sys.exit('no state sequence')
-               
-        for i in range(len(sequenceStates) ):
-            state  = sequenceStates[i] 
-            
-            for (numMixture, weight, mixture) in state.mixtures:
-                
-                weights[i,numMixture-1] = weight
-                
-                means[i,numMixture-1,:] = mixture.mean.vector
-                
-                variance_ = mixture.var.vector
-                for k in  range(len( variance_) ):
-                    covars[i][numMixture-1][k,k] = variance_[k]
-        return means, covars, weights, pi
     
             
     
@@ -316,5 +271,55 @@ class Decoder(object):
         return detectedWordList, self.path
 
     
+def _constructHMMNetworkParameters(self, numMixtures,numDimensions,  numStates,  withModels=True, sequenceStates=None):
+        '''
+        tranform other htkModel params to  format of gyuz's hmm class.
+        similar code in method _DurationHMM_constructNetworkParams. This left here for GMM class without duration
+        '''
+        
+        
+        means = numpy.empty((numStates, numMixtures, numDimensions))
+        
+        # init covars
+        covars = [[ numpy.matrix(numpy.eye(numDimensions,numDimensions)) for j in xrange(numMixtures)] for i in xrange(numStates)]
+        
+        weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
+        
+        # start probs :
+        pi = numpy.zeros((numStates), dtype=numpy.double)
+        
+        # avoid log(0) 
+        pi.fill(sys.float_info.min)
+#          allow to start only at first state
+        pi[0] = 1
+        
+        # equal prob. for states to start
+#         pi = numpy.ones( (numStates)) *(1.0/numStates)
+        
+        if not withModels:
+            return None, None, None, pi
+
+        
+        sequenceStates = self.lyricsWithModels.statesNetwork
+         
+        if sequenceStates==None:
+            sys.exit('no state sequence')
+               
+        for i in range(len(sequenceStates) ):
+            state  = sequenceStates[i] 
+            
+            gmm_ = state.mixtures
+            
+            for numMixture in gmm_.n_components:
+                weights[i,numMixture] = gmm_.weights_[numMixture]
+                
+                means[i,numMixture,:] = gmm_.means_[numMixture]
+                
+                variance_ = gmm_.covars_[numMixture]
+                
+                for k in  range(len( variance_) ):
+                    covars[i][numMixture][k,k] = variance_[k]
+        
+        return means, covars, weights, pi 
 
         

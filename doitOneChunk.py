@@ -218,14 +218,14 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
             lyricsWithModels = lyricsWithModelsORacle
         else:                      
             lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, withHTK, URIrecordingNoExt, bool(withSynthesis), fromTs, toTs)
-        
+      
+
     # DEBUG: score-derived phoneme  durations
 #     lyricsWithModels.printPhonemeNetwork()
 #     lyricsWithModels.printWordsAndStates()
    
-        decoder = Decoder(lyricsWithModels, URIRecordingChunkNoExt, alpha)
+        decoder = Decoder(lyricsWithModels, URIRecordingChunkNoExt, withHTK, alpha)
     #  TODO: DEBUG: do not load models
-    # decoder = Decoder(lyrics, withModels=False, numStates=86)
     #################### decode
         if usePersistentFiles=='True':
             usePersistentFiles = True
