@@ -7,7 +7,7 @@ import os
 import sys
 import logging
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWordDetected
-from Constants import numDimensions, numMixtures
+from Constants import numDimensions
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
@@ -62,7 +62,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, URIrecordingNoExt, ALPHA, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, URIrecordingNoExt, withHTK, ALPHA, numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -74,7 +74,7 @@ class Decoder(object):
         '''
         self.hmmNetwork = []
         
-        self._constructHmmNetwork(numStates, float(ALPHA), withModels)
+        self._constructHmmNetwork(numStates, withHTK, float(ALPHA), withModels)
         self.hmmNetwork.logger.setLevel(loggingLevel)
         
         # Path class object
@@ -90,8 +90,8 @@ class Decoder(object):
         self.hmmNetwork.setNonVocal(listNonVocalFragments)
         
         # double check that features are in same dimension as model
-        if observationFeatures.shape[1] != numDimensions:
-            sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
+        if observationFeatures.shape[1] != self.hmmNetwork.d:
+            sys.exit("dimension of feature vector should be {} but is {} ".format(self.hmmNetwork.d, observationFeatures.shape[1]) )
         
         
         self.hmmNetwork.initDecodingParameters(observationFeatures)
@@ -135,7 +135,7 @@ class Decoder(object):
     
 
         
-    def _constructHmmNetwork(self,  numStates, ALPHA,  withModels ):
+    def _constructHmmNetwork(self,  numStates, withHTK, ALPHA,  withModels ):
         '''
         top level-function: construct self.hmmNEtwork that confirms to guyz's code 
         '''
@@ -150,7 +150,7 @@ class Decoder(object):
        
         
         if  WITH_DURATIONS:
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, withHTK)
             self.hmmNetwork.setALPHA(ALPHA)
         
         else:
@@ -159,7 +159,11 @@ class Decoder(object):
         
             # construct means, covars, and all the rest params
             #########
-            means, covars, weights, pi = self._constructHMMNetworkParameters(numStates,  withModels)
+            # TODO: read this from means
+            numMixtures = 9
+            numDimensions = 25 
+
+            means, covars, weights, pi = self._constructHMMNetworkParameters(numMixtures, numDimensions, numStates,  withModels)
             self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,transMAtrix,means,covars,weights,pi,init_type='user',verbose=True)
         
 
@@ -205,14 +209,13 @@ class Decoder(object):
     
 
     
-    def _constructHMMNetworkParameters(self,  numStates,  withModels=True, sequenceStates=None):
+    def _constructHMMNetworkParameters(self, numMixtures, numDimensions, numStates,  withModels=True, sequenceStates=None):
         '''
         tranform other htkModel params to  format of gyuz's hmm class.
         similar code in method _DurationHMM_constructNetworkParams. This left here for GMM class without duration
         '''
         
-       
-        
+                
         means = numpy.empty((numStates, numMixtures, numDimensions))
         
         # init covars
