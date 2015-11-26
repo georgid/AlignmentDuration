@@ -47,9 +47,10 @@ from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
 logger = logging.getLogger(__name__)
-# loggingLevel = logging.WARNING
-loggingLevel = logging.DEBUG
-loggingLevel = logging.INFO
+# loggingLevel = logging.DEBUG
+# loggingLevel = logging.INFO
+loggingLevel = logging.WARNING
+
 
 logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
 logger.setLevel(loggingLevel)
