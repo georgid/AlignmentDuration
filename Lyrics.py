@@ -5,6 +5,7 @@ Created on Oct 27, 2014
 '''
 from Phoneme import Phoneme
 from Decoder import logger
+import os
 
 class Lyrics(object):
     '''
@@ -65,16 +66,47 @@ class Lyrics(object):
                     print syllable_
                     for phoneme_ in syllable_.phonemes:
                         print "\t phoneme: " , phoneme_
+    
+    def printDict(self, pathToOutputFile, isMLFfile):
+        '''
+        used in htk 
+        print mlf file and dit file with same function 
+        '''
+        
+        
+        outputFileHandle = open(pathToOutputFile, 'w')
+        
+        if isMLFfile:
+            outputFileHandle.write  ("#!MLF!#\n")
+            pathToOutputFileBase = os.path.basename(pathToOutputFile)
+            
+            nameAndExt = os.path.splitext(pathToOutputFileBase)
+            outputFileHandle.write  ("\"*/")
+            outputFileHandle.write  (nameAndExt[0])
+            outputFileHandle.write  (".lab\"")
+        
+    
+    
+    
+        for word_ in self.listWords:
+                for syllable_    in word_.syllables:
+                    outputFileHandle.write("\n" + syllable_.text + "\t ")
                     
+                    # add phonemes on right side as well 
+                    if not isMLFfile:
+                        for phoneme_ in syllable_.phonemes:
+                            outputFileHandle.write( phoneme_.sciKitGMM.modelName + " ")               
+        outputFileHandle.close()
+        print " written file "  + pathToOutputFile
                     
     def getTotalDuration(self):
         '''
         total durationInMinUnit of phonemes according to score. no pauses considered.
         '''
-        totalDuration = 0    
+        totalDuration = 0.0    
         for word_ in self.listWords:
             for syllable_ in word_.syllables:
-                totalDuration +=  int(syllable_.durationInMinUnit)
+                totalDuration +=  syllable_.durationInMinUnit
         return totalDuration
             
     

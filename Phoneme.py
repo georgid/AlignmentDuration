@@ -6,6 +6,7 @@ Created on Oct 8, 2014
 from Phonetizer import Phonetizer
 import sys
 import numpy
+from sciKitGMM import SciKitGMM
 
 class Phoneme:
     def __init__(self, phonemeID):
@@ -40,8 +41,8 @@ class Phoneme:
     def setHTKModel(self, hmmModel):
         self.htkModel = hmmModel
     
-    def setGMM(self, gmm):
-        self.gmm = gmm
+    def setGMM(self, sciKitGMM):
+        self.sciKitGMM =  sciKitGMM
     
 #     def getStates(self):
 #         try: self.htkModel

@@ -221,7 +221,7 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
       
 
     # DEBUG: score-derived phoneme  durations
-#     lyricsWithModels.printPhonemeNetwork()
+#         lyricsWithModels.printPhonemeNetwork()
 #     lyricsWithModels.printWordsAndStates()
    
         decoder = Decoder(lyricsWithModels, URIRecordingChunkNoExt, withHTK, alpha)

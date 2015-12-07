@@ -12,6 +12,7 @@ from Phoneme import Phoneme
 from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
+from sciKitGMM import SciKitGMM
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 HMMDurationPath = os.path.join(parentDir, 'HMMDuration')
 if not HMMDurationPath in sys.path:
@@ -38,6 +39,8 @@ sys.path.append(pathUtils )
 from Utilz import loadDictFromTabFile
 
 
+MODELS_DIR = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/models/'
+
 class LyricsWithGMMs(Lyrics):
     '''
     lyrics with each Phoneme having a link to a model of class type htkModel from htkModelParser
@@ -45,7 +48,7 @@ class LyricsWithGMMs(Lyrics):
     '''
 
 
-    def __init__(self, lyrics,  ONLY_MIDDLE_STATE, deviationInSec  ):
+    def __init__(self, lyrics,  ONLY_MIDDLE_STATE, deviationInSec, URIrecordingNoExt  ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
@@ -70,48 +73,74 @@ class LyricsWithGMMs(Lyrics):
         
         self.ONLY_MIDDLE_STATE = ONLY_MIDDLE_STATE
         
-        self._linkToModels()
+        self._linkToModels(URIrecordingNoExt)
 
         self.deviationInSec = deviationInSec
 
         self.duratioInFramesSet = False
     
         
-    def loadModel(self, modelName):
+    def _loadModel(self, modelName, URIRecordingNoExt ):
         ''' load model'''
         
-        thisDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__) ) )
-        dictURI =  os.path.join(thisDir, 'model/modelName2FileNameDict') 
+#         thisDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__) ) )
+        
+        
+        dictURI =  os.path.join(MODELS_DIR, 'modelName2FileNameDict') 
         modelName2FileNameDict = loadDictFromTabFile(dictURI)
         
         # table convert model names
         if modelName in modelName2FileNameDict:
             modelName = modelName2FileNameDict[modelName]
         
-        modelsURI = '/model/scikitGMMs/' + str(modelName) + '.pkl'
-        fileURI =  thisDir +   modelsURI 
+        path, fileName = os.path.split(URIRecordingNoExt)
+        path, fold = os.path.split(path) # which Fold
+        
+        modelsURI =  os.path.join( MODELS_DIR + fold,  str(modelName) + '.pkl' )
         import pickle
         try:
-            model = pickle.load(file(fileURI))
+            model = pickle.load(file(modelsURI))
         except BaseException:
             logger.error("no model with name {}".format(modelName))
             model = None
-        return model
+        return model, modelName
         
         
-    def _linkToModels(self):
+    def _linkToModels(self, URIrecordingNoExt):
         '''
         load links to trained models   
         '''
-       
              
             #link each phoneme from transcript to a model
             # FIXME: DO A MORE OPTIMAL WAY like ismember()
         for phonemeFromTranscript in    self.phonemesNetwork:
-                model = self.loadModel(phonemeFromTranscript.ID)
-#                 if model == None:
+                if phonemeFromTranscript.ID == 'N':
+                    phonemeFromTranscript.ID = 'n'
                     
-                phonemeFromTranscript.setGMM(model)
+                if phonemeFromTranscript.ID == 'A':
+                    phonemeFromTranscript.ID = 'a'
+                
+                if phonemeFromTranscript.ID == 'U':
+                    phonemeFromTranscript.ID = 'u'
+                    
+                if phonemeFromTranscript.ID == 'o':
+                    phonemeFromTranscript.ID = 'O'
+                
+                if phonemeFromTranscript.ID == 'U^':
+                    phonemeFromTranscript.ID = 'u'
+                
+                if phonemeFromTranscript.ID == '@':
+                    phonemeFromTranscript.ID = 'e'
+                
+                if phonemeFromTranscript.ID == '9':
+                    phonemeFromTranscript.ID = 'O'
+                
+                model, modelName = self._loadModel(phonemeFromTranscript.ID, URIrecordingNoExt)
+#                 if model == None:
+
+                
+                sciKitGMM = SciKitGMM(model, modelName)
+                phonemeFromTranscript.setGMM(sciKitGMM)
                 if self.ONLY_MIDDLE_STATE:
                     phonemeFromTranscript.setNumStates(1)
                 else:
@@ -135,10 +164,10 @@ class LyricsWithGMMs(Lyrics):
             
             
              # update state counter
-            if not hasattr(phoneme, 'gmm'):
+            if not hasattr(phoneme, 'sciKitGMM'):
                 sys.exit("phoneme {} has no gmm assigned".format(phoneme.ID))
             stateCount += 1
-            gmm = phoneme.gmm   
+            gmm = phoneme.sciKitGMM.gmm   
             idxMiddleState = 0
             
             currStateWithDur = StateWithDur(None, phoneme.__str__(), idxMiddleState, 'normal' , self.deviationInSec, gmm)
