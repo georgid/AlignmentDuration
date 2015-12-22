@@ -11,7 +11,7 @@ import glob
 import logging
 from doitOneChunk import HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT, getSectionNumberFromName, alignDependingOnWithDuration,\
     AUDIO_EXT, deviationInSec
-from Utilz import getMeanAndStDevError
+from Utilz import getMeanAndStDev
 from genericpath import isfile
 from Decoder import logger
 
@@ -128,7 +128,7 @@ def doitOneRecording(argv):
     mean = []
     stDev =  []     
     if len(totalErrors) != 0:    
-        mean, stDev, median = getMeanAndStDevError(totalErrors)
+        mean, stDev, median = getMeanAndStDev(totalErrors)
         infoA = "Total  mean: "  "," +  str(mean), ", st dev: " + str(stDev) +   " ALPHA: " +  str(ALPHA)
         logger.info(infoA)
         

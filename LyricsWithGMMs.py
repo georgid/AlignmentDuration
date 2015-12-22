@@ -13,6 +13,7 @@ from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
 from sciKitGMM import SciKitGMM
+from Cython.Compiler.Naming import self_cname
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 HMMDurationPath = os.path.join(parentDir, 'HMMDuration')
 if not HMMDurationPath in sys.path:
@@ -24,6 +25,7 @@ from htk_converter import HtkConverter
 from Decoder import logger
 
 from hmm.Parameters import MAX_SILENCE_DURATION
+from hmm.ParametersAlgo import ParametersAlgo
 
 # htkModelParser = os.path.join(parentDir, 'htk2s3')
 # sys.path.append(htkModelParser)
@@ -68,7 +70,7 @@ class LyricsWithGMMs(Lyrics):
         elif ONLY_MIDDLE_STATE=='False':
             ONLY_MIDDLE_STATE  = False
         else:
-            logger.error('LyricsWithHTKModels: param ONLY_MIDDLE_STATE ={}. ONly True/False expected'.format( ONLY_MIDDLE_STATE))
+            logger.error('LyricsWithGMMs: param ONLY_MIDDLE_STATE ={}. ONly True/False expected'.format( ONLY_MIDDLE_STATE))
             sys.exit()
         
         self.ONLY_MIDDLE_STATE = ONLY_MIDDLE_STATE
@@ -101,39 +103,40 @@ class LyricsWithGMMs(Lyrics):
         try:
             model = pickle.load(file(modelsURI))
         except BaseException:
-            logger.error("no model with name {}".format(modelName))
+            sys.exit("no model with URI {}. Make sure the correct fold is given".format(modelsURI))
             model = None
         return model, modelName
         
         
+
+    def renamePhonemeNames(self, phonemeFromTranscript):
+        '''
+        workaround. In trained models these models are missing so replace them with approximately closest ones 
+        '''
+        if phonemeFromTranscript.ID == 'N':
+            phonemeFromTranscript.ID = 'n'
+        if phonemeFromTranscript.ID == 'A':
+            phonemeFromTranscript.ID = 'a'
+        if phonemeFromTranscript.ID == 'U':
+            phonemeFromTranscript.ID = 'u'
+        if phonemeFromTranscript.ID == 'o':
+            phonemeFromTranscript.ID = 'O'
+        if phonemeFromTranscript.ID == 'U^':
+            phonemeFromTranscript.ID = 'u'
+        if phonemeFromTranscript.ID == '@':
+            phonemeFromTranscript.ID = 'e'
+        if phonemeFromTranscript.ID == '9':
+            phonemeFromTranscript.ID = 'O'
+
     def _linkToModels(self, URIrecordingNoExt):
         '''
-        load links to trained models   
+        load  trained models and link phoneme list to them    
         '''
              
             #link each phoneme from transcript to a model
             # FIXME: DO A MORE OPTIMAL WAY like ismember()
         for phonemeFromTranscript in    self.phonemesNetwork:
-                if phonemeFromTranscript.ID == 'N':
-                    phonemeFromTranscript.ID = 'n'
-                    
-                if phonemeFromTranscript.ID == 'A':
-                    phonemeFromTranscript.ID = 'a'
-                
-                if phonemeFromTranscript.ID == 'U':
-                    phonemeFromTranscript.ID = 'u'
-                    
-                if phonemeFromTranscript.ID == 'o':
-                    phonemeFromTranscript.ID = 'O'
-                
-                if phonemeFromTranscript.ID == 'U^':
-                    phonemeFromTranscript.ID = 'u'
-                
-                if phonemeFromTranscript.ID == '@':
-                    phonemeFromTranscript.ID = 'e'
-                
-                if phonemeFromTranscript.ID == '9':
-                    phonemeFromTranscript.ID = 'O'
+                self.renamePhonemeNames(phonemeFromTranscript)
                 
                 model, modelName = self._loadModel(phonemeFromTranscript.ID, URIrecordingNoExt)
 #                 if model == None:
@@ -170,7 +173,13 @@ class LyricsWithGMMs(Lyrics):
             gmm = phoneme.sciKitGMM.gmm   
             idxMiddleState = 0
             
-            currStateWithDur = StateWithDur(None, phoneme.__str__(), idxMiddleState, 'normal' , self.deviationInSec, gmm)
+            deviation = self.deviationInSec
+            if phoneme.isVowelJingju():
+                deviation = self.deviationInSec
+            else: # consonant
+                deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
+            
+            currStateWithDur = StateWithDur(None, phoneme.ID, idxMiddleState, 'normal' , deviation, gmm)
             currStateWithDur.setDurationInFrames(phoneme.durationInNumFrames)
             
             self.statesNetwork.append(currStateWithDur)
@@ -273,7 +282,8 @@ class LyricsWithGMMs(Lyrics):
         queueAnnotationTokens = Queue.Queue()
         for annoPhoneme in phoenemeAnnotaions:
             if annoPhoneme.ID == '':
-                annoPhoneme.ID ='sil' 
+                annoPhoneme.ID ='sil'
+            self.renamePhonemeNames(annoPhoneme) 
             queueAnnotationTokens.put(annoPhoneme)
         # only first word
 #         self.listWords = [self.listWords[0]]

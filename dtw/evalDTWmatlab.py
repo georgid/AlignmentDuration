@@ -11,7 +11,7 @@ sys.path.append(parentDir )
 sys.path.append(pathUtils )
 
 from evaluation.WordLevelEvaluator import evalOneFile
-from Utilz import getMeanAndStDevError
+from Utilz import getMeanAndStDev
 
 
 
@@ -60,7 +60,7 @@ def evalDtw(argv):
             totalErrors.extend(currAlignmentErrors)
           
         
-    mean, stDev, median = getMeanAndStDevError(totalErrors)
+    mean, stDev, median = getMeanAndStDev(totalErrors)
     print "(", median ,  ",", mean, "," , stDev ,   ")"    
         
 if __name__ == '__main__':

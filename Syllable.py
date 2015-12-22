@@ -8,15 +8,11 @@ import sys
 from Phonetizer import Phonetizer
 from Decoder import logger
 from _SyllableBase import _SyllableBase
+from hmm.ParametersAlgo import ParametersAlgo
 
 #     64 for 64th note
 MINIMAL_DURATION_UNIT = 64
 
-NUMFRAMESPESECOND = 100
-
-#  consonant durationInMinUnit fixed to  0.3 seconds 
-CONSONANT_DURATION = NUMFRAMESPESECOND * 0.05
-# CONSONANT_DURATION = MINIMAL_DURATION_UNIT / 64
 
 
 class Syllable(_SyllableBase):
@@ -84,7 +80,7 @@ class Syllable(_SyllableBase):
             # sanity check: 
             # Workaraound: reduce consonant durationInMinUnit for syllables with very short note value. 
             #copy to local var
-            consonant_duration = CONSONANT_DURATION
+            consonant_duration = ParametersAlgo.CONSONANT_DURATION
             while (self.getNumPhonemes() - 1) * consonant_duration >= self.durationInNumFrames:
                 logger.warn("Syllable {} has very short durationInMinUnit: {} . reducing the fixed durationInMinUnit of consonants".format(self.text, self.durationInMinUnit) )
                 consonant_duration /=2

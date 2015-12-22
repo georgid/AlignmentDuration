@@ -10,7 +10,7 @@ from doitOneRecording import doitOneRecording
 from datetime import datetime
 import os
 from Decoder import logger
-from Utilz import getMeanAndStDevError
+from Utilz import getMeanAndStDev
 
 def doit(argv):
     if len(argv) != 7 and len(argv) != 8:
@@ -181,7 +181,7 @@ def writeResultToFile(resultSet,  totalErrors, totalCorrectDurReference, totalCo
     
          
     # total mean    
-    mean, stDev, median  = getMeanAndStDevError(totalErrors)
+    mean, stDev, median  = getMeanAndStDev(totalErrors)
     result = 'tatal scoreDev accuracy {:.2f} \n total accuracy: {:.2f} \n total mean: {} \n'.format( totalCorrectDurReference/ totalDurations,  totalCorrectDur/ totalDurations ,  mean )
     
     

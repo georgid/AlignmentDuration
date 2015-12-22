@@ -16,6 +16,8 @@ from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
 from docutils.parsers.rst.directives import path
 from matplotlib.path import Path
+from eyed3.utils import LoggingAction
+import logging
 
 
 
@@ -25,7 +27,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from Utilz import writeListOfListToTextFile, writeListToTextFile,\
-    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile
+    getMeanAndStDev, getSectionNumberFromName, readListOfListTextFile, readListTextFile
 
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
@@ -130,7 +132,7 @@ def doitOneChunk(argv):
     accuracy = correctDuration / totalDuration
     logger.info("accuracy: {:.2f}".format(accuracy))
     
-    mean, stDev, median = getMeanAndStDevError(alignmentErrors)
+    mean, stDev, median = getMeanAndStDev(alignmentErrors)
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
     logger.info("result: {}".format(detectedAlignedfileName))
 
@@ -214,17 +216,21 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
         if  withOracle:
             
 
-            lyricsWithModelsORacle = loadSmallAudioFragmentOracle(lyrics, phonemesAnnoAll )
+            lyricsWithModelsORacle = loadSmallAudioFragmentOracle(URIrecordingNoExt, lyrics, phonemesAnnoAll )
             lyricsWithModels = lyricsWithModelsORacle
         else:                      
             lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, withHTK, URIrecordingNoExt, bool(withSynthesis), fromTs, toTs)
       
 
-    # DEBUG: score-derived phoneme  durations
-#         lyricsWithModels.printPhonemeNetwork()
-#     lyricsWithModels.printWordsAndStates()
    
         decoder = Decoder(lyricsWithModels, URIRecordingChunkNoExt, withHTK, alpha)
+        if logger == logging.DEBUG:
+            lyricsWithModels.printWordsAndStates()
+            
+
+    # DEBUG: score-derived phoneme  durations        
+#         lyricsWithModels.printPhonemeNetwork()
+
     #  TODO: DEBUG: do not load models
     #################### decode
         if usePersistentFiles=='True':
@@ -241,7 +247,9 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
         
         detectedPath = decoder.path.pathRaw
         # store decoding results in a file FIXME: if with duration it is not mlf 
+#         detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIRecordingChunkNoExt, tokenLevelAlignedSuffix, fromTs)
         detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIRecordingChunkNoExt, tokenLevelAlignedSuffix)
+
         
         
     ### VISUALIZE result 

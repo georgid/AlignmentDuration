@@ -67,6 +67,8 @@ class Phoneme:
         return self.ID
     
     def isVowel(self):
+        '''METU phoneme set
+        '''
         
         if (self.ID == 'AA' or
         self.ID == 'A' or
@@ -81,6 +83,19 @@ class Phoneme:
             return True
         
         return False
+    
+    def isVowelJingju(self):
+        vowelListURI = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/models/hmmlistVowels'
+        
+        from Utilz import loadTextFile
+        vowels = loadTextFile(vowelListURI)
+        
+        for vowel in vowels:
+            vowel = vowel.strip()
+            if self.ID == vowel:
+                return True 
+        return False
+    
     
     def getTransMatrix(self, htkModel):
         '''

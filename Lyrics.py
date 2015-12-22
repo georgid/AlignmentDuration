@@ -16,6 +16,9 @@ class Lyrics(object):
 
 
     def __init__(self, listWords):
+        
+        
+        
         '''
         Word[]
         '''
@@ -64,8 +67,8 @@ class Lyrics(object):
         for word_ in self.listWords:
                 for syllable_    in word_.syllables:
                     print syllable_
-                    for phoneme_ in syllable_.phonemes:
-                        print "\t phoneme: " , phoneme_
+#                     for phoneme_ in syllable_.phonemes:
+#                         print "\t phoneme: " , phoneme_
     
     def printDict(self, pathToOutputFile, isMLFfile):
         '''
@@ -98,6 +101,8 @@ class Lyrics(object):
                             outputFileHandle.write( phoneme_.sciKitGMM.modelName + " ")               
         outputFileHandle.close()
         print " written file "  + pathToOutputFile
+    
+    
                     
     def getTotalDuration(self):
         '''
@@ -118,7 +123,14 @@ class Lyrics(object):
         for i, phoneme in enumerate(self.phonemesNetwork):
             logger.info( "{}: {} {}".format(i, phoneme.ID, phoneme.durationInMinUnit) )
 #                         print "{}".format(phoneme.ID)
-
+    
+    def getLenNoRests(self):
+        lenWords = 0
+        for word_ in self.listWords:
+            if word_.syllables[0].text != 'REST':
+                lenWords += 1
+        return lenWords
+                   
                  
     def __str__(self):
         lyricsStr = ''

@@ -46,9 +46,9 @@ from hmm.Path import Path
 from hmm.continuous.GMHMM  import GMHMM
 
 logger = logging.getLogger(__name__)
-# loggingLevel = logging.WARNING
-loggingLevel = logging.DEBUG
-loggingLevel = logging.INFO
+loggingLevel = logging.WARNING
+# loggingLevel = logging.DEBUG
+# loggingLevel = logging.INFO
 
 logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
 logger.setLevel(loggingLevel)
@@ -123,7 +123,6 @@ class Decoder(object):
         instead of bMap  set as oracle from annotation
         '''
    
-        
         lenObservations = self.hmmNetwork.initDecodingParametersOracle(lyricsWithModelsORacle, URIrecordingNoExt, fromTs, toTs)
         
         chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(lenObservations)
@@ -266,7 +265,7 @@ class Decoder(object):
         # DEBUG info
     #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
         
-    #     if self.logger.level == logging.DEBUG:
+    #     if logger.level == logging.DEBUG:
     #         path.printDurations()
         return detectedWordList, self.path
 
