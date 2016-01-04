@@ -28,7 +28,6 @@ from hmm.Parameters import MAX_SILENCE_DURATION
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 if pathEvaluation not in sys.path:
     sys.path.append(pathEvaluation)
-from WordLevelEvaluator import readNonEmptyTokensTextGrid
 
 class LyricsWithModels(Lyrics):
     '''

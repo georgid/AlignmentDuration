@@ -79,7 +79,7 @@ class _SymbTrParserBase(object):
                 scoreSectionAnnos = scoreAnno['sections']
                 
                 for section in scoreSectionAnnos:
-                    tmpTriplet = section['name'],  int(section['startNote']), int(section['endNote']) 
+                    tmpTriplet = section['name'],  int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure']
                     self.sectionboundaries.append(tmpTriplet)
     
     def syllables2Lyrics(self):

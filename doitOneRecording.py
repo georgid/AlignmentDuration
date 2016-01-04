@@ -10,7 +10,7 @@ import os
 import glob
 import logging
 from doitOneChunk import HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT, getSectionNumberFromName, alignDependingOnWithDuration,\
-    AUDIO_EXT, deviationInSec
+    AUDIO_EXT
 from Utilz import getMeanAndStDevError
 from genericpath import isfile
 from Decoder import logger
@@ -35,8 +35,9 @@ pathDuration = os.path.join(parentDir, 'HMMDuration')
 if not pathDuration in sys.path:
     sys.path.append(pathDuration)
 
-from hmm.Parameters import Parameters
 
+from hmm.Parameters import Parameters
+from hmm.ParametersAlgo import ParametersAlgo
 
 def doitOneRecording(argv):
     '''
@@ -90,7 +91,7 @@ def doitOneRecording(argv):
      
     ONLY_MIDDLE_STATE = argv[7]
     
-    params = Parameters(ALPHA, ONLY_MIDDLE_STATE, deviationInSec)
+    params = Parameters(ALPHA, ONLY_MIDDLE_STATE)
     
     evalLevel = int(argv[8])
     
@@ -115,7 +116,7 @@ def doitOneRecording(argv):
     for  URI_annotation in listAudioFiles :
             URIrecordingNoExt  = os.path.splitext(URI_annotation)[0]
             logger.debug("PROCESSING {}".format(URIrecordingNoExt) )
-            whichSection = getSectionNumberFromName(URIrecordingNoExt) 
+            whichSection, recordinWholeURI = getSectionNumberFromName(URIrecordingNoExt) 
             
             currAlignmentErrors,  detectedAlignedfileName, currCorrectDuration, currTotalDuration, currCorrectDurationRef = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
 

@@ -46,15 +46,22 @@ def loadMFCCsWithMatlab(URI_recording_noExt):
 #     print res['result']
 #     mlab.stop()
 
-def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs): 
+def loadMFCCs(URI_recordingChunk_noExt, withSynthesis): 
     '''
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
     # resynthesize audio chunk:
+    
+    from Utilz import getBeginTsFromName,getEndTsFromName, getSectionNumberFromName
+    fromTs = getBeginTsFromName(URI_recordingChunk_noExt);
+    toTs = getEndTsFromName(URI_recordingChunk_noExt)
+
+    secNum, URI_recording_noExt = getSectionNumberFromName(URI_recordingChunk_noExt)
+    
     melodiaInput = URI_recording_noExt + '.melodia'
     URI_recording = URI_recording_noExt + '.wav'
     
-    URIRecordingChunkResynthesized = URI_recording_noExt + "_" + str(fromTs) + '_' + str(toTs) + '.wav'
+    URIRecordingChunkResynthesized = URI_recordingChunk_noExt  + '.wav'
     
     logger.setLevel(logging.INFO)
     logger.info("working on section: {}".format(URIRecordingChunkResynthesized))
@@ -68,8 +75,8 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
     
     else:
         # TODO take only part from audio with essentia
-         print "!!! extracting features from whole audio{}".format(URI_recording_noExt)
-         URIRecordingChunkResynthesized = URI_recording_noExt + '.wav'
+         print "!!! extracting features from whole audio{}".format(URI_recordingChunk_noExt)
+         URIRecordingChunkResynthesized = URI_recordingChunk_noExt + '.wav'
         
     # call htk to extract features
     URImfcFile = _extractMFCCs( URIRecordingChunkResynthesized)
@@ -87,7 +94,7 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
 #     URI_recording_mfc_txt = URIRecordingChunkResynthesized + '.mfc_txt'
 #     
 #     if not os.path.exists(URI_recording_mfc_txt):
-# #       loadMFCCsWithMatlab(URI_recording_noExt)
+# #       loadMFCCsWithMatlab(URI_recordingChunk_noExt)
 #         sys.exit('file {} not found. extract features with data.m in Matlab'.format(URI_recording_mfc_txt))
 #     mfccsFeatrues2 = np.loadtxt(URI_recording_mfc_txt , delimiter=','  ) 
 #     
