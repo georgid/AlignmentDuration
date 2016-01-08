@@ -77,8 +77,9 @@ class MakamScore():
         
         # for each section part
         for currSectionBoundary,currSectionLyrics in zip(symbTrParser.sectionboundaries, lyricsAllSections):
-            tupleSectionNameAndLyrics =  currSectionBoundary[0], currSectionLyrics  
-            self.sectionToLyricsMap.append(tupleSectionNameAndLyrics)
+            # setionName, melodicSTRucture, lyricStructure, lyrics
+            quadrupleSectionNameAndLyrics =  currSectionBoundary[0], currSectionBoundary[3], currSectionBoundary[4],  currSectionLyrics  
+            self.sectionToLyricsMap.append(quadrupleSectionNameAndLyrics)
             
     def getLyricsForSection(self,sectionNumber):
         '''
@@ -89,7 +90,7 @@ class MakamScore():
             sys.exit("section withNumber {} not present in score. Check your .sections.tsv file".format(sectionNumber) )
 
         #python indexing starts from zero
-        lyrics = self.sectionToLyricsMap[sectionNumber][1]
+        lyrics = self.sectionToLyricsMap[sectionNumber][3]
         if not lyrics.listWords:
             logger.warn("no lyrics for demanded section {} : {}".format(sectionNumber, self.sectionToLyricsMap[sectionNumber][0] ))
             return None
@@ -103,9 +104,9 @@ class MakamScore():
         '''
         for currSection in self.sectionToLyricsMap:
     
-            print '\n' + str(currSection[0]) + ':'
+            print '\n' + str(currSection[0])  + " " + str(currSection[1]) +  " " + str(currSection[2]) + ':'
 
-            print currSection[1]
+            print currSection[3]
 #             for word in  currSection[1]:
 #                 print word.__str__().encode('utf-8','replace')
         
@@ -148,7 +149,7 @@ def loadLyrics(pathToComposition, whichSection):
 
     pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
     
-    listExtensions = [ "sections.json", "sections.tsv", "sections.txt"]
+    listExtensions = [ "sectionsMetadata_symbTr1.json", "sections.tsv", "sections.txt"]
     sectionFiles = findFileByExtensions(pathToComposition, listExtensions)
     sectionFile = sectionFiles[0]
         
@@ -170,7 +171,7 @@ def loadMakamScore(pathToComposition):
 
     pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
     
-    listExtensions = [ "sections.json", "sections.tsv", "sections.txt"]
+    listExtensions = [ "sectionsMetadata.json", "sections.tsv", "sections.txt"]
     sectionFiles = findFileByExtensions(pathToComposition, listExtensions)
     sectionFile = sectionFiles[0]
         

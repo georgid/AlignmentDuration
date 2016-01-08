@@ -98,6 +98,11 @@ Decoder
 - set nonvocal by setting self.hmmNetwork.setNonVocal(listNonVocalFragments): if listNonVocalFragments is empty then no predicted vocal fragments will be taken into account  
  
  
+ backtrack(self, withOracle, chiBackPointer, psiBackPointer):
+  backtrack optimal path of states from backpointers, interprete states to words 
+  On construction of path backtracking is performed multiple times until starting at last time until full path is found       
+        
+
  path - result
 
 

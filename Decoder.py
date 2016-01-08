@@ -100,7 +100,7 @@ class Decoder(object):
         if not WITH_DURATIONS:
             
             path_, psi, delta = self.hmmNetwork._viterbiForced(len(observationFeatures))
-            self.path =  Path(None, None)
+            self.path =  Path(None, None, None)
             self.path.setPatRaw(path_)
             
         
@@ -293,7 +293,8 @@ class Decoder(object):
         backtrack optimal path of states from backpointers
         interprete states to words      
         '''
-        self.path =  Path(chiBackPointer, psiBackPointer )
+        # self.hmmNetwork.phi is set in decoder.decodeAudio()
+        self.path =  Path(chiBackPointer, psiBackPointer, self.hmmNetwork.phi )
         
         pathUtils = os.path.join(parentDir, 'utilsLyrics')
         if pathUtils not in sys.path:

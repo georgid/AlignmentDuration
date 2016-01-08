@@ -16,6 +16,7 @@ from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
 from docutils.parsers.rst.directives import path
 from matplotlib.path import Path
+from mhlib import PATH
 
 
 
@@ -25,7 +26,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from Utilz import writeListOfListToTextFile, writeListToTextFile,\
-    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile
+    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile, getMelodicStructFromName
 
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
@@ -145,7 +146,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
     '''
     #### 1) load lyrics
    
-    lyrics = loadLyrics(pathToComposition, whichSection, withSynthesis)
+    lyrics = loadLyrics(pathToComposition, whichSection)
     lyricsStr = lyrics.__str__()
         
     if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
@@ -164,8 +165,12 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
         withOracle = 0
         oracleLyrics = 'dummy'
-        detectedTokenList, detectedPath = alignOneChunk( lyrics, withSynthesis, withOracle, oracleLyrics, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt)
-        correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel )
+        detectedTokenList, detectedPath, maxPhiScore = alignOneChunk( lyrics, withSynthesis, withOracle, oracleLyrics, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt)
+        logger.debug('maxPhiScore: ' + str(maxPhiScore) )
+
+        correctDuration = 0
+        totalDuration = 1
+#         correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel )
 #         detectedTokenList = test_oracle(URIrecordingNoExt, pathToComposition, whichSection)
             
     else:
@@ -194,7 +199,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 #         detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
         
         
-    return alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev
+    return alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev, maxPhiScore
     
 
 
@@ -210,7 +215,7 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, lis
         withSynthesis = 1
         
 #     read from file result
-    detectedAlignedfileName = URIrecordingChunkNoExt + tokenLevelAlignedSuffix
+    detectedAlignedfileName = URIrecordingChunkNoExt + tokenLevelAlignedSuffix + 'blah'
     if not os.path.isfile(detectedAlignedfileName):
         #     ###### 2) extract audio features
         lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingChunkNoExt, bool(withSynthesis))
@@ -236,6 +241,7 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, lis
         else:
             detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles)
         
+        phiOptPath = decoder.path.phiOptPath
         detectedPath = decoder.path.pathRaw
         # store decoding results in a file FIXME: if with duration it is not mlf 
         detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingChunkNoExt, tokenLevelAlignedSuffix)
@@ -253,9 +259,12 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, lis
                 outputURI = URIrecordingChunkNoExt + '.path'
             
             detectedPath = readListTextFile(outputURI)
+            
+            # TODO: store persistently
+            phiOptPath = 0
    
 
-    return detectedTokenList, detectedPath
+    return detectedTokenList, detectedPath, phiOptPath
 
 
 

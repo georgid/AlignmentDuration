@@ -52,11 +52,11 @@ def loadMFCCs(URI_recordingChunk_noExt, withSynthesis):
     '''
     # resynthesize audio chunk:
     
-    from Utilz import getBeginTsFromName,getEndTsFromName, getSectionNumberFromName
+    from Utilz import getBeginTsFromName,getEndTsFromName, getSectionNumberFromName, getMelodicStructFromName
     fromTs = getBeginTsFromName(URI_recordingChunk_noExt);
     toTs = getEndTsFromName(URI_recordingChunk_noExt)
 
-    secNum, URI_recording_noExt = getSectionNumberFromName(URI_recordingChunk_noExt)
+    dummy, URI_recording_noExt = getMelodicStructFromName(URI_recordingChunk_noExt)
     
     melodiaInput = URI_recording_noExt + '.melodia'
     URI_recording = URI_recording_noExt + '.wav'
