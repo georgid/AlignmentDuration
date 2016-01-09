@@ -13,7 +13,7 @@ import sys
 from aetools import Error
 from Utilz import loadTextFile, matchSections
 import json
-from Section import Section
+from SectionLink import SectionLink
 
 pathToSox = "/usr/local/bin/sox"
     
@@ -49,7 +49,7 @@ class MakamRecording:
         self.sectionIndices = []
         
 #         self._loadsectionTimeStamps( pathToLinkedSectionsFile)
-        self.sections = self._loadsectionTimeStampsLinksNew( pathToLinkedSectionsFile)  
+        self.sections = _loadsectionTimeStampsLinksNew( pathToLinkedSectionsFile)  
         
         self.isChunkUsed  = []
         
@@ -61,30 +61,7 @@ class MakamRecording:
         return
     
 
-    def _loadsectionTimeStampsLinksNew(self, URILinkedSectionsFile):
-        import json
-        with open(URILinkedSectionsFile) as b:
-            sectionLinks = json.load(b)
-    
-        sections = []               
-        sectionAnnos = sectionLinks['links']
-        for sectionAnno in sectionAnnos:
-                        
-                        melodicStruct = sectionAnno['name']
-                        
-                        beginTimeStr = str(sectionAnno['time'][0])
-                        beginTimeStr = beginTimeStr.replace("[","")
-                        beginTimeStr = beginTimeStr.replace("]","")
-                        beginTs =  float(beginTimeStr)
-                            
-                        endTimeStr = str(sectionAnno['time'][1])
-                        endTimeStr = endTimeStr.replace("[","")
-                        endTimeStr = endTimeStr.replace("]","")
-                        endTs =  float(endTimeStr)
-                        currSection = Section (melodicStruct, beginTs, endTs) 
-                        sections.append(currSection )
-                    
-        return sections
+
         
         
        ##################################################################################
@@ -220,7 +197,34 @@ class MakamRecording:
         for index, pathToDividedAudioFile in enumerate(self.pathToDividedAudioFiles):
             if isfile( os.path.splitext(pathToDividedAudioFile)[0] +  ".notUsed"):
                 self.isChunkUsed[index] = 0
-        
+
+def _loadsectionTimeStampsLinksNew(URILinkedSectionsFile):
+        import json
+        with open(URILinkedSectionsFile) as b:
+            sectionLinks = json.load(b)
+    
+        sections = []               
+        sectionAnnos = sectionLinks['links']
+        for sectionAnno in sectionAnnos:
+                        
+                        melodicStruct = sectionAnno['name']
+                        
+                        beginTimeStr = str(sectionAnno['time'][0])
+                        beginTimeStr = beginTimeStr.replace("[","")
+                        beginTimeStr = beginTimeStr.replace("]","")
+                        beginTs =  float(beginTimeStr)
+                            
+                        endTimeStr = str(sectionAnno['time'][1])
+                        endTimeStr = endTimeStr.replace("[","")
+                        endTimeStr = endTimeStr.replace("]","")
+                        endTs =  float(endTimeStr)
+                        currSection = SectionLink (melodicStruct, beginTs, endTs) 
+                        sections.append(currSection )
+                    
+        return sections
+
+
+      
 def doit(argv):
         '''
         not finished. testing purpose 

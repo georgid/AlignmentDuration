@@ -81,18 +81,18 @@ class MakamScore():
             quadrupleSectionNameAndLyrics =  currSectionBoundary[0], currSectionBoundary[3], currSectionBoundary[4],  currSectionLyrics  
             self.sectionToLyricsMap.append(quadrupleSectionNameAndLyrics)
             
-    def getLyricsForSection(self,sectionNumber):
+    def getLyricsForSection(self, melodicStructure):
         '''
         convenience getter
         '''
         
-        if sectionNumber >=  len(self.sectionToLyricsMap) or sectionNumber < 0:
-            sys.exit("section withNumber {} not present in score. Check your .sections.tsv file".format(sectionNumber) )
 
         #python indexing starts from zero
-        lyrics = self.sectionToLyricsMap[sectionNumber][3]
+        for section in self.sectionToLyricsMap:
+            if section[1] == melodicStructure:
+                lyrics = section[3]
         if not lyrics.listWords:
-            logger.warn("no lyrics for demanded section {} : {}".format(sectionNumber, self.sectionToLyricsMap[sectionNumber][0] ))
+            logger.warn("no lyrics for demanded section {} ".format(melodicStructure ))
             return None
         return lyrics 
  
@@ -111,16 +111,16 @@ class MakamScore():
 #                 print word.__str__().encode('utf-8','replace')
         
 
-    def serializePhonemesForSection(self, whichSection, outputFileName):
-        '''
-        list of all phonemes. print to file @param outputFileName
-        '''    
-        lyrics = self.getLyricsForSection(whichSection)
-        if not lyrics:
-            sys.exit("no lyrics")
-        
-        writeListToTextFile(lyrics.phonemesNetwork, None,  outputFileName )
-        return lyrics.phonemesNetwork
+#     def serializePhonemesForSection(self, whichSection, outputFileName):
+#         '''
+#         list of all phonemes. print to file @param outputFileName
+#         '''    
+#         lyrics = self.getLyricsForSection(whichSection)
+#         if not lyrics:
+#             sys.exit("no lyrics")
+#         
+#         writeListToTextFile(lyrics.phonemesNetwork, None,  outputFileName )
+#         return lyrics.phonemesNetwork
     
             
         
@@ -140,7 +140,7 @@ class MakamScore():
                
 
 
-def loadLyrics(pathToComposition, whichSection):
+def loadLyrics(pathToComposition, melodicStruct):
 
     Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
 
@@ -158,7 +158,7 @@ def loadLyrics(pathToComposition, whichSection):
     
     # phoneme IDs
     
-    lyrics = makamScore.getLyricsForSection(whichSection)
+    lyrics = makamScore.getLyricsForSection(melodicStruct)
     return lyrics
 
 def loadMakamScore(pathToComposition):

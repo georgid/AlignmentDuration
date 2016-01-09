@@ -4,7 +4,7 @@ Created on Dec 28, 2015
 @author: joro
 '''
 
-class Section(object):
+class SectionLink(object):
     '''
     classdocs
     '''
@@ -14,7 +14,7 @@ class Section(object):
         '''
         Constructor
         '''
-        self. melodicStructure = melodicStructure
+        self.melodicStructure = melodicStructure
         self.beginTs = beginTs
         self.endTs = endTs
         

@@ -10,10 +10,8 @@ from Phoneme import Phoneme
 from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
+
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
-HMMDurationPath = os.path.join(parentDir, 'HMMDuration')
-if not HMMDurationPath in sys.path:
-    sys.path.append(HMMDurationPath)
     
 from hmm.StateWithDur import StateWithDur
 

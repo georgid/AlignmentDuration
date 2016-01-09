@@ -9,10 +9,7 @@ import numpy as np
 import logging
 
 import htkmfc
-from Constants import NUM_FRAMES_PERSECOND
 import subprocess
-from matplotlib.colors import NP_CLIP_OUT
-from Cython.Compiler.Naming import self_cname
 from Decoder import logger
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools/workspace')
@@ -32,36 +29,20 @@ PATH_TO_HCOPY= '/usr/local/bin/HCopy'
 PATH_TO_CONFIG_FILES= '/Users/joro/Documents/Phd/UPF/voxforge/auto/scripts/input_files/'
 
 parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
-pathJingju = os.path.join(parentParentDir, 'JingjuAlignment')
 
-if pathJingju not in sys.path:
-    sys.path.append(pathJingju )
 from hmm.ParametersAlgo import ParametersAlgo
 
-def loadMFCCsWithMatlab(URI_recording_noExt):
-    print 'calling matlab'
-#     mlab = Matlab(matlab='/Applications/MATLAB_R2009b.app/bin/matlab')
-#     mlab.start()
-#     res = mlab.run_func('/Users/joro/Documents/Phd/UPF/voxforge/myScripts/lyrics_magic/matlab_htk/writeMFC.m', {'filename':URI_recording_noExt})
-#     print res['result']
-#     mlab.stop()
 
-def loadMFCCs(URI_recordingChunk_noExt, withSynthesis): 
+def loadMFCCs(URI_recording_noExt, withSynthesis, section): 
     '''
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
     # resynthesize audio chunk:
-    
-    from Utilz import getBeginTsFromName,getEndTsFromName, getSectionNumberFromName, getMelodicStructFromName
-    fromTs = getBeginTsFromName(URI_recordingChunk_noExt);
-    toTs = getEndTsFromName(URI_recordingChunk_noExt)
-
-    dummy, URI_recording_noExt = getMelodicStructFromName(URI_recordingChunk_noExt)
-    
+        
     melodiaInput = URI_recording_noExt + '.melodia'
     URI_recording = URI_recording_noExt + '.wav'
     
-    URIRecordingChunkResynthesized = URI_recordingChunk_noExt  + '.wav'
+    URIRecordingChunkResynthesized = URI_recording_noExt + "_" + str(section.beginTs) + '_' + str(section.endTs) + '.wav'
     
     logger.setLevel(logging.INFO)
     logger.info("working on section: {}".format(URIRecordingChunkResynthesized))
@@ -70,13 +51,14 @@ def loadMFCCs(URI_recordingChunk_noExt, withSynthesis):
         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
             logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
 
-            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, fromTs, toTs, ParametersAlgo.THRESHOLD_PEAKS)
+            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, section.beginTs, section.endTs, ParametersAlgo.THRESHOLD_PEAKS)
             resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     
-    else:
-        # TODO take only part from audio with essentia
-         print "!!! extracting features from whole audio{}".format(URI_recordingChunk_noExt)
-         URIRecordingChunkResynthesized = URI_recordingChunk_noExt + '.wav'
+        # NOT IMPLEMENTED
+#     else:
+#         # TODO take only part from audio with essentia
+#          print "!!! extracting features from whole audio{}".format(URI_recordingChunk_noExt)
+#          URIRecordingChunkResynthesized = URI_recordingChunk_noExt + '.wav'
         
     # call htk to extract features
     URImfcFile = _extractMFCCs( URIRecordingChunkResynthesized)

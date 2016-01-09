@@ -15,7 +15,7 @@ from doitOneChunk import alignOneChunk, HMM_LIST_URI, MODEL_URI, ANNOTATION_EXT,
 from Utilz import getMeanAndStDevError, getMelodicStructFromName, findFileByExtensions
 from genericpath import isfile
 from Decoder import logger
-import Section
+import SectionLink
 
 
 

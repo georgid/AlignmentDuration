@@ -31,14 +31,13 @@ WITH_DURATIONS= True
 
 
 
-if WITH_DURATIONS:
-    pathHMM = os.path.join(parentDir, 'HMMDuration')
-else:
+if not WITH_DURATIONS:
     pathHMM = os.path.join(parentDir, 'HMM')
+    if pathHMM not in sys.path:    
+        sys.path.append(pathHMM)
 
 
-if pathHMM not in sys.path:    
-    sys.path.append(pathHMM)
+
 
 # if WITH_DURATIONS:
 #     from hmm.continuous.DurationPdf import MINIMAL_PROB
