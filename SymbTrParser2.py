@@ -15,7 +15,6 @@ from Phonetizer import Phonetizer
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 pathUtils = os.path.join(parentDir, 'utilsLyrics') 
-# pathUtils = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/utilsLyrics'
 
 # utils_ = imp.load_source('Utils', pathUtils  )
 
@@ -282,22 +281,3 @@ def createWord(syllablesInCurrWord, currSyllable):
 
 #################################################################################
 
-if __name__ == "__main__":
-    
-    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.txt'
-    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.sections.tsv'
-    
-    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.txt'
-    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.sections.tsv'
-    
-    
-    
-    Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
-
-    symbTrParser = SymbTrParser2(pathTxt, pathTsv)
-        
-    symbTrParser.syllables2Lyrics()
-
-    # print them, put instrument as name
-    print symbTrParser.sectionLyrics[5]
-    print symbTrParser.sectionLyrics[0]

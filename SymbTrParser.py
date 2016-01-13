@@ -280,24 +280,3 @@ def createWord(syllablesInCurrWord, currSyllable):
         return word, syllablesInCurrWord
     
 
-#################################################################################
-
-if __name__ == "__main__":
-    
-    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.txt'
-    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.sections.tsv'
-    
-    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.txt'
-    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.sections.tsv'
-    
-    
-    
-    Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
-
-    symbTrParser = SymbTrParser(pathTxt, pathTsv)
-        
-    symbTrParser.syllables2Lyrics()
-
-    # print them, put instrument as name
-    print symbTrParser.sectionLyrics[5]
-    print symbTrParser.sectionLyrics[0]
