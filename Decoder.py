@@ -144,10 +144,6 @@ class Decoder(object):
         if not WITH_DURATIONS:
             transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels.phonemesNetwork)
 
-#        DEBUG
-#  writeListOfListToTextFile(transMAtrix, None , '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentStep/transMatrix')
-       
-        
         
         
         if  WITH_DURATIONS:

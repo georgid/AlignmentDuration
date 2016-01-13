@@ -203,9 +203,9 @@ def _loadsectionTimeStampsLinksNew(URILinkedSectionsFile):
         with open(URILinkedSectionsFile) as b:
             sectionLinks = json.load(b)
     
-        sections = []               
-        sectionAnnos = sectionLinks['links']
-        for sectionAnno in sectionAnnos:
+        sectionsLinks = []               
+        sectionLinks = sectionLinks['links']
+        for sectionAnno in sectionLinks:
                         
                         melodicStruct = sectionAnno['name']
                         
@@ -218,10 +218,10 @@ def _loadsectionTimeStampsLinksNew(URILinkedSectionsFile):
                         endTimeStr = endTimeStr.replace("[","")
                         endTimeStr = endTimeStr.replace("]","")
                         endTs =  float(endTimeStr)
-                        currSection = SectionLink (melodicStruct, beginTs, endTs) 
-                        sections.append(currSection )
+                        currSectionLink = SectionLink (melodicStruct, beginTs, endTs) 
+                        sectionsLinks.append(currSectionLink )
                     
-        return sections
+        return sectionsLinks
 
 
       

@@ -4,6 +4,9 @@ contains a class
 Created on Mar 3, 2014
 
 @author: joro
+
+
+
 '''
 
 
@@ -12,6 +15,7 @@ import sys
 import imp
 from Phonetizer import Phonetizer
 from Decoder import logger
+from SymbTrParser2 import SymbTrParser2
 
 # trick to make terminal NOT assume ascii
 reload(sys).setdefaultencoding("utf-8")
@@ -53,7 +57,6 @@ class MakamScore():
         
         ''' lyrics divided into sectons.
         # e.g. "nakarat" : [ word1 word2 ] '''
-        self.sectionToLyricsMap = []
         
         self._loadSectionsAndSyllablesFromSymbTr(pathToSymbTrFile, pathToSectionTsvFile)
         
@@ -63,34 +66,32 @@ class MakamScore():
         
       
   ##################################################################################
-    '''
-    parses symbTr file. Reads lyrics, 
-    reads section names
-    groups together section names and lyrics 
-    '''
-    def _loadSectionsAndSyllablesFromSymbTr(self, pathToSymbTrFile, pathToSectionTsvFile):
-        symbTrParser = SymbTrParser(pathToSymbTrFile, pathToSectionTsvFile)
+
+    def _loadSectionsAndSyllablesFromSymbTr(self, pathToSymbTrFile, sectionMetadataFileURI):
+        '''
+        parses symbTr file. Reads lyrics, 
+        reads section names
+        groups together section names and lyrics 
+        '''
+        self.symbTrParser = SymbTrParser2(pathToSymbTrFile, sectionMetadataFileURI)
        
         # list of Word object
-        symbTrParser.syllables2Lyrics()
-        lyricsAllSections = symbTrParser.sectionLyrics
+        self.symbTrParser.syllables2Lyrics()
         
-        # for each section part
-        for currSectionBoundary,currSectionLyrics in zip(symbTrParser.sectionboundaries, lyricsAllSections):
-            # setionName, melodicSTRucture, lyricStructure, lyrics
-            quadrupleSectionNameAndLyrics =  currSectionBoundary[0], currSectionBoundary[3], currSectionBoundary[4],  currSectionLyrics  
-            self.sectionToLyricsMap.append(quadrupleSectionNameAndLyrics)
+     
+            
             
     def getLyricsForSection(self, melodicStructure):
         '''
-        convenience getter
+        convenience getter. 
+        takes first appearance of melodicStructure
         '''
         
 
-        #python indexing starts from zero
-        for section in self.sectionToLyricsMap:
-            if section[1] == melodicStructure:
-                lyrics = section[3]
+        for section in self.symbTrParser.sections:
+            if section.melodicStructure == melodicStructure:
+                lyrics = section.lyrics
+                break
         if not lyrics.listWords:
             logger.warn("no lyrics for demanded section {} ".format(melodicStructure ))
             return None
@@ -102,11 +103,11 @@ class MakamScore():
         '''
         utility method to print all lyrics that are read from symbTr
         '''
-        for currSection in self.sectionToLyricsMap:
+        for currSection in self.symbTrParser.sections:
     
-            print '\n' + str(currSection[0])  + " " + str(currSection[1]) +  " " + str(currSection[2]) + ':'
+            print '\n' + str(currSection.melodicStructure)
 
-            print currSection[3]
+            print currSection.lyrics
 #             for word in  currSection[1]:
 #                 print word.__str__().encode('utf-8','replace')
         
@@ -142,24 +143,13 @@ class MakamScore():
 
 def loadLyrics(pathToComposition, melodicStruct):
 
-    Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
-
-    
-    os.chdir(pathToComposition)
-
-    pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
-    
-    listExtensions = [ "sectionsMetadata_symbTr1.json", "sections.tsv", "sections.txt"]
-    sectionFiles = findFileByExtensions(pathToComposition, listExtensions)
-    sectionFile = sectionFiles[0]
-        
-    pathToSectionTsv = os.path.join(pathToComposition, sectionFile)
-    makamScore = MakamScore(pathTotxt, pathToSectionTsv )
+    makamScore = loadMakamScore(pathToComposition)
     
     # phoneme IDs
     
     lyrics = makamScore.getLyricsForSection(melodicStruct)
     return lyrics
+
 
 def loadMakamScore(pathToComposition):
     '''
@@ -180,40 +170,5 @@ def loadMakamScore(pathToComposition):
     return makamScore
     
 
-def testMakamScore(argv):
-        if len(argv) != 2:
-            print ("usage: {} <path to symbtTr.txt and symbTr.sections.tsv>".format(argv[0]) )
-            sys.exit();
-        pathToComposition = argv[1]
-        
-        makamScore = loadMakamScore(pathToComposition)
-        makamScore.printSectionsAndLyrics()
-#         lyrics = loadLyrics(pathToComposition, whichSection=0)
-     
-      
-
-          
-             
-if __name__ == '__main__':
-
-        # only for unit testing purposes
-        
-        print "in Makam Score"
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi/']
-        
-        
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
-        
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/']
-        
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey/']
-        
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--sarki--curcuna--nihansin_dideden--haci_faik_bey/']
-        a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--sarki--sofyan--gelmez_oldu--dramali_hasan/']
-#         a = ['dummy', '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/rast--turku--semai--gul_agaci--necip_mirkelamoglu/']
-
-
-        testMakamScore(a)
-          
-      
-         
+       
+           

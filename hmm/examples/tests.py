@@ -9,8 +9,8 @@ from hmm.discrete import DiscreteHMM
 from main import decode, loadSmallAudioFragment
 import os
 import sys
-from hmm.Parameters import Parameters
 from hmm.examples.main import  getDecoder
+from Utilz import tokenList2TabFile
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir,os.path.pardir )) 
@@ -25,7 +25,6 @@ from MakamScore import loadLyrics
 from Decoder import Decoder
 
 
-from PraatVisualiser import tokenList2TabFile
 from Utilz import readListOfListTextFile
 
 pathToComposition = '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/'
@@ -263,6 +262,20 @@ def test_oracle(URIrecordingNoExt, pathToComposition, whichSection):
     return detectedTokenList
 
 
+def test_vocalPrediction():
+    '''
+    vocal prediction used in Jingju
+    not sure if this works
+    '''
+    #     inputFile = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/segmentation/data/laoshengxipi02.wav'
+#     detectedSegments, outputFile, windowSize = doitSegmentVJP(inputFile)
+    
+    VJPpredictionFile = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/segmentationShuo/data/output_VJP_laoshengxipi02/predictionVJP.txt'
+    smoothedPred = parsePrediction(VJPpredictionFile)
+    windowLen = 0.25
+    segStart, segDuration, segPred = prepareAnnotation(smoothedPred,  windowLen)
+    for i in range(len(segStart)):
+        print "start: " + str(segStart[i]) + "\tend: " + str((segStart[i] + segDuration[i])) + "\t" + str(segPred[i]) 
 
 
 

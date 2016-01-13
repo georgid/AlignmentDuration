@@ -11,8 +11,10 @@ import logging
 import htkmfc
 import subprocess
 from Decoder import logger
+from doitOneChunk import currDir
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools/workspace')
+import json
 
 
 if pathSMS not in sys.path:
@@ -23,26 +25,34 @@ pathUtils = os.path.join(parentDir, 'utilsLyrics')
 if pathUtils not in sys.path:
     sys.path.append(pathUtils)
 
+from Utilz import readListOfListTextFile_gen
 import UtilzNumpy
 
+# ANDRES
 PATH_TO_HCOPY= '/usr/local/bin/HCopy'
-PATH_TO_CONFIG_FILES= '/Users/joro/Documents/Phd/UPF/voxforge/auto/scripts/input_files/'
+
+currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
+PATH_TO_CONFIG_FILES= currDir + '/input_files/'
 
 parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
 from hmm.ParametersAlgo import ParametersAlgo
 
 
-def loadMFCCs(URI_recording_noExt, withSynthesis, section): 
+
+
+
+def loadMFCCs(URI_recording_noExt, URIRecordingChunkResynthesizedNoExt,  withSynthesis, section): 
     '''
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
     # resynthesize audio chunk:
         
-    melodiaInput = URI_recording_noExt + '.melodia'
+    f0FreqsRaw = _extractPredominantPitch(URI_recording_noExt)
+
     URI_recording = URI_recording_noExt + '.wav'
     
-    URIRecordingChunkResynthesized = URI_recording_noExt + "_" + str(section.beginTs) + '_' + str(section.endTs) + '.wav'
+    URIRecordingChunkResynthesized = URIRecordingChunkResynthesizedNoExt + '.wav'
     
     logger.setLevel(logging.INFO)
     logger.info("working on section: {}".format(URIRecordingChunkResynthesized))
@@ -51,7 +61,7 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, section):
         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
             logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
 
-            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, section.beginTs, section.endTs, ParametersAlgo.THRESHOLD_PEAKS)
+            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, f0FreqsRaw, section.beginTs, section.endTs, ParametersAlgo.THRESHOLD_PEAKS)
             resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     
         # NOT IMPLEMENTED
@@ -71,19 +81,31 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, section):
 
     mfccDeltas = mfccsFeatrues[:,13:] 
     mfccsFeatrues = np.hstack((mfccs, mfccDeltas))
-        
-    # first extract features with data.m in Matlab 
-#     URI_recording_mfc_txt = URIRecordingChunkResynthesized + '.mfc_txt'
-#     
-#     if not os.path.exists(URI_recording_mfc_txt):
-# #       loadMFCCsWithMatlab(URI_recordingChunk_noExt)
-#         sys.exit('file {} not found. extract features with data.m in Matlab'.format(URI_recording_mfc_txt))
-#     mfccsFeatrues2 = np.loadtxt(URI_recording_mfc_txt , delimiter=','  ) 
-#     
-#     UtilzNumpy.areArraysEqual(mfccsFeatrues, mfccsFeatrues2)
     
     
     return mfccsFeatrues, URIRecordingChunkResynthesized
+
+
+def _extractPredominantPitch(URI_recording_noExt):
+    
+    ####### melodia format
+#     melodiaInput = URI_recording_noExt + '.melodia'
+#     f0FreqsRaw = readListOfListTextFile_gen(melodiaInput)
+    
+    ####### json serialized array format
+
+#     ANDRES:     
+#     from compmusic.extractors.makam import pitch
+#     extractor = pitch.PitchExtractMakam()
+#     results = extractor.run(URI_recording_noExt + '.wav')
+#     f0FreqsRaw = json.loads(results['pitch'])
+    
+    melodiaInput = URI_recording_noExt + '.pitch'
+    with open(melodiaInput) as f:
+        f0FreqsRaw = json.load(f)
+    
+    
+    return f0FreqsRaw
 
 def _extractMFCCs( URIRecordingChunk):
         baseNameAudioFile = os.path.splitext(os.path.basename(URIRecordingChunk))[0]
@@ -97,9 +119,5 @@ def _extractMFCCs( URIRecordingChunk):
         return mfcFileName
 
 
-if __name__ == '__main__':
-    
-    URI_noExt =   '/Users/joro/Documents/Phd/UPF/arias/laosheng-erhuang_04'
-    withSynthesis = True
-    loadMFCCs(URI_noExt, withSynthesis, 55, 58)
+
         

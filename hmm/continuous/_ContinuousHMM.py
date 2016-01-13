@@ -533,16 +533,5 @@ def logsumexp(arr, axis=0):
     return out
 
     
-if __name__ == '__main__':
-     
-#     inputFile = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/segmentation/data/laoshengxipi02.wav'
-#     detectedSegments, outputFile, windowSize = doitSegmentVJP(inputFile)
-    
-    VJPpredictionFile = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/segmentationShuo/data/output_VJP_laoshengxipi02/predictionVJP.txt'
-    smoothedPred = parsePrediction(VJPpredictionFile)
-    windowLen = 0.25
-    segStart, segDuration, segPred = prepareAnnotation(smoothedPred,  windowLen)
-    for i in range(len(segStart)):
-        print "start: " + str(segStart[i]) + "\tend: " + str((segStart[i] + segDuration[i])) + "\t" + str(segPred[i]) 
-        
+  
     

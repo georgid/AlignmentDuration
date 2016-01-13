@@ -167,9 +167,4 @@ class HTKFeat_write(object):
         for row in arr:
             self.writevec(row)
 
-if __name__ == '__main__':
-    URI_file = '/Users/joro/Documents/Phd/UPF/arias/laosheng-erhuang_04_0_2.mfc'
-    HTKFeat_reader =  open(URI_file, 'rb')
-    features = HTKFeat_reader.getall()
-    print features.shape
     

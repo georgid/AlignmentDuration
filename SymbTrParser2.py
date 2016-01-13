@@ -24,9 +24,9 @@ sys.path.append(pathUtils )
 from Utilz import  loadTextFile
 
 
-class SymbTrParser(_SymbTrParserBase):
+class SymbTrParser2(_SymbTrParserBase):
     '''
-    Parses lyrics from symbTr v 1.0 and Sections from tsv file.
+    Parses lyrics from symbTr v 2.0 and Sections from tsv file.
     
     a list of syllables from column 12: soz1/söz1 is parsed. 
     Then concatenated into words if needed 
@@ -74,8 +74,8 @@ class SymbTrParser(_SymbTrParserBase):
             line = line.replace('\r','') 
             
             tokens = line.split("\t")
-            if len(tokens) < 12:
-                print "TOKENS ARE 11, no syllable ";  sys.exit()
+            if len(tokens) < 13:
+                print "TOKENS ARE less than needed 13 ";  sys.exit()
             
             # sanity check  MINIMAL_DURATION of embelishments. 
 #             hack: change crazy small notes to min duration. it does not matter a lot
@@ -294,7 +294,7 @@ if __name__ == "__main__":
     
     Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
 
-    symbTrParser = SymbTrParser(pathTxt, pathTsv)
+    symbTrParser = SymbTrParser2(pathTxt, pathTsv)
         
     symbTrParser.syllables2Lyrics()
 

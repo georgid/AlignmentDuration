@@ -130,7 +130,7 @@ def doitOneRecording(argv):
             
             for probabaleSection in probabaleSections:
                 whichSection = probabaleSection[2]
-                currAlignmentErrors,  detectedAlignedfileName, currCorrectDuration, currTotalDuration, currCorrectDurationRef, currMaxPhiScore = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
+                currAlignmentErrors,  currCorrectDuration, currTotalDuration, currCorrectDurationRef, currMaxPhiScore = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
                 logger.warning("score {} for probable section {} ".format(currMaxPhiScore, probabaleSection))
                 
                 if currMaxPhiScore > maxPhiScore:

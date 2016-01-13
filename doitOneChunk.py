@@ -27,7 +27,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from Utilz import writeListOfListToTextFile, writeListToTextFile,\
-    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile, getMelodicStructFromName
+    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile, getMelodicStructFromName, tokenList2TabFile
 
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
@@ -54,10 +54,7 @@ from hmm.examples.tests import test_oracle
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
 from AccuracyEvaluator import _evalAccuracy, evalAccuracy
 from TextGrid_Parsing import TextGrid2WordList
-from PraatVisualiser import tokenList2TabFile
 
-# TODO: read mfccs with matlab htk_read
-# sys.path.append('/Users/joro/Downloads/python-matlab-bridge-master')
 # from pymatbridge import Matlab
 
 numpy.set_printoptions(threshold='nan')
@@ -123,31 +120,29 @@ def doitOneChunk(argv):
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
+    alignmentErrors, correctDuration, totalDuration, correctDurationScoreDev = alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser)
         
     accuracy = correctDuration / totalDuration
     logger.info("accuracy: {:.2f}".format(accuracy))
     
     mean, stDev, median = getMeanAndStDevError(alignmentErrors)
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
-    logger.info("result: {}".format(detectedAlignedfileName))
 
-#     visualiseInPraat(URIrecordingNoExt, withDuration, detectedAlignedfileName,  detectedWordList, grTruthDurationWordList)
 
     
 
 
-def alignDependingOnWithDuration(URIrecordingNoExt, section, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser):
+def alignDependingOnWithDuration(URIrecordingNoExt, sectionLink, pathToComposition, withDuration, withSynthesis, evalLevel, params, usePersistentFiles, htkParser):
     '''
     call alignment method depending on whether duration or htk  selected 
     '''
     #### 1) load lyrics
    
-    lyrics = loadLyrics(pathToComposition, section.melodicStructure)
+    lyrics = loadLyrics(pathToComposition, sectionLink.melodicStructure)
     lyricsStr = lyrics.__str__()
         
     if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
-            logger.warn("skipping section {} with no lyrics ...".format(section.melodicStructure))
+            logger.warn("skipping sectionLink {} with no lyrics ...".format(sectionLink.melodicStructure))
             return [], 'dummy', 0, 0, 0
     
     ##############
@@ -162,7 +157,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, section, pathToComposition, 
 
         withOracle = 0
         oracleLyrics = 'dummy'
-        detectedTokenList, detectedPath, maxPhiScore = alignOneChunk( lyrics, withSynthesis, withOracle, oracleLyrics, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt, section)
+        detectedTokenList, detectedPath, maxPhiScore = alignOneChunk( lyrics, withSynthesis, withOracle, oracleLyrics, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt, sectionLink)
         logger.debug('maxPhiScore: ' + str(maxPhiScore) )
 
         correctDuration = 0
@@ -176,9 +171,9 @@ def alignDependingOnWithDuration(URIrecordingNoExt, section, pathToComposition, 
         # new makamScore used
 #         lyricsObj = loadLyrics(pathToComposition, whichSection)
 #         lyrics = lyricsObj.__str__()
-# #         in case  we are at no-lyrics section
+# #         in case  we are at no-lyrics sectionLink
 #         if not lyrics or lyrics=='None' or  lyrics =='_SAZ_':
-#             logger.warn("skipping section {} with no lyrics ...".format(whichSection))
+#             logger.warn("skipping sectionLink {} with no lyrics ...".format(whichSection))
 #             return [], [], [], []
     
         outputHTKPhoneAlignedURI = Aligner.alignOnechunk(MODEL_URI, URIrecordingWav, lyricsStr, URIrecordingAnno, '/tmp/', withSynthesis)
@@ -188,21 +183,14 @@ def alignDependingOnWithDuration(URIrecordingNoExt, section, pathToComposition, 
         
         correctDuration, totalDuration = evalAccuracy(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         
-    
-    detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
-#     
-#     # store decoding results in a file FIXME: if with duration it is not mlf 
-#     if not os.path.isfile(detectedAlignedfileName):
-#         detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
-        
-        
-    return alignmentErrors,  detectedAlignedfileName, correctDuration, totalDuration, correctDurationScoreDev, maxPhiScore
+     
+    return alignmentErrors,  correctDuration, totalDuration, correctDurationScoreDev, maxPhiScore
     
 
 
 
 
-def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, currSection):
+def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, currSectionLink):
     '''
     wrapper top-most logic method
     '''
@@ -212,18 +200,18 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, lis
         withSynthesis = 1
         
 #     read from file result
-    URIRecordingChunkResynthesizedNoExt =  URIrecordingNoExt + "_" + str(currSection.beginTs) + '_' + str(currSection.endTs)
+    URIRecordingChunkResynthesizedNoExt =  URIrecordingNoExt + "_" + str(currSectionLink.beginTs) + '_' + str(currSectionLink.endTs)
     detectedAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
     if not os.path.isfile(detectedAlignedfileName):
-        #     ###### 2) extract audio features
-        lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, bool(withSynthesis), currSection)
+        #     ###### extract audio features
+        lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink)
             #     lyricsWithModels, observationFeatures = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
         
     # DEBUG: score-derived phoneme  durations
 #     lyricsWithModels.printPhonemeNetwork()
 #     lyricsWithModels.printWordsAndStates()
    
-        decoder = Decoder(lyricsWithModels, URIRecordingChunkResynthesizedNoExt + '.wav', alpha)
+        decoder = Decoder(lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
     #  TODO: DEBUG: do not load models
     # decoder = Decoder(lyrics, withModels=False, numStates=86)
     #################### decode
@@ -241,9 +229,9 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, lis
         
         phiOptPath = decoder.path.phiOptPath
         detectedPath = decoder.path.pathRaw
-        # store decoding results in a file FIXME: if with duration it is not mlf 
-        detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIRecordingChunkResynthesizedNoExt, tokenLevelAlignedSuffix)
-        
+        tokenList2TabFile(detectedTokenList, URIRecordingChunkResynthesizedNoExt, tokenLevelAlignedSuffix, currSectionLink.beginTs)
+     
+       
         
     ### VISUALIZE result 
 #         decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
@@ -311,23 +299,3 @@ def getReferenceDurations(URI_recording_noExt, lyricsWithModels, evalLevel):
         correctDuration, totalDuration = _evalAccuracy(annotationURI, refTokenList, evalLevel )
 
         return correctDuration, totalDuration
-    
-
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-        doitOneChunk(sys.argv)
-    
-#     for ALPHA in range(0.1,0.3):
-#         b  = '/Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/guelen/01_Olmaz_6_nakarat2'
-#         a = '/Users/joro/Documents/Phd/UPF//turkish-makam-lyrics-2-audio-test-data/segah--sarki--curcuna--olmaz_ilac--haci_arif_bey/'
-#         
-#         doitOneChunk(a, 6, b,  ALPHA, False, True)
-
-
