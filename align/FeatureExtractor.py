@@ -11,7 +11,7 @@ import logging
 import htkmfc
 import subprocess
 from Decoder import logger
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools/workspace')
 import json
 
@@ -110,9 +110,9 @@ def _extractMFCCs( URIRecordingChunk):
         mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
         
         HCopyCommand = [PATH_TO_HCOPY, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FILES + 'wav_config_singing', URIRecordingChunk, mfcFileName]
-#         if not os.path.isfile(mfcFileName):
-        pipe= subprocess.Popen(HCopyCommand)
-        pipe.wait()
+        if not os.path.isfile(mfcFileName):
+            pipe= subprocess.Popen(HCopyCommand)
+            pipe.wait()
         return mfcFileName
 
 

@@ -14,10 +14,6 @@ from Constants import numDimensions, numMixtures
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
 
-pathUtils = os.path.join(parentDir, 'utilsLyrics')
-
-if pathUtils not in sys.path:
-    sys.path.append(pathUtils )
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
 
@@ -36,8 +32,6 @@ if not WITH_DURATIONS:
     pathHMM = os.path.join(parentDir, 'HMM')
     if pathHMM not in sys.path:    
         sys.path.append(pathHMM)
-
-
 
 
 # if WITH_DURATIONS:

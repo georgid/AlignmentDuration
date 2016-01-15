@@ -44,14 +44,10 @@ from SectionLink import SectionLink
 dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
 
 
-from htkparser.htk_converter import HtkConverter
-
-pathUtils = os.path.join(parentDir, 'utilsLyrics')
-if not pathUtils in sys.path:
-    sys.path.append(pathUtils )
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
     getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile, getMelodicStructFromName, tokenList2TabFile
 
+from htkparser.htk_converter import HtkConverter
 
 
 class LyricsAlign(compmusic.extractors.ExtractorModule):
