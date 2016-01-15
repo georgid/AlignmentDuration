@@ -1,0 +1,411 @@
+a	A
+ang	A   NG
+an	A   NN
+ai	AI
+ao	AO
+e	E
+eng	E   NG
+en	E   NN
+ei	EI
+er	ER
+yi	I
+o	O
+ou	OU
+wu	U
+yu	V
+yun	V   NN
+yuan	VE  NN
+yue	VE
+ba	B   A
+bang	B   A   NG
+ban	B   A   NN
+bai	B   AI
+bao	B   AO
+beng	B   E   NG
+ben	B   E   NN
+bei	B   EI
+bi	B   I
+bing	B   I   NG
+bin	B   I   NN
+bian	B   IE  NN
+bie	B   IE
+bo	B   O
+bu	B   U
+biao	B   Y   EO
+ca	C   A
+cang	C   A   NG
+can	C   A   NN
+cai	C   AI
+cao	C   AO
+ce	C   E
+ceng	C   E   NG
+cen	C   E   NN
+ci	C   IZ
+cong	C   O   NG
+cou	C   OU
+cu	C   U
+cun	C   U   NN
+cuan	C   UA  NN
+cui	C   W   EI
+cuo	C   W   O
+cha	CH  A
+chang	CH  A   NG
+chan	CH  A   NN
+chai	CH  AI
+chao	CH  AO
+che	CH  E
+cheng	CH  E   NG
+chen	CH  E   NN
+chi	CH  IH
+chong	CH  O   NG
+chou	CH  OU
+chu	CH  U
+chun	CH  U   NN
+chuang	CH  UA  NG
+chuan	CH  UA  NN
+chua	CH  W   A
+chuai	CH  W   AI
+chui	CH  W   EI
+chuo	CH  W   O
+da	D   A
+dang	D   A   NG
+dan	D   A   NN
+dai	D   AI
+dao	D   AO
+de	D   E
+deng	D   E   NG
+den	D   E   NN
+dei	D   EI
+di	D   I
+ding	D   I   NG
+dian	D   IE  NN
+die	D   IE
+dong	D   O   NG
+dou	D   OU
+du	D   U
+dun	D   U   NN
+duan	D   UA  NN
+dui	D   W   EI
+duo	D   W   O
+dia	D   Y   A
+diao	D   Y   EO
+diu	D   Y   OU
+fa	F   A
+fang	F   A   NG
+fan	F   A   NN
+feng	F   E   NG
+fen	F   E   NN
+fei	F   EI
+fo	F   O
+fou	F   OU
+fu	F   U
+ga	G   A
+gang	G   A   NG
+gan	G   A   NN
+gai	G   AI
+gao	G   AO
+ge	G   E
+geng	G   E   NG
+gen	G   E   NN
+gei	G   EI
+gong	G   O   NG
+gou	G   OU
+gu	G   U
+gun	G   U   NN
+guang	G   UA  NG
+guan	G   UA  NN
+gua	G   W   A
+guai	G   W   AI
+gui	G   W   EI
+guo	G   W   O
+ha	H   A
+hang	H   A   NG
+han	H   A   NN
+hai	H   AI
+hao	H   AO
+he	H   E
+heng	H   E   NG
+hen	H   E   NN
+hei	H   EI
+hong	H   O   NG
+hou	H   OU
+hu	H   U
+hun	H   U   NN
+huang	H   UA  NG
+huan	H   UA  NN
+hua	H   W   A
+huai	H   W   AI
+hui	H   W   EI
+huo	H   W   O
+ji	J   I
+jing	J   I   NG
+jin	J   I   NN
+jiang	J   IA  NG
+jian	J   IE  NN
+jie	J   IE
+jiong	J   IO  NG
+ju	J   V
+jun	J   V   NN
+juan	J   VE  NN
+jue	J   VE
+jia	J   Y   A
+jiao	J   Y   EO
+jiu	J   Y   OU
+ka	K   A
+kang	K   A   NG
+kan	K   A   NN
+kai	K   AI
+kao	K   AO
+ke	K   E
+keng	K   E   NG
+ken	K   E   NN
+kei	K   EI
+kong	K   O   NG
+kou	K   OU
+ku	K   U
+kun	K   U   NN
+kuang	K   UA  NG
+kuan	K   UA  NN
+kua	K   W   A
+kuai	K   W   AI
+kui	K   W   EI
+kuo	K   W   O
+la	L   A
+lang	L   A   NG
+lan	L   A   NN
+lai	L   AI
+lao	L   AO
+le	L   E
+leng	L   E   NG
+lei	L   EI
+li	L   I
+ling	L   I   NG
+lin	L   I   NN
+liang	L   IA  NG
+lian	L   IE  NN
+lie	L   IE
+lo	L   O
+long	L   O   NG
+lou	L   OU
+lu	L   U
+lun	L   U   NN
+luan	L   UA  NN
+lv	L   V
+lue	L   VE
+luo	L   W   O
+lia	L   Y   A
+liao	L   Y   EO
+liu	L   Y   OU
+ma	M   A
+mang	M   A   NG
+man	M   A   NN
+mai	M   AI
+mao	M   AO
+me	M   E
+meng	M   E   NG
+men	M   E   NN
+mei	M   EI
+mi	M   I
+ming	M   I   NG
+min	M   I   NN
+mian	M   IE  NN
+mie	M   IE
+mo	M   O
+mou	M   OU
+mu	M   U
+miao	M   Y   EO
+miu	M   Y   OU
+na	N   A
+nang	N   A   NG
+nan	N   A   NN
+nai	N   AI
+nao	N   AO
+ne	N   E
+neng	N   E   NG
+nen	N   E   NN
+nei	N   EI
+ni	N   I
+ning	N   I   NG
+nin	N   I   NN
+niang	N   IA  NG
+nian	N   IE  NN
+nie	N   IE
+nong	N   O   NG
+nou	N   OU
+nu	N   U
+nuan	N   UA  NN
+nv	N   V
+nue	N   VE
+nuo	N   W   O
+niao	N   Y   EO
+niu	N   Y   OU
+pa	P   A
+pang	P   A   NG
+pan	P   A   NN
+pai	P   AI
+pao	P   AO
+peng	P   E   NG
+pen	P   E   NN
+pei	P   EI
+pi	P   I
+ping	P   I   NG
+pin	P   I   NN
+pian	P   IE  NN
+pie	P   IE
+po	P   O
+pou	P   OU
+pu	P   U
+piao	P   Y   EO
+qi	Q   I
+qing	Q   I   NG
+qin	Q   I   NN
+qiang	Q   IA  NG
+qian	Q   IE  NN
+qie	Q   IE
+qiong	Q   IO  NG
+qu	Q   V
+qun	Q   V   NN
+quan	Q   VE  NN
+que	Q   VE
+qia	Q   Y   A
+qiao	Q   Y   EO
+qiu	Q   Y   OU
+rang	R   A   NG
+ran	R   A   NN
+rao	R   AO
+re	R   E
+reng	R   E   NG
+ren	R   E   NN
+ri	R   IH
+rong	R   O   NG
+rou	R   OU
+ru	R   U
+run	R   U   NN
+ruan	R   UA  NN
+rui	R   W   EI
+ruo	R   W   O
+sa	S   A
+sang	S   A   NG
+san	S   A   NN
+sai	S   AI
+sao	S   AO
+se	S   E
+seng	S   E   NG
+sen	S   E   NN
+si	S   IZ
+song	S   O   NG
+sou	S   OU
+su	S   U
+sun	S   U   NN
+suan	S   UA  NN
+sui	S   W   EI
+suo	S   W   O
+sha	SH  A
+shang	SH  A   NG
+shan	SH  A   NN
+shai	SH  AI
+shao	SH  AO
+she	SH  E
+sheng	SH  E   NG
+shen	SH  E   NN
+shei	SH  EI
+shi	SH  IH
+shou	SH  OU
+shu	SH  U
+shun	SH  U   NN
+shuang	SH  UA  NG
+shuan	SH  UA  NN
+shua	SH  W   A
+shuai	SH  W   AI
+shui	SH  W   EI
+shuo	SH  W   O
+ta	T   A
+tang	T   A   NG
+tan	T   A   NN
+tai	T   AI
+tao	T   AO
+te	T   E
+teng	T   E   NG
+tei	T   EI
+ti	T   I
+ting	T   I   NG
+tian	T   IE  NN
+tie	T   IE
+tong	T   O   NG
+tou	T   OU
+tu	T   U
+tun	T   U   NN
+tuan	T   UA  NN
+tui	T   W   EI
+tuo	T   W   O
+tiao	T   Y   EO
+wa	W   A
+wang	W   A   NG
+wan	W   A   NN
+wai	W   AI
+weng	W   E   NG
+wen	W   E   NN
+wei	W   EI
+wo	W   O
+xi	X   I
+xing	X   I   NG
+xin	X   I   NN
+xiang	X   IA  NG
+xian	X   IE  NN
+xie	X   IE
+xiong	X   IO  NG
+xu	X   V
+xun	X   V   NN
+xuan	X   VE  NN
+xue	X   VE
+xia	X   Y   A
+xiao	X   Y   EO
+xiu	X   Y   OU
+ya	Y   A
+yang	Y   A   NG
+yao	Y   AO
+ying	Y   I   NG
+yin	Y   I   NN
+yan	Y   IE  NN
+ye	Y   IE
+yo	Y   O
+yong	Y   O   NG
+you	Y   OU
+za	Z   A
+zang	Z   A   NG
+zan	Z   A   NN
+zai	Z   AI
+zao	Z   AO
+ze	Z   E
+zeng	Z   E   NG
+zen	Z   E   NN
+zei	Z   EI
+zi	Z   IZ
+zong	Z   O   NG
+zou	Z   OU
+zu	Z   U
+zun	Z   U   NN
+zuan	Z   UA  NN
+zui	Z   W   EI
+zuo	Z   W   O
+zha	ZH  A
+zhang	ZH  A   NG
+zhan	ZH  A   NN
+zhai	ZH  AI
+zhao	ZH  AO
+zhe	ZH  E
+zheng	ZH  E   NG
+zhen	ZH  E   NN
+zhei	ZH  EI
+zhi	ZH  IH
+zhong	ZH  O   NG
+zhou	ZH  OU
+zhu	ZH  U
+zhun	ZH  U   NN
+zhuang	ZH  UA  NG
+zhuan	ZH  UA  NN
+zhua	ZH  W   A
+zhuai	ZH  W   AI
+zhui	ZH  W   EI
+zhuo	ZH  W   O
+nar	N   A

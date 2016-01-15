@@ -14,7 +14,6 @@ def runMakamScore(argv):
         
         makamScore = loadMakamScore(pathToComposition)
         makamScore.printSectionsAndLyrics()
-#         lyrics = loadLyrics(pathToComposition, whichSection=0)
      
       
 

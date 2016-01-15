@@ -1,0 +1,944 @@
+{
+    "tonic": "G4", 
+    "lyricist": {
+        "mbid": "125ec42a-7229-4250-afc5-e057484327fe", 
+        "name": "[unknown]", 
+        "mu2_name": "?"
+    }, 
+    "notation": "TSM", 
+    "language": "tur", 
+    "form": {
+        "symbtr_slug": "sarki", 
+        "mb_attribute": "\u015eark\u0131", 
+        "mu2_name": "\u015eark\u0131"
+    }, 
+    "phrases": {
+        "automatic": [
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 12, 
+                "startNote": 1, 
+                "melodicStructure": "A1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 0
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 18, 
+                "startNote": 13, 
+                "melodicStructure": "B1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 0
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 29, 
+                "startNote": 19, 
+                "melodicStructure": "C1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 0
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 37, 
+                "startNote": 30, 
+                "melodicStructure": "D1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 0
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 40, 
+                "startNote": 38, 
+                "melodicStructure": "E1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 0
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 42, 
+                "startNote": 41, 
+                "melodicStructure": "F1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 0
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 60, 
+                "startNote": 43, 
+                "melodicStructure": "G1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 0
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 65, 
+                "startNote": 61, 
+                "melodicStructure": "H1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 76, 
+                "startNote": 66, 
+                "melodicStructure": "A2", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 82, 
+                "startNote": 77, 
+                "melodicStructure": "B1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 93, 
+                "startNote": 83, 
+                "melodicStructure": "C1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 101, 
+                "startNote": 94, 
+                "melodicStructure": "D1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 104, 
+                "startNote": 102, 
+                "melodicStructure": "E1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 106, 
+                "startNote": 105, 
+                "melodicStructure": "F1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 124, 
+                "startNote": 107, 
+                "melodicStructure": "G1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "Gel ", 
+                "lyricStructure": "B1", 
+                "endNote": 128, 
+                "startNote": 125, 
+                "melodicStructure": "H2", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "ARANAGME_1", 
+                        "lyricStructure": "INSTRUMENTAL", 
+                        "section_idx": 1
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "g\u00fczelim \u00c7am", 
+                "lyricStructure": "C1", 
+                "endNote": 132, 
+                "startNote": 129, 
+                "melodicStructure": "I1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "B1", 
+                        "lyricStructure": "B1", 
+                        "section_idx": 2
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "l\u0131caya bu ", 
+                "lyricStructure": "D1", 
+                "endNote": 139, 
+                "startNote": 133, 
+                "melodicStructure": "J1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "B1", 
+                        "lyricStructure": "B1", 
+                        "section_idx": 2
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "gece  ", 
+                "lyricStructure": "E1", 
+                "endNote": 152, 
+                "startNote": 140, 
+                "melodicStructure": "K1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "B1", 
+                        "lyricStructure": "B1", 
+                        "section_idx": 2
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "Gel ", 
+                "lyricStructure": "B1", 
+                "endNote": 160, 
+                "startNote": 153, 
+                "melodicStructure": "L1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "B1", 
+                        "lyricStructure": "B1", 
+                        "section_idx": 2
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "g\u00fczelim \u00c7am", 
+                "lyricStructure": "C1", 
+                "endNote": 164, 
+                "startNote": 161, 
+                "melodicStructure": "I1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "B2", 
+                        "lyricStructure": "B1", 
+                        "section_idx": 3
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "l\u0131caya bu ", 
+                "lyricStructure": "D1", 
+                "endNote": 171, 
+                "startNote": 165, 
+                "melodicStructure": "J1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "B2", 
+                        "lyricStructure": "B1", 
+                        "section_idx": 3
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "gece  ", 
+                "lyricStructure": "E1", 
+                "endNote": 184, 
+                "startNote": 172, 
+                "melodicStructure": "K2", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "B2", 
+                        "lyricStructure": "B1", 
+                        "section_idx": 3
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "G\u00fcn do\u011f", 
+                "lyricStructure": "F1", 
+                "endNote": 192, 
+                "startNote": 185, 
+                "melodicStructure": "D1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 4
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "madan ", 
+                "lyricStructure": "G1", 
+                "endNote": 195, 
+                "startNote": 193, 
+                "melodicStructure": "E1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 4
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "a ", 
+                "lyricStructure": "H1", 
+                "endNote": 197, 
+                "startNote": 196, 
+                "melodicStructure": "F1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 4
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "can\u0131m g\u00f6", 
+                "lyricStructure": "I1", 
+                "endNote": 200, 
+                "startNote": 198, 
+                "melodicStructure": "M1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 4
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "r\u00fc\u015felim gizlice  G\u00fcn ", 
+                "lyricStructure": "J1", 
+                "endNote": 216, 
+                "startNote": 201, 
+                "melodicStructure": "N1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 4
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "do\u011fmadan a ", 
+                "lyricStructure": "K1", 
+                "endNote": 223, 
+                "startNote": 217, 
+                "melodicStructure": "O1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 5
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "can\u0131m g\u00f6", 
+                "lyricStructure": "I1", 
+                "endNote": 226, 
+                "startNote": 224, 
+                "melodicStructure": "P1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 5
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "r\u00fc\u015felim gizlice  ", 
+                "lyricStructure": "J2", 
+                "endNote": 239, 
+                "startNote": 227, 
+                "melodicStructure": "Q1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 5
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "B\u00fcl", 
+                "lyricStructure": "L1", 
+                "endNote": 243, 
+                "startNote": 240, 
+                "melodicStructure": "R1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D1", 
+                        "lyricStructure": "C1", 
+                        "section_idx": 5
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "b\u00fcllerin ef", 
+                "lyricStructure": "M1", 
+                "endNote": 251, 
+                "startNote": 244, 
+                "melodicStructure": "S1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "E1", 
+                        "lyricStructure": "D1", 
+                        "section_idx": 6
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "gan\u0131n\u0131 din", 
+                "lyricStructure": "N1", 
+                "endNote": 259, 
+                "startNote": 252, 
+                "melodicStructure": "T1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "E1", 
+                        "lyricStructure": "D1", 
+                        "section_idx": 6
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "leyelim yanyana  B\u00fcl", 
+                "lyricStructure": "O1", 
+                "endNote": 274, 
+                "startNote": 260, 
+                "melodicStructure": "U1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "E1", 
+                        "lyricStructure": "D1", 
+                        "section_idx": 6
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "b\u00fcllerin ef", 
+                "lyricStructure": "M1", 
+                "endNote": 282, 
+                "startNote": 275, 
+                "melodicStructure": "V1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "F1", 
+                        "lyricStructure": "D1", 
+                        "section_idx": 7
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "gan\u0131n\u0131 din", 
+                "lyricStructure": "N1", 
+                "endNote": 290, 
+                "startNote": 283, 
+                "melodicStructure": "W1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "F1", 
+                        "lyricStructure": "D1", 
+                        "section_idx": 7
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "leyelim yanyana  ", 
+                "lyricStructure": "O2", 
+                "endNote": 301, 
+                "startNote": 291, 
+                "melodicStructure": "X1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "F1", 
+                        "lyricStructure": "D1", 
+                        "section_idx": 7
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "Kumru ", 
+                "lyricStructure": "P1", 
+                "endNote": 308, 
+                "startNote": 302, 
+                "melodicStructure": "D2", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 8
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "gibi ", 
+                "lyricStructure": "Q1", 
+                "endNote": 311, 
+                "startNote": 309, 
+                "melodicStructure": "E1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 8
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "a ", 
+                "lyricStructure": "H1", 
+                "endNote": 313, 
+                "startNote": 312, 
+                "melodicStructure": "F1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 8
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "can\u0131m se", 
+                "lyricStructure": "R1", 
+                "endNote": 316, 
+                "startNote": 314, 
+                "melodicStructure": "M1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "C2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 8
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "vi\u015felim can cana  Kumru ", 
+                "lyricStructure": "S1", 
+                "endNote": 333, 
+                "startNote": 317, 
+                "melodicStructure": "N2", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 9
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "gibi a ", 
+                "lyricStructure": "Q2", 
+                "endNote": 338, 
+                "startNote": 334, 
+                "melodicStructure": "Y1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 9
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "can\u0131m se", 
+                "lyricStructure": "R1", 
+                "endNote": 341, 
+                "startNote": 339, 
+                "melodicStructure": "P1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 9
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "VOCAL_PHRASE", 
+                "lyrics": "vi\u015felim can cana  ", 
+                "lyricStructure": "T1", 
+                "endNote": 354, 
+                "startNote": 342, 
+                "melodicStructure": "Q2", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 9
+                    }
+                ], 
+                "slug": "VOCAL_PHRASE"
+            }, 
+            {
+                "name": "INSTRUMENTAL_PHRASE", 
+                "lyrics": "", 
+                "lyricStructure": "INSTRUMENTAL", 
+                "endNote": 358, 
+                "startNote": 355, 
+                "melodicStructure": "Z1", 
+                "flavor": [], 
+                "sections": [
+                    {
+                        "melodicStructure": "D2", 
+                        "lyricStructure": "E1", 
+                        "section_idx": 9
+                    }
+                ], 
+                "slug": "INSTRUMENTAL_PHRASE"
+            }
+        ], 
+        "annotated": []
+    }, 
+    "work": {
+        "mbid": "9aaf5c0b-4642-40fd-97ba-c861265872ce", 
+        "title": "Gel G\u00fczelim \u00c7aml\u0131ca'ya"
+    }, 
+    "tempo": {
+        "unit": "bpm", 
+        "value": 222
+    }, 
+    "mu2_title": "Gel G\u00fczelim \u00c7aml\u0131ca'ya", 
+    "makam": {
+        "symbtr_slug": "nihavent", 
+        "mb_attribute": "Nihavent", 
+        "mu2_name": "Nih\u00e2vent"
+    }, 
+    "key_signature": [
+        "B4b5", 
+        "E5b5"
+    ], 
+    "composer": {
+        "mbid": "8dd06d8b-b1f6-409e-b46d-4539a59f715e", 
+        "symbtr_slug": "faiz_kapanci", 
+        "name": "Faiz Kapanc\u0131", 
+        "mu2_name": "Faiz Kapanc\u0131"
+    }, 
+    "genre": "classical", 
+    "usul": {
+        "symbtr_slug": "aksak", 
+        "mb_attribute": "Aksak", 
+        "mertebe": 8, 
+        "mu2_name": "Aksak", 
+        "number_of_pulses": 9
+    }, 
+    "sections": [
+        {
+            "name": "ARANA\u011eME", 
+            "lyricStructure": "INSTRUMENTAL", 
+            "endNote": 64, 
+            "startNote": 1, 
+            "melodicStructure": "ARANAGME_1", 
+            "lyrics": "", 
+            "slug": "ARANAGME"
+        }, 
+        {
+            "name": "ARANA\u011eME", 
+            "lyricStructure": "INSTRUMENTAL", 
+            "endNote": 128, 
+            "startNote": 65, 
+            "melodicStructure": "ARANAGME_1", 
+            "lyrics": "", 
+            "slug": "ARANAGME"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "B1", 
+            "endNote": 160, 
+            "startNote": 129, 
+            "melodicStructure": "B1", 
+            "lyrics": "Gel g\u00fczelim \u00c7aml\u0131caya bu gece  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "B1", 
+            "endNote": 190, 
+            "startNote": 161, 
+            "melodicStructure": "B2", 
+            "lyrics": "Gel g\u00fczelim \u00c7aml\u0131caya bu gece  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "C1", 
+            "endNote": 216, 
+            "startNote": 191, 
+            "melodicStructure": "C1", 
+            "lyrics": "G\u00fcn do\u011fmadan a can\u0131m g\u00f6r\u00fc\u015felim gizlice  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "C1", 
+            "endNote": 243, 
+            "startNote": 217, 
+            "melodicStructure": "D1", 
+            "lyrics": "G\u00fcn do\u011fmadan a can\u0131m g\u00f6r\u00fc\u015felim gizlice  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "D1", 
+            "endNote": 274, 
+            "startNote": 244, 
+            "melodicStructure": "E1", 
+            "lyrics": "B\u00fclb\u00fcllerin efgan\u0131n\u0131 dinleyelim yanyana  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "D1", 
+            "endNote": 307, 
+            "startNote": 275, 
+            "melodicStructure": "F1", 
+            "lyrics": "B\u00fclb\u00fcllerin efgan\u0131n\u0131 dinleyelim yanyana  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "E1", 
+            "endNote": 332, 
+            "startNote": 308, 
+            "melodicStructure": "C2", 
+            "lyrics": "Kumru gibi a can\u0131m sevi\u015felim can cana  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "E1", 
+            "endNote": 358, 
+            "startNote": 333, 
+            "melodicStructure": "D2", 
+            "lyrics": "Kumru gibi a can\u0131m sevi\u015felim can cana  ", 
+            "slug": "VOCAL_SECTION"
+        }
+    ], 
+    "symbtr": "nihavent--sarki--aksak--gel_guzelim--faiz_kapanci"
+}

@@ -1,0 +1,24 @@
+
+Thisngs to optimize. if SLOW!
+
+---------
+the way syllables2WordsOneSecion is called is not optimized in SymbTrParser.SymbTrParser.syllables2Words
+
+TODO:
+when parsing sections consecutively keep index of  syllable of last parsed secion and start at it for next section.
+
+--- check if vowel in table in more intuitive way
+
+
+
+LyricsWithModels.LyricsWithModels._linkToModels:
+	 described inside method 
+
+
+The slowest thing is the loop in  _DUrationHMM.viterbi_forced_Dur()
+      for t in range(self.MAX_DUR,len(observations)):
+            for currState in xrange(self.n):
+                self._calcCurrStatePhi(t, currState) # get max duration quantities
+                
+                SOLUTION:
+                dont calculate all probs, but do a beam around the diagonal. Is this possible with the viterbi path? Find papers. 

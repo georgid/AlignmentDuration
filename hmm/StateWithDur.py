@@ -6,15 +6,10 @@ Created on Nov 10, 2014
 import os
 import sys
 from hmm.continuous.DurationPdf import DurationPdf
-from Cython.Compiler.Naming import self_cname
 from hmm.continuous.ExpDurationPdf import ExpDurationPdf
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
-
-htkModelParser = os.path.join(parentDir, 'htkModelParser')
 
 
-sys.path.append(htkModelParser )
-from htk_models import State
+from htkparser.htk_models import State
 
 class StateWithDur(State):
     '''

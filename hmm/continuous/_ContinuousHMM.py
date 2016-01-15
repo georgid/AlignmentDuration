@@ -14,17 +14,14 @@ from matplotlib.lines import Line2D
 # from sklearn.utils.extmath import logsumexp
 
 parentDir = os.path.abspath(  os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir ) )
-
 hmmDir = os.path.join(parentDir, 'HMM/hmm')
 if hmmDir not in sys.path: sys.path.append(parentDir)
+
 from hmm._BaseHMM import _BaseHMM
 
 
 
-workspaceDir = os.path.abspath(  os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir,  os.path.pardir, os.path.pardir ) ) 
-pathUtils = os.path.join(workspaceDir, 'utilsLyrics')
-if pathUtils not in sys.path: sys.path.append(pathUtils )
-from Utilz import writeListOfListToTextFile, readListTextFile
+from utilsLyrics.Utilz import writeListOfListToTextFile, readListTextFile
 
 
 

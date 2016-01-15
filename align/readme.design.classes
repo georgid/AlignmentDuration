@@ -1,0 +1,121 @@
+ Design of Classes 
+
+
+SCORE (LYRICS + DURATIONS) MODELING package:
+
+MakamScore
+------------ 
+field sectionLyrics is a map: 
+e.g.
+"nakarat" -> Lyrics "word1 word2 word3"
+each Lyrics item  is of object type Lyrics
+
+
+
+Lyrics
+-------
+is a holder of a list of words: 
+fields: 
+-listWords
+-phonemesNetwork
+
+each Word in turn contains a list of object type Syllable
+Each syllable in turn contains a list of Phoneme objects
+
+On init, graphemes are expanded to phonemes
+
+
+Syllable
+-----------
+fields:
+durationInMinUnit - assigned from score. could be given from source other than score. 
+Absolute duration is not important as it gets rescaled according to tempo in lyricsWithModels.duration2numFrameDuration()
+Important is the ratio  between relative syllable durations
+ 
+text - 
+
+expandToPhonemes() - use grapheme2phoneme rules
+
+calcPhonemeDurs() - for each phoneme assign durations according to consonant handling policy. called in lyricsWithModels.duration2numFrameDuration() after 
+rescaling to tempo  
+
+
+
+LyricsWithModels
+---------------------
+extend Lyrics with  modeling-related info : 
+- phonemes network (inherited). Adds links to trained models of class type htkModel from project HtkModelParser
+- statesNetwork of class type StateWithDur inherited from htkModelParser (utility field for fast access to states when decoding)
+
+fields: 
+withPaddedSilence - whether to add a 'sp' state at beginning and end (done in _phonemes2stateNetwork())
+
+
+self._phonemes2stateNetwork()
+ called in duration2numFrameDuration  
+     1) generate stateNetwork
+     2) assign phoneme a pointer to its initial state in the state network (serves as link among the two)
+     3) each state gets 1/n-th of total num of states
+     	
+
+DEBUG: 
+LyricsWithModels.LyricsWithModels.printWordsAndStatesAndDurations - can be used after decoding to compare ground truth with result 
+ - called from doitOneChunk.alignOneChunk()
+
+
+
+Phoneme
+------------------
+fields:
+-duration
+-htkModel
+
+
+LyricsParsing
+======================
+helper class:
+methods for parsing/looping in Lyrics.wordList and
+LyricsWithModels.statesNetwork
+
+
+--------------------------------------------------------------------
+-----------------------------------------------------------------------
+---------------------------------------------------------------------
+package of DECODING LOGIC 
+
+Decoder
+---------------
+ fields:
+ lyricsWithModels - its field statesNetwork is used in self.constructHMMNetworkParameters() to construct a self.hmmNetwork in form usable for decoding
+ hmmNetwork - of type HMMDuration (HMM for forced alignment)
+ 
+ 
+ methods: 
+ duration2numFrameDuration(self, observationFeatures) - get relative tempo (numFramesPerMinUnit) for given audio chunk
+ 
+ decodeAudio - a wrapper for hmm._BaseHMM._viterbiForced. 
+- assigns the exponential distribution to sil states at beginning and end
+- set nonvocal by setting self.hmmNetwork.setNonVocal(listNonVocalFragments): if listNonVocalFragments is empty then no predicted vocal fragments will be taken into account  
+ 
+ 
+ backtrack(self, withOracle, chiBackPointer, psiBackPointer):
+  backtrack optimal path of states from backpointers, interprete states to words 
+  On construction of path backtracking is performed multiple times until starting at last time until full path is found       
+        
+
+ path - result
+
+
+
+Phonetizer
+-----------------
+grapheme2phoneme(word) - used to do the expansion of the graphemes (in a syllable) to phonemes 
+
+For all entities of lyrics the g2p rules are the same, so Phonetizer should be instantiated only once on highest level  
+   
+
+
+
+
+OTHERS: 
+MakamScore.createTranscriptForSection - just array of all phonems, used in matlab dtw 

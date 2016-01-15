@@ -22,11 +22,8 @@ import logging
 MINIMAL_PROB = sys.float_info.min
 
 
-parentDir = os.path.abspath(  os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir,  os.path.pardir ) ) 
-pathUtils = os.path.join(parentDir, 'utilsLyrics')
-if pathUtils not in sys.path: sys.path.append(pathUtils )
 
-from Utilz import writeListOfListToTextFile, writeListToTextFile
+from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
 
 # put intermediate output in examples dir
 PATH_LOGS= os.path.dirname(os.path.realpath(sys.argv[0]))

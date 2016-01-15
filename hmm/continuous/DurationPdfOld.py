@@ -18,11 +18,9 @@ PATH_LOGS = os.getcwdu()
 # to replace 0: avoid log(0) = -inf. -Inf + p(d) makes useless the effect of  p(d)
 MINIMAL_PROB = sys.float_info.min
 
-parentDir = os.path.abspath(  os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir,  os.path.pardir, os.path.pardir ) ) 
-pathUtils = os.path.join(parentDir, 'utilsLyrics')
-if pathUtils not in sys.path: sys.path.append(pathUtils )
 
-from Utilz import writeListOfListToTextFile
+
+from utilsLyrics.Utilz import writeListOfListToTextFile
 
 import logging
 logging.basicConfig(level=logging.INFO)

@@ -15,24 +15,32 @@ You should have received a copy of the GNU General Public License along with thi
 
 
 BUILD INSTRUCTIONS: 
-git clone https://github.com/georgid/AlignmentDuration.git
+git clone -b IntegratedPycompMusic https://github.com/georgid/AlignmentDuration.git
 
 
-to run you need to put in parent dir these python projects: 
+put in parent dir these python projects: 
 
 * htkModelParser
 git clone https://github.com/georgid/htkModelParser.git
+python setup.py install
 
-* HMM
-https://github.com/MTG/HMM.git
-#or
-git clone https://github.com/georgid/HMMDuration.git
-
-* Evaluation (if evaluation step needed, see Doit.py )
-git clone https://github.com/georgid/AlignmentEvaluation.git
+* pip install ply
 
 * utilsLyrics
 git clone https://github.com/georgid/utilsLyrics.git
+python setup.py install
+
+* sms-tools
+git clone https://github.com/georgid/sms-tools
+make sure it is in same folder as AlignmentDuration
+
+-----
+* Evaluation (optional if model evaluation step needed, see Doit.py )
+git clone https://github.com/georgid/AlignmentEvaluation.git
+
+* HMM (optional if approach with no-duration modeling needed)
+https://github.com/MTG/HMM.git
+
 
 -------------------------------------------------------
 

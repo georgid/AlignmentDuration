@@ -10,7 +10,8 @@ from main import decode, loadSmallAudioFragment
 import os
 import sys
 from hmm.examples.main import  getDecoder
-from Utilz import tokenList2TabFile
+from utilsLyrics.Utilz import tokenList2TabFile
+from doitOneChunk import HMM_LIST_URI, MODEL_URI
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir,os.path.pardir )) 
@@ -21,11 +22,16 @@ if not pathJingjuAlignment in sys.path:
     sys.path.append(pathJingjuAlignment)
 
 from Phonetizer import Phonetizer
-from MakamScore import loadLyrics
+from MakamScore import  loadMakamScore
 from Decoder import Decoder
 
 
-from Utilz import readListOfListTextFile
+# parser of htk-build speech model
+pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
+sys.path.append(pathHtkModelParser)
+from htk_converter import HtkConverter
+
+from utilsLyrics.Utilz import readListOfListTextFile
 
 pathToComposition = '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/'
 URIrecordingNoExt = '/Users/joro/Documents/Phd/UPF/ISTANBUL/safiye/01_Bakmiyor_1_zemin'
@@ -205,7 +211,12 @@ def test_decoding(pathToComposition, whichSection):
     '''
     
     withSynthesis = True
-    lyrics = loadLyrics(pathToComposition, whichSection, withSynthesis)
+    
+    makamScore = loadMakamScore(pathToComposition)
+    
+    lyrics = makamScore.getLyricsForSection(whichSection)
+    
+    
     lyricsWithModels, observationFeatures, URIRecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
     
     decoder = getDecoder(lyricsWithModels, URIRecordingChunk)
@@ -229,7 +240,10 @@ def test_oracle(URIrecordingNoExt, pathToComposition, whichSection):
     read phoneme-level ground truth and test
     '''
     withSynthesis = False
-    lyrics = loadLyrics(pathToComposition, whichSection, withSynthesis)
+    
+    makamScore = loadMakamScore(pathToComposition)
+    lyrics = makamScore.getLyricsForSection(whichSection)
+    
     
     if logger.level == logging.DEBUG:
         lyrics.printPhonemeNetwork()
@@ -292,7 +306,11 @@ if __name__ == '__main__':
 
 #####################     for all tetst below inclide these 3 lines for lyrics:
     withSynthesis = True
-    lyrics = loadLyrics(pathToComposition, whichSection, withSynthesis)
+    makamScore = loadMakamScore(pathToComposition)
+    lyrics = makamScore.getLyricsForSection(whichSection)
+    htkParser = HtkConverter()
+    htkParser.load(MODEL_URI, HMM_LIST_URI)
+    
     lyricsWithModels, observationFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
 #     
     decode(lyricsWithModels, observationFeatures, URIrecordingNoExt)

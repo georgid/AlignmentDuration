@@ -13,7 +13,7 @@ import sys
 #  
 # if not pathUtils in sys.path:
 #     sys.path.append(pathUtils )
-from Utilz import loadTextFile
+from utilsLyrics.Utilz import loadTextFile
 
 
 class Tests(unittest.TestCase):
