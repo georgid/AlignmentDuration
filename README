@@ -1,4 +1,4 @@
-Copyright © 2014  Music Technology Group - Universitat Pompeu Fabra
+Copyright © 2015,2016  Music Technology Group - Universitat Pompeu Fabra
 
 NAME: AlignmentDuration
 
@@ -30,8 +30,8 @@ git clone https://github.com/georgid/utilsLyrics.git
 python setup.py install
 
 * sms-tools
-git clone https://github.com/georgid/sms-tools
-make sure it is in same folder as AlignmentDuration
+cd smstools/software/models/utilFunctions_C/
+sudo python compileModule.py install
 
 -----
 * Evaluation (optional if model evaluation step needed, see Doit.py )

@@ -12,14 +12,15 @@ import htkmfc
 import subprocess
 from Decoder import logger
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
-pathSMS = os.path.join(parentDir, 'sms-tools/workspace')
+pathSMS = os.path.join(parentDir, 'sms-tools')
 import json
 
+# print '\n sys.path:' + sys.path +  '\n'
+# if pathSMS not in sys.path:
+#     sys.path.append(pathSMS)
 
-if pathSMS not in sys.path:
-    sys.path.append(pathSMS)
-# from workspace.harmonicModel_function import extractHarmSpec, resynthesize
-from harmonicModel_function import extractHarmSpec, resynthesize
+from smstools.workspace.harmonicModel_function import extractHarmSpec, resynthesize
+# from harmonicModel_function import extractHarmSpec, resynthesize
 
 
 from utilsLyrics.Utilz import readListOfListTextFile_gen
