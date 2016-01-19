@@ -49,6 +49,10 @@ def extractHarmSpec( inputFile, f0FreqsRaw, fromTs, toTs, t=-70, window='blackma
  		fromTs=0; toTs=f0FreqsRaw[-1][0]
     		
 	
+	
+	finalPitchSeriesTs = f0FreqsRaw[-1][0]
+	if finalPitchSeriesTs < fromTs or finalPitchSeriesTs < toTs:
+		sys.exit('pitch series have final time= {} and requested fromTs= {} and toTs={}'.format(finalPitchSeriesTs, fromTs, toTs) )
 	idx = 0
 	while fromTs > float(f0FreqsRaw[idx][0]):
 		idx += 1
