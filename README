@@ -30,7 +30,7 @@ git clone https://github.com/georgid/utilsLyrics.git
 python setup.py install
 
 * sms-tools
-cd smstools/software/models/utilFunctions_C/
+cd AlignmentDuration/smstools/software/models/utilFunctions_C/
 sudo python compileModule.py install
 
 -----
