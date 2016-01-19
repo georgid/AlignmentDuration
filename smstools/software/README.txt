@@ -1,0 +1,1 @@
+This directory includes all the code, the spectral analysis/synthesis models, the sound transformations functions and the interfaces to call all the models and transformation functions.
