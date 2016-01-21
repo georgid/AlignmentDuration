@@ -23,15 +23,14 @@ python setup.py install
 git clone https://github.com/georgid/htkModelParser.git
 python setup.py install
 
-* pip install ply
+* scikit-learn (with underflow fix)
+git clone https://github.com/georgid/scikit-learn
+python setup.py install
 
 * utilsLyrics
 git clone https://github.com/georgid/utilsLyrics.git
 python setup.py install
 
-* sms-tools
-cd AlignmentDuration/smstools/software/models/utilFunctions_C/
-sudo python compileModule.py install
 
 -----
 * Evaluation (optional if model evaluation step needed, see Doit.py )
