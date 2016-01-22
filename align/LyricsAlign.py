@@ -99,7 +99,13 @@ class LyricsAlign(compmusic.extractors.ExtractorModule):
         
         
 def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, outputDir):
-         
+        
+        # parameters 
+        withSynthesis = True
+        withOracle = False
+        oracleLyrics = ''
+        usePersistentFiles = True
+        
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
         
@@ -108,29 +114,50 @@ def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFile
         sectionLinks = _loadsectionTimeStampsLinksNew( sectionLinksURI) 
         makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataURI )
         
+            
         tokenLevelAlignedSuffix = '.alignedLyrics' 
         totalDetectedTokenList = []
         for  currSectionLink in sectionLinks :
+            if currSectionLink.melodicStructure.startswith('ARANAGME'):
+                print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
+                continue
             
-    
+            
             lyrics = makamScore.getLyricsForSection(currSectionLink.melodicStructure)
     
             lyricsStr = lyrics.__str__()
-        
             if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
                 print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
                 continue
             
-            withSynthesis = True
-            withOracle = False
-            oracleLyrics = ''
-            usePersistentFiles = True
             detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
+            #detectedTokenList, selectedSection = getBestLyrics(makamScore, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
+           
+                
             
             totalDetectedTokenList.extend(detectedTokenList)
         
         return totalDetectedTokenList
-            
+    
+    
+def getBestLyrics(makamScore, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
+    '''
+    runs alignment on given audio multiple times with a list of probable lyrics
+    returns detectedTokenList with best score
+    '''   
+    maxPhiScore = float('-inf')
+    probabaleSections = makamScore.getProbableLyricsForMelodicStructure(currSectionLink.melodicStructure)
+    for probabaleSection in probabaleSections:
+        currDetectedTokenList, detectedPath, phiScore = alignSectionLink( probabaleSection.lyrics, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
+        if phiScore > maxPhiScore:
+            maxPhiScore = phiScore
+            selectedSection = probabaleSection
+            detectedTokenList = currDetectedTokenList
+
+    return detectedTokenList, selectedSection
+         
+         
+               
 def  alignSectionLink( lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, currSectionLink, htkParser):
         '''
         wrapper top-most logic method

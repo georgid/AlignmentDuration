@@ -25,6 +25,7 @@ python setup.py install
 
 * scikit-learn (with underflow fix)
 git clone https://github.com/georgid/scikit-learn
+python setup.py build
 python setup.py install
 
 * utilsLyrics

@@ -4,17 +4,18 @@ Created on Jan 13, 2016
 @author: joro
 '''
 import sys
-from MakamScore import loadMakamScore
+from align.MakamScore import loadMakamScore2
 
 def runMakamScore(argv):
-        if len(argv) != 2:
-            print ("usage: {} <path to symbtTr.txt and symbTr.sections.tsv>".format(argv[0]) )
+        if len(argv) != 3:
+            print ("usage: {} <URI symbtTr.txt> <URI sectionsMetadata.json>".format(argv[0]) )
             sys.exit();
-        pathToComposition = argv[1]
-        
-        makamScore = loadMakamScore(pathToComposition)
+        URISymbTr = argv[1]
+        URISectionsMetadata = argv[2]
+        makamScore = loadMakamScore2(URISymbTr, URISectionsMetadata)
         makamScore.printSectionsAndLyrics()
-     
+        sections = makamScore.getProbableLyricsForMelodicStructure('B1')
+        print sections
       
 
 def testMakamScore():
@@ -42,8 +43,9 @@ def testMakamScore():
           'rast--sarki--curcuna--nihansin_dideden--haci_faik_bey']
       
       for compositionName in compositionNames:
-          dirScoreURI = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis/' + compositionName + '/'
-          a = ['dummy', dirScoreURI]
+          ScoreURI = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis/' + compositionName + '/' + compositionName + '.txt'
+          URISectionsMetadata = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis/' + compositionName + '/' + compositionName + '.sectionsMetadata.json'
+          a = ['dummy', ScoreURI, URISectionsMetadata]
           runMakamScore(a)
           
 if __name__ == '__main__':

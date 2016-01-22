@@ -56,6 +56,7 @@ class MakamScore():
         
         self._loadSectionsAndSyllablesFromSymbTr(pathToSymbTrFile, pathToSectionTsvFile)
         
+        self._lyricsSections2GroupsSimilarMElody()
         
         # pats to individual ..txt lyrics files. 
         self.pathsTolyricSectionFiles = []
@@ -73,6 +74,8 @@ class MakamScore():
        
         # list of Word object
         self.symbTrParser.syllables2Lyrics()
+        
+       
         
      
             
@@ -92,7 +95,47 @@ class MakamScore():
             logger.warn("no lyrics for demanded section {} ".format(melodicStructure ))
             return None
         return lyrics 
- 
+    
+    
+    def _lyricsSections2GroupsSimilarMElody(self):
+        
+        self.groupsSimilarMelody = {}
+        
+        for idx, section in enumerate(self.symbTrParser.sections):
+            if section.name != 'VOCAL_SECTION':
+                continue
+    
+            # first letter used as key in dict
+            currMelodicStructLetter = section.melodicStructure[0]
+            if currMelodicStructLetter not in self.groupsSimilarMelody: # start a new group
+                self.groupsSimilarMelody[currMelodicStructLetter] = [section]
+            else:
+                if not self.existsInGroup( section): # same melody and lyrics
+                    sectionsWithThisName = self.groupsSimilarMelody[currMelodicStructLetter]
+                    sectionsWithThisName.append(section)
+    
+    def existsInGroup(self, section):
+    
+        currMelodicStructLetter = section.melodicStructure[0]
+        
+        sectionsInGroup = self.groupsSimilarMelody[currMelodicStructLetter]
+        for sectionInGr in sectionsInGroup:
+            if sectionInGr.melodicStructure == section.melodicStructure and sectionInGr.lyricStructure == section.lyricStructure:
+                    return 1
+        return 0
+    
+    
+    def getProbableLyricsForMelodicStructure(self, melodicStructure):
+         
+        melodicStructLetter = melodicStructure[0]
+        
+        if melodicStructLetter not in self.groupsSimilarMelody:
+            print "section not in metadata"
+            return
+        
+        return self.groupsSimilarMelody[melodicStructLetter]
+
+
   
    ##################################################################################
     def printSectionsAndLyrics(self):

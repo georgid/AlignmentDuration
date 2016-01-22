@@ -111,7 +111,7 @@ def doitOneRecording(argv):
     # create dict of (melodicStruct,lyricStruct)
     
     
-    secMetadataName =  findFileByExtensions(pathToComposition, ['sectionsMetadata_symbTr1.json']) 
+    secMetadataName =  findFileByExtensions(pathToComposition, ['sectionsMetadata.json']) 
     URIsecMetadata = os.path.join(pathToComposition, secMetadataName[0])
     groups = loadSectionMetadata(URIsecMetadata)
     

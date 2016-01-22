@@ -4,7 +4,6 @@ contains SymbTr Parser class
  
 @author: joro
 '''
-import codecs
 import os
 import sys
 from Word import Word
