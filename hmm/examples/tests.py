@@ -217,7 +217,7 @@ def test_decoding(pathToComposition, whichSection):
     lyrics = makamScore.getLyricsForSection(whichSection)
     
     
-    lyricsWithModels, observationFeatures, URIRecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
+    lyricsWithModels, observationFeatures, URIRecordingChunk = loadSmallAudioFragment(lyrics, 'dummyExtractedPitchList',   URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
     
     decoder = getDecoder(lyricsWithModels, URIRecordingChunk)
     
@@ -311,7 +311,7 @@ if __name__ == '__main__':
     htkParser = HtkConverter()
     htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    lyricsWithModels, observationFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
+    lyricsWithModels, observationFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, 'dummyExtractedPitchList',    URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
 #     
     decode(lyricsWithModels, observationFeatures, URIrecordingNoExt)
 #   

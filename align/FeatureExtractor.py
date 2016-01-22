@@ -41,13 +41,13 @@ from hmm.ParametersAlgo import ParametersAlgo
 
 
 
-def loadMFCCs(URI_recording_noExt, URIRecordingChunkResynthesizedNoExt,  withSynthesis, section): 
+def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthesizedNoExt,  withSynthesis, section): 
     '''
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
-    # resynthesize audio chunk:
         
-    f0FreqsRaw = _extractPredominantPitch(URI_recording_noExt)
+#     extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
+    
 
     URI_recording = URI_recording_noExt + '.wav'
     
@@ -56,11 +56,12 @@ def loadMFCCs(URI_recording_noExt, URIRecordingChunkResynthesizedNoExt,  withSyn
     logger.setLevel(logging.INFO)
     logger.info("working on section: {}".format(URIRecordingChunkResynthesized))
     
+    # resynthesize audio chunk:
     if withSynthesis: 
         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
             logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
 
-            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, f0FreqsRaw, section.beginTs, section.endTs, ParametersAlgo.THRESHOLD_PEAKS)
+            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, section.beginTs, section.endTs, ParametersAlgo.THRESHOLD_PEAKS)
             resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     
         # NOT IMPLEMENTED
@@ -87,24 +88,24 @@ def loadMFCCs(URI_recording_noExt, URIRecordingChunkResynthesizedNoExt,  withSyn
 
 def _extractPredominantPitch(URI_recording_noExt):
     
+    extractedPitchList = []
     ####### melodia format
 #     melodiaInput = URI_recording_noExt + '.melodia'
-#     f0FreqsRaw = readListOfListTextFile_gen(melodiaInput)
+#     extractedPitchList = readListOfListTextFile_gen(melodiaInput)
     
     ####### json serialized array format
 
-#     ANDRES:     
 #     from compmusic.extractors.makam import pitch
 #     extractor = pitch.PitchExtractMakam()
 #     results = extractor.run(URI_recording_noExt + '.wav')
-#     f0FreqsRaw = json.loads(results['pitch'])
+#     extractedPitchList = json.loads(results['pitch'])
     
-    melodiaInput = URI_recording_noExt + '.pitch'
-    with open(melodiaInput) as f:
-        f0FreqsRaw = json.load(f)
+#     melodiaInput = URI_recording_noExt + '.pitch'
+#     with open(melodiaInput) as f:
+#         extractedPitchList = json.load(f)
     
     
-    return f0FreqsRaw
+    return extractedPitchList
 
 def _extractMFCCs( URIRecordingChunk):
         baseNameAudioFile = os.path.splitext(os.path.basename(URIRecordingChunk))[0]

@@ -44,7 +44,7 @@ from htkparser.htk_converter import HtkConverter
 
 
 
-def loadSmallAudioFragment(lyrics, URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, withSynthesis, whichSection, htkParser):
+def loadSmallAudioFragment(lyrics, extractedPitchList,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, withSynthesis, whichSection, htkParser):
     '''
     test duration-explicit HMM with audio features from real recording and htk-loaded model
     asserts it works. no results provided 
@@ -53,7 +53,7 @@ def loadSmallAudioFragment(lyrics, URIrecordingNoExt, URIRecordingChunkResynthes
 
     lyricsWithModels = LyricsWithModels(lyrics, htkParser, 'False', ParametersAlgo.DEVIATION_IN_SEC)
      
-    observationFeatures, URIRecordingChunk = loadMFCCs(URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, withSynthesis, whichSection) #     observationFeatures = observationFeatures[0:1000]
+    observationFeatures, URIRecordingChunk = loadMFCCs(URIrecordingNoExt, extractedPitchList,  URIRecordingChunkResynthesizedNoExt, withSynthesis, whichSection) #     observationFeatures = observationFeatures[0:1000]
 
 
     lyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)

@@ -4,6 +4,7 @@ Created on Jan 13, 2016
 @author: joro
 '''
 import os
+import json
 from align.LyricsAlign import alignRecording
 
 def testLyricsAlign():
@@ -16,7 +17,11 @@ def testLyricsAlign():
     audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.wav')
     outputDir =  os.path.join( currDir, '../example/output/' )
     
-    totalDetectedTokenList = alignRecording(symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, outputDir)
+    extractedPitch = os.path.splitext(audioFileURI)[0] + '.pitch'
+    with open(extractedPitch) as f:
+        extractedPitchList = json.load(f)
+    
+    totalDetectedTokenList = alignRecording(symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, extractedPitchList, outputDir)
     ret = {'alignedLyricsSyllables':{} }
     ret['alignedLyricsSyllables'] =   totalDetectedTokenList
     print ret

@@ -98,8 +98,9 @@ class LyricsAlign(compmusic.extractors.ExtractorModule):
         
         
         
-def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, outputDir):
         
+def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, extractedPitchList, outputDir ):
+
         # parameters 
         withSynthesis = True
         withOracle = False
@@ -130,7 +131,7 @@ def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFile
                 print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
                 continue
             
-            detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
+            detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
             #detectedTokenList, selectedSection = getBestLyrics(makamScore, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
            
                 
@@ -158,7 +159,7 @@ def getBestLyrics(makamScore, withSynthesis, withOracle,  oracleLyrics, usePersi
          
          
                
-def  alignSectionLink( lyrics, withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, currSectionLink, htkParser):
+def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, currSectionLink, htkParser):
         '''
         wrapper top-most logic method
         '''
@@ -172,7 +173,7 @@ def  alignSectionLink( lyrics, withSynthesis, withOracle, lyricsWithModelsORacle
         detectedAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
         if not os.path.isfile(detectedAlignedfileName):
             #     ###### extract audio features
-            lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink, htkParser)
+            lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, extractedPitchList,   URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink, htkParser)
             
         # DEBUG: score-derived phoneme  durations
     #     lyricsWithModels.printPhonemeNetwork()
