@@ -28,6 +28,10 @@ import glob
 from SymbTrParser import SymbTrParser
 # from utils.Utils import writeListToTextFile
 
+import compmusic
+from compmusic import dunya
+dunya.set_token('69ed3d824c4c41f59f0bc853f696a7dd80707779')
+
 
 # 
 # COMPOSITION_NAME = 'muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik'
@@ -98,6 +102,9 @@ class MakamScore():
     
     
     def _lyricsSections2GroupsSimilarMElody(self):
+        '''
+        divide into groups with similar melody
+        '''
         
         self.groupsSimilarMelody = {}
         
@@ -126,12 +133,13 @@ class MakamScore():
     
     
     def getProbableLyricsForMelodicStructure(self, melodicStructure):
+        
+        '''B? -> B'''
          
         melodicStructLetter = melodicStructure[0]
         
         if melodicStructLetter not in self.groupsSimilarMelody:
-            print "section not in metadata"
-            return
+            sys.exit("section {} not in metadata".format(melodicStructure))
         
         return self.groupsSimilarMelody[melodicStructLetter]
 
@@ -144,7 +152,7 @@ class MakamScore():
         '''
         for currSection in self.symbTrParser.sections:
     
-            print '\n' + str(currSection.melodicStructure)
+            print '\n' + str(currSection.melodicStructure) + ' ' + str(currSection.lyricStructure)
 
             print currSection.lyrics
 #             for word in  currSection[1]:
@@ -208,5 +216,38 @@ def loadMakamScore2(symbtrtxtURI, sectionMetadataURI):
     makamScore = MakamScore(symbtrtxtURI, sectionMetadataURI )
     return makamScore   
 
-       
+  
+  
+def printMakamScore(URI_dataset, workMBID):
+        
+
+        symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
+        compositionName = symbtr['name'] 
+
+        
+        ScoreURI = URI_dataset + compositionName + '/' + compositionName + '.txt'
+        URISectionsMetadata = URI_dataset + compositionName + '/' + compositionName + '.sectionsMetadata.json'
+        makamScore = loadMakamScore2(ScoreURI, URISectionsMetadata)
+        makamScore.printSectionsAndLyrics()
+        
+        print '---------------------------------------------\n'
+        
+        ####### print groups with similar melody 
+        print 'groupsSimilarMelody:'
+        for group in makamScore.groupsSimilarMelody:
+          print group + ':'
+          for y in makamScore.groupsSimilarMelody[group]:
+            print y
+        print '---------------------------------------------\n'
+
+        ####### print probable sections
+        # print '---------------------------------------------\n'
+        # sections = makamScore.getProbableLyricsForMelodicStructure('B1')
+        # if sections:
+        #     for section in sections:
+        #         print section.__str__()
+        
+        # print '---------------------------------------------\n'
+        # print '---------------------------------------------\n'
+        # print '---------------------------------------------\n'     
            

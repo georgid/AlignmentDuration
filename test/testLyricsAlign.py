@@ -4,7 +4,10 @@ Created on Jan 13, 2016
 @author: joro
 '''
 import os
+import sys
 import json
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from align.LyricsAlign import alignRecording
 
 def testLyricsAlign():
@@ -25,6 +28,7 @@ def testLyricsAlign():
     ret = {'alignedLyricsSyllables':{} }
     ret['alignedLyricsSyllables'] =   totalDetectedTokenList
     print ret
+
 
 
 if __name__ == '__main__':

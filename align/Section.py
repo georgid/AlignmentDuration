@@ -20,5 +20,7 @@ class Section(object):
         self.melodicStructure =  melodicStructure
         self.lyricStructure =  lyricStructure
         
+    def __str__(self):
         
+        return "{}\n melodic struct: {}\n lyrics struct: {}".format(self.name, self.melodicStructure, self.lyricStructure) 
         

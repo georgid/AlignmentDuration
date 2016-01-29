@@ -20,6 +20,7 @@
 
 import os
 import sys
+import json
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 # pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
 # if pathPycompmusic not in sys.path:
@@ -85,7 +86,7 @@ class LyricsAlign(compmusic.extractors.ExtractorModule):
         outputDir = tempfile.mkdtemp()
         
         
-        totalDetectedTokenList = self.alignRecording(symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, outputDir)
+        totalDetectedTokenList = alignRecording(symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, outputDir)
 
         ret = {'alignedLyricsSyllables':{} }
         ret['alignedLyricsSyllables'] =   totalDetectedTokenList
@@ -97,9 +98,7 @@ class LyricsAlign(compmusic.extractors.ExtractorModule):
 #                 os.remove(os.path.join(output, 'sectionLinks.json'))
         
         
-        
-        
-def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, extractedPitchList, outputDir ):
+def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, extractedPitchList, outputDir):
 
         # parameters 
         withSynthesis = True
@@ -124,32 +123,36 @@ def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFile
                 continue
             
             
-            lyrics = makamScore.getLyricsForSection(currSectionLink.melodicStructure)
-    
-            lyricsStr = lyrics.__str__()
-            if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
-                print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
-                continue
+#             lyrics = makamScore.getLyricsForSection(currSectionLink.melodicStructure)
+#     
+#             lyricsStr = lyrics.__str__()
+#             if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
+#                 print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
+#                 continue
+#             
+#             detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
             
-            detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
-            #detectedTokenList, selectedSection = getBestLyrics(makamScore, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
-           
-                
+            detectedTokenList, selectedSection = alignBestSectionLink(makamScore, extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
+#             TODO: return selected section lyrics
+            print selectedSection
             
             totalDetectedTokenList.extend(detectedTokenList)
         
-        return totalDetectedTokenList
+        return totalDetectedTokenList        
+        
+
     
-    
-def getBestLyrics(makamScore, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
+def alignBestSectionLink(makamScore,extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
     '''
     runs alignment on given audio multiple times with a list of probable lyrics
-    returns detectedTokenList with best score
+    @return detectedTokenList with best score
+    @return selectedSection section with this score
     '''   
     maxPhiScore = float('-inf')
     probabaleSections = makamScore.getProbableLyricsForMelodicStructure(currSectionLink.melodicStructure)
     for probabaleSection in probabaleSections:
-        currDetectedTokenList, detectedPath, phiScore = alignSectionLink( probabaleSection.lyrics, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
+        currTokenLevelAlignedSuffix =  tokenLevelAlignedSuffix + '_' + probabaleSection.melodicStructure + '_' + probabaleSection.lyricStructure
+        currDetectedTokenList, detectedPath, phiScore = alignSectionLink( probabaleSection.lyrics, extractedPitchList, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, currTokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
         if phiScore > maxPhiScore:
             maxPhiScore = phiScore
             selectedSection = probabaleSection
@@ -189,10 +192,12 @@ def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, l
             else:
                 detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles)
             
-            phiOptPath = decoder.path.phiOptPath
+            phiOptPath = {'phi': decoder.path.phiPathLikelihood}
             detectedPath = decoder.path.pathRaw
             tokenList2TabFile(detectedTokenList, URIRecordingChunkResynthesizedNoExt, tokenLevelAlignedSuffix, currSectionLink.beginTs)
-         
+            
+            with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'w'  ) as f:
+                json.dump( phiOptPath, f)
            
             
         ### VISUALIZE result 
@@ -208,12 +213,17 @@ def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, l
                 
                 detectedPath = readListTextFile(outputURI)
                 
-                # TODO: store persistently
-                phiOptPath = 0
-       
+                with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'r'  ) as f:
+                    phiOptPathJSON = json.load(f)
+                    phiOptPath = phiOptPathJSON['phi']
+                
     
         return detectedTokenList, detectedPath, phiOptPath
 
+
+
+
+    
 
 def _loadsectionTimeStampsLinksNew(URILinkedSectionsFile):
         import json

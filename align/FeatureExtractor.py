@@ -28,7 +28,7 @@ import utilsLyrics.UtilzNumpy
 
 PATH_TO_HCOPY= '/usr/local/bin/HCopy'
 # ANDRES. On kora.s.upf.edu
-# PATH_TO_HCOPY= '/homedtic/georgid/htkBuilt/bin/HCopy'
+# PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 PATH_TO_CONFIG_FILES= currDir + '/input_files/'

@@ -36,25 +36,32 @@ class Path(object):
             totalAllowedDevTime = (totalTime - TOTAL_ALLOWED_DEV_COEFF * totalTime)
             
             while numStates != numdecodedStates and finalTime > totalAllowedDevTime:
+                '''
+                decrease final time until numDecodedStates aligns with numStates expected
+                '''
                 finalTime = finalTime - 1
                 logger.debug('backtracking from final time {}'.format(finalTime))
 
                 self.pathRaw = self._backtrackForcedDur(chiBackPointers, psiBackPointer, finalTime)
-                self.phiOptPath = self.getPhiOptimal(phi, finalTime)
-#                 currPhiMax = self.getPhiOptimal(phi, finalTime)
-#                 if currPhiMax > maxPhiMax:
-#                     maxPhiMax = currPhiMax
                 
                 self._path2stateIndices()
                 numdecodedStates = len(self.indicesStateStarts)
+
+                currLikelihood = self.getPhiLikelihood(phi, finalTime) / float(numdecodedStates)
             
+            
+            # final sanity check 
             if numStates != numdecodedStates:
                 logger.debug(' backtracking NOT completed! stopped because reached totalAllowedDevTime  {}'.format(totalAllowedDevTime))
-#             self.Phi = maxPhiMax 
+            
+            self.phiPathLikelihood = currLikelihood
             
             
  
-    def getPhiOptimal(self,   phi, finalTime):
+    def getPhiLikelihood(self,   phi, finalTime):
+        '''
+        phi from last state for given final time
+        '''
         length, numStates = numpy.shape(phi)
         return phi[finalTime, numStates -1] 
         
