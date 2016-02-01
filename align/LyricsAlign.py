@@ -230,8 +230,13 @@ def _loadsectionTimeStampsLinksNew(URILinkedSectionsFile):
         with open(URILinkedSectionsFile) as b:
             sectionLinks = json.load(b)
     
-        sectionsLinks = []               
-        sectionLinks = sectionLinks['links']
+        sectionLinksList = [] 
+        
+        if len(sectionLinks.keys()) != 1:
+                raise Exception('More than one work for recording {} Not implemented!'.format(URILinkedSectionsFile))
+        work = sectionLinks[sectionLinks.keys()[0]]
+
+        sectionLinks = work['links']
         for sectionAnno in sectionLinks:
                         
                         melodicStruct = sectionAnno['name']
@@ -246,6 +251,6 @@ def _loadsectionTimeStampsLinksNew(URILinkedSectionsFile):
                         endTimeStr = endTimeStr.replace("]","")
                         endTs =  float(endTimeStr)
                         currSectionLink = SectionLink (melodicStruct, beginTs, endTs) 
-                        sectionsLinks.append(currSectionLink )
+                        sectionLinksList.append(currSectionLink )
                     
-        return sectionsLinks
+        return sectionLinksList
