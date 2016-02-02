@@ -48,7 +48,7 @@ class MakamScore():
 
 ##################################################################################
 
-    def __init__(self, pathToSymbTrFile, pathToSectionTsvFile):
+    def __init__(self, pathToSymbTrFile, sectionMetadata):
         '''
         Constructor
         
@@ -58,7 +58,7 @@ class MakamScore():
         ''' lyrics divided into sectons.
         # e.g. "nakarat" : [ word1 word2 ] '''
         
-        self._loadSectionsAndSyllablesFromSymbTr(pathToSymbTrFile, pathToSectionTsvFile)
+        self._loadSectionsAndSyllablesFromSymbTr(pathToSymbTrFile, sectionMetadata)
         
         self._lyricsSections2GroupsSimilarMElody()
         
@@ -68,13 +68,13 @@ class MakamScore():
       
   ##################################################################################
 
-    def _loadSectionsAndSyllablesFromSymbTr(self, pathToSymbTrFile, sectionMetadataFileURI):
+    def _loadSectionsAndSyllablesFromSymbTr(self, pathToSymbTrFile, sectionMetadata):
         '''
         parses symbTr file. Reads lyrics, 
         reads section names
         groups together section names and lyrics 
         '''
-        self.symbTrParser = SymbTrParser2(pathToSymbTrFile, sectionMetadataFileURI)
+        self.symbTrParser = SymbTrParser2(pathToSymbTrFile, sectionMetadata)
        
         # list of Word object
         self.symbTrParser.syllables2Lyrics()
@@ -207,13 +207,13 @@ def loadMakamScore(pathToComposition):
     return makamScore
 
 
-def loadMakamScore2(symbtrtxtURI, sectionMetadataURI):
+def loadMakamScore2(symbtrtxtURI, sectionMetadata):
     '''
     same as loadLyrics, but return MakamScore, so that all lyrics can be shown if needed
     '''
     Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
     
-    makamScore = MakamScore(symbtrtxtURI, sectionMetadataURI )
+    makamScore = MakamScore(symbtrtxtURI, sectionMetadata )
     return makamScore   
 
   

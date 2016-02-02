@@ -50,55 +50,9 @@ from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
 
 from htkparser.htk_converter import HtkConverter
 
-
-class LyricsAlign(compmusic.extractors.ExtractorModule):
-    
-    
-    def run(self, musicbrainzid, fname):
+ 
         
-        rec_data = dunya.makam.get_recording(musicbrainzid )
-        
-        if len(rec_data['works']) == 0:
-                raise Exception('No work on recording %s' % musicbrainzid)
-        
-        if len(rec_data['works']) > 1:
-                raise Exception('More than one work for recording %s Not implemented!' % musicbrainzid)
-        
-        w = rec_data['works'][0]
-        symbtrtxtURI = util.docserver_get_symbtrtxt(w['mbid'])
-        if not symbtrtxtURI:
-                return
-        
-        # TODO: if symbTr does not have second verse, continue
-          
-        sectionLinksURI = util.docserver_get_url(musicbrainzid, "scorealign", "sectionlinks", 1, version="0.2")
-        
-        # TODO ANDRES
-        from symbtrdataextractor import extractor
-        autoSegBounds = ''
-        symbtrtxtURINoExt = os.path.splitext(os.path.basename(symbtrtxtURI))[0]
-        sectionMetadataURI, isDataValid = extractor.extract(symbtrtxtURI, symbtrname=symbtrtxtURINoExt, seg_note_idx=autoSegBounds,
-                            mbid=w['mbid'], extract_all_labels=False, melody_sim_thres=0.25, 
-                            lyrics_sim_thres=0.25, get_recording_rels=False)
-        
-        audioFileURI, created = util.docserver_get_wav_filename(musicbrainzid)
-
-        outputDir = tempfile.mkdtemp()
-        
-        
-        totalDetectedTokenList = alignRecording(symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, outputDir)
-
-        ret = {'alignedLyricsSyllables':{} }
-        ret['alignedLyricsSyllables'] =   totalDetectedTokenList
-        
-
-
-# TODO: delete output        
-#         if os.path.isfile(os.path.join(output, 'sectionLinks.json')):
-#                 os.remove(os.path.join(output, 'sectionLinks.json'))
-        
-        
-def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, extractedPitchList, outputDir):
+def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinks, audioFileURI, extractedPitchList, outputDir):
 
         # parameters 
         withSynthesis = True
@@ -111,8 +65,8 @@ def alignRecording( symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFile
         
         recordingNoExtURI = os.path.splitext(audioFileURI)[0]
         
-        sectionLinks = _loadsectionTimeStampsLinksNew( sectionLinksURI) 
-        makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataURI )
+        sectionLinks = _loadsectionTimeStampsLinksNew( sectionLinks) 
+        makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadata )
         
             
         tokenLevelAlignedSuffix = '.alignedLyrics' 
@@ -225,15 +179,15 @@ def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, l
 
     
 
-def _loadsectionTimeStampsLinksNew(URILinkedSectionsFile):
-        import json
-        with open(URILinkedSectionsFile) as b:
-            sectionLinks = json.load(b)
+def _loadsectionTimeStampsLinksNew(sectionLinks):
+
     
         sectionLinksList = [] 
         
         if len(sectionLinks.keys()) != 1:
-                raise Exception('More than one work for recording {} Not implemented!'.format(URILinkedSectionsFile))
+                raise Exception('More than one work for recording {} Not implemented!'.format(sectionLinks))
+        
+        # first work only
         work = sectionLinks[sectionLinks.keys()[0]]
 
         sectionLinks = work['links']
@@ -254,3 +208,16 @@ def _loadsectionTimeStampsLinksNew(URILinkedSectionsFile):
                         sectionLinksList.append(currSectionLink )
                     
         return sectionLinksList
+    
+    
+def constructSymbTrTxtURI(URI_dataset, workMBID):
+    '''
+    URI on local machine of symbTr queried by workMBID 
+    '''
+    symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
+    symbTrCompositionName = symbtr['name']
+    
+    compositionPath = URI_dataset + symbTrCompositionName + '/'
+    symbtrtxtURI = compositionPath + symbTrCompositionName + '.txt'
+    
+    return symbtrtxtURI,  symbTrCompositionName 

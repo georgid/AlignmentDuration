@@ -28,7 +28,7 @@ TODO: take only section names from tsv file. parse sections from symbTr double s
 '''
 class _SymbTrParserBase(object):
     
-    def __init__(self, pathToSymbTrFile,  sectionMetadataFileURI):
+    def __init__(self, pathToSymbTrFile,  sectionMetadata):
         '''
         Constructor
         '''
@@ -39,15 +39,27 @@ class _SymbTrParserBase(object):
 
         #  list of objects of Section class
         self.sections = []
-        self._loadSectionBoundaries(sectionMetadataFileURI)
+        self._loadSectionBoundaries(sectionMetadata)
+#         self._loadSectionBoundaries_fileURI(sectionMetadata)
+
         
     
     def  _loadSyllables(self, pathToSymbTrFile):
         raise NotImplementedError("a parsing function must be implemented")
 
    ##################################################################################
-
-    def _loadSectionBoundaries(self, sectionMetadataFileURI):
+    
+    def _loadSectionBoundaries(self, sectionMetadata):
+        scoreSectionAnnos = sectionMetadata['sections']
+        for section in scoreSectionAnnos:
+                    sectionNew = Section(section['name'],  int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure']) 
+                    
+                    self.sections.append(sectionNew)
+    
+    def _loadSectionBoundaries_fileURI(self, sectionMetadataFileURI):
+            '''
+            load section boundaries from sectionMetadatafile
+            '''
             if not os.path.isfile(sectionMetadataFileURI):
                 sys.exit("no file {}".format(sectionMetadataFileURI))
             

@@ -23,10 +23,8 @@ python setup.py install
 git clone https://github.com/georgid/htkModelParser.git
 python setup.py install
 
-* scikit-learn (with underflow fix)
-git clone https://github.com/georgid/scikit-learn
-python setup.py build
-python setup.py install
+
+
 
 * utilsLyrics
 git clone https://github.com/georgid/utilsLyrics.git

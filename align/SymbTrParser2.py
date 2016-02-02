@@ -27,11 +27,11 @@ class SymbTrParser2(_SymbTrParserBase):
 
 
     
-    def __init__(self, pathToSymbTrFile, sectionMetadataFileURI):
+    def __init__(self, pathToSymbTrFile, sectionMetadata):
         '''
         Constructor
         '''
-        _SymbTrParserBase.__init__(self,pathToSymbTrFile,sectionMetadataFileURI)
+        _SymbTrParserBase.__init__(self,pathToSymbTrFile,sectionMetadata)
         
         
    

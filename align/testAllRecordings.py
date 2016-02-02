@@ -11,9 +11,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import compmusic
 from compmusic import dunya
-from align.LyricsAlign import alignRecording
+from align.LyricsAligner import alignRecording, constructSymbTrTxtURI
 from align.MakamScore import printMakamScore
 dunya.set_token('69ed3d824c4c41f59f0bc853f696a7dd80707779')
+
+
+
 
 
 
@@ -68,11 +71,9 @@ def doitAllRecordings():
         printMakamScore(URI_dataset, workMBID)
         
         
-        symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
-        symbTrCompositionName = symbtr['name'] 
+        symbtrtxtURI, symbTrCompositionName  = constructSymbTrTxtURI(URI_dataset, workMBID)
         
         compositionPath = URI_dataset + symbTrCompositionName + '/'
-        symbtrtxtURI = compositionPath + symbTrCompositionName + '.txt'
         sectionMetadataURI = compositionPath + symbTrCompositionName + '.sectionsMetadata.json'
         
         audioFileURI =  compositionPath + recordingDir + '/' + recordingDir + '.wav'
@@ -96,6 +97,7 @@ def doitAllRecordings():
         totalDetectedTokenList = alignRecording(symbtrtxtURI, sectionMetadataURI, sectionLinksURI, audioFileURI, extractedPitchList, outputDir)
         
         raw_input('press key...')
+
 
 
 def downloadSectionLink(recMBID, recordingDir, compositionPath, sectionLinkFilename):
