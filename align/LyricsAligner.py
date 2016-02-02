@@ -21,6 +21,7 @@
 import os
 import sys
 import json
+import subprocess
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 # pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
 # if pathPycompmusic not in sys.path:
@@ -28,10 +29,10 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 
 
 import compmusic.extractors
-# from docserver import util
 from compmusic import dunya
 from compmusic.dunya import makam
-import tempfile
+
+import essentia.standard
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 modelDIR = currDir + '/model/'
@@ -42,11 +43,11 @@ from MakamScore import loadMakamScore, loadMakamScore2
 from hmm.examples.main import loadSmallAudioFragment
 from Decoder import Decoder
 from SectionLink import SectionLink
-dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
 
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
-    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile, getMelodicStructFromName, tokenList2TabFile
+    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, \
+    readListTextFile, getMelodicStructFromName, tokenList2TabFile,  fetchFileFromURL
 
 from htkparser.htk_converter import HtkConverter
 
@@ -220,4 +221,42 @@ def constructSymbTrTxtURI(URI_dataset, workMBID):
     compositionPath = URI_dataset + symbTrCompositionName + '/'
     symbtrtxtURI = compositionPath + symbTrCompositionName + '.txt'
     
-    return symbtrtxtURI,  symbTrCompositionName 
+    return symbtrtxtURI,  symbTrCompositionName
+
+
+def downloadSymbTr(workMBID, outputDirURI):
+    
+    symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
+    symbTrCompositionName = symbtr['name']
+    
+    URL = 'https://raw.githubusercontent.com/MTG/SymbTr/master/txt/' + symbTrCompositionName + '.txt'
+    outputFileURI = os.path.join(outputDirURI, symbTrCompositionName + '.txt')
+    fetchFileFromURL(URL, outputFileURI)
+   
+    return outputFileURI
+    
+    
+    
+def download_wav(musicbrainzid, outputDir):
+        '''
+        download wav for MB recording id from makam collection
+        '''
+        mp3FileURI = dunya.makam.download_mp3(musicbrainzid, outputDir)
+    ###### mp3 to Wav: way 1
+    #         newName = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.mp3')
+    #         os.rename(mp3FileURI, newName )
+    #         mp3ToWav = Mp3ToWav()
+    #         wavFileURI = mp3ToWav.run('dummyMBID', newName)
+        
+        ###### mp3 to Wav: way 2
+        wavFileURI = os.path.splitext(mp3FileURI)[0] + '.wav'
+        pipe = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', mp3FileURI, wavFileURI])
+        pipe.wait()
+    
+    ### stereo to mono
+        sampleRate = 44100
+        loader = essentia.standard.MonoLoader(filename=wavFileURI, sampleRate=sampleRate)
+        audio = loader()
+        monoWriter = essentia.standard.MonoWriter(filename=wavFileURI)
+        monoWriter(audio)
+        return wavFileURI
