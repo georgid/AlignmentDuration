@@ -11,19 +11,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import compmusic
 from compmusic import dunya
-from align.LyricsAligner import alignRecording, constructSymbTrTxtURI
+from align.LyricsAligner import alignRecording, constructSymbTrTxtURI,\
+    downloadSymbTr
 from align.MakamScore import printMakamScore
 dunya.set_token('69ed3d824c4c41f59f0bc853f696a7dd80707779')
 
-
-
-
-
-
-
-def doitAllRecordings():
-     
-     recMBIDs = [ 
+recMBIDs = [ 
                                  'b49c633c-5059-4658-a6e0-9f84a1ffb08b',
 #                  'feda89e3-a50d-4ff8-87d4-c1e531cc1233',
                 'dd536d18-aa84-451c-b7e5-d97271300b8c',
@@ -37,6 +30,14 @@ def doitAllRecordings():
 #                  '8c7eccf5-0d9e-4f33-89f0-87e95b7da970',
 #                  '1701ceba-bd5a-477e-b883-5dacac67da43'
                  ]
+
+
+
+
+
+def doitAllRecordings():
+     
+    
                  
                  
 
@@ -72,6 +73,7 @@ def doitAllRecordings():
         
         
         symbtrtxtURI, symbTrCompositionName  = constructSymbTrTxtURI(URI_dataset, workMBID)
+        symbtrtxtURI = downloadSymbTr(workMBID, URI_dataset)
         
         compositionPath = URI_dataset + symbTrCompositionName + '/'
         sectionMetadataURI = compositionPath + symbTrCompositionName + '.sectionsMetadata.json'

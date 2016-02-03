@@ -53,7 +53,7 @@ from htkparser.htk_converter import HtkConverter
 
  
         
-def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinks, audioFileURI, extractedPitchList, outputDir):
+def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileURI, extractedPitchList, outputDir):
 
         # parameters 
         withSynthesis = True
@@ -66,7 +66,7 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinks, audioFileURI, e
         
         recordingNoExtURI = os.path.splitext(audioFileURI)[0]
         
-        sectionLinks = _loadsectionTimeStampsLinksNew( sectionLinks) 
+        sectionLinks = loadsectionTimeStampsLinksNew( sectionLinksDict) 
         makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadata )
         
             
@@ -87,24 +87,28 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinks, audioFileURI, e
 #             
 #             detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
             
-            detectedTokenList, selectedSection = alignBestSectionLink(makamScore, extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
-#             TODO: return selected section lyrics
-            print selectedSection
+            detectedTokenList = alignSectionLinkProbableSections(makamScore, extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
+# DEBUG           
+#             print "query melodic structure: {}".format(currSectionLink.melodicStructure)
+#             for sectin in currSectionLink.selectedSections:
+#                 print "result sections: {}".format(sectin)
             
             totalDetectedTokenList.extend(detectedTokenList)
+        # sectionLinks- list of objects of class sectionLink with the field selectedSections set after slignment
+        sectionLinksDict = extendSectionLinksSelectedSections(sectionLinksDict, sectionLinks)
         
-        return totalDetectedTokenList        
+        return totalDetectedTokenList, sectionLinksDict        
         
 
     
-def alignBestSectionLink(makamScore,extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
+def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
     '''
-    runs alignment on given audio multiple times with a list of probable lyrics
+    runs alignment on given audio multiple times with a list of probable sections
     @return detectedTokenList with best score
     @return selectedSection section with this score
     '''   
     maxPhiScore = float('-inf')
-    probabaleSections = makamScore.getProbableLyricsForMelodicStructure(currSectionLink.melodicStructure)
+    probabaleSections = makamScore.getProbableSectionsForMelodicStructure(currSectionLink)
     for probabaleSection in probabaleSections:
         currTokenLevelAlignedSuffix =  tokenLevelAlignedSuffix + '_' + probabaleSection.melodicStructure + '_' + probabaleSection.lyricStructure
         currDetectedTokenList, detectedPath, phiScore = alignSectionLink( probabaleSection.lyrics, extractedPitchList, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, currTokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
@@ -112,8 +116,12 @@ def alignBestSectionLink(makamScore,extractedPitchList, withSynthesis, withOracl
             maxPhiScore = phiScore
             selectedSection = probabaleSection
             detectedTokenList = currDetectedTokenList
-
-    return detectedTokenList, selectedSection
+    
+    # get sections with same lyrics as top-aligned section
+    selectedSectionsSameLyrics =  makamScore.getSectionsSameLyrics( selectedSection, probabaleSections)
+    currSectionLink.setSelectedSections(selectedSectionsSameLyrics)
+    
+    return detectedTokenList
          
          
                
@@ -180,28 +188,25 @@ def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, l
 
     
 
-def _loadsectionTimeStampsLinksNew(sectionLinks):
+
+
+
+def loadsectionTimeStampsLinksNew(sectionLinksDict):
 
     
         sectionLinksList = [] 
         
-        if len(sectionLinks.keys()) != 1:
-                raise Exception('More than one work for recording {} Not implemented!'.format(sectionLinks))
-        
-        # first work only
-        work = sectionLinks[sectionLinks.keys()[0]]
-
-        sectionLinks = work['links']
-        for sectionAnno in sectionLinks:
+        sectionLinks = parseSectionLinks(sectionLinksDict)
+        for sectionLink in sectionLinks:
                         
-                        melodicStruct = sectionAnno['name']
+                        melodicStruct = sectionLink['name']
                         
-                        beginTimeStr = str(sectionAnno['time'][0])
+                        beginTimeStr = str(sectionLink['time'][0])
                         beginTimeStr = beginTimeStr.replace("[","")
                         beginTimeStr = beginTimeStr.replace("]","")
                         beginTs =  float(beginTimeStr)
                             
-                        endTimeStr = str(sectionAnno['time'][1])
+                        endTimeStr = str(sectionLink['time'][1])
                         endTimeStr = endTimeStr.replace("[","")
                         endTimeStr = endTimeStr.replace("]","")
                         endTs =  float(endTimeStr)
@@ -209,8 +214,46 @@ def _loadsectionTimeStampsLinksNew(sectionLinks):
                         sectionLinksList.append(currSectionLink )
                     
         return sectionLinksList
-    
-    
+
+def parseSectionLinks(sectionLinksDict):
+    if len(sectionLinksDict.keys()) != 1:
+        raise Exception('More than one work for recording {} Not implemented!'.format(sectionLinksDict))
+# first work only. sectionLinks format 0.2
+    work = sectionLinksDict[sectionLinksDict.keys()[0]]
+    sectionLinks = work['links']
+    return sectionLinks    
+
+def extendSectionLinksSelectedSections(sectionLinksDict, sectionLinksAligned):
+    '''
+    add selected sections as field in input sectionLinks Dict 
+    @param: sectionLinksAligned - list of objects of class sectionLink with the field selectedSections set
+    @return:  changed @param sectionLinksDict 
+    '''
+    sectionLinks = parseSectionLinks(sectionLinksDict)
+    for currSectionLink in sectionLinks:
+                        
+                        
+                        beginTimeStr = str(currSectionLink['time'][0])
+                        beginTimeStr = beginTimeStr.replace("[","")
+                        beginTimeStr = beginTimeStr.replace("]","")
+                        
+                        relevantSectionLinkAligned =  getSectionLinkBybeginTs(sectionLinksAligned, beginTimeStr)
+                        
+                        if not hasattr(relevantSectionLinkAligned, 'selectedSections'):
+                            continue 
+                        selectedSections = []
+                        for currSelectedSection in relevantSectionLinkAligned.selectedSections:
+                            sec = {'melodicStructure':currSelectedSection.melodicStructure, 'lyricStructure':currSelectedSection.lyricStructure}
+                            selectedSections.append(sec)
+                            currSectionLink['selectedSections'] = selectedSections
+    return sectionLinksDict                       
+
+def getSectionLinkBybeginTs(sectionLinks, queryBeginTs):
+    for sectionLink in sectionLinks:
+        if str(sectionLink.beginTs) ==  queryBeginTs:
+            return sectionLink
+                                 
+   
 def constructSymbTrTxtURI(URI_dataset, workMBID):
     '''
     URI on local machine of symbTr queried by workMBID 
@@ -250,6 +293,9 @@ def download_wav(musicbrainzid, outputDir):
         
         ###### mp3 to Wav: way 2
         wavFileURI = os.path.splitext(mp3FileURI)[0] + '.wav'
+        if os.path.isfile(wavFileURI):
+            return wavFileURI
+            
         pipe = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', mp3FileURI, wavFileURI])
         pipe.wait()
     

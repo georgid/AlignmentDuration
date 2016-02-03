@@ -21,3 +21,8 @@ class SectionLink(object):
 #         self.fromSyllableIdx = fromSyllableIdx
 #         self.toSyllableIdx = toSyllableIdx
 #         
+    def setSelectedSections(self, sections):
+        '''
+        selected sections after alignment 
+        '''
+        self.selectedSections = sections

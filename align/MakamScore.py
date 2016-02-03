@@ -132,18 +132,25 @@ class MakamScore():
         return 0
     
     
-    def getProbableLyricsForMelodicStructure(self, melodicStructure):
+    def getProbableSectionsForMelodicStructure(self, querySectionLink):
         
-        '''B? -> B'''
-         
-        melodicStructLetter = melodicStructure[0]
+        ''' get list with similar melodies and diff lyrics 
+        (exlude same lyricsStructure)'''
+        # B? -> B 
+        melodicStructLetter = querySectionLink.melodicStructure[0]
         
         if melodicStructLetter not in self.groupsSimilarMelody:
-            sys.exit("section {} not in metadata".format(melodicStructure))
+            sys.exit("section {} not in metadata".format(querySectionLink.melodicStructure))
         
         return self.groupsSimilarMelody[melodicStructLetter]
 
-
+    def getSectionsSameLyrics(self, querySection, listSections):
+        '''
+        get subset with  lyrics same as querySection
+        '''
+        sectionsSameLyrics = [section for section in listSections if section.lyricStructure == querySection.lyricStructure]
+        return sectionsSameLyrics
+        
   
    ##################################################################################
     def printSectionsAndLyrics(self):
@@ -218,15 +225,15 @@ def loadMakamScore2(symbtrtxtURI, sectionMetadata):
 
   
   
-def printMakamScore(URI_dataset, workMBID):
+def printMakamScore(ScoreURI, URISectionsMetadata):
         
-
-        symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
-        compositionName = symbtr['name'] 
-
-        
-        ScoreURI = URI_dataset + compositionName + '/' + compositionName + '.txt'
-        URISectionsMetadata = URI_dataset + compositionName + '/' + compositionName + '.sectionsMetadata.json'
+# 
+#         symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
+#         compositionName = symbtr['name'] 
+# 
+#         
+#         ScoreURI = URI_dataset + compositionName + '/' + compositionName + '.txt'
+#         URISectionsMetadata = URI_dataset + compositionName + '/' + compositionName + '.sectionsMetadata.json'
         makamScore = loadMakamScore2(ScoreURI, URISectionsMetadata)
         makamScore.printSectionsAndLyrics()
         
@@ -242,7 +249,7 @@ def printMakamScore(URI_dataset, workMBID):
 
         ####### print probable sections
         # print '---------------------------------------------\n'
-        # sections = makamScore.getProbableLyricsForMelodicStructure('B1')
+        # sections = makamScore.getProbableSectionsForMelodicStructure('B1')
         # if sections:
         #     for section in sections:
         #         print section.__str__()
