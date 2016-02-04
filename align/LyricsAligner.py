@@ -216,6 +216,9 @@ def loadsectionTimeStampsLinksNew(sectionLinksDict):
         return sectionLinksList
 
 def parseSectionLinks(sectionLinksDict):
+    '''
+    helper method
+    '''
     if len(sectionLinksDict.keys()) != 1:
         raise Exception('More than one work for recording {} Not implemented!'.format(sectionLinksDict))
 # first work only. sectionLinks format 0.2

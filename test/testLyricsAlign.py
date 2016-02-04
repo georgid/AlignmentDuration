@@ -45,7 +45,10 @@ def testLyricsAlign():
 
 
 def testExtendSectionLinksSelectedSections():
-    
+    '''
+    test if extending a sections Links file works well
+    extendSectionLinksSelectedSections(sectionLinksDict, sectionLinks)
+    '''
     sectionLinks = loadsectionTimeStampsLinksNew(sectionLinksDict)  
   
     
