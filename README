@@ -24,7 +24,9 @@ git clone https://github.com/georgid/htkModelParser.git
 python setup.py install
 
 
-
+* sci-kit-learn (branch with fixed underflow issues)
+git clone https://github.com/georgid/scikit-learn 
+python setup.py install
 
 * utilsLyrics
 git clone https://github.com/georgid/utilsLyrics.git
