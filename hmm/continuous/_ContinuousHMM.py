@@ -10,7 +10,6 @@ import os
 import sys
 import logging
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
-from matplotlib.lines import Line2D
 # from sklearn.utils.extmath import logsumexp
 
 parentDir = os.path.abspath(  os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir ) )
@@ -225,7 +224,7 @@ class _ContinuousHMM(_BaseHMM):
         self._normalizeBByMaxLog()
         
 #         if self.logger.level == logging.INFO:
-        ax = self.visualizeBMap()
+#         ax = self.visualizeBMap()
 #         self.visualizePath(ax)
          
        

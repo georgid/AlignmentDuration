@@ -3,12 +3,6 @@ Created on Mar 5, 2015
 
 @author: joro
 '''
-from IPython.core.tests.simpleerr import sysexit
-'''
-Created on Oct 8, 2014
-
-@author: joro
-'''
 from Phoneme import Phoneme
 import sys
 from Phonetizer import Phonetizer

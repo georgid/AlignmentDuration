@@ -28,10 +28,6 @@ import glob
 from SymbTrParser import SymbTrParser
 # from utils.Utils import writeListToTextFile
 
-import compmusic
-from compmusic import dunya
-dunya.set_token('69ed3d824c4c41f59f0bc853f696a7dd80707779')
-
 
 # 
 # COMPOSITION_NAME = 'muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik'
@@ -227,10 +223,6 @@ def loadMakamScore2(symbtrtxtURI, sectionMetadata):
   
 def printMakamScore(ScoreURI, URISectionsMetadata):
         
-# 
-#         symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
-#         compositionName = symbtr['name'] 
-# 
 #         
 #         ScoreURI = URI_dataset + compositionName + '/' + compositionName + '.txt'
 #         URISectionsMetadata = URI_dataset + compositionName + '/' + compositionName + '.sectionsMetadata.json'
