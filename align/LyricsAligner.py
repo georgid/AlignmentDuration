@@ -1,3 +1,4 @@
+
 # Copyright 2015,2016 Music Technology Group - Universitat Pompeu Fabra
 #
 # This file is part of Dunya
@@ -302,7 +303,9 @@ def download_wav(musicbrainzid, outputDir):
         pipe = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', mp3FileURI, wavFileURI])
         pipe.wait()
     
-    ### stereo to mono
+    return wavFileURI
+
+def stereoToMono(wavFileURI):
         sampleRate = 44100
         loader = essentia.standard.MonoLoader(filename=wavFileURI, sampleRate=sampleRate)
         audio = loader()
