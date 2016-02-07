@@ -3,9 +3,9 @@ Created on Oct 27, 2014
 
 @author: joro
 '''
-from Phoneme import Phoneme
 from Decoder import logger
 import os
+import sys
 
 class Lyrics(object):
     '''
@@ -108,7 +108,9 @@ class Lyrics(object):
         '''
         total durationInMinUnit of phonemes according to score. no pauses considered.
         '''
-        totalDuration = 0.0    
+        totalDuration = 0.0
+        if len(self.listWords) == 0:
+            sys.exit("no words in lyrics set. No total duration can be get")    
         for word_ in self.listWords:
             for syllable_ in word_.syllables:
                 totalDuration +=  syllable_.durationInMinUnit

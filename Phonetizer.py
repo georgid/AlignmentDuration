@@ -6,12 +6,12 @@
 import sys
 import os
 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
-pathUtils = os.path.join(parentDir, 'utilsLyrics')
-
-if not pathUtils in sys.path:
-    sys.path.append(pathUtils )
-from Utilz import loadTextFile
+# parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
+# pathUtils = os.path.join(parentDir, 'utilsLyrics')
+# 
+# if not pathUtils in sys.path:
+#     sys.path.append(pathUtils )
+from utilsLyrics.Utilz import loadTextFile
 
 
 def readLookupTable(URItable):

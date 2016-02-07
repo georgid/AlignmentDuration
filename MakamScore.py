@@ -16,12 +16,12 @@ from Decoder import logger
 # trick to make terminal NOT assume ascii
 reload(sys).setdefaultencoding("utf-8")
 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
-pathUtils = os.path.join(parentDir, 'utilsLyrics')
+# parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
+# pathUtils = os.path.join(parentDir, 'utilsLyrics')
+# 
+# sys.path.append(pathUtils )
 
-sys.path.append(pathUtils )
-
-from Utilz import writeListToTextFile, findFileByExtensions
+from utilsLyrics.Utilz import writeListToTextFile, findFileByExtensions
 import codecs
 
 import glob

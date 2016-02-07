@@ -5,7 +5,6 @@ Created on Oct 13, 2014
 '''
 import os
 from MakamScore import  loadLyrics
-import glob
 import numpy
 import sys
 from LyricsWithHTKModels import LyricsWithHTKModels
@@ -24,15 +23,15 @@ import logging
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
-pathUtils = os.path.join(parentDir, 'utilsLyrics')
-sys.path.append(pathUtils )
-from Utilz import writeListOfListToTextFile, writeListToTextFile,\
-    getMeanAndStDev, getSectionNumberFromName, readListOfListTextFile, readListTextFile
+# pathUtils = os.path.join(parentDir, 'utilsLyrics')
+# sys.path.append(pathUtils )
+from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
+    getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile
 
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
-from htk_converter import HtkConverter
+from htkparser.htk_converter import HtkConverter
 
 # Alignment with HTK
 pathAlignmentStep = os.path.join(parentDir, 'AlignmentStep')
@@ -52,8 +51,8 @@ if pathHMM not in sys.path:
     sys.path.append(pathHMM)
     
 from hmm.Parameters import Parameters
-from hmm.examples.main  import loadSmallAudioFragment, loadSmallAudioFragmentOracle
-from hmm.examples.tests import test_oracle
+from hmm.examples.main  import loadSmallAudioFragment
+# from hmm.examples.main  import loadSmallAudioFragmentOracle
 
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
 from AccuracyEvaluator import _evalAccuracy, evalAccuracy
@@ -132,7 +131,7 @@ def doitOneChunk(argv):
     accuracy = correctDuration / totalDuration
     logger.info("accuracy: {:.2f}".format(accuracy))
     
-    mean, stDev, median = getMeanAndStDev(alignmentErrors)
+    mean, stDev, median = getMeanAndStDevError(alignmentErrors)
     logger.info("mean : {} st dev: {} ".format( mean,stDev))
     logger.info("result: {}".format(detectedAlignedfileName))
 
@@ -214,10 +213,11 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
         #     ###### 2) extract audio features
         
         if  withOracle:
-            
+           
+           lyricsWithModels = '' 
 
-            lyricsWithModelsORacle = loadSmallAudioFragmentOracle(URIrecordingNoExt, lyrics, phonemesAnnoAll )
-            lyricsWithModels = lyricsWithModelsORacle
+#             lyricsWithModelsORacle = loadSmallAudioFragmentOracle(URIrecordingNoExt, lyrics, phonemesAnnoAll )
+#             lyricsWithModels = lyricsWithModelsORacle
         else:                      
             lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, withHTK, URIrecordingNoExt, bool(withSynthesis), fromTs, toTs)
       
@@ -237,8 +237,6 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
             usePersistentFiles = True
         elif usePersistentFiles=='False':
             usePersistentFiles = False
-        else: 
-            sys.exit("usePersistentFiles can be only True or False") 
         
         if withOracle:
             detectedTokenList = decoder.decodeWithOracle(lyricsWithModelsORacle, URIrecordingNoExt, fromTs, toTs )

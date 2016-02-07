@@ -21,7 +21,7 @@ if not HMMDurationPath in sys.path:
     
 from hmm.StateWithDur import StateWithDur
 
-from htk_converter import HtkConverter
+from htkparser.htk_converter import HtkConverter
 from Decoder import logger
 
 from hmm.Parameters import MAX_SILENCE_DURATION
@@ -38,7 +38,7 @@ from WordLevelEvaluator import readNonEmptyTokensTextGrid
 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
-from Utilz import loadDictFromTabFile
+from utilsLyrics.Utilz import loadDictFromTabFile
 
 
 MODELS_DIR = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/models/'
@@ -55,7 +55,7 @@ class LyricsWithGMMs(Lyrics):
         being  linked to models, allows expansion to network of states 
         '''
         
-#       flag to add a state 'sp' with exponential disrib at begining and end  
+#       flag to add a state 'sp' with exponential distrib at begining and end  
         self.withPaddedSilence = True
         
 

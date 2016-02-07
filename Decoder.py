@@ -11,13 +11,13 @@ from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForWordDete
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
+# 
+# pathUtils = os.path.join(parentDir, 'utilsLyrics')
+# 
+# if pathUtils not in sys.path:
+#     sys.path.append(pathUtils )
 
-pathUtils = os.path.join(parentDir, 'utilsLyrics')
-
-if pathUtils not in sys.path:
-    sys.path.append(pathUtils )
-
-from Utilz import writeListOfListToTextFile, writeListToTextFile
+from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
 
 
 import numpy
@@ -251,7 +251,7 @@ class Decoder(object):
         if pathUtils not in sys.path:
             sys.path.append(pathUtils )
     
-        from Utilz import writeListToTextFile
+        from utilsLyrics.Utilz import writeListToTextFile
 
         if withOracle:
             outputURI = self.URIrecordingNoExt + '.path_oracle'

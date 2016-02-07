@@ -22,7 +22,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.ar
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
-from htk_converter import HtkConverter
+from htkparser.htk_converter import HtkConverter
 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )

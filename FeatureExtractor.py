@@ -14,18 +14,18 @@ import subprocess
 from Decoder import logger
 import essentia.standard
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
-pathSMS = os.path.join(parentDir, 'sms-tools/workspace')
+pathSMS = os.path.join(parentDir, 'sms-tools-old/workspace')
 
 
 if pathSMS not in sys.path:
     sys.path.append(pathSMS)
-from harmonicModel_function import extractHarmSpec, resynthesize
+# from harmonicModel_function import extractHarmSpec, resynthesize
 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
 if pathUtils not in sys.path:
     sys.path.append(pathUtils)
 
-import UtilzNumpy
+import utilsLyrics.UtilzNumpy
 
 PATH_TO_HCOPY= '/usr/local/bin/HCopy'
 PATH_TO_CONFIG_FILES= '/Users/joro/Documents/Phd/UPF/voxforge/auto/scripts/input_files/'
@@ -62,8 +62,8 @@ def loadMFCCs(URI_recording_noExt, withSynthesis, fromTs, toTs):
         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
             logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
 
-            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, fromTs, toTs, ParametersAlgo.THRESHOLD_PEAKS)
-            resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
+#             hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, melodiaInput, fromTs, toTs, ParametersAlgo.THRESHOLD_PEAKS)
+#             resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     
     else:
         #### chop only part from audio with essentia

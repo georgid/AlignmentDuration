@@ -7,6 +7,7 @@ from Phonetizer import Phonetizer
 import sys
 import numpy
 from sciKitGMM import SciKitGMM
+from utilsLyrics.Utilz import loadTextFile
 
 class Phoneme:
     def __init__(self, phonemeID):
@@ -87,7 +88,7 @@ class Phoneme:
     def isVowelJingju(self):
         vowelListURI = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/models/hmmlistVowels'
         
-        from Utilz import loadTextFile
+
         vowels = loadTextFile(vowelListURI)
         
         for vowel in vowels:

@@ -17,7 +17,7 @@ if not HMMDurationPath in sys.path:
     
 from hmm.StateWithDur import StateWithDur
 
-from htk_converter import HtkConverter
+from htkparser.htk_converter import HtkConverter
 from Decoder import logger
 
 from hmm.Parameters import MAX_SILENCE_DURATION
