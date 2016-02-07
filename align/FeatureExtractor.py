@@ -13,7 +13,7 @@ import subprocess
 from Decoder import logger
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
-import json
+import tempfile
 
 # print '\n sys.path:' + sys.path +  '\n'
 # if pathSMS not in sys.path:
@@ -28,7 +28,7 @@ import utilsLyrics.UtilzNumpy
 
 PATH_TO_HCOPY= '/usr/local/bin/HCopy'
 # ANDRES. On kora.s.upf.edu
-# PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
+PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 PATH_TO_CONFIG_FILES= currDir + '/input_files/'
@@ -110,10 +110,13 @@ def _extractPredominantPitch(URI_recording_noExt):
 def _extractMFCCs( URIRecordingChunk):
         baseNameAudioFile = os.path.splitext(os.path.basename(URIRecordingChunk))[0]
         dir_ = os.path.dirname(URIRecordingChunk)
+        dir_  = tempfile.mkdtemp()
         mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
         
         HCopyCommand = [PATH_TO_HCOPY, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FILES + 'wav_config_singing', URIRecordingChunk, mfcFileName]
+
         if not os.path.isfile(mfcFileName):
+            logger.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
             pipe= subprocess.Popen(HCopyCommand)
             pipe.wait()
         return mfcFileName
