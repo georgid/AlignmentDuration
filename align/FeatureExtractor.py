@@ -110,7 +110,7 @@ def _extractPredominantPitch(URI_recording_noExt):
 def _extractMFCCs( URIRecordingChunk):
         baseNameAudioFile = os.path.splitext(os.path.basename(URIRecordingChunk))[0]
         dir_ = os.path.dirname(URIRecordingChunk)
-        dir_  = tempfile.mkdtemp()
+#         dir_  = tempfile.mkdtemp()
         mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
         
         HCopyCommand = [PATH_TO_HCOPY, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FILES + 'wav_config_singing', URIRecordingChunk, mfcFileName]
