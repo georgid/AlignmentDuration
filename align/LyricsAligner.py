@@ -303,7 +303,7 @@ def download_wav(musicbrainzid, outputDir):
         pipe = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', mp3FileURI, wavFileURI])
         pipe.wait()
     
-    return wavFileURI
+        return wavFileURI
 
 def stereoToMono(wavFileURI):
         sampleRate = 44100
