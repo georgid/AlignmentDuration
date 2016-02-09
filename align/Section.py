@@ -19,6 +19,7 @@ class Section(object):
         self.endNote = endNote
         self.melodicStructure =  melodicStructure
         self.lyricStructure =  lyricStructure
+    
         
     def __str__(self):
         

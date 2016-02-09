@@ -16,6 +16,7 @@ import imp
 from Phonetizer import Phonetizer
 from Decoder import logger
 from SymbTrParser2 import SymbTrParser2
+from align.SectionLink import SectionAnno
 
 # trick to make terminal NOT assume ascii
 reload(sys).setdefaultencoding("utf-8")
@@ -85,15 +86,18 @@ class MakamScore():
         convenience getter. 
         takes first appearance of melodicStructure
         '''
-        
+        lyrics = None
 
-        for section in self.symbTrParser.sections:
-            if section.melodicStructure == melodicStructure:
-                lyrics = section.lyrics
-                break
-        if not lyrics.listWords:
-            logger.warn("no lyrics for demanded section {} ".format(melodicStructure ))
-            return None
+        #deprecated 
+        #replace with sectionAnno.scoreSection.lyrics
+
+#         for section in self.symbTrParser.sections:
+#             if section.melodicStructure == melodicStructure:
+#                 lyrics = section.lyrics
+#                 break
+#         if not lyrics.listWords:
+#             logger.warn("no lyrics for demanded section {} ".format(melodicStructure ))
+#             return None
         return lyrics 
     
     

@@ -28,7 +28,7 @@ import utilsLyrics.UtilzNumpy
 
 PATH_TO_HCOPY= '/usr/local/bin/HCopy'
 # ANDRES. On kora.s.upf.edu
-PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
+# PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 PATH_TO_CONFIG_FILES= currDir + '/input_files/'
@@ -41,7 +41,7 @@ from hmm.ParametersAlgo import ParametersAlgo
 
 
 
-def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthesizedNoExt,  withSynthesis, section): 
+def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthesizedNoExt,  withSynthesis, sectionLink): 
     '''
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
@@ -54,14 +54,14 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     URIRecordingChunkResynthesized = URIRecordingChunkResynthesizedNoExt + '.wav'
     
     logger.setLevel(logging.INFO)
-    logger.info("working on section: {}".format(URIRecordingChunkResynthesized))
+    logger.info("working on sectionLink: {}".format(URIRecordingChunkResynthesized))
     
     # resynthesize audio chunk:
     if withSynthesis: 
         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
             logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
 
-            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, section.beginTs, section.endTs, ParametersAlgo.THRESHOLD_PEAKS)
+            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
             resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     
         # NOT IMPLEMENTED

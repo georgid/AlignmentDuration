@@ -23,6 +23,7 @@ import os
 import sys
 import json
 import subprocess
+from align.MakamRecording import parseSectionLinks, MakamRecording
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 # pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
 # if pathPycompmusic not in sys.path:
@@ -54,53 +55,66 @@ from htkparser.htk_converter import HtkConverter
 
  
         
-def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileURI, extractedPitchList, outputDir):
+def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, sectionAnnosDict=None):
 
         # parameters 
         withSynthesis = True
         withOracle = False
         oracleLyrics = ''
         usePersistentFiles = True
+        withAnnotations = True
         
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
         
         recordingNoExtURI = os.path.splitext(audioFileURI)[0]
         
-        sectionLinks = loadsectionTimeStampsLinksNew( sectionLinksDict) 
         makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadata )
-        
+      
+
+        mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict )
             
         tokenLevelAlignedSuffix = '.alignedLyrics' 
         totalDetectedTokenList = []
-        for  currSectionLink in sectionLinks :
-            if currSectionLink.melodicStructure.startswith('ARANAGME'):
-                print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
-                continue
-            
-            
-#             lyrics = makamScore.getLyricsForSection(currSectionLink.melodicStructure)
-#     
-#             lyricsStr = lyrics.__str__()
-#             if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
-#                 print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
-#                 continue
-#             
-#             detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
-            
-            detectedTokenList = alignSectionLinkProbableSections(makamScore, extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
-# DEBUG           
-#             print "query melodic structure: {}".format(currSectionLink.melodicStructure)
-#             for sectin in currSectionLink.selectedSections:
-#                 print "result sections: {}".format(sectin)
-            
-            totalDetectedTokenList.extend(detectedTokenList)
-        # sectionLinks- list of objects of class sectionLink with the field selectedSections set after slignment
-        sectionLinksDict = extendSectionLinksSelectedSections(sectionLinksDict, sectionLinks)
         
-        return totalDetectedTokenList, sectionLinksDict        
+        if not withAnnotations: 
         
-
+            for  currSectionLink in mr.sectionLinks :
+                if currSectionLink.melodicStructure.startswith('ARANAGME'):
+                    print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
+                    continue
+                
+    
+                detectedTokenList = alignSectionLinkProbableSections(makamScore, extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
+    #DEBUG           
+    #             print "query melodic structure: {}".format(currSectionLink.melodicStructure)
+    #             for sectin in currSectionLink.selectedSections:
+    #                 print "result sections: {}".format(sectin)
+                
+                totalDetectedTokenList.extend(detectedTokenList)
+            # sectionLinks- list of objects of class sectionLink with the field selectedSections set after slignment
+            sectionLinksDict = extendSectionLinksSelectedSections(sectionLinksDict, mr.sectionLinks)
+            
+            return totalDetectedTokenList, sectionLinksDict        
+        
+        else: # with Annotations
+            
+            for  currSectionAnno in mr.sectionAnnos :
+                if currSectionAnno.melodicStructure.startswith('ARANAGME'):
+                    print("skipping sectionLink {} with no lyrics ...".format(currSectionAnno.melodicStructure))
+                    continue            
+                
+                lyrics = currSectionAnno.scoreSection.lyrics
+         
+                lyricsStr = lyrics.__str__()
+                if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
+                    print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
+                    continue
+                 
+                detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionAnno, htkParser)
+                totalDetectedTokenList.extend(detectedTokenList)
+                 
+            return totalDetectedTokenList, sectionLinksDict
     
 def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
     '''
@@ -187,45 +201,10 @@ def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, l
 
 
 
-    
 
 
 
-
-def loadsectionTimeStampsLinksNew(sectionLinksDict):
-
-    
-        sectionLinksList = [] 
-        
-        sectionLinks = parseSectionLinks(sectionLinksDict)
-        for sectionLink in sectionLinks:
-                        
-                        melodicStruct = sectionLink['name']
-                        
-                        beginTimeStr = str(sectionLink['time'][0])
-                        beginTimeStr = beginTimeStr.replace("[","")
-                        beginTimeStr = beginTimeStr.replace("]","")
-                        beginTs =  float(beginTimeStr)
-                            
-                        endTimeStr = str(sectionLink['time'][1])
-                        endTimeStr = endTimeStr.replace("[","")
-                        endTimeStr = endTimeStr.replace("]","")
-                        endTs =  float(endTimeStr)
-                        currSectionLink = SectionLink (melodicStruct, beginTs, endTs) 
-                        sectionLinksList.append(currSectionLink )
-                    
-        return sectionLinksList
-
-def parseSectionLinks(sectionLinksDict):
-    '''
-    helper method
-    '''
-    if len(sectionLinksDict.keys()) != 1:
-        raise Exception('More than one work for recording {} Not implemented!'.format(sectionLinksDict))
-# first work only. sectionLinks format 0.2
-    work = sectionLinksDict[sectionLinksDict.keys()[0]]
-    sectionLinks = work['links']
-    return sectionLinks    
+   
 
 def extendSectionLinksSelectedSections(sectionLinksDict, sectionLinksAligned):
     '''
