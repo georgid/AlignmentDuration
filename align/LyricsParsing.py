@@ -28,7 +28,7 @@ def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
         startNoteNumber = word_.syllables[0].noteNum
 
         currWord, totalDuration = func( word_, startNoteNumber, countFirstState, countLastState, path, totalDuration)
-       
+
         wordList.append( currWord)
     return wordList
 

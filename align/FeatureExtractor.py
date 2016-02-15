@@ -11,6 +11,7 @@ import logging
 import htkmfc
 import subprocess
 from Decoder import logger
+import glob
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
 import tempfile
@@ -37,7 +38,7 @@ parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(
 
 from hmm.ParametersAlgo import ParametersAlgo
 
-
+from csv import reader
 
 
 
@@ -46,7 +47,7 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
         
-#     extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
+    extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
     
 
     URI_recording = URI_recording_noExt + '.wav'
@@ -58,12 +59,12 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     
     # resynthesize audio chunk:
     if withSynthesis: 
-        if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
-            logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
+#         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
+        logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
 
-            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
-            resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
-    
+        hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
+        resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
+
         # NOT IMPLEMENTED
 #     else:
 #         # TODO take only part from audio with essentia
@@ -92,6 +93,21 @@ def _extractPredominantPitch(URI_recording_noExt):
     ####### melodia format
 #     melodiaInput = URI_recording_noExt + '.melodia'
 #     extractedPitchList = readListOfListTextFile_gen(melodiaInput)
+    
+    ####### juanjos melody
+    dirName = os.path.dirname(os.path.realpath(URI_recording_noExt + '.wav'))
+    os.chdir(dirName)
+
+    pathToPitch = os.path.join(dirName, glob.glob("*.pitch")[0])
+    f = open(pathToPitch) 
+    extractedPitchList = []
+    for line in reader(f):
+        currLine = []
+        for e in line:
+            currLine.append(float(e))
+        extractedPitchList.append(currLine)
+        
+
     
     ####### json serialized array format
 

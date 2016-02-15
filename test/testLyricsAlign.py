@@ -7,7 +7,8 @@ import os
 import sys
 import json
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from align.MakamRecording import MakamRecording
+from align.MakamRecording import MakamRecording, parseSectionLinks,\
+    parseTimeSectionLinkTxt
 from align.Section import Section
 from align.MakamScore import loadMakamScore2
 
@@ -16,14 +17,14 @@ from align.LyricsAligner import alignRecording, extendSectionLinksSelectedSectio
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 symbtrtxtURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.txt')
 sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.sectionsMetadata.json' )
-sectionLinksURI =   os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.sectionLinks.json' )
-sectionAnnosURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.sectionAnnos.json' )
+sectionAnnosSourceURI =   os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.sectionLinks.json' )
+sectionAnnosSourceURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.sectionAnnos.json' )
 
-with open(sectionLinksURI) as f:
+with open(sectionAnnosSourceURI) as f:
         sectionLinksDict = json.load(f)
 with open(sectionMetadataURI) as f2:
         sectionMetadataDict = json.load(f2)
-with open(sectionAnnosURI) as f3:
+with open(sectionAnnosSourceURI) as f3:
         sectionAnnosDict = json.load(f3)
 
 
@@ -37,7 +38,7 @@ def testLyricsAlign():
     with open(extractedPitch) as f:
         extractedPitchList = json.load(f)
     
-    with open(sectionLinksURI) as f:
+    with open(sectionAnnosSourceURI) as f:
         sectionLinksDict = json.load(f)
     
     totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir)
@@ -53,9 +54,8 @@ def testExtendSectionLinksSelectedSections():
     test if extending a sections Links file works well
     extendSectionLinksSelectedSections(sectionLinksDict, sectionLinks)
     '''
-    sectionLinks = loadsectionTimeStampsLinksNew(sectionLinksDict)  
+    sectionLinks = parseSectionLinks(sectionLinksDict)
   
-    
     makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataDict )
     
     # changes one test section link as if it were aligned 
@@ -67,11 +67,12 @@ def testExtendSectionLinksSelectedSections():
     
     extendSectionLinksSelectedSections(sectionLinksDict, sectionLinks)
     print sectionLinksDict
+    
 
 def testMakamRecording():
     makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataDict)
     
-    with open(sectionLinksURI) as f:
+    with open(sectionAnnosSourceURI) as f:
         sectionLinksDict = json.load(f)
     
     mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict )

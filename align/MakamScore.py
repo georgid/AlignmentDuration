@@ -37,7 +37,7 @@ from SymbTrParser import SymbTrParser
 # PATH_TEST_DATASET='/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/'
 # PATH_TEST_DATASET = '/Volumes/IZOTOPE/sertan_sarki/'
 
-class MakamScore():
+class MakamScoreOld():
     '''
     classdocs
     '''
@@ -195,42 +195,25 @@ class MakamScore():
                
 
 
-def loadMakamScore(pathToComposition):
-    '''
-    same as loadLyrics, but return MakamScore, so that all lyrics can be shown if needed
-    '''
-    Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
-    
-    os.chdir(pathToComposition)
-
-    pathTotxt = os.path.join(pathToComposition, glob.glob("*.txt")[0])
-    
-    listExtensions = [ "sectionsMetadata.json", "sectionsMetadata.tsv", "sectionsMetadata.txt"]
-    sectionFiles = findFileByExtensions(pathToComposition, listExtensions)
-    sectionFile = sectionFiles[0]
-        
-    pathToSectionTsv = os.path.join(pathToComposition, sectionFile)
-    makamScore = MakamScore(pathTotxt, pathToSectionTsv )
-    return makamScore
 
 
 def loadMakamScore2(symbtrtxtURI, sectionMetadata):
     '''
-    same as loadLyrics, but return MakamScore, so that all lyrics can be shown if needed
+    same as loadLyrics, but return MakamScoreOld, so that all lyrics can be shown if needed
     '''
     Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
     
-    makamScore = MakamScore(symbtrtxtURI, sectionMetadata )
+    makamScore = MakamScoreOld(symbtrtxtURI, sectionMetadata )
     return makamScore   
 
   
   
-def printMakamScore(ScoreURI, URISectionsMetadata):
+def printMakamScore(ScoreURI, sectionMetadata):
         
 #         
 #         ScoreURI = URI_dataset + compositionName + '/' + compositionName + '.txt'
 #         URISectionsMetadata = URI_dataset + compositionName + '/' + compositionName + '.sectionsMetadata.json'
-        makamScore = loadMakamScore2(ScoreURI, URISectionsMetadata)
+        makamScore = loadMakamScore2(ScoreURI, sectionMetadata)
         makamScore.printSectionsAndLyrics()
         
         print '---------------------------------------------\n'

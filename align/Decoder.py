@@ -14,7 +14,6 @@ from Constants import numDimensions, numMixtures
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
 
-
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
 
 
@@ -49,6 +48,12 @@ logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
 logger.setLevel(loggingLevel)
 
 # other logger set in _Continuous
+
+# level into which to segments result stateNetwork
+DETECTION_TOKEN_LEVEL= 'syllables'
+DETECTION_TOKEN_LEVEL= 'words'
+
+
 
 class Decoder(object):
     '''
@@ -291,8 +296,7 @@ class Decoder(object):
         interprete states to words      
         '''
         
-        # if not set, segments into words
-        TOKEN_LEVEL= 'syllables'
+       
         
         # self.hmmNetwork.phi is set in decoder.decodeAudio()
         self.path =  Path(chiBackPointer, psiBackPointer, self.hmmNetwork.phi )
@@ -309,7 +313,7 @@ class Decoder(object):
         
         writeListToTextFile(self.path.pathRaw, None , outputURI)
         
-        detectedTokenList = self.path2ResultWordList(self.path, TOKEN_LEVEL)
+        detectedTokenList = self.path2ResultWordList(self.path, DETECTION_TOKEN_LEVEL)
         
         # DEBUG info
     #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)

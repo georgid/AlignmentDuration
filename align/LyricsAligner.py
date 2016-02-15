@@ -24,10 +24,19 @@ import sys
 import json
 import subprocess
 from align.MakamRecording import parseSectionLinks, MakamRecording
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
+from align.Decoder import logger
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 # pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
 # if pathPycompmusic not in sys.path:
 #     sys.path.append(pathPycompmusic)
+
+
+pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
+if pathEvaluation not in sys.path:
+    sys.path.append(pathEvaluation)
+    
+from AccuracyEvaluator import _evalAccuracy
+from WordLevelEvaluator import tierAliases
 
 
 import compmusic.extractors
@@ -41,7 +50,7 @@ modelDIR = currDir + '/model/'
 HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
-from MakamScore import loadMakamScore, loadMakamScore2
+from MakamScore import  loadMakamScore2
 from hmm.examples.main import loadSmallAudioFragment
 from Decoder import Decoder
 from SectionLink import SectionLink
@@ -52,7 +61,7 @@ from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
     readListTextFile, getMelodicStructFromName, tokenList2TabFile,  fetchFileFromURL
 
 from htkparser.htk_converter import HtkConverter
-
+ANNOTATION_EXT = '.TextGrid'
  
         
 def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, sectionAnnosDict=None):
@@ -76,6 +85,10 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
             
         tokenLevelAlignedSuffix = '.alignedLyrics' 
         totalDetectedTokenList = []
+        
+        totalCorrectDurations = 0
+        totalDurations = 0
+    
         
         if not withAnnotations: 
         
@@ -103,6 +116,9 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
                 if currSectionAnno.melodicStructure.startswith('ARANAGME'):
                     print("skipping sectionLink {} with no lyrics ...".format(currSectionAnno.melodicStructure))
                     continue            
+                if not hasattr(currSectionAnno, 'scoreSection'):
+                    print("skipping sectionAnno {} not matched to any score section ...".format(currSectionAnno))
+                    continue   
                 
                 lyrics = currSectionAnno.scoreSection.lyrics
          
@@ -110,10 +126,21 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
                 if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
                     print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
                     continue
-                 
-                detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, currSectionAnno, htkParser)
+                
+                URIRecordingChunkResynthesizedNoExt =  recordingNoExtURI + "_" + "{}".format(currSectionAnno.beginTs) + '_' + "{}".format(currSectionAnno.endTs) 
+                detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser)
+                
+                evalLevel = tierAliases.phraseLevel
+                correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
+    
+                totalCorrectDurations += correctDuration
+                totalDurations += totalDuration
+                
+                
                 totalDetectedTokenList.extend(detectedTokenList)
-                 
+            
+            accuracy = totalCorrectDurations / totalDurations
+            logger.info("accuracy: {:.2f}".format(accuracy))     
             return totalDetectedTokenList, sectionLinksDict
     
 def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
@@ -126,7 +153,9 @@ def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesi
     probabaleSections = makamScore.getProbableSectionsForMelodicStructure(currSectionLink)
     for probabaleSection in probabaleSections:
         currTokenLevelAlignedSuffix =  tokenLevelAlignedSuffix + '_' + probabaleSection.melodicStructure + '_' + probabaleSection.lyricStructure
-        currDetectedTokenList, detectedPath, phiScore = alignSectionLink( probabaleSection.lyrics, extractedPitchList, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, currTokenLevelAlignedSuffix, recordingNoExtURI, currSectionLink, htkParser)
+        
+        URIRecordingChunkResynthesizedNoExt =  recordingNoExtURI + "_" + str(currSectionLink.beginTs) + '_' + str(currSectionLink.endTs)
+        currDetectedTokenList, detectedPath, phiScore = alignSectionLink( probabaleSection.lyrics, extractedPitchList, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, currTokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser)
         if phiScore > maxPhiScore:
             maxPhiScore = phiScore
             selectedSection = probabaleSection
@@ -140,7 +169,7 @@ def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesi
          
          
                
-def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, currSectionLink, htkParser):
+def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser):
         '''
         wrapper top-most logic method
         '''
@@ -150,7 +179,7 @@ def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, l
             withSynthesis = 1
             
     #     read from file result
-        URIRecordingChunkResynthesizedNoExt =  URIrecordingNoExt + "_" + str(currSectionLink.beginTs) + '_' + str(currSectionLink.endTs)
+        
         detectedAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
         if not os.path.isfile(detectedAlignedfileName):
             #     ###### extract audio features
@@ -189,11 +218,13 @@ def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, l
                 else:
                     outputURI = URIRecordingChunkResynthesizedNoExt + '.path'
                 
-                detectedPath = readListTextFile(outputURI)
+                detectedPath = ''
+#                 detectedPath = readListTextFile(outputURI)
                 
-                with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'r'  ) as f:
-                    phiOptPathJSON = json.load(f)
-                    phiOptPath = phiOptPathJSON['phi']
+                phiOptPath = ''
+#                 with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'r'  ) as f:
+#                     phiOptPathJSON = json.load(f)
+#                     phiOptPath = phiOptPathJSON['phi']
                 
     
         return detectedTokenList, detectedPath, phiOptPath
@@ -237,17 +268,7 @@ def getSectionLinkBybeginTs(sectionLinks, queryBeginTs):
             return sectionLink
                                  
    
-def constructSymbTrTxtURI(URI_dataset, workMBID):
-    '''
-    URI on local machine of symbTr queried by workMBID 
-    '''
-    symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
-    symbTrCompositionName = symbtr['name']
-    
-    compositionPath = URI_dataset + symbTrCompositionName + '/'
-    symbtrtxtURI = compositionPath + symbTrCompositionName + '.txt'
-    
-    return symbtrtxtURI,  symbTrCompositionName
+
 
 
 def downloadSymbTr(workMBID, outputDirURI):
