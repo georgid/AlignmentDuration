@@ -12,6 +12,7 @@ import htkmfc
 import subprocess
 from Decoder import logger
 import glob
+import essentia.standard
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
 import tempfile
@@ -64,13 +65,14 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
 
         hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
         resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
-
-        # NOT IMPLEMENTED
-#     else:
-#         # TODO take only part from audio with essentia
-#          print "!!! extracting features from whole audio{}".format(URI_recordingChunk_noExt)
-#          URIRecordingChunkResynthesized = URI_recordingChunk_noExt + '.wav'
-        
+    else:
+        sampleRate = 44100
+        loader = essentia.standard.MonoLoader(filename = URI_recording, sampleRate = sampleRate)
+        audio = loader()
+        audioChunk = audio[sectionLink.beginTs*sampleRate : sectionLink.endTs*sampleRate]
+        monoWriter = essentia.standard.MonoWriter(filename=URIRecordingChunkResynthesized)
+        monoWriter(audioChunk)
+    
     # call htk to extract features
     URImfcFile = _extractMFCCs( URIRecordingChunkResynthesized)
     
@@ -131,10 +133,10 @@ def _extractMFCCs( URIRecordingChunk):
         
         HCopyCommand = [PATH_TO_HCOPY, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FILES + 'wav_config_singing', URIRecordingChunk, mfcFileName]
 
-        if not os.path.isfile(mfcFileName):
-            logger.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
-            pipe= subprocess.Popen(HCopyCommand)
-            pipe.wait()
+#         if not os.path.isfile(mfcFileName):
+        logger.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
+        pipe= subprocess.Popen(HCopyCommand)
+        pipe.wait()
         return mfcFileName
 
 
