@@ -45,7 +45,7 @@ MODELS_DIR = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio
 
 class LyricsWithGMMs(Lyrics):
     '''
-    lyrics with each Phoneme having a link to a model of class type htkModel from htkModelParser
+    lyrics with each Phoneme having a link to a model of scikit learn GMMs
     No handling of durationInMinUnit information. For it see Decoder.Decoder.decodeAudio 
     '''
 
@@ -97,7 +97,7 @@ class LyricsWithGMMs(Lyrics):
         
         path, fileName = os.path.split(URIRecordingNoExt)
         path, fold = os.path.split(path) # which Fold
-        
+        fold = 'fold1'
         modelsURI =  os.path.join( MODELS_DIR + fold,  str(modelName) + '.pkl' )
         import pickle
         try:
@@ -252,9 +252,11 @@ class LyricsWithGMMs(Lyrics):
         for word_ in self.listWords:
             for syllable_ in word_.syllables:
 
+                if syllable_.durationInMinUnit == 0: # workaround for unknown values. better: if whole sentence unknown use withRules. 
+                    syllable_.durationInMinUnit = 1
                 numFramesInSyllable = round(float(syllable_.durationInMinUnit) * numFramesPerMinUnit)
                 if numFramesInSyllable == 0.0:
-                    sys.exit(" frames per syllable {} are 0.0. Check numFramesPerMinUnit={}".format(syllable_.text, numFramesPerMinUnit))
+                    sys.exit(" frames per syllable {} are 0.0. Check durationInMinUnit {} and numFramesPerMinUnit={}".format(syllable_.text, syllable_.durationInMinUnit,  numFramesPerMinUnit))
                     
                 # TODO: set here syllables from score
                 syllable_.setDurationInNumFrames(numFramesInSyllable)

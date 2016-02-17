@@ -164,7 +164,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
         toTs = -1
         withOracle = 0
         oracleLyrics = 'dummy'
-        detectedTokenList = alignOneChunk( lyrics, withSynthesis, withOracle, oracleLyrics, [], params.ALPHA, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, fromTs,toTs, URIrecordingNoExt)
+        detectedTokenList = alignOneChunk( lyrics, withSynthesis, withOracle, oracleLyrics, [], params.ALPHA, usePersistentFiles, tokenLevelAlignedSuffix, fromTs,toTs, URIrecordingNoExt)
         correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel,-1,-1 )
 #         detectedTokenList = test_oracle(URIrecordingNoExt, pathToComposition, whichSection)
             
@@ -200,7 +200,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 
 
 
-def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha, evalLevel, usePersistentFiles, tokenLevelAlignedSuffix, fromTs, toTs,  URIrecordingNoExt=''):
+def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha,  usePersistentFiles, tokenLevelAlignedSuffix, fromTs, toTs,  URIrecordingNoExt=''):
     '''
     wrapper top-most logic method
     '''
@@ -221,8 +221,9 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
         else:                      
             lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, withHTK, URIrecordingNoExt, bool(withSynthesis), fromTs, toTs)
       
-
-   
+        if lyricsWithModels == None:
+            return None, None
+    
         decoder = Decoder(lyricsWithModels, URIRecordingChunkNoExt, withHTK, alpha)
         if logger == logging.DEBUG:
             lyricsWithModels.printWordsAndStates()
