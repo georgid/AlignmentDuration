@@ -11,7 +11,7 @@ import os
 import sys
 from hmm.examples.main import  getDecoder
 from utilsLyrics.Utilz import tokenList2TabFile
-from doitOneChunk import HMM_LIST_URI, MODEL_URI
+from align.doitOneChunk import HMM_LIST_URI, MODEL_URI
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir,os.path.pardir )) 
