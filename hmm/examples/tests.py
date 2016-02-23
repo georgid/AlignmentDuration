@@ -22,7 +22,7 @@ if not pathJingjuAlignment in sys.path:
     sys.path.append(pathJingjuAlignment)
 
 from Phonetizer import Phonetizer
-from MakamScoreOld import  loadMakamScore
+from align.MakamScoreOld import  loadMakamScore
 from Decoder import Decoder
 
 

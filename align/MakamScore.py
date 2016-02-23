@@ -37,7 +37,7 @@ from SymbTrParser import SymbTrParser
 # PATH_TEST_DATASET='/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/'
 # PATH_TEST_DATASET = '/Volumes/IZOTOPE/sertan_sarki/'
 
-class MakamScoreOld():
+class MakamScore():
     '''
     classdocs
     '''
@@ -199,11 +199,11 @@ class MakamScoreOld():
 
 def loadMakamScore2(symbtrtxtURI, sectionMetadata):
     '''
-    same as loadLyrics, but return MakamScoreOld, so that all lyrics can be shown if needed
+    same as loadLyrics, but return MakamScore, so that all lyrics can be shown if needed
     '''
     Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
     
-    makamScore = MakamScoreOld(symbtrtxtURI, sectionMetadata )
+    makamScore = MakamScore(symbtrtxtURI, sectionMetadata )
     return makamScore   
 
   
