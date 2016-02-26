@@ -303,7 +303,7 @@ if __name__ == '__main__':
     
 #     test_oracle(URIrecordingNoExt, pathToComposition, whichSection)
 
-#####################     for all tetst below inclide these 3 lines for lyrics:
+#####################     for all tetst below include these 3 lines for lyrics:
     withSynthesis = True
     makamScore = loadMakamScore2(pathToComposition)
     lyrics = makamScore.getLyricsForSection(whichSection)
