@@ -341,4 +341,32 @@ class _BaseHMM(object):
         increase performance.
         '''
         raise NotImplementedError("a mapping function for B(observable probabilities) must be implemented")
+    
+
+        def _viterbiForced(self, lenObservations):
+            '''
+            optimized viterbi forced
+            '''
+            
+          
+            
+            print "decoding..."
+            for t in range(1,lenObservations):                          
+                for currState in xrange(1, self.n):
+                    maxPhi, fromState, maxDurIndex = self._calcCurrStatePhi(t, currState) # get max duration quantities
+                    self.phi[t][currState] = maxPhi
+            
+                    self.psi[t][currState] = fromState
+            
+                    self.chi[t][currState] = maxDurIndex
+            
+            writeListOfListToTextFile(self.phi, None , PATH_LOGS + '/phi') 
+                
+            numpy.savetxt(PATH_LOGS + '/chi', self.chi)
+            numpy.savetxt(PATH_LOGS + '/psi', self.psi)
+    
+            # return for backtracking
+            return  self.chi, self.psi
+        
+        
         

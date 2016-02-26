@@ -34,13 +34,13 @@ class LyricsWithModels(Lyrics):
     '''
 
 
-    def __init__(self, lyrics, htkParser, ONLY_MIDDLE_STATE, deviationInSec  ):
+    def __init__(self, lyrics, htkParser, ONLY_MIDDLE_STATE, deviationInSec, withPaddedSilence=True  ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
         
 #       flag to add a state 'sp' with exponential disrib at begining and end  
-        self.withPaddedSilence = True
+        self.withPaddedSilence = withPaddedSilence
         
         Lyrics.__init__(self, lyrics.listWords)
         self._linkToModels(htkParser)
@@ -65,8 +65,15 @@ class LyricsWithModels(Lyrics):
         
     def _linkToModels(self, htkParser):
         '''
-        load links to trained models   
+        load links to trained models. 
+        add  Phoneme('sp') with exponential distrib at beginning and end  
         '''
+       
+        if self.withPaddedSilence:    
+            tmpPhoneme =  Phoneme('sp');
+            self.phonemesNetwork.insert(0, tmpPhoneme)
+            self.phonemesNetwork.append(tmpPhoneme)
+       
        
     #link each phoneme from transcript to a model
             # FIXME: DO A MORE OPTIMAL WAY like ismember()
@@ -76,18 +83,21 @@ class LyricsWithModels(Lyrics):
                     
                     phonemeFromTranscript.setHTKModel(currHmmModel) 
             
+#             for currHmmModel in htkParser.hmms:
+#                 if currHmmModel.name == 'sp':
+#                     spmodel = currHmmModel
+            
         ######## # create sp state
-            for currHmmModel in htkParser.hmms:
-                if currHmmModel.name == 'sp':
-                    spmodel = currHmmModel
-            
-        (numStateFromHtk, state)  = spmodel.states[0]
-        self.spState = StateWithDur(state.mixtures, 'sp', 0, distribType='exponential' )
-        self.spState.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
-            
-        tmpPhoneme =  Phoneme('sp')
-        spTransMatrix = tmpPhoneme.getTransMatrix(spmodel)
-        self.spState.setWaitProb(spTransMatrix[1,1])
+#         # has one state only
+#         (numStateFromHtk, state)  = spmodel.states[0]
+#         self.spExponentialState = StateWithDur(state.mixtures, 'sp', 0, distribType='exponential' )
+#         self.spExponentialState.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
+#         
+#         if self.withPaddedSilence:    
+#             tmpPhoneme =  Phoneme('sp'); tmpPhoneme.setHTKModel(spmodel)
+#             self.phonemesNetwork.insert(0, tmpPhoneme)
+#         spTransMatrix = tmpPhoneme.getTransMatrix()
+#         self.spExponentialState.setWaitProb(spTransMatrix[1,1])
         ######## end of create sp state   
       
         
@@ -98,48 +108,62 @@ class LyricsWithModels(Lyrics):
     #         state.display()
         ###### 
         
+
+    def createStateWithDur(self, phoneme, currStateCount, idxState, state, distributionType):
+         
+        if distributionType == 'normal':
+            currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, distributionType, self.deviationInSec)
+            dur = float(phoneme.durationInNumFrames) / float(currStateCount)
+            if dur < 0:
+                sys.exit("duration for phoneme {}={}. please decrease fixed consonant duration or make sure audio fragment is not too short".format(dur, phoneme.ID))
+            currStateWithDur.setDurationInFrames(dur)
+        
+        elif distributionType == 'exponential':
+            currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, distributionType )
+            currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
+            transMatrix = phoneme.getTransMatrix()
+            currStateWithDur.setWaitProb(transMatrix[idxState + 1, idxState + 1])
+            
+        
+        return currStateWithDur
+
     def _phonemes2stateNetwork(self):
         '''
         expand self.phonemeNetwork to self.statesNetwork
-        assign phoneme a pointer to its initial state in the state network (serves as link among the two)
+        assign phoneme a pointer <setNumFirstState> to its initial state in the state network (serves as link among the two)
         each state gets 1/n-th of total num of states. 
         '''
         
         self.statesNetwork = []
         stateCount = 0
         
-        if self.withPaddedSilence:           
-            self.statesNetwork.append(self.spState)
-            stateCount+=1
+
         
-        for phoneme in self.phonemesNetwork:
+        for phnIdx, phoneme in enumerate(self.phonemesNetwork):
             
             phoneme.setNumFirstState(stateCount)
             
-            # update state counter
             if not hasattr(phoneme, 'htkModel'):
                 sys.exit("phoneme {} has no htkModel assigned".format(phoneme.ID))
+            # update state counter
             currStateCount = len(phoneme.htkModel.states)
             stateCount += currStateCount
             
+            distributionType='normal'
             # assign durationInMinUnit and name to each state
+            if (phnIdx == 0 or phnIdx == len(self.phonemesNetwork)-1 ) and self.withPaddedSilence:
+                distributionType='exponential'
+            
             for idxState, (numStateFromHtk, state ) in enumerate( phoneme.htkModel.states):
-                currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, 'normal' , self.deviationInSec)
-                 
-                dur = float(phoneme.durationInNumFrames) / float(currStateCount)
-                if  dur < 0:
-                    sys.exit("duration for phoneme {}={}. please decrease fixed consonant duration or make sure audio fragment is not too short".format( dur, phoneme.ID ))
-                    
-                currStateWithDur.setDurationInFrames( dur )
+                currStateWithDur = self.createStateWithDur(phoneme, currStateCount, idxState, state, distributionType)
                 self.statesNetwork.append(currStateWithDur)
           
-        if self.withPaddedSilence:           
-            self.statesNetwork.append(self.spState)      
+      
                  
     def _phonemes2stateNetworkWeights(self):
         '''
         expand to self.statesNetwork. 
-        each state gets a part proportional to  the weighting probs.
+        each state gets a durational proportional to  the weighting probs.
        @deprecated: 
         '''
         

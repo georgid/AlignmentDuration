@@ -82,7 +82,8 @@ class _ContinuousHMM(_BaseHMM):
         self.usePersistentFiles = False
         self.logger = logging.getLogger(__name__)
         # other logger set in decoder 
-        loggingLevel = logging.INFO
+        loggingLevel = logging.DEBUG
+#         loggingLevel = logging.INFO
 #         loggingLevel = logging.WARNING
 
         self.logger.setLevel(loggingLevel)

@@ -53,7 +53,6 @@ MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 from MakamScore import  loadMakamScore2
 from hmm.examples.main import loadSmallAudioFragment
 from Decoder import Decoder
-from SectionLink import SectionLink
 
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
@@ -67,7 +66,7 @@ ANNOTATION_EXT = '.TextGrid'
 def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, sectionAnnosDict=None):
 
         # parameters 
-        withSynthesis = True
+        withSynthesis = False
         withOracle = False
         oracleLyrics = ''
         usePersistentFiles = True
@@ -81,7 +80,7 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
         makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadata )
       
 
-        mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict )
+        mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict, withAnnotations )
             
         tokenLevelAlignedSuffix = '.alignedLyrics' 
         totalDetectedTokenList = []
@@ -128,7 +127,7 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
                     continue
                 
                 URIRecordingChunkResynthesizedNoExt =  recordingNoExtURI + "_" + "{}".format(currSectionAnno.beginTs) + '_' + "{}".format(currSectionAnno.endTs) 
-                detectedTokenList, detectedPath, maxPhiScore = alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser)
+                detectedTokenList, detectedPath, maxPhiScore = alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser)
                 
                 evalLevel = tierAliases.phraseLevel
                 correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
@@ -145,7 +144,7 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
     
 def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
     '''
-    runs alignment on given audio multiple times with a list of probable sections
+    runs alignment on given audio multiple times with a list of probable sections with their corresponding lyrics
     @return detectedTokenList with best score
     @return selectedSection section with this score
     '''   
@@ -155,7 +154,7 @@ def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesi
         currTokenLevelAlignedSuffix =  tokenLevelAlignedSuffix + '_' + probabaleSection.melodicStructure + '_' + probabaleSection.lyricStructure
         
         URIRecordingChunkResynthesizedNoExt =  recordingNoExtURI + "_" + str(currSectionLink.beginTs) + '_' + str(currSectionLink.endTs)
-        currDetectedTokenList, detectedPath, phiScore = alignSectionLink( probabaleSection.lyrics, extractedPitchList, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, currTokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser)
+        currDetectedTokenList, detectedPath, phiScore = alignLyricsSection( probabaleSection.lyrics, extractedPitchList, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, currTokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser)
         if phiScore > maxPhiScore:
             maxPhiScore = phiScore
             selectedSection = probabaleSection
@@ -169,9 +168,9 @@ def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesi
          
          
                
-def  alignSectionLink( lyrics, extractedPitchList,  withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser):
+def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser):
         '''
-        wrapper top-most logic method
+        align @param: lyrics for one section
         '''
         if withOracle:
     

@@ -11,7 +11,7 @@ from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDet
 from Constants import numDimensions, numMixtures
 
 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
@@ -33,11 +33,8 @@ if not WITH_DURATIONS:
         sys.path.append(pathHMM)
 
 
-# if WITH_DURATIONS:
-#     from hmm.continuous.DurationPdf import MINIMAL_PROB
 
-from hmm.Path import Path
-from hmm.continuous.GMHMM  import GMHMM
+
 
 logger = logging.getLogger(__name__)
 # loggingLevel = logging.WARNING
@@ -49,7 +46,7 @@ logger.setLevel(loggingLevel)
 
 # other logger set in _Continuous
 
-# level into which to segments result stateNetwork
+# level into which to segments decoded result stateNetwork
 DETECTION_TOKEN_LEVEL= 'syllables'
 DETECTION_TOKEN_LEVEL= 'words'
 
@@ -86,37 +83,36 @@ class Decoder(object):
         '''
 
         self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
-        self.hmmNetwork.setNonVocal(listNonVocalFragments)
+        if  WITH_DURATIONS:
+            self.hmmNetwork.setNonVocal(listNonVocalFragments)
         
         # double check that features are in same dimension as model
         if observationFeatures.shape[1] != numDimensions:
             sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
         
-        
         self.hmmNetwork.initDecodingParameters(observationFeatures)
+
 
         # standard viterbi forced alignment
         if not WITH_DURATIONS:
             
-            path_, psi, delta = self.hmmNetwork._viterbiForced(len(observationFeatures))
-            self.path =  Path(None, None, None)
-            self.path.setPatRaw(path_)
-            
+            psiBackPointer = self.hmmNetwork.viterbi_fast(observationFeatures)
+            chiBackPointer = None
         
         else:   # duration-HMM
             lenObs = len(observationFeatures)
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(lenObs)
             
 #             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
-#             writeListOfListToTextFile(psiBackPointer, None , PATH_PSI)
-            withOracle = 0    
-            detectedWordList, self.path = self.backtrack(withOracle, chiBackPointer, psiBackPointer )
+        writeListOfListToTextFile(psiBackPointer, None , '/Users/joro/Downloads/psi')
+        withOracle = 0    
+        detectedWordList, self.path = self.backtrack(withOracle, chiBackPointer, psiBackPointer )
             
-            print "\n"
+        print "\n"
          # DEBUG
 #         self.path.printDurations()
         
-            return detectedWordList
+        return detectedWordList
     
     def decodeWithOracle(self, lyricsWithModelsORacle, URIrecordingNoExt, fromTs, toTs):
         '''
@@ -141,24 +137,25 @@ class Decoder(object):
 
         ######## construct transition matrix
         #######
-        if not WITH_DURATIONS:
-            transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels.phonemesNetwork)
-
+        
         
         
         if  WITH_DURATIONS:
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
+            from hmm.continuous.DurationGMHMM  import DurationGMHMM
+            # note: no trans matrix because only forced Viterbi implemented 
+            self.hmmNetwork = DurationGMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
             self.hmmNetwork.setALPHA(ALPHA)
         
-        else:
+        else: # with no durations standard Viterbi
             if numStates == None:
                 numStates = len(self.lyricsWithModels.statesNetwork) 
         
             # construct means, covars, and all the rest params
             #########
-            means, covars, weights, pi = self._constructHMMNetworkParameters(numStates,  withModels)
-            self.hmmNetwork = GMHMM(numStates,numMixtures,numDimensions,transMAtrix,means,covars,weights,pi,init_type='user',verbose=True)
-        
+            
+            transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels.phonemesNetwork)
+            from hmm.continuous.GMHMM  import GMHMM
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions, transMAtrix)
 
         
     def  _constructTransMatrixHMMNetwork(self, sequencePhonemes):
@@ -173,7 +170,7 @@ class Decoder(object):
             totalNumStates += currNumStates
             
         transMAtrix = numpy.zeros((totalNumStates, totalNumStates), dtype=numpy.double)
-        
+    
         
         counterOverallStateNum = 0 
         
@@ -197,8 +194,11 @@ class Decoder(object):
             # increment in final trans matrix  
             counterOverallStateNum +=currNumStates
             
-            
-        return transMAtrix
+            # avoid log(0) 
+            indicesZero = numpy.where(transMAtrix==0)
+            transMAtrix[indicesZero] = sys.float_info.min
+             
+        return numpy.log(transMAtrix)
     
 
     
@@ -299,6 +299,7 @@ class Decoder(object):
        
         
         # self.hmmNetwork.phi is set in decoder.decodeAudio()
+        from hmm.Path import Path
         self.path =  Path(chiBackPointer, psiBackPointer, self.hmmNetwork.phi )
         
         pathUtils = os.path.join(parentDir, 'utilsLyrics')

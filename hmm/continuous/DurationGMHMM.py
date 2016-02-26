@@ -6,9 +6,9 @@ Created on Nov 12, 2012
 
 import numpy
 
+from _DurationHMM import _DurationHMM
 
 from sklearn.mixture import GMM as GMM_
-from hmm.continuous._HMM import _HMM
 # GMM class from
 # http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GMM.html
 
@@ -16,7 +16,7 @@ from hmm.continuous._HMM import _HMM
 
 # from _ContinuousHMM import _ContinuousHMM
 # class DurationGMHMM(_ContinuousHMM):
-class GMHMM(_HMM):
+class DurationGMHMM(_DurationHMM):
     '''
     A Gaussian Mixtures HMM - This is a representation of a continuous HMM,
     containing a mixture of gaussians in each hidden state.
@@ -31,11 +31,11 @@ class GMHMM(_HMM):
 #         super(DurationGMHMM, self).__init__(n,m,d,A,means,covars,w,pi,min_std,init_type,precision,verbose) #@UndefinedVariable
 #         self._set_GMMs()
         
-    def __init__(self,statesNetwork, numMixtures, numDimensions, transMatrix):
+    def __init__(self,statesNetwork, numMixtures, numDimensions):
         '''
         See base class constructor for more information
         '''
-        super(GMHMM,self).__init__(statesNetwork, numMixtures, numDimensions, transMatrix)
+        super(DurationGMHMM,self).__init__(statesNetwork, numMixtures, numDimensions)
         self._set_GMMs()
         
     def _set_GMMs(self):

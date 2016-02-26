@@ -8,8 +8,6 @@ Created on Nov 13, 2012
 
 import numpy
 
-from hmm.continuous.GMHMM import GMHMM
-from hmm.discrete.DiscreteHMM import DiscreteHMM
 import os
 import sys
 from hmm.Parameters import Parameters

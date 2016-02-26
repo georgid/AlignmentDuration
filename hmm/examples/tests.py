@@ -4,14 +4,14 @@ Created on Jun 10, 2015
 @author: joro
 '''
 import numpy
-from hmm.continuous.GMHMM import GMHMM
+from hmm.continuous.DurationGMHMM import DurationGMHMM
 from hmm.discrete import DiscreteHMM
 from main import decode, loadSmallAudioFragment
 import os
 import sys
 from hmm.examples.main import  getDecoder
 from utilsLyrics.Utilz import tokenList2TabFile
-from align.doitOneChunk import HMM_LIST_URI, MODEL_URI
+from align.LyricsAligner import HMM_LIST_URI, MODEL_URI
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir,os.path.pardir )) 
@@ -21,15 +21,13 @@ pathJingjuAlignment = os.path.join(parentDir, 'AlignmentDuration')
 if not pathJingjuAlignment in sys.path:
     sys.path.append(pathJingjuAlignment)
 
-from Phonetizer import Phonetizer
-from align.MakamScoreOld import  loadMakamScore
-from Decoder import Decoder
+from align.MakamScore import  loadMakamScore2
 
 
 # parser of htk-build speech model
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
-from htk_converter import HtkConverter
+from htkparser.htk_converter import HtkConverter
 
 from utilsLyrics.Utilz import readListOfListTextFile
 
@@ -48,6 +46,7 @@ URIrecordingNoExt = '/Users/joro/Documents/Phd/UPF/ISTANBUL/guelen/01_Olmaz_2_ze
 whichSection = 2
 
 pathToComposition ='/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi/'
+symbTr =  pathToComposition + ''
 URIrecordingNoExt = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin'
 whichSection = 2
 
@@ -89,7 +88,7 @@ def test_simple():
     means[1][1][0] = 0.5    
     means[1][1][1] = 0.5    
 
-    gmmhmm = GMHMM(n,m,d,A,means,covars,w,pi,init_type='user',verbose=True)
+    gmmhmm = DurationGMHMM(n,m,d,A,means,covars,w,pi,init_type='user',verbose=True)
     
     obs = numpy.array([ [0.3,0.3], [0.1,0.1], [0.2,0.2]])
     
@@ -164,7 +163,7 @@ def makeTestDurationHMM():
     pitmp = numpy.random.random_sample((n))
     pi = numpy.array(pitmp / sum(pitmp), dtype=numpy.double)
 
-    gmmhmm = GMHMM(n,m,d,a,means,covars,w,pi,init_type='user',verbose=True)
+    gmmhmm = DurationGMHMM(n,m,d,a,means,covars,w,pi,init_type='user',verbose=True)
     return    gmmhmm, d  
 
 
@@ -212,7 +211,7 @@ def test_decoding(pathToComposition, whichSection):
     
     withSynthesis = True
     
-    makamScore = loadMakamScore(pathToComposition)
+    makamScore = loadMakamScore2(pathToComposition)
     
     lyrics = makamScore.getLyricsForSection(whichSection)
     
@@ -241,7 +240,7 @@ def test_oracle(URIrecordingNoExt, pathToComposition, whichSection):
     '''
     withSynthesis = False
     
-    makamScore = loadMakamScore(pathToComposition)
+    makamScore = loadMakamScore2(pathToComposition)
     lyrics = makamScore.getLyricsForSection(whichSection)
     
     
@@ -306,17 +305,17 @@ if __name__ == '__main__':
 
 #####################     for all tetst below inclide these 3 lines for lyrics:
     withSynthesis = True
-    makamScore = loadMakamScore(pathToComposition)
+    makamScore = loadMakamScore2(pathToComposition)
     lyrics = makamScore.getLyricsForSection(whichSection)
     htkParser = HtkConverter()
     htkParser.load(MODEL_URI, HMM_LIST_URI)
     
     lyricsWithModels, observationFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, 'dummyExtractedPitchList',    URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
 #     
-    decode(lyricsWithModels, observationFeatures, URIrecordingNoExt)
+#     decode(lyricsWithModels, observationFeatures, URIrecordingNoExt)
 #   
     
-#     test_backtrack(lyricsWithModels, URIrecordingNoExt)
+    test_backtrack(lyricsWithModels, URIrecordingNoExt)
 #     test_initialization(lyricsWithModels, URIrecordingNoExt, observationFeatures)
 
    

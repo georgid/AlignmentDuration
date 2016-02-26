@@ -6,6 +6,7 @@ Created on Nov 4, 2014
 import numpy
 import sys
 import logging
+from align.Decoder import WITH_DURATIONS
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -27,22 +28,25 @@ class Path(object):
         # ending time for each state
         self.endingTimes = []
         
-        if chiBackPointers != None and psiBackPointer != None:
+        if  psiBackPointer != None:
             
             # infer from pointer matrix 
-            totalTime, numStates = numpy.shape(chiBackPointers)
+            totalTime, numStates = numpy.shape(psiBackPointer)
             finalTime = totalTime
             numdecodedStates = -1
             totalAllowedDevTime = (totalTime - TOTAL_ALLOWED_DEV_COEFF * totalTime)
             
+            # numStates != numdecodedStates needed in forced alignment
             while numStates != numdecodedStates and finalTime > totalAllowedDevTime:
                 '''
                 decrease final time until numDecodedStates aligns with numStates expected
                 '''
                 finalTime = finalTime - 1
                 logger.debug('backtracking from final time {}'.format(finalTime))
-
-                self.pathRaw = self._backtrackForcedDur(chiBackPointers, psiBackPointer, finalTime)
+                if WITH_DURATIONS:
+                    self.pathRaw = self._backtrackForcedDur(chiBackPointers, psiBackPointer, finalTime)
+                else:
+                    self.pathRaw = self._backtrack(psiBackPointer, finalTime)
                 
                 self._path2stateIndices()
                 numdecodedStates = len(self.indicesStateStarts)
@@ -68,13 +72,33 @@ class Path(object):
         
     def setPatRaw(self, pathRaw):
         self.pathRaw = pathRaw
+    
+    def _backtrack(self, psiBackPointer, finalTime):
+        totalTIme, numStates = numpy.shape(psiBackPointer)
+        rawPath = numpy.empty( (totalTIme), dtype=int )
         
+        t = finalTime
+        currState = numStates - 1
+        
+        while(t>0):
+            rawPath[t] = currState
+            ### update 
+            currState = psiBackPointer[t, currState]
+            t = t-1
+        rawPath[t] = currState
+        return rawPath
+        
+    
     def _backtrackForcedDur(self, chiBackPointers, psiBackPointer, finalTime):
         '''
         starts at last state. 
         finds path following back pointers
         '''
-        totalTIme, numStates = numpy.shape(chiBackPointers)
+        
+        if chiBackPointers == None:
+            sys.exit(chiBackPointers == 0)
+        
+        totalTIme, numStates = numpy.shape(psiBackPointer)
         rawPath = numpy.empty( (totalTIme), dtype=int )
         
         # put last state till end of path

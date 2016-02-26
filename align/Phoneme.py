@@ -65,21 +65,19 @@ class Phoneme:
         
         return False
     
-    def getTransMatrix(self, htkModel):
+    def getTransMatrix(self):
         '''
         read the trans matrix from model. 
-        3x3 or 1x1 matrix for emitting states only as numpy array
+        3x3 or 1x1 matrix for emitting states only.
+        as numpy array
         '''
         
-        try: htkModel
-        except NameError:
-            try: self.htkModel
-            except AttributeError:
+        try: self.htkModel
+        except AttributeError:
                 sys.exit("  phoneme {} has no model assigned ", self.ID)
-            else:     htkModel = self.htkModel 
-
         
-        vector_ = htkModel.tmat.vector
+        
+        vector_ = self.htkModel.tmat.vector
         currTransMat = numpy.reshape(vector_ ,(len(vector_ )**0.5, len(vector_ )**0.5))
     
         return currTransMat  

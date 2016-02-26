@@ -48,7 +48,7 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
         
-    extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
+#     extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
     
 
     URI_recording = URI_recording_noExt + '.wav'
@@ -60,11 +60,10 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     
     # resynthesize audio chunk:
     if withSynthesis: 
-#         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
-        logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
-
-        hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
-        resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
+        if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
+            logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
+            hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
+            resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     else:
         sampleRate = 44100
         loader = essentia.standard.MonoLoader(filename = URI_recording, sampleRate = sampleRate)

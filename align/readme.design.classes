@@ -91,6 +91,9 @@ Decoder
  
  
  methods: 
+ 
+ _constructTransMatrixHMMNetwork - contruct mega-transMatrix from simple trans matrices for states
+ 
  duration2numFrameDuration(self, observationFeatures) - get relative tempo (numFramesPerMinUnit) for given audio chunk
  
  decodeAudio - a wrapper for hmm._BaseHMM._viterbiForced. 
@@ -101,7 +104,7 @@ Decoder
  backtrack(self, withOracle, chiBackPointer, psiBackPointer):
   backtrack optimal path of states from backpointers, interprete states to words 
   On construction of path backtracking is performed multiple times until starting at last time until full path is found       
-        
+       calls hmm.Path.Path._backtrack() or hmm.Path.Path._backtrackForcedDur
 
  path - result
 
