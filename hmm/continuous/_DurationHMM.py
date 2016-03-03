@@ -28,7 +28,7 @@ from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
 # put intermediate output in examples dir
 PATH_LOGS= os.path.dirname(os.path.realpath(sys.argv[0]))
 # print 'PATH_LOGS is '  + PATH_LOGS
-
+PATH_LOGS = '/Users/joro/Downloads/'
 
 
 ALPHA =  0.99
@@ -182,8 +182,9 @@ class _DurationHMM(_ContinuousHMM):
         
                 self.chi[t][currState] = maxDurIndex
         
-        writeListOfListToTextFile(self.phi, None , PATH_LOGS + '/phi') 
-            
+        
+        numpy.savetxt(PATH_LOGS + '/phi', self.phi)
+           
         numpy.savetxt(PATH_LOGS + '/chi', self.chi)
         numpy.savetxt(PATH_LOGS + '/psi', self.psi)
 

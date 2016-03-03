@@ -6,12 +6,11 @@ Created on Nov 4, 2014
 import numpy
 import sys
 import logging
-from align.Decoder import WITH_DURATIONS
+from align.Decoder import WITH_DURATIONS, BACKTRACK_MARGIN_PERCENT
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-# in backtracking allow to start this much from end back
-TOTAL_ALLOWED_DEV_COEFF= 0.2
+
 
 
 class Path(object):
@@ -19,7 +18,7 @@ class Path(object):
     Result path postprocessing
     '''
 
-    def __init__(self, chiBackPointers, psiBackPointer, phi):
+    def __init__(self,  chiBackPointers, psiBackPointer, phi, hmm):
         '''
         Constructor
         '''
@@ -34,10 +33,10 @@ class Path(object):
             totalTime, numStates = numpy.shape(psiBackPointer)
             finalTime = totalTime
             numdecodedStates = -1
-            totalAllowedDevTime = (totalTime - TOTAL_ALLOWED_DEV_COEFF * totalTime)
+            totalAllowedDevTime = (totalTime - BACKTRACK_MARGIN_PERCENT * totalTime)
             
             # numStates != numdecodedStates needed in forced alignment
-            while numStates != numdecodedStates and finalTime > totalAllowedDevTime:
+            while numStates != numdecodedStates and finalTime >= totalAllowedDevTime:
                 '''
                 decrease final time until numDecodedStates aligns with numStates expected
                 '''
@@ -46,7 +45,7 @@ class Path(object):
                 if WITH_DURATIONS:
                     self.pathRaw = self._backtrackForcedDur(chiBackPointers, psiBackPointer, finalTime)
                 else:
-                    self.pathRaw = self._backtrack(psiBackPointer, finalTime)
+                    self.pathRaw = self._backtrack(hmm, finalTime)
                 
                 self._path2stateIndices()
                 numdecodedStates = len(self.indicesStateStarts)
@@ -73,19 +72,26 @@ class Path(object):
     def setPatRaw(self, pathRaw):
         self.pathRaw = pathRaw
     
-    def _backtrack(self, psiBackPointer, finalTime):
-        totalTIme, numStates = numpy.shape(psiBackPointer)
+    def _backtrack(self, hmm,  finalTime):
+        
+        totalTIme, numStates = numpy.shape(hmm.psi)
         rawPath = numpy.empty( (totalTIme), dtype=int )
         
         t = finalTime
+        # start from last state
         currState = numStates - 1
+        # start from state with biggest prob
+#         currState = numpy.argmax(hmm.phi[t,:])
+        rawPath[t] = currState
         
         while(t>0):
-            rawPath[t] = currState
+            # backpointer
+            currState = hmm.psi[t, currState]
+            rawPath[t-1] = currState
             ### update 
-            currState = psiBackPointer[t, currState]
             t = t-1
-        rawPath[t] = currState
+    
+        self.pathRaw = rawPath
         return rawPath
         
     
@@ -166,5 +172,16 @@ class Path(object):
         ''' 
         print self.durations
     
-             
+    
+def visualizeMatrix(psi):
+#         psi = numpy.rot90(psi)
+        import matplotlib.pyplot as plt
+        plt.figure(2)
+        ax = plt.imshow(psi, interpolation='none')
+        plt.colorbar(ax)
+        plt.grid(True)
+#         plt.tight_layout()
+        plt.show()  
+        
+                 
         

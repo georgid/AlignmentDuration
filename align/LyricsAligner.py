@@ -25,6 +25,7 @@ import json
 import subprocess
 from align.MakamRecording import parseSectionLinks, MakamRecording
 from align.Decoder import logger
+from hmm.ParametersAlgo import ParametersAlgo
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 # pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
 # if pathPycompmusic not in sys.path:
@@ -51,7 +52,8 @@ HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
 from MakamScore import  loadMakamScore2
-from hmm.examples.main import loadSmallAudioFragment
+from hmm.examples.main import loadSmallAudioFragment,\
+    loadSmallAudioFragmentOracle
 from Decoder import Decoder
 
 
@@ -63,31 +65,27 @@ from htkparser.htk_converter import HtkConverter
 ANNOTATION_EXT = '.TextGrid'
  
         
-def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, sectionAnnosDict=None):
+
+
+
+def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, oraclePhonemes, sectionAnnosDict=None):
 
         # parameters 
         withSynthesis = False
-        withOracle = False
-        oracleLyrics = ''
         usePersistentFiles = True
         withAnnotations = True
         
-        htkParser = HtkConverter()
-        htkParser.load(MODEL_URI, HMM_LIST_URI)
-        
-        recordingNoExtURI = os.path.splitext(audioFileURI)[0]
-        
-        makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadata )
-      
-
-        mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict, withAnnotations )
-            
-        tokenLevelAlignedSuffix = '.alignedLyrics' 
+        mr,  htkParser = loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, sectionAnnosDict, withAnnotations)
+        if not ParametersAlgo.WITH_ORACLE:
+            tokenLevelAlignedSuffix = '.alignedLyrics'
+        else:
+            tokenLevelAlignedSuffix = '.alignedLyricsoracle'   
         totalDetectedTokenList = []
         
         totalCorrectDurations = 0
         totalDurations = 0
     
+        recordingNoExtURI = os.path.splitext(audioFileURI)[0]    
         
         if not withAnnotations: 
         
@@ -97,7 +95,7 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
                     continue
                 
     
-                detectedTokenList = alignSectionLinkProbableSections(makamScore, extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
+                detectedTokenList = alignSectionLinkProbableSections(mr.makamScore, extractedPitchList, withSynthesis,  oraclePhonemes, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser) 
     #DEBUG           
     #             print "query melodic structure: {}".format(currSectionLink.melodicStructure)
     #             for sectin in currSectionLink.selectedSections:
@@ -127,7 +125,7 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
                     continue
                 
                 URIRecordingChunkResynthesizedNoExt =  recordingNoExtURI + "_" + "{}".format(currSectionAnno.beginTs) + '_' + "{}".format(currSectionAnno.endTs) 
-                detectedTokenList, detectedPath, maxPhiScore = alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser)
+                detectedTokenList, detectedPath, maxPhiScore = alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, oraclePhonemes, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser)
                 
                 evalLevel = tierAliases.phraseLevel
                 correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
@@ -141,8 +139,24 @@ def alignRecording( symbtrtxtURI, sectionMetadata, sectionLinksDict, audioFileUR
             accuracy = totalCorrectDurations / totalDurations
             logger.info("accuracy: {:.2f}".format(accuracy))     
             return totalDetectedTokenList, sectionLinksDict
+        
+
+def loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, sectionAnnosDict, withAnnotations):
+    '''
+    refactored method
+    '''
+    htkParser = HtkConverter()
+    htkParser.load(MODEL_URI, HMM_LIST_URI)
+
     
-def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesis, withOracle,  oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
+    makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataDict)
+    mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict, withAnnotations)
+    
+    return mr, htkParser   
+    
+
+    
+def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesis, oracleLyrics, usePersistentFiles, tokenLevelAlignedSuffix,  recordingNoExtURI, currSectionLink, htkParser):
     '''
     runs alignment on given audio multiple times with a list of probable sections with their corresponding lyrics
     @return detectedTokenList with best score
@@ -154,7 +168,7 @@ def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesi
         currTokenLevelAlignedSuffix =  tokenLevelAlignedSuffix + '_' + probabaleSection.melodicStructure + '_' + probabaleSection.lyricStructure
         
         URIRecordingChunkResynthesizedNoExt =  recordingNoExtURI + "_" + str(currSectionLink.beginTs) + '_' + str(currSectionLink.endTs)
-        currDetectedTokenList, detectedPath, phiScore = alignLyricsSection( probabaleSection.lyrics, extractedPitchList, withSynthesis, withOracle, oracleLyrics, [],  usePersistentFiles, currTokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser)
+        currDetectedTokenList, detectedPath, phiScore = alignLyricsSection( probabaleSection.lyrics, extractedPitchList, withSynthesis, oracleLyrics, [],  usePersistentFiles, currTokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser)
         if phiScore > maxPhiScore:
             maxPhiScore = phiScore
             selectedSection = probabaleSection
@@ -168,21 +182,23 @@ def alignSectionLinkProbableSections(makamScore,extractedPitchList, withSynthesi
          
          
                
-def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, withOracle, lyricsWithModelsORacle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser):
+def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, phonemesOracle, listNonVocalFragments,   usePersistentFiles, tokenLevelAlignedSuffix,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, currSectionLink, htkParser):
         '''
         align @param: lyrics for one section
         '''
-        if withOracle:
-    
-            # synthesis not needed really in this setting. workaround because without synth takes whole recording  
-            withSynthesis = 1
             
     #     read from file result
-        
+      
         detectedAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
         if not os.path.isfile(detectedAlignedfileName):
+            if not ParametersAlgo.WITH_ORACLE:
             #     ###### extract audio features
-            lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, extractedPitchList,   URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink, htkParser)
+                lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, extractedPitchList,   URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink, htkParser)
+            else:
+                lyricsWithModelsOracle = loadSmallAudioFragmentOracle(URIrecordingNoExt, htkParser, lyrics, phonemesOracle )
+                lyricsWithModels = lyricsWithModelsOracle
+                # obsFeatures is alias for LyricsWithModelsOracle
+                obsFeatures = lyricsWithModelsOracle 
             
         # DEBUG: score-derived phoneme  durations
     #     lyricsWithModels.printPhonemeNetwork()
@@ -193,10 +209,11 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, withOracle,
         # decoder = Decoder(lyrics, withModels=False, numStates=86)
         #################### decode
             
-            if withOracle:
-                detectedTokenList = decoder.decodeWithOracle(lyricsWithModelsORacle, URIRecordingChunkResynthesizedNoExt )
-            else:
-                detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles)
+            fromTs = -1; toTs = -1
+            if ParametersAlgo.WITH_ORACLE:
+                fromTs = 0; toTs = 20.88
+        
+            detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles, URIRecordingChunkResynthesizedNoExt, fromTs, toTs)
             
             phiOptPath = {'phi': decoder.path.phiPathLikelihood}
             detectedPath = decoder.path.pathRaw
@@ -212,7 +229,7 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, withOracle,
         else:   
                 print "{} already exists. No decoding".format(detectedAlignedfileName)
                 detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
-                if withOracle:
+                if ParametersAlgo.WITH_ORACLE:
                     outputURI = URIRecordingChunkResynthesizedNoExt + '.path_oracle'
                 else:
                     outputURI = URIRecordingChunkResynthesizedNoExt + '.path'
@@ -311,3 +328,4 @@ def stereoToMono(wavFileURI):
         monoWriter = essentia.standard.MonoWriter(filename=wavFileURI)
         monoWriter(audio)
         return wavFileURI
+    

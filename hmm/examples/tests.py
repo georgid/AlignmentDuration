@@ -12,6 +12,8 @@ import sys
 from hmm.examples.main import  getDecoder
 from utilsLyrics.Utilz import tokenList2TabFile
 from align.LyricsAligner import HMM_LIST_URI, MODEL_URI
+from hmm.Path import Path, visualizeMatrix
+from Carbon.QuickDraw import pHiliteBit
 
 # file parsing tools as external lib 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir,os.path.pardir )) 
@@ -192,17 +194,41 @@ def testRand_DurationHMM():
 #     phiStar, fromState, maxDurIndex = durGMMhmm.computePhiStar(currTime, currState)
 #     print "phiStar={}, maxDurIndex={}".format(phiStar, maxDurIndex)
 
-def test_backtrack(lyricsWithModels, URIrecordingNoExt):
+def test_backtrackWithLyrics(lyricsWithModels, URIrecordingNoExt):
 
     decoder = getDecoder(lyricsWithModels, URIrecordingNoExt)
-    absPathPsi = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'psi' )
+    absPathPsi = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'psi' )
     psi = numpy.loadtxt(absPathPsi)
     
-    absPathChi = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'chi' )
+    absPathChi = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'chi' )
     chi = numpy.loadtxt(absPathChi)
-    withOracle= 0
-    decoder. backtrack(withOracle, chi, psi)
+    decoder. backtrack( chi, psi)
+    
 
+def testBackTrack():  
+    
+    chiBackPointer = None
+    absPathPsi = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_psi' )
+    psiBackPointer = numpy.loadtxt(absPathPsi)
+
+    absPathPhi = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_phi' )
+    phi = numpy.loadtxt(absPathPhi)
+    
+    class HmmStub():
+        def __init__(self,psi, phi):
+            self.phi = phi
+            self.psi = psi
+    
+    hmmStub = HmmStub(psiBackPointer, phi)
+    phiDummy = psiBackPointer
+    
+    
+    path =  Path(chiBackPointer, psiBackPointer, phiDummy, hmmStub)
+#     set BACKTRACK_MARGIN_PERCENT to 0 to make backtracking only once from last state 
+    print "path is {}".format(path.pathRaw)
+    # shoud be 01222455 # 
+    
+    
 
 def test_decoding(pathToComposition, whichSection):
     '''
@@ -234,45 +260,46 @@ def test_initialization(lyricsWithModels, URIrecordingNoExt, observationFeatures
     decoder.hmmNetwork.initDecodingParameters(observationFeatures)
 
 
-def test_oracle(URIrecordingNoExt, pathToComposition, whichSection):
-    '''
-    read phoneme-level ground truth and test
-    '''
-    withSynthesis = False
-    
-    makamScore = loadMakamScore2(pathToComposition)
-    lyrics = makamScore.getLyricsForSection(whichSection)
-    
-    
-    if logger.level == logging.DEBUG:
-        lyrics.printPhonemeNetwork()
-    
-    # consider only part of audio
-    fromTs = 0; toTs = 20.88
-    # since not all TextGrid might be on phoneme level
-    fromPhonemeIdx  = 1; toPhonemeIdx = 42
-    tokenLevelAlignedSuffix = '.syllables_oracle'
-    
-    detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
-    if os.path.isfile(detectedAlignedfileName):
-        print "{} already exists. No decoding".format(detectedAlignedfileName)
-        detectedTokenList  = readListOfListTextFile(detectedAlignedfileName)
-        
-    else:
-        detectedTokenList = decodeWithOracle(lyrics, URIrecordingNoExt, fromTs, toTs, fromPhonemeIdx, toPhonemeIdx)
-          
-        detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
-        if not os.path.isfile(detectedAlignedfileName):
-            detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
-            
-        
-    ANNOTATION_EXT = '.TextGrid'
-    # eval on phrase level
-    evalLevel = 2
-    correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, -1, -1 )
-    print "accuracy= {}".format(correctDuration / totalDuration)
-    
-    return detectedTokenList
+# def test_oracle(URIrecordingNoExt, pathToComposition, whichSection):
+#     '''
+#     read phoneme-level ground truth and test.
+#     !!! not sure where this is used
+#     '''
+#     withSynthesis = False
+#     
+#     makamScore = loadMakamScore2(pathToComposition)
+#     lyrics = makamScore.getLyricsForSection(whichSection)
+#     
+#     
+#     if logger.level == logging.DEBUG:
+#         lyrics.printPhonemeNetwork()
+#     
+#     # consider only part of audio
+#     fromTs = 0; toTs = 20.88
+#     # since not all TextGrid might be on phoneme level
+#     fromPhonemeIdx  = 1; toPhonemeIdx = 42
+#     tokenLevelAlignedSuffix = '.syllables_oracle'
+#     
+#     detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
+#     if os.path.isfile(detectedAlignedfileName):
+#         print "{} already exists. No decoding".format(detectedAlignedfileName)
+#         detectedTokenList  = readListOfListTextFile(detectedAlignedfileName)
+#         
+#     else:
+#         detectedTokenList = decodeWithOracle(lyrics, URIrecordingNoExt, fromTs, toTs, fromPhonemeIdx, toPhonemeIdx)
+#           
+#         detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
+#         if not os.path.isfile(detectedAlignedfileName):
+#             detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
+#             
+#         
+#     ANNOTATION_EXT = '.TextGrid'
+#     # eval on phrase level
+#     evalLevel = 2
+#     correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, -1, -1 )
+#     print "accuracy= {}".format(correctDuration / totalDuration)
+#     
+#     return detectedTokenList
 
 
 def test_vocalPrediction():
@@ -303,9 +330,14 @@ if __name__ == '__main__':
     
 #     test_oracle(URIrecordingNoExt, pathToComposition, whichSection)
 
+#     testBackTrack()
+    phi = numpy.loadtxt('/Users/joro/Downloads/phi')
+#     print psi[-4:-1, :]
+    visualizeMatrix(phi[-1000:-1, :])
+
 #####################     for all tetst below include these 3 lines for lyrics:
     withSynthesis = True
-    makamScore = loadMakamScore2(pathToComposition)
+    makamScore = loadMakamScore2(pathToComposition) # loadMakamScore2  is deprecated
     lyrics = makamScore.getLyricsForSection(whichSection)
     htkParser = HtkConverter()
     htkParser.load(MODEL_URI, HMM_LIST_URI)
@@ -315,7 +347,7 @@ if __name__ == '__main__':
 #     decode(lyricsWithModels, observationFeatures, URIrecordingNoExt)
 #   
     
-    test_backtrack(lyricsWithModels, URIrecordingNoExt)
+    test_backtrackWithLyrics(lyricsWithModels, URIrecordingNoExt)
 #     test_initialization(lyricsWithModels, URIrecordingNoExt, observationFeatures)
 
    

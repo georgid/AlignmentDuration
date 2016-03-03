@@ -8,6 +8,9 @@ import numpy
 import sys
 from numpy.core.numeric import Infinity
 from django.contrib.gis.shortcuts import numpy
+from hmm.continuous._DurationHMM import PATH_LOGS
+import math
+from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 
 
 class _HMM(_ContinuousHMM):
@@ -101,15 +104,40 @@ class _HMM(_ContinuousHMM):
         self.psi = numpy.empty((lenObservations, self.n), dtype=self.precision)
         self.psi.fill(-1)
         
-        for x in xrange(self.n):
-            currLogPi = numpy.log(self.pi[x])
-            self.phi[0][x] = currLogPi + self.B_map[x][0]
-            self.psi[0][x] = 0
-    
-    def viterbi_fast(self, observations):
+        for j in xrange(self.n):
+            currLogPi = numpy.log(self.pi[j])
+            self.phi[0][j] = currLogPi + self.B_map[j][0]
+            self.psi[0][j] = 0
         
-        for t in xrange(1,len(observations)):
-            self.logger.debug("at time {} out of {}".format(t, len(observations)))
+    def initDecodingParametersOracle(self, lyricsWithModels, URIRecordingNoExt, fromTs, toTs):
+        '''
+        TODO: this and other method should be in _BaseHMM instead of here, becasue they are duplicated in _DurationHMM with slight changes
+        '''
+        durInSeconds = toTs - fromTs
+        lenObservations = int(math.floor(durInSeconds * float(NUMFRAMESPERSEC)))
+        
+        
+        self._mapBOracle( lyricsWithModels, lenObservations, fromTs)
+        
+        self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
+        self.phi.fill(-Infinity)
+    
+       
+        # backpointer: form which prev. state
+        self.psi = numpy.empty((lenObservations, self.n), dtype=self.precision)
+        self.psi.fill(-1)
+        
+        for j in xrange(self.n):
+            currLogPi = numpy.log(self.pi[j])
+            self.phi[0][j] = currLogPi + self.B_map[j][0]
+            self.psi[0][j] = 0
+        
+    
+    def viterbi_fast(self):
+        
+        lenObs = numpy.shape(self.B_map)[1]
+        for t in xrange(1,lenObs):
+            self.logger.debug("at time {} out of {}".format(t, lenObs ))
             for j in xrange(self.n):
 #                 for i in xrange(self.n):
 #                     if (delta[t][j] < delta[t-1][i]*self.A[i][j]):
@@ -119,12 +147,14 @@ class _HMM(_ContinuousHMM):
                         sliceA = self.A[:,j] 
 #                         print "shape A:" + str(self.A.shape)
 #                         print "shape phi:" + str(self.phi.shape)
-                        AandPhi = numpy.add(self.phi[t-1,:], sliceA)
+                        APlusPhi = numpy.add(self.phi[t-1,:], sliceA)
                         
-                        self.phi[t][j] = numpy.max(AandPhi)
+                        self.phi[t][j] = numpy.max(APlusPhi)
                         self.phi[t][j] =+ self.B_map[j][t]
 
-                        self.psi[t][j] = numpy.argmax(AandPhi)
+                        self.psi[t][j] = numpy.argmax(APlusPhi)
                     
+        numpy.savetxt(PATH_LOGS + '/phi', self.phi)
+        numpy.savetxt( PATH_LOGS + '/psi', self.psi)
         return self.psi
         

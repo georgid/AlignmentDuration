@@ -13,12 +13,18 @@ class Phoneme:
         self.durationInNumFrames = None;
         self.numFirstState = -1
     
-    def setbeginTs(self, beginTs):
+    def setBeginTs(self, beginTs):
         '''
         begin ts from annotation
         '''
         self.beginTs = beginTs
-            
+    
+    def setEndTs(self, endTs):
+        '''
+        begin ts from annotation
+        '''
+        self.endTs = endTs
+    
     def setNumFirstState(self, numFirstState):
             self.numFirstState = numFirstState
         

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 Created on Dec 16, 2014
 Utility class: logic for parsing statesNetwork, phoeneNetwork  
@@ -5,6 +7,37 @@ Utility class: logic for parsing statesNetwork, phoeneNetwork
 '''
 import sys
 from Constants import NUM_FRAMES_PERSECOND, NUMSTATES_SIL, NUMSTATES_PHONEME
+from align.Phoneme import Phoneme
+import os
+import logging
+
+
+
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
+
+pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
+if pathEvaluation not in sys.path:
+    sys.path.append(pathEvaluation)
+    
+from WordLevelEvaluator import readNonEmptyTokensTextGrid,  tierAliases
+
+
+def loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx):
+    '''
+    LOAD ORACLE PHONEMES as annotatetd in TextGrid
+    '''
+    highLevel = tierAliases.pinyin # read syllable in pinyin
+    lowLevel = tierAliases.xsampadetails # read phonemesAnno
+    
+    phonemesAnnoAll = []
+    for syllableIdx in range(fromSyllableIdx, toSyllableIdx): # for each  syllable including non-lyrics (.e.g. _SAZ_) syllables
+    # go through the phonemes. load all
+        phonemesAnnoList, fromPhonemeIdx, toPhonemeIdx, syllableText, phonemesAnnoListNoPauses = parsePhonemes(URIrecordingTextGrid, syllableIdx, highLevel, lowLevel)
+        phonemeTokensAnno = phonemesAnnoList[fromPhonemeIdx:toPhonemeIdx + 1]
+        phonemesAnno = phonemeTokens2Classes(phonemeTokensAnno)
+        phonemesAnnoAll.extend(phonemesAnno)
+    
+    return phonemesAnnoAll
 
 def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
     '''
@@ -37,15 +70,15 @@ def getCountLastState(lyricsWithModels, word_, lastSyll, lastPhoneme):
     '''
     helper function
     '''
-    if lastSyll.hasShortPauseAtEnd: # sanity check that last syllable is sp
-        if lastPhoneme.ID != 'sp':
+    if lastSyll.hasShortPauseAtEnd:
+        if lastPhoneme.ID != 'sp':  # sanity check that last syllable is sp
             sys.exit(' \n last state for word {} is not sp. Sorry - not implemented.'.format(word_.text))
         countLastState = lastPhoneme.numFirstState
     else:
         countLastState_ = lastPhoneme.numFirstState + lastPhoneme.getNumStates()
         countLastState = min(countLastState_, len(lyricsWithModels.statesNetwork) - 1) # make sure not outside of state network
         
-        return countLastState
+    return countLastState
 
 
 
@@ -120,6 +153,94 @@ def _constructTimeStampsForTokenDetected(  text, startNoteNumber, countFirstStat
 #         print detectedWord
         
         return detectedWord, dummy
+
+def parsePhonemes(lyricsTextGrid, syllableIdx, highLevel, lowLevel):
+    '''
+    parse phonemes for given syllable
+    @highlevel - tier name syllable/word
+    @lowLevel tier name phonemes
+    '''
+
+    syllable, dummy = readNonEmptyTokensTextGrid(lyricsTextGrid, highLevel, syllableIdx, syllableIdx)
+
+    
+    phonemesAnnoList, phonemesAnnoListNoPauses = readNonEmptyTokensTextGrid(lyricsTextGrid, lowLevel, 0, -1)
+    
+    beginSyllableTs = syllable[0][0]
+    endSyllableTs = syllable[0][1]
+    syllablePinYinRaw = syllable[0][2].strip()
+    isEndOfSentence, syllableText = stripPunctuationSigns(syllablePinYinRaw)
+    
+#     if syllableText == '': # skip this syllable with no lyrics 
+#         return phonemesAnnoList, -1, -1, syllableText 
+    
+    phonemesPointer = 0
+    
+    fromPhonemeIdx, toPhonemeIdx, dummy, dummy = _findBeginEndIndices(phonemesAnnoList, phonemesPointer, beginSyllableTs, endSyllableTs, highLevel)
+    
+    return phonemesAnnoList, fromPhonemeIdx, toPhonemeIdx, syllableText, phonemesAnnoListNoPauses
+
+
+def _findBeginEndIndices(lowLevelTokensList, lowerLevelTokenPointer, highLevelBeginTs, highLevelEndTs, highLevel, durationsList=None):
+    ''' 
+    find indices of lower level tier whihc align with indices of highLevel tier
+    @return: fromLowLevelTokenIdx, toLowLevelTokenIdx
+    @param lowerLevelTokenPointer: being updated, and returned 
+    '''
+    if durationsList != None:
+        if len(durationsList) != len(lowLevelTokensList):
+            sys.exit(" len(durationsList) {} != lowLevelTokensList {} ".format(len(durationsList), len(lowLevelTokensList)))
+    
+    currSentenceSyllablesLIst = []
+    
+    
+    while lowLevelTokensList[lowerLevelTokenPointer][0] < highLevelBeginTs: # search for beginning
+        lowerLevelTokenPointer += 1
+    
+    currTokenBegin = lowLevelTokensList[lowerLevelTokenPointer][0]
+    if not currTokenBegin == highLevelBeginTs: # start Ts has to be aligned
+        logging.warning("token of lower layer has starting time {}, but expected {} from higher layer ".format(currTokenBegin, highLevelBeginTs))
+    fromLowLevelTokenIdx = lowerLevelTokenPointer
+    
+    while lowerLevelTokenPointer < len(lowLevelTokensList) and float(lowLevelTokensList[lowerLevelTokenPointer][1]) <= highLevelEndTs: # syllables in currSentence
+        lowerLevelTokenPointer += 1
+    
+    currTokenEnd = lowLevelTokensList[lowerLevelTokenPointer - 1][1]
+    if not currTokenEnd == highLevelEndTs: # end Ts has to be aligned
+        logging.warning(" token of lower layer has ending time {}, but expected {} from higher layer ".format(currTokenEnd, highLevelEndTs))
+    toLowLevelTokenIdx = lowerLevelTokenPointer - 1
+    return  fromLowLevelTokenIdx, toLowLevelTokenIdx, lowerLevelTokenPointer, currSentenceSyllablesLIst
+
+
+
+  
+def stripPunctuationSigns(string_):
+    isEndOfSentence = False
+    if string_.endswith(u'\u3002') or string_.endswith(u'\uff0c') \
+             or string_.endswith('？') or string_.endswith('！') or string_.endswith('：') \
+             or string_.endswith(':') or string_.endswith(',') : # syllable at end of line/section
+                string_  = string_.replace(u'\u3002', '') # comma 
+                string_  = string_.replace(',','')
+                string_  = string_.replace(u'\uff0c', '') # point
+                string_  = string_.replace('？', '')
+                string_  = string_.replace('！', '')
+                string_  = string_.replace('：', '')
+                string_  = string_.replace(':', '')
+                                
+                isEndOfSentence = True
+    string_ = string_.strip()
+    return isEndOfSentence, string_
+
+
+def phonemeTokens2Classes( phonemeTokensAnno):
+    phonemesAnnoList = []
+    for phonemeAnno in phonemeTokensAnno:
+        currPhn = Phoneme(phonemeAnno[2].strip())
+        currPhn.setBeginTs(phonemeAnno[0])
+        currPhn.setEndTs(phonemeAnno[1])
+        phonemesAnnoList.append(currPhn)
+    
+    return phonemesAnnoList
         
     
 def testT(lyricsWithModels):

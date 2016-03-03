@@ -7,14 +7,13 @@ contains SymbTr Parser class
 import codecs
 import os
 import sys
-from Word import Word
 from Syllable import Syllable, MINIMAL_DURATION_UNIT
 from Lyrics import Lyrics
 from _SymbTrParserBase import _SymbTrParserBase
-from Phonetizer import Phonetizer
 
 
 from utilsLyrics.Utilz import  loadTextFile
+from align._SyllableBase import createWord
 
 
 class SymbTrParser(_SymbTrParserBase):
@@ -259,17 +258,3 @@ class SymbTrParser(_SymbTrParserBase):
         
 
      
-# begin index does not update, because no change in aranagme. 
-
-def createWord(syllablesInCurrWord, currSyllable):
-        '''
-        create a new word ending in currect syllable  
-        '''        
-        currSyllable.text = currSyllable.text.rstrip()
-        currSyllable.setHasShortPauseAtEnd(False)
-        syllablesInCurrWord.append(currSyllable)
-    # create new word
-        word = Word(syllablesInCurrWord)
-        return word, syllablesInCurrWord
-    
-

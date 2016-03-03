@@ -10,6 +10,7 @@ from Phoneme import Phoneme
 from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
+from hmm.ParametersAlgo import ParametersAlgo
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
     
@@ -34,7 +35,7 @@ class LyricsWithModels(Lyrics):
     '''
 
 
-    def __init__(self, lyrics, htkParser, ONLY_MIDDLE_STATE, deviationInSec, withPaddedSilence=True  ):
+    def __init__(self, lyrics, htkParser, deviationInSec, withPaddedSilence=True ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
@@ -48,15 +49,6 @@ class LyricsWithModels(Lyrics):
         # list of class type StateWithDur
         self.statesNetwork = []
         
-        if ONLY_MIDDLE_STATE=='True':
-            ONLY_MIDDLE_STATE  = True
-        elif ONLY_MIDDLE_STATE=='False':
-            ONLY_MIDDLE_STATE  = False
-        else:
-            logger.error('LyricsWithModels: param ONLY_MIDDLE_STATE ={}. ONly True/False expected'.format( ONLY_MIDDLE_STATE))
-            sys.exit()
-        
-        self.ONLY_MIDDLE_STATE = ONLY_MIDDLE_STATE
         
         self.deviationInSec = deviationInSec
 
@@ -313,7 +305,7 @@ class LyricsWithModels(Lyrics):
         # consonant-handling policy
         self.calcPhonemeDurs()
 
-        if self.ONLY_MIDDLE_STATE:
+        if ParametersAlgo.ONLY_MIDDLE_STATE:
             self._phonemes2stateNetworkOnlyMiddle()
         else:
             self._phonemes2stateNetwork()
@@ -347,65 +339,73 @@ class LyricsWithModels(Lyrics):
         # consonant-handling policy
         self.calcPhonemeDurs()
 
-        if self.ONLY_MIDDLE_STATE:
+        if ParametersAlgo.ONLY_MIDDLE_STATE:
             self._phonemes2stateNetworkOnlyMiddle()
         else:
             self._phonemes2stateNetwork()
 #             self._phonemes2stateNetworkWeights()
         
         self.duratioInFramesSet = True   
-        
-        
-    def setPhonemeDurs(self,  phonemeListExtracted):
+    
+    
+    def setPhonemeNumFrameDurs(self,  phoenemeAnnotaions):
         '''
-        set durations read directly from textGrid. Used in oracle. 
-        does not consider empty tokens (silences) at beginning and end, but reads sp tokens 
+        set durations in num frame durations read directly from textGrid. Used in oracle. 
+        does not consider empty tokens (silences) at beginning and end, but reads sp tokens
+        double check if phoenemes are the same as in lyrics 
         '''
         
+        ##### put all annotated phonemes in queue
         queueAnnotationTokens = Queue.Queue()
-        for annoPhoneme in phonemeListExtracted:
-            if annoPhoneme[2] == '':
-                annoPhoneme[2] ='sil' 
+        for annoPhoneme in phoenemeAnnotaions:
+            if annoPhoneme.ID == '':
+                annoPhoneme.ID ='sil'
+        # WORKAROUND: needed for phonemes with strange names in Jingju 
+#             self.renamePhonemeNames(annoPhoneme) 
             queueAnnotationTokens.put(annoPhoneme)
         # only first word
 #         self.listWords = [self.listWords[0]]
         
         
-        fromPhonemeIdx = phonemeListExtracted[0][3]
         # used for debug tracking
         idxTotalPhonemeAnno = 0
         for word_ in self.listWords:
             for syllable in word_.syllables:
 #                 listDurations = []
-                for idx, phoneme_ in enumerate(syllable.phonemes):
+#                 if syllable.text == 'REST':
+#                     continue
+                for idx, phoneme_ in enumerate(syllable.phonemes): # current syllable
+                    
                     idxTotalPhonemeAnno += idx
                     if queueAnnotationTokens.empty():
                         sys.exit("not enough phonemes in annotation at sylable {}".format(syllable.text))
                     phonemeAnno = queueAnnotationTokens.get()
-                    logger.debug("phoneme from annotation {} and  phoneme from lyrics {} ".format(phonemeAnno[2], phoneme_.ID ) )
-                    if phonemeAnno[2] != phoneme_.ID:
-                        sys.exit( " phoneme idx {} from annotation {} and  phoneme from lyrics  {} are  different".format(idxTotalPhonemeAnno + fromPhonemeIdx, phonemeAnno[2], phoneme_.ID ))
+                    logger.debug("phoneme from annotation {} and  phoneme from lyrics {} ".format(phonemeAnno.ID, phoneme_.ID ) )
+                    if phonemeAnno.ID != phoneme_.ID:
+                        sys.exit( " phoneme idx from annotation {} and  phoneme from lyrics  {} are  different".format( phonemeAnno.ID, phoneme_.ID ))
 
-                    phoneme_.setbeginTs(float(phonemeAnno[0]))
+                    phoneme_.setBeginTs(float(phonemeAnno.beginTs))
                     currDur = self.computeDurationInFrames( phonemeAnno)
                     phoneme_.durationInNumFrames = currDur
         
         
         # expand to states       
-        if self.ONLY_MIDDLE_STATE:
+        if ParametersAlgo.ONLY_MIDDLE_STATE:
             self._phonemes2stateNetworkOnlyMiddle()
         else:
             self._phonemes2stateNetwork()
 #             self._phonemes2stateNetworkWeights()
         
-        self.duratioInFramesSet = True
+        self.duratioInFramesSet = True    
+        
+        
         
      
     def computeDurationInFrames(self, phonemeAnno):
         '''
         compute Duration from annotation token 
         '''
-        durationInSec = float(phonemeAnno[1]) - float(phonemeAnno[0])
+        durationInSec = float(phonemeAnno.endTs) - float(phonemeAnno.beginTs)
         durationInFrames = math.floor(durationInSec * NUM_FRAMES_PERSECOND)
         return durationInFrames
             

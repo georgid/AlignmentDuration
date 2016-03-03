@@ -4,9 +4,6 @@ Created on Oct 8, 2014
 @author: joro
 '''
 
-from Syllable import Syllable
-from Phoneme import Phoneme
-
 class Word():
         ''' just a list of syllables. order  matters '''
         def __init__(self,syllables):

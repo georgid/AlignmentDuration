@@ -14,7 +14,7 @@ MINIMAL_DURATION_UNIT = 64
 
 NUMFRAMESPESECOND = 100
 
-#  consonant durationInMinUnit fixed to  0.3 seconds 
+#  consonant durationInMinUnit fixed 
 CONSONANT_DURATION = NUMFRAMESPESECOND * 0.05
 # CONSONANT_DURATION = MINIMAL_DURATION_UNIT / 64
 

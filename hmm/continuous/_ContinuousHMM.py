@@ -143,8 +143,8 @@ class _ContinuousHMM(_BaseHMM):
         # init matrix to be zero
         self.B_map = numpy.zeros( (self.n, lenObservations), dtype=self.precision)
         self.B_map.fill(MINIMAL_PROB)
-        
-        offSet = lyricsWithModelsOracle.phonemesNetwork[0].beginTs - fromTs
+        firstPhoneme = lyricsWithModelsOracle.phonemesNetwork[0]
+        offSet = firstPhoneme.beginTs - fromTs
         import math
         startDurInFrames =  int(math.floor(offSet * NUMFRAMESPERSEC)) 
 

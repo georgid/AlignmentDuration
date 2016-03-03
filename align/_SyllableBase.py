@@ -3,10 +3,9 @@ Created on Mar 5, 2015
 
 @author: joro
 '''
-from Phoneme import Phoneme
 import sys
-from Phonetizer import Phonetizer
-from Decoder import logger
+from hmm.ParametersAlgo import ParametersAlgo
+from align.Word import Word
 
 
 
@@ -96,3 +95,20 @@ class _SyllableBase():
         def __str__(self):
                 syllalbeTest = self.text.encode('utf-8','replace')
                 return syllalbeTest + " durationInMinUnit: " + str(self.durationInMinUnit) + "\n" 
+            
+            
+# begin index does not update, because no change in aranagme. 
+
+def createWord(syllablesInCurrWord, currSyllable):
+        '''
+        create a new word ending in currect syllable  
+        '''        
+        currSyllable.text = currSyllable.text.rstrip()
+        currSyllable.setHasShortPauseAtEnd(ParametersAlgo.WITH_SHORT_PAUSES)
+        syllablesInCurrWord.append(currSyllable)
+    # create new word
+        word = Word(syllablesInCurrWord)
+        return word, syllablesInCurrWord
+    
+
+

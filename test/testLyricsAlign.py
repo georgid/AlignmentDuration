@@ -6,9 +6,13 @@ Created on Jan 13, 2016
 import os
 import sys
 import json
+from align.LyricsParsing import loadOraclePhonemes
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from align.MakamRecording import MakamRecording, parseSectionLinks,\
-    parseTimeSectionLinkTxt
+
+
+
+
+from align.MakamRecording import MakamRecording, parseSectionLinks
 from align.Section import Section
 from align.MakamScore import loadMakamScore2
 
@@ -36,13 +40,13 @@ with open(sectionMetadataURI) as f2:
 with open(sectionAnnosSourceURI) as f3:
         sectionAnnosDict = json.load(f3)
 
-
+        
 def testLyricsAlign():
     
 
     outputDir =  os.path.join( currDir, '../example/output/' )
     
-    ### Juanjos pitch
+    ### comment for Juanjos pitch
 #     extractedPitch = os.path.splitext(audioFileURI)[0] + '.pitch'
 #     with open(extractedPitch) as f:
 #         extractedPitchList = json.load(f)
@@ -51,13 +55,50 @@ def testLyricsAlign():
     with open(sectionAnnosSourceURI) as f:
         sectionLinksDict = json.load(f)
     
-    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, sectionAnnosDict)
+    oracleLyrics = ''
+    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, oracleLyrics, sectionAnnosDict)
       
     ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
     ret['alignedLyricsSyllables'] = totalDetectedTokenList
     ret['sectionlinks'] = sectionLinksDict
     print ret
 
+
+
+
+
+
+def testLyricsAlignOracle():
+    with open(sectionLinksSourceURI) as f:
+        sectionLinksDict = json.load(f)
+    
+    URIrecordingTextGrid = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.TextGrid'
+    fromSyllableIdx = 1; toSyllableIdx = 8
+    
+    phonemesAnnoAll = loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx)
+    extractedPitchList = None
+    outputDir =  os.path.join( currDir, '../example/output/' )
+
+    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, phonemesAnnoAll, sectionAnnosDict)
+
+        
+    ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
+    ret['alignedLyricsSyllables'] = totalDetectedTokenList
+    ret['sectionlinks'] = sectionLinksDict
+    print ret 
+        
+          
+#         detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
+#         if not os.path.isfile(detectedAlignedfileName):
+#             detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
+                
+        ##### eval   
+#         ANNOTATION_EXT = '.TextGrid'
+    #     # eval on phrase level
+    #     evalLevel = 2
+    #     correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, -1, -1 )
+    #     print "accuracy= {}".format(correctDuration / totalDuration)
+    
 
 def testExtendSectionLinksSelectedSections():
     '''
@@ -90,6 +131,7 @@ def testMakamRecording():
 
 
 if __name__ == '__main__':
-    testLyricsAlign()
+#     testLyricsAlign()
+    testLyricsAlignOracle()
 #     testExtendSectionLinksSelectedSections()
 #     testMakamRecording()

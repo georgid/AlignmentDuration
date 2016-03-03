@@ -9,6 +9,7 @@ import logging
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDetected,\
     expandlyrics2SyllableList
 from Constants import numDimensions, numMixtures
+from hmm.ParametersAlgo import ParametersAlgo
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
@@ -50,6 +51,9 @@ logger.setLevel(loggingLevel)
 DETECTION_TOKEN_LEVEL= 'syllables'
 DETECTION_TOKEN_LEVEL= 'words'
 
+# in backtracking allow to start this much from end back
+BACKTRACK_MARGIN_PERCENT= 0.2
+# BACKTRACK_MARGIN_PERCENT= 0.0
 
 
 class Decoder(object):
@@ -77,36 +81,38 @@ class Decoder(object):
         self.path = None
     
     
-    def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles):
+    def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles, URIrecordingNoExt='', fromTs=0, toTs=0):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
-
-        self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
-        if  WITH_DURATIONS:
-            self.hmmNetwork.setNonVocal(listNonVocalFragments)
-        
-        # double check that features are in same dimension as model
-        if observationFeatures.shape[1] != numDimensions:
-            sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
-        
-        self.hmmNetwork.initDecodingParameters(observationFeatures)
+        if not ParametersAlgo.WITH_ORACLE:
+            self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
+            if  WITH_DURATIONS:
+                self.hmmNetwork.setNonVocal(listNonVocalFragments)
+            
+            # double check that features are in same dimension as model
+            if observationFeatures.shape[1] != numDimensions:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
+            
+            self.hmmNetwork.initDecodingParameters(observationFeatures)
+            lenObs = len(observationFeatures)
+        else:
+            lenObs = self.hmmNetwork.initDecodingParametersOracle(observationFeatures, URIrecordingNoExt, fromTs, toTs)
 
 
         # standard viterbi forced alignment
         if not WITH_DURATIONS:
             
-            psiBackPointer = self.hmmNetwork.viterbi_fast(observationFeatures)
+            psiBackPointer = self.hmmNetwork.viterbi_fast()
             chiBackPointer = None
         
         else:   # duration-HMM
-            lenObs = len(observationFeatures)
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(lenObs)
             
-#             writeListOfListToTextFile(chiBackPointer, None , PATH_CHI)
-        writeListOfListToTextFile(psiBackPointer, None , '/Users/joro/Downloads/psi')
-        withOracle = 0    
-        detectedWordList, self.path = self.backtrack(withOracle, chiBackPointer, psiBackPointer )
+       
+        
+           
+        detectedWordList, self.path = self.backtrack(chiBackPointer, psiBackPointer )
             
         print "\n"
          # DEBUG
@@ -114,19 +120,6 @@ class Decoder(object):
         
         return detectedWordList
     
-    def decodeWithOracle(self, lyricsWithModelsORacle, URIrecordingNoExt, fromTs, toTs):
-        '''
-        instead of bMap  set as oracle from annotation
-        '''
-   
-        
-        lenObservations = self.hmmNetwork.initDecodingParametersOracle(lyricsWithModelsORacle, URIrecordingNoExt, fromTs, toTs)
-        
-        chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(lenObservations)
-    #   
-        withOracle = 1  
-        detectedWordList, self.path = self.backtrack(withOracle, chiBackPointer, psiBackPointer)
-        return detectedWordList 
     
 
         
@@ -189,14 +182,23 @@ class Decoder(object):
             if (counterOverallStateNum + currNumStates) < transMAtrix.shape[1]:
                 val = currTransMat[-2,-1] * nextStateTransition
                 transMAtrix[counterOverallStateNum + currNumStates -1, counterOverallStateNum + currNumStates] =  val
-    
-    
+            
+  
+               
             # increment in final trans matrix  
             counterOverallStateNum +=currNumStates
-            
-            # avoid log(0) 
-            indicesZero = numpy.where(transMAtrix==0)
-            transMAtrix[indicesZero] = sys.float_info.min
+        
+        # visualize before log
+#         import matplotlib.pyplot as plt
+#         plt.figure(1)
+#         ax = plt.imshow(transMAtrix, interpolation='none')
+#         plt.colorbar(ax)
+#         plt.grid(True)
+#         plt.show()
+        
+        # avoid log(0) 
+        indicesZero = numpy.where(transMAtrix==0)
+        transMAtrix[indicesZero] = sys.float_info.min
              
         return numpy.log(transMAtrix)
     
@@ -290,7 +292,7 @@ class Decoder(object):
     
     
     
-    def backtrack(self, withOracle, chiBackPointer, psiBackPointer):
+    def backtrack(self, chiBackPointer, psiBackPointer):
         ''' 
         backtrack optimal path of states from backpointers
         interprete states to words      
@@ -300,14 +302,14 @@ class Decoder(object):
         
         # self.hmmNetwork.phi is set in decoder.decodeAudio()
         from hmm.Path import Path
-        self.path =  Path(chiBackPointer, psiBackPointer, self.hmmNetwork.phi )
+        self.path =  Path(chiBackPointer, psiBackPointer, self.hmmNetwork.phi, self.hmmNetwork )
         
         pathUtils = os.path.join(parentDir, 'utilsLyrics')
         if pathUtils not in sys.path:
             sys.path.append(pathUtils )
     
 
-        if withOracle:
+        if ParametersAlgo.WITH_ORACLE:
             outputURI = self.URIrecordingNoExt + '.path_oracle'
         else:
             outputURI = self.URIrecordingNoExt + '.path'

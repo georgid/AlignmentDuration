@@ -18,7 +18,6 @@ from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 # 
 # if pathJingju not in sys.path:
 #     sys.path.append(pathJingju )
-from hmm.Path import Path
 from hmm.ParametersAlgo import ParametersAlgo
 import logging
 
@@ -49,7 +48,7 @@ def loadSmallAudioFragment(lyrics, extractedPitchList,  URIrecordingNoExt, URIRe
     '''
     
 
-    lyricsWithModels = LyricsWithModels(lyrics, htkParser, 'False', ParametersAlgo.DEVIATION_IN_SEC)
+    lyricsWithModels = LyricsWithModels(lyrics, htkParser,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
      
     observationFeatures, URIRecordingChunk = loadMFCCs(URIrecordingNoExt, extractedPitchList,  URIRecordingChunkResynthesizedNoExt, withSynthesis, sectionLink) #     observationFeatures = observationFeatures[0:1000]
 
@@ -59,15 +58,25 @@ def loadSmallAudioFragment(lyrics, extractedPitchList,  URIrecordingNoExt, URIRe
 
     return lyricsWithModels, observationFeatures, URIRecordingChunk
 
+def loadSmallAudioFragmentOracle(URIrecordingNoExt, htkParser, lyrics, phonemeAnnotaions ):
+
+        
+        # lyricsWithModelsORacle used only as helper to get its stateNetwork with durs, but not functionally - e.g. their models are not used
+        withPaddedSilence = False # dont model silence at end and beginnning. this away we dont need annotatation of sp at end and beginning 
+        lyricsWithModelsORacle = LyricsWithModels(lyrics,  htkParser,  ParametersAlgo.DEVIATION_IN_SEC, withPaddedSilence)
+        lyricsWithModelsORacle.setPhonemeNumFrameDurs( phonemeAnnotaions)
+        
+        return lyricsWithModelsORacle
+
 
 def parsePhoenemeAnnoDursOracle(lyrics, phonemeListExtracted ):
-
+    
         htkParser = HtkConverter()
         htkParser.load(MODEL_URI, HMM_LIST_URI)
         
         dummyDeviation = 1
         # lyricsWithModelsORacle used only as helper for state durs, but not functionally
-        lyricsWithModelsORacle = LyricsWithModels(lyrics, htkParser, 'False', dummyDeviation)
+        lyricsWithModelsORacle = LyricsWithModels(lyrics, htkParser,  dummyDeviation)
         lyricsWithModelsORacle.setPhonemeDurs( phonemeListExtracted)
         
         return lyricsWithModelsORacle
@@ -94,5 +103,4 @@ def decode(lyricsWithModels, observationFeatures, URIrecordingNoExt):
     lenObs = len(observationFeatures)
     chiBackPointer, psiBackPointer = decoder.hmmNetwork._viterbiForcedDur(lenObs)
 #   
-    withOracle = 0  
-    decoder.backtrack(withOracle, chiBackPointer, psiBackPointer)
+    decoder.backtrack( chiBackPointer, psiBackPointer)

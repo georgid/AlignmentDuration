@@ -89,6 +89,8 @@ Decoder
  lyricsWithModels - its field statesNetwork is used in self.constructHMMNetworkParameters() to construct a self.hmmNetwork in form usable for decoding
  hmmNetwork - of type HMMDuration (HMM for forced alignment)
  
+ BACKTRACK_MARGIN_PERCENT - how much parcent makes sence to go back from last time frame in backtracking
+ set BACKTRACK_MARGIN_PERCENT to 0 to make backtracking only once from last state 
  
  methods: 
  
