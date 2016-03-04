@@ -29,7 +29,7 @@ projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__
     
 from align.LyricsWithModels import LyricsWithModels
 from align.Decoder import Decoder
-from align.FeatureExtractor import loadMFCCs
+from align.FeatureExtractor import loadMFCCs, loadNoteOnsets
 
 modelDIR = projDir + '/model/'
 HMM_LIST_URI = modelDIR + '/monophones0'
@@ -52,10 +52,10 @@ def loadSmallAudioFragment(lyrics, extractedPitchList,  URIrecordingNoExt, URIRe
      
     observationFeatures, URIRecordingChunk = loadMFCCs(URIrecordingNoExt, extractedPitchList,  URIRecordingChunkResynthesizedNoExt, withSynthesis, sectionLink) #     observationFeatures = observationFeatures[0:1000]
 
-
     lyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)
 #     lyricsWithModels.printPhonemeNetwork()
 
+    
     return lyricsWithModels, observationFeatures, URIRecordingChunk
 
 def loadSmallAudioFragmentOracle(URIrecordingNoExt, htkParser, lyrics, phonemeAnnotaions ):
@@ -76,7 +76,7 @@ def parsePhoenemeAnnoDursOracle(lyrics, phonemeListExtracted ):
         
         dummyDeviation = 1
         # lyricsWithModelsORacle used only as helper for state durs, but not functionally
-        lyricsWithModelsORacle = LyricsWithModels(lyrics, htkParser,  dummyDeviation)
+        lyricsWithModelsORacle = LyricsWithModels(lyrics, htkParser,  dummyDeviation, ParametersAlgo.WITH_PADDED_SILENCE)
         lyricsWithModelsORacle.setPhonemeDurs( phonemeListExtracted)
         
         return lyricsWithModelsORacle

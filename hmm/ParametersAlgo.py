@@ -12,7 +12,10 @@ class ParametersAlgo(object):
 
     # unit: num frames
     NUMFRAMESPERSECOND = 100
+    # same as WINDOWSIZE in wavconfig singing. unit:  seconds. TOOD: read from there automatically
+    WINDOW_SIZE = 0.25
     
+    # in frames
     CONSONANT_DURATION = NUMFRAMESPERSECOND * 0.1;
     
     ONLY_MIDDLE_STATE = 0

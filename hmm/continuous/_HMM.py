@@ -7,10 +7,11 @@ from hmm.continuous._ContinuousHMM import _ContinuousHMM
 import numpy
 import sys
 from numpy.core.numeric import Infinity
-from django.contrib.gis.shortcuts import numpy
 from hmm.continuous._DurationHMM import PATH_LOGS
 import math
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
+from align.FeatureExtractor import tsToFrameNumber
+from hmm.ParametersAlgo import ParametersAlgo
 
 
 class _HMM(_ContinuousHMM):
@@ -18,9 +19,9 @@ class _HMM(_ContinuousHMM):
     classical Viterbi
     '''
     
-    def __init__(self,statesNetwork, numMixtures, numDimensions, transMatrix):
+    def __init__(self,statesNetwork, numMixtures, numDimensions, transMatrix, transMatrixOnsets):
     
-#     def __init__(self,n,m,d=1,A=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
+#     def __init__(self,n,m,d=1,transMatrix=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
             '''
             See _ContinuousHMM constructor for more information
             '''
@@ -31,7 +32,7 @@ class _HMM(_ContinuousHMM):
             init_type='uniform'
             precision=numpy.double
             verbose = False 
-            _ContinuousHMM.__init__(self, n, numMixtures, numDimensions, transMatrix, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
+            _ContinuousHMM.__init__(self, n, numMixtures, numDimensions, transMatrix, transMatrixOnsets, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
     
             self.statesNetwork = statesNetwork
             
@@ -95,6 +96,8 @@ class _HMM(_ContinuousHMM):
         
         self._mapB(observations)
 #         self._mapB_OLD(observations)
+
+    
         
         self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
         self.phi.fill(-Infinity)
@@ -109,14 +112,17 @@ class _HMM(_ContinuousHMM):
             self.phi[0][j] = currLogPi + self.B_map[j][0]
             self.psi[0][j] = 0
         
-    def initDecodingParametersOracle(self, lyricsWithModels, URIRecordingNoExt, fromTs, toTs):
+    def initDecodingParametersOracle(self, lyricsWithModels,  onsetTimestamps, fromTs, toTs):
         '''
         TODO: this and other method should be in _BaseHMM instead of here, becasue they are duplicated in _DurationHMM with slight changes
         '''
         durInSeconds = toTs - fromTs
-        lenObservations = int(math.floor(durInSeconds * float(NUMFRAMESPERSEC)))
+        lenObservations = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
         
-        
+        self.noteOnsets = numpy.zeros((lenObservations,))
+        for onsetTimestamp in onsetTimestamps:
+            frameNum = tsToFrameNumber(onsetTimestamp)
+            self.noteOnsets[frameNum] = 1
         self._mapBOracle( lyricsWithModels, lenObservations, fromTs)
         
         self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
@@ -140,12 +146,16 @@ class _HMM(_ContinuousHMM):
             self.logger.debug("at time {} out of {}".format(t, lenObs ))
             for j in xrange(self.n):
 #                 for i in xrange(self.n):
-#                     if (delta[t][j] < delta[t-1][i]*self.A[i][j]):
-#                         delta[t][j] = delta[t-1][i]*self.A[i][j]
+#                     if (delta[t][j] < delta[t-1][i]*self.transMatrix[i][j]):
+#                         delta[t][j] = delta[t-1][i]*self.transMatrix[i][j]
                         
-                        
-                        sliceA = self.A[:,j] 
-#                         print "shape A:" + str(self.A.shape)
+                        if self.noteOnsets[t]:
+                            sliceA = self.transMatrixOnsets[:,j]
+                            print "at time {} using matrix for note Onset".format(t)
+                        else:
+                            sliceA = self.transMatrix[:,j]
+                             
+#                         print "shape transMatrix:" + str(self.transMatrix.shape)
 #                         print "shape phi:" + str(self.phi.shape)
                         APlusPhi = numpy.add(self.phi[t-1,:], sliceA)
                         

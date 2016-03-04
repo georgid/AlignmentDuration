@@ -98,7 +98,7 @@ def test_simple():
     gmmhmm.train(obs,10)
     print
     print "Pi",gmmhmm.pi
-    print "A",gmmhmm.A
+    print "transMatrix",gmmhmm.transMatrix
     print "weights", gmmhmm.w
     print "means", gmmhmm.means
     print "covars", gmmhmm.covars
@@ -111,7 +111,7 @@ def test_rand():
     gmmhmm.train(obs,1000)
     print
     print "Pi",gmmhmm.pi
-    print "A",gmmhmm.A
+    print "transMatrix",gmmhmm.transMatrix
     print "weights", gmmhmm.w
     print "means", gmmhmm.means
     print "covars", gmmhmm.covars
@@ -135,7 +135,7 @@ def test_discrete():
     hmm2 = DiscreteHMM(4,4,a,b,pi,init_type='user',precision=numpy.longdouble,verbose=True)
     hmm2.train(numpy.array(ob5*10),100)
     print "Pi",hmm2.pi
-    print "A",hmm2.A
+    print "transMatrix",hmm2.transMatrix
     print "B", hmm2.B
 
 

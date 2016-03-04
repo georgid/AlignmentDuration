@@ -44,10 +44,16 @@ class Phoneme:
 #         return self.htkModel.states
         
     def getNumStates(self):
+        '''
+        based on assigned htk model
+        '''
         try: self.htkModel
         except NameError:
-            sys.exit("cannot get numsttes. phoneme {} has no model assigned ", self.ID)
+            sys.exit("cannot get numsttes. phoneme {} has no htk model assigned ", self.ID)
         
+        if (self.htkModel.tmat.numStates - 2) != len(self.htkModel.states):
+            sys.exit('num states in matrix differs from num states in htk ')
+            
         return len(self.htkModel.states)
             
             

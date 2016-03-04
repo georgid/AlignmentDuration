@@ -58,7 +58,7 @@ class LyricsWithModels(Lyrics):
     def _linkToModels(self, htkParser):
         '''
         load links to trained models. 
-        add  Phoneme('sp') with exponential distrib at beginning and end  
+        add  Phoneme('sp') with exponential distrib at beginning and end if withPaddedSilence 
         '''
        
         if self.withPaddedSilence:    
@@ -67,7 +67,7 @@ class LyricsWithModels(Lyrics):
             self.phonemesNetwork.append(tmpPhoneme)
        
        
-    #link each phoneme from transcript to a model
+    #####link each phoneme from transcript to a model
             # FIXME: DO A MORE OPTIMAL WAY like ismember()
         for phonemeFromTranscript in    self.phonemesNetwork:
             for currHmmModel in htkParser.hmms:
@@ -75,34 +75,11 @@ class LyricsWithModels(Lyrics):
                     
                     phonemeFromTranscript.setHTKModel(currHmmModel) 
             
-#             for currHmmModel in htkParser.hmms:
-#                 if currHmmModel.name == 'sp':
-#                     spmodel = currHmmModel
-            
-        ######## # create sp state
-#         # has one state only
-#         (numStateFromHtk, state)  = spmodel.states[0]
-#         self.spExponentialState = StateWithDur(state.mixtures, 'sp', 0, distribType='exponential' )
-#         self.spExponentialState.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
-#         
-#         if self.withPaddedSilence:    
-#             tmpPhoneme =  Phoneme('sp'); tmpPhoneme.setHTKModel(spmodel)
-#             self.phonemesNetwork.insert(0, tmpPhoneme)
-#         spTransMatrix = tmpPhoneme.getTransMatrix()
-#         self.spExponentialState.setWaitProb(spTransMatrix[1,1])
-        ######## end of create sp state   
-      
-        
-           # DEBUG: 
-#         for phonemeFromTranscript in    self.phonemesNetwork:
-#             phonemeFromTranscript.htkModel.display()
-    #         (numState, state )  = phonemeFromTranscript.htkModel.states[1]
-    #         state.display()
-        ###### 
         
 
     def createStateWithDur(self, phoneme, currStateCount, idxState, state, distributionType):
          
+
         if distributionType == 'normal':
             currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, distributionType, self.deviationInSec)
             dur = float(phoneme.durationInNumFrames) / float(currStateCount)
@@ -113,8 +90,9 @@ class LyricsWithModels(Lyrics):
         elif distributionType == 'exponential':
             currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, distributionType )
             currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
-            transMatrix = phoneme.getTransMatrix()
-            currStateWithDur.setWaitProb(transMatrix[idxState + 1, idxState + 1])
+            
+        transMatrix = phoneme.getTransMatrix()
+        currStateWithDur.setWaitProb(transMatrix[idxState + 1, idxState + 1])
             
         
         return currStateWithDur
@@ -129,7 +107,6 @@ class LyricsWithModels(Lyrics):
         self.statesNetwork = []
         stateCount = 0
         
-
         
         for phnIdx, phoneme in enumerate(self.phonemesNetwork):
             

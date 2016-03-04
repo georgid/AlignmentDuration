@@ -7,13 +7,14 @@ import os
 import sys
 import json
 from align.LyricsParsing import loadOraclePhonemes
+from hmm.ParametersAlgo import ParametersAlgo
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 
 
 from align.MakamRecording import MakamRecording, parseSectionLinks
-from align.Section import Section
+from align.ScoreSection import ScoreSection
 from align.MakamScore import loadMakamScore2
 
 from align.LyricsAligner import alignRecording, extendSectionLinksSelectedSections
@@ -43,7 +44,7 @@ with open(sectionAnnosSourceURI) as f3:
         
 def testLyricsAlign():
     
-
+    ParametersAlgo.WITH_ORACLE = 0
     outputDir =  os.path.join( currDir, '../example/output/' )
     
     ### comment for Juanjos pitch
@@ -69,18 +70,25 @@ def testLyricsAlign():
 
 
 def testLyricsAlignOracle():
+    '''
+    oracle is with no silence padding
+    '''
     with open(sectionLinksSourceURI) as f:
         sectionLinksDict = json.load(f)
     
+    ParametersAlgo.WITH_ORACLE = 1
     URIrecordingTextGrid = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.TextGrid'
     fromSyllableIdx = 1; toSyllableIdx = 8
-    
+    audioFileURI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.wav' 
+     
+        
     phonemesAnnoAll = loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx)
     extractedPitchList = None
     outputDir =  os.path.join( currDir, '../example/output/' )
 
     totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, phonemesAnnoAll, sectionAnnosDict)
 
+    
         
     ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
     ret['alignedLyricsSyllables'] = totalDetectedTokenList
@@ -112,7 +120,7 @@ def testExtendSectionLinksSelectedSections():
     # changes one test section link as if it were aligned 
     testSectionLink = sectionLinks[1]
     probabaleSections = makamScore.getProbableSectionsForMelodicStructure(testSectionLink)
-    selectedSection = Section('blah', 1, 20, 'B2', 'B1')
+    selectedSection = ScoreSection('blah', 1, 20, 'B2', 'B1')
     selectedSectionsSameLyrics =  makamScore.getSectionsSameLyrics( selectedSection, probabaleSections)
     testSectionLink.setSelectedSections(selectedSectionsSameLyrics)
     

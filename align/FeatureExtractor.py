@@ -13,6 +13,8 @@ import subprocess
 from Decoder import logger
 import glob
 import essentia.standard
+from django.contrib.gis.shortcuts import numpy
+import math
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
 import tempfile
@@ -42,6 +44,17 @@ from hmm.ParametersAlgo import ParametersAlgo
 from csv import reader
 
 
+def loadNoteOnsets(URIRecordingChunkResynthesizedNoExt, extractedPitchList):
+    '''
+    load note onsets using note detection algorithm
+    '''
+    #TODO
+    # STUB:
+    noteOnsets = numpy.zeros(len(extractedPitchList))
+    noteOnsets[1]= 1
+    noteOnsets[4]= 1 
+    return noteOnsets
+    
 
 def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthesizedNoExt,  withSynthesis, sectionLink): 
     '''
@@ -138,6 +151,11 @@ def _extractMFCCs( URIRecordingChunk):
         pipe.wait()
         return mfcFileName
 
-
+def tsToFrameNumber(ts):
+    '''
+    get which frame is for a given ts, according to htk's feature extraction  
+    '''
+    return   int(math.floor( (ts - ParametersAlgo.WINDOW_SIZE/2.0) * ParametersAlgo.NUMFRAMESPERSECOND))
+    
 
         

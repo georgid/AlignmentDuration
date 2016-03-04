@@ -10,6 +10,7 @@ from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDet
     expandlyrics2SyllableList
 from Constants import numDimensions, numMixtures
 from hmm.ParametersAlgo import ParametersAlgo
+from scripts.OnsetDetector import parserNoteOnsets
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
@@ -22,9 +23,7 @@ import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= True
-
-# WITH_DURATIONS= False
+WITH_DURATIONS= 0
 
 
 
@@ -58,16 +57,17 @@ BACKTRACK_MARGIN_PERCENT= 0.2
 
 class Decoder(object):
     '''
+    decodes one audio segment/chunk. 
     holds structures used in decoding and decoding result
     '''
 
 
-    def __init__(self, lyricsWithModels, URIrecordingNoExt, ALPHA, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, URIrecordingChunkNoExt, ALPHA, numStates=None, withModels=True):
         '''
         Constructor
         '''
         self.lyricsWithModels = lyricsWithModels
-        self.URIrecordingNoExt = URIrecordingNoExt
+        self.URIrecordingChunkNoExt = URIrecordingChunkNoExt
         
         '''
         of class HMM
@@ -81,10 +81,13 @@ class Decoder(object):
         self.path = None
     
     
-    def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles, URIrecordingNoExt='', fromTs=0, toTs=0):
+    def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles, fromTsTextGrid=0, toTsTextGrid=0):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
+        onsetTimestamps = parserNoteOnsets(self.URIrecordingChunkNoExt + '.wav')
+ 
+        
         if not ParametersAlgo.WITH_ORACLE:
             self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
             if  WITH_DURATIONS:
@@ -97,7 +100,7 @@ class Decoder(object):
             self.hmmNetwork.initDecodingParameters(observationFeatures)
             lenObs = len(observationFeatures)
         else:
-            lenObs = self.hmmNetwork.initDecodingParametersOracle(observationFeatures, URIrecordingNoExt, fromTs, toTs)
+            lenObs = self.hmmNetwork.initDecodingParametersOracle(observationFeatures, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
 
 
         # standard viterbi forced alignment
@@ -132,7 +135,6 @@ class Decoder(object):
         #######
         
         
-        
         if  WITH_DURATIONS:
             from hmm.continuous.DurationGMHMM  import DurationGMHMM
             # note: no trans matrix because only forced Viterbi implemented 
@@ -140,68 +142,45 @@ class Decoder(object):
             self.hmmNetwork.setALPHA(ALPHA)
         
         else: # with no durations standard Viterbi
-            if numStates == None:
-                numStates = len(self.lyricsWithModels.statesNetwork) 
         
             # construct means, covars, and all the rest params
-            #########
+            #########    
             
-            transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels.phonemesNetwork)
+            transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels, atNoteOnsets = 0)
+            transMAtrixOnsets = self._constructTransMatrixHMMNetwork(self.lyricsWithModels, atNoteOnsets = 1)
             from hmm.continuous.GMHMM  import GMHMM
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions, transMAtrix)
-
-        
-    def  _constructTransMatrixHMMNetwork(self, sequencePhonemes):
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions, transMAtrix, transMAtrixOnsets)
+    
+    def  _constructTransMatrixHMMNetwork(self, lyricsWithModels, atNoteOnsets=0):
         '''
-        tranform other htkModel params to  format of gyuz's hmm class
-        take from sequencePhonemes' attached htk models the transprobs.
+        iterate over states and put their wait probs in a matrix 
         '''
         # just for initialization totalNumPhonemes
-        totalNumStates = 0
-        for phoneme in sequencePhonemes:
-            currNumStates = phoneme.htkModel.tmat.numStates - 2
-            totalNumStates += currNumStates
-            
+        totalNumStates = len(lyricsWithModels.statesNetwork)
         transMAtrix = numpy.zeros((totalNumStates, totalNumStates), dtype=numpy.double)
-    
         
-        counterOverallStateNum = 0 
-        
-        for phoneme in sequencePhonemes:
-            currNumStates =   phoneme.htkModel.tmat.numStates - 2
+        for idx, stateWithDur in enumerate(lyricsWithModels.statesNetwork):
+            if atNoteOnsets:
+                waitProb = stateWithDur.waitProb
+            else:
+                waitProb = 1
             
-    #         disregard 1st and last states from transMat because they are the non-emitting states
-            currTransMat = phoneme.getTransMatrix()
-            
-            transMAtrix[counterOverallStateNum : counterOverallStateNum + currNumStates, counterOverallStateNum : counterOverallStateNum + currNumStates ] = currTransMat[1:-1,1:-1]
-           
-            # transition probability to next state
-            #         TODO: here multiply by [0,1] matrix next state. check if it exists
-            nextStateTransition = 1
-            
-            if (counterOverallStateNum + currNumStates) < transMAtrix.shape[1]:
-                val = currTransMat[-2,-1] * nextStateTransition
-                transMAtrix[counterOverallStateNum + currNumStates -1, counterOverallStateNum + currNumStates] =  val
-            
-  
-               
-            # increment in final trans matrix  
-            counterOverallStateNum +=currNumStates
-        
-        # visualize before log
-#         import matplotlib.pyplot as plt
-#         plt.figure(1)
-#         ax = plt.imshow(transMAtrix, interpolation='none')
-#         plt.colorbar(ax)
-#         plt.grid(True)
-#         plt.show()
-        
+            transMAtrix[idx, idx] = waitProb
+            if (idx+1) < transMAtrix.shape[1]:
+                transMAtrix[idx, idx+1] = 1- waitProb
+         
         # avoid log(0) 
         indicesZero = numpy.where(transMAtrix==0)
         transMAtrix[indicesZero] = sys.float_info.min
+        
+        ###### normalize
+        from sklearn.preprocessing import normalize
+        transMAtrix = normalize(transMAtrix, axis=1, norm='l1')
              
-        return numpy.log(transMAtrix)
-    
+        visualizeMatrix(transMAtrix, atNoteOnsets+1)
+        return numpy.log(transMAtrix)   
+            
+        
 
     
     def _constructHMMNetworkParameters(self,  numStates,  withModels=True, sequenceStates=None):
@@ -310,9 +289,9 @@ class Decoder(object):
     
 
         if ParametersAlgo.WITH_ORACLE:
-            outputURI = self.URIrecordingNoExt + '.path_oracle'
+            outputURI = self.URIrecordingChunkNoExt + '.path_oracle'
         else:
-            outputURI = self.URIrecordingNoExt + '.path'
+            outputURI = self.URIrecordingChunkNoExt + '.path'
         
         writeListToTextFile(self.path.pathRaw, None , outputURI)
         
@@ -326,5 +305,13 @@ class Decoder(object):
         return detectedTokenList, self.path
 
     
-
+def visualizeMatrix(psi, figNum=1):
+#         psi = numpy.rot90(psi)
+        import matplotlib.pyplot as plt
+        plt.figure(figNum)
+        ax = plt.imshow(psi, interpolation='none')
+        plt.colorbar(ax)
+        plt.grid(True)
+#         plt.tight_layout()
+        plt.show()  
         

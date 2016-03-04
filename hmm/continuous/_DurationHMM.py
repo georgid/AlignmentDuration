@@ -195,7 +195,7 @@ class _DurationHMM(_ContinuousHMM):
     
     
     
-    def initDecodingParametersOracle(self, lyricsWithModels, URIRecordingNoExt, fromTs, toTs):
+    def initDecodingParametersOracle(self, lyricsWithModels, fromTs, toTs):
         '''
         helper method to init all params
         '''
@@ -207,7 +207,8 @@ class _DurationHMM(_ContinuousHMM):
 #         audio = loader()
 #         print len(audio)
 #         durInSeconds = len(audio) / float(sampleRate) 
-#         
+#       
+  
         durInSeconds = toTs - fromTs
         lenObservations = int(math.floor(durInSeconds * float(NUMFRAMESPERSEC)))
         

@@ -58,7 +58,9 @@ class StateWithDur(State):
         '''
         for exp distrib
         '''   
-        self.durationDistribution.setWaitProb(waitProb, self.durationInFrames)
+        self.waitProb = waitProb
+        if self.distributionType == 'exponential':
+            self.durationDistribution.setWaitProb(waitProb, self.durationInFrames)
  
     def getMaxRefDur(self):
         if self.distributionType == 'normal':

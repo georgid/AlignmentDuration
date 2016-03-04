@@ -31,11 +31,11 @@ class GMHMM(_HMM):
 #         super(DurationGMHMM, self).__init__(n,m,d,A,means,covars,w,pi,min_std,init_type,precision,verbose) #@UndefinedVariable
 #         self._set_GMMs()
         
-    def __init__(self,statesNetwork, numMixtures, numDimensions, transMatrix):
+    def __init__(self,statesNetwork, numMixtures, numDimensions, transMatrix, transMatrixOnsets):
         '''
         See base class constructor for more information
         '''
-        super(GMHMM,self).__init__(statesNetwork, numMixtures, numDimensions, transMatrix)
+        super(GMHMM,self).__init__(statesNetwork, numMixtures, numDimensions, transMatrix, transMatrixOnsets)
         self._set_GMMs()
         
     def _set_GMMs(self):

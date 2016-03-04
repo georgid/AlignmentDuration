@@ -21,6 +21,13 @@ returns duration liklihoods from self.durationPdf
   
  hmm.continuous._DurationHMM._DurationHMM._calcUpdateQuantity
  handles the recursive update rule
+
+
+
+_HMM
+====================
+_HMM.initDecodingParameters()
+sets self.noteOnsets from extracted NoteOnsets 
  
  
 DurationPdf

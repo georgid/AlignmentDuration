@@ -4,7 +4,7 @@ Created on Jan 10, 2016
 @author: joro
 '''
 
-class Section(object):
+class ScoreSection(object):
     '''
     classdocs
     '''

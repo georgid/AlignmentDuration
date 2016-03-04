@@ -10,6 +10,8 @@ import os
 import sys
 import logging
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
+from hmm.ParametersAlgo import ParametersAlgo
+from align.FeatureExtractor import tsToFrameNumber
 # from sklearn.utils.extmath import logsumexp
 
 parentDir = os.path.abspath(  os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir ) )
@@ -31,8 +33,8 @@ MINIMAL_PROB = sys.float_info.min
 
 class _ContinuousHMM(_BaseHMM):
     '''
-    A Continuous HMM - This is a base class implementation for HMMs with
-    mixtures. A mixture is a weighted sum of several continuous distributions,
+    transMatrix Continuous HMM - This is a base class implementation for HMMs with
+    mixtures. transMatrix mixture is a weighted sum of several continuous distributions,
     which can therefore create a more flexible general PDF for each hidden state.
     
     This class can be derived, but should not be used directly. Deriving classes
@@ -42,7 +44,7 @@ class _ContinuousHMM(_BaseHMM):
     - n            number of hidden states
     - m            number of mixtures in each state (each 'symbol' like in the discrete case points to a mixture)
     - d            number of features (an observation can contain multiple features)
-    - A            hidden states transition probability matrix ([NxN] numpy array)
+    - transMatrix            hidden states transition probability matrix ([NxN] numpy array)
     - means        means of the different mixtures ([NxMxD] numpy array)
     - covars       covars of the different mixtures ([NxM] array of [DxD] covar matrices)
     - w            weighing of each state's mixture components ([NxM] numpy array)
@@ -54,11 +56,11 @@ class _ContinuousHMM(_BaseHMM):
     - verbose      a flag for printing progress information, mainly when learning
     '''
 
-    def __init__(self,n,m,d=1,A=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double,verbose=False):
+    def __init__(self,n,m,d=1,transMatrix=None, transMatrixOnsets=None, means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double,verbose=False):
         '''
         Construct a new Continuous HMM.
         In order to initialize the model with custom parameters,
-        pass values for (A,means,covars,w,pi), and set the init_type to 'user'.
+        pass values for (transMatrix,means,covars,w,pi), and set the init_type to 'user'.
         
         Normal initialization uses a uniform distribution for all probablities,
         and is not recommended.
@@ -66,7 +68,8 @@ class _ContinuousHMM(_BaseHMM):
         _BaseHMM.__init__(self,n,m,precision,verbose) #@UndefinedVariable
         
         self.d = d
-        self.A = A
+        self.transMatrix = transMatrix
+        self.transMatrixOnsets = transMatrixOnsets
         self.pi = pi
         self.means = means
         self.covars = covars
@@ -105,7 +108,7 @@ class _ContinuousHMM(_BaseHMM):
         '''        
         if init_type == 'uniform':
             self.pi = numpy.ones( (self.n), dtype=self.precision) *(1.0/self.n)
-            self.A = numpy.ones( (self.n,self.n), dtype=self.precision)*(1.0/self.n)
+            self.transMatrix = numpy.ones( (self.n,self.n), dtype=self.precision)*(1.0/self.n)
             self.w = numpy.ones( (self.n,self.m), dtype=self.precision)*(1.0/self.m)            
             self.means = numpy.zeros( (self.n,self.m,self.d), dtype=self.precision)
             self.covars = [[ numpy.matrix(numpy.ones((self.d,self.d), dtype=self.precision)) for j in xrange(self.m)] for i in xrange(self.n)]
@@ -143,10 +146,10 @@ class _ContinuousHMM(_BaseHMM):
         # init matrix to be zero
         self.B_map = numpy.zeros( (self.n, lenObservations), dtype=self.precision)
         self.B_map.fill(MINIMAL_PROB)
-        firstPhoneme = lyricsWithModelsOracle.phonemesNetwork[0]
-        offSet = firstPhoneme.beginTs - fromTs
-        import math
-        startDurInFrames =  int(math.floor(offSet * NUMFRAMESPERSEC)) 
+#         firstPhoneme = lyricsWithModelsOracle.phonemesNetwork[0]
+#         offSet = firstPhoneme.beginTs - fromTs
+#         import math
+#         startFrameNumber =  int(math.floor(offSet * NUMFRAMESPERSEC)) 
 
         
         for phoneme_ in lyricsWithModelsOracle.phonemesNetwork:
@@ -155,19 +158,19 @@ class _ContinuousHMM(_BaseHMM):
             
             # get total dur of phoneme's states
             counterCurrPhonemeFirstState = phoneme_.numFirstState
-            startDurInFrames =  int(math.floor( (phoneme_.beginTs - fromTs) * NUMFRAMESPERSEC))
+            startFrameNumber = tsToFrameNumber(phoneme_.beginTs - fromTs)
 
-            self.logger.debug("phoneme: {} with start dur: {} and duration: {}".format( phoneme_.ID, startDurInFrames, phoneme_.durationInNumFrames ))
+            self.logger.debug("phoneme: {} with start dur: {} and duration: {}".format( phoneme_.ID, startFrameNumber, phoneme_.durationInNumFrames ))
 
             for whichFollowingState in range(phoneme_.getNumStates()):
                         counterWhichState = counterCurrPhonemeFirstState + whichFollowingState
                         stateWithDur = lyricsWithModelsOracle.statesNetwork[counterWhichState]
                         self.logger.debug("\tstate {} duration {}".format( stateWithDur.__str__(),  stateWithDur.getDurationInFrames()))
                         
-                        finalDurInFrames = startDurInFrames + stateWithDur.getDurationInFrames()
+                        finalDurInFrames = startFrameNumber + stateWithDur.getDurationInFrames()
                         
-                        self.B_map[counterWhichState, startDurInFrames: finalDurInFrames+1 ] = 1
-                        startDurInFrames =  finalDurInFrames+1  
+                        self.B_map[counterWhichState, startFrameNumber: finalDurInFrames+1 ] = 1
+                        startFrameNumber =  finalDurInFrames+1  
             #TODO: silence at beginning and end
         
         self.B_map = numpy.log( self.B_map) 
@@ -386,7 +389,7 @@ class _ContinuousHMM(_BaseHMM):
         Required extension of _reestimate. 
         Adds a re-estimation of the mixture parameters 'w', 'means', 'covars'.
         '''        
-        # re-estimate A, pi
+        # re-estimate transMatrix, pi
         new_model = _BaseHMM._reestimate(self,stats,observations) #@UndefinedVariable
         
         # re-estimate the continuous probability parameters of the mixtures

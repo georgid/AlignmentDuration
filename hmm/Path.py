@@ -6,7 +6,7 @@ Created on Nov 4, 2014
 import numpy
 import sys
 import logging
-from align.Decoder import WITH_DURATIONS, BACKTRACK_MARGIN_PERCENT
+from align.Decoder import WITH_DURATIONS, BACKTRACK_MARGIN_PERCENT, visualizeMatrix
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -173,15 +173,7 @@ class Path(object):
         print self.durations
     
     
-def visualizeMatrix(psi):
-#         psi = numpy.rot90(psi)
-        import matplotlib.pyplot as plt
-        plt.figure(2)
-        ax = plt.imshow(psi, interpolation='none')
-        plt.colorbar(ax)
-        plt.grid(True)
-#         plt.tight_layout()
-        plt.show()  
+
         
                  
         

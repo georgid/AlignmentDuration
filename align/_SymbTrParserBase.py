@@ -12,11 +12,11 @@ import codecs
 import os
 import sys
 import json
-from Section import Section
 
 
 
 from utilsLyrics.Utilz import  loadTextFile
+from align.ScoreSection import ScoreSection
 
 
 '''
@@ -52,7 +52,7 @@ class _SymbTrParserBase(object):
     def _loadSectionBoundaries(self, sectionMetadata):
         scoreSectionAnnos = sectionMetadata['sections']
         for section in scoreSectionAnnos:
-                    sectionNew = Section(section['name'],  int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure']) 
+                    sectionNew = ScoreSection(section['name'],  int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure']) 
                     
                     self.sections.append(sectionNew)
     
