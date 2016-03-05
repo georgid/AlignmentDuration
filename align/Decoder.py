@@ -8,7 +8,7 @@ import sys
 import logging
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDetected,\
     expandlyrics2SyllableList
-from Constants import numDimensions, numMixtures
+from Constants import NUM_DIMENSIONS, numMixtures
 from hmm.ParametersAlgo import ParametersAlgo
 from scripts.OnsetDetector import parserNoteOnsets
 
@@ -23,7 +23,7 @@ import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= 0
+WITH_DURATIONS= 1
 
 
 
@@ -94,13 +94,11 @@ class Decoder(object):
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
             # double check that features are in same dimension as model
-            if observationFeatures.shape[1] != numDimensions:
-                sys.exit("dimension of feature vector should be {} but is {} ".format(numDimensions, observationFeatures.shape[1]) )
+            if observationFeatures.shape[1] != NUM_DIMENSIONS:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(NUM_DIMENSIONS, observationFeatures.shape[1]) )
             
-            self.hmmNetwork.initDecodingParameters(observationFeatures)
-            lenObs = len(observationFeatures)
-        else:
-            lenObs = self.hmmNetwork.initDecodingParametersOracle(observationFeatures, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
+                
+        self.hmmNetwork.initDecodingParameters(observationFeatures, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
 
 
         # standard viterbi forced alignment
@@ -110,7 +108,7 @@ class Decoder(object):
             chiBackPointer = None
         
         else:   # duration-HMM
-            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur(lenObs)
+            chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur()
             
        
         
@@ -138,7 +136,7 @@ class Decoder(object):
         if  WITH_DURATIONS:
             from hmm.continuous.DurationGMHMM  import DurationGMHMM
             # note: no trans matrix because only forced Viterbi implemented 
-            self.hmmNetwork = DurationGMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions)
+            self.hmmNetwork = DurationGMHMM(self.lyricsWithModels.statesNetwork, numMixtures, NUM_DIMENSIONS)
             self.hmmNetwork.setALPHA(ALPHA)
         
         else: # with no durations standard Viterbi
@@ -146,12 +144,12 @@ class Decoder(object):
             # construct means, covars, and all the rest params
             #########    
             
-            transMAtrix = self._constructTransMatrixHMMNetwork(self.lyricsWithModels, atNoteOnsets = 0)
-            transMAtrixOnsets = self._constructTransMatrixHMMNetwork(self.lyricsWithModels, atNoteOnsets = 1)
+            transMAtrix = self._constructTransMatrix(self.lyricsWithModels, atNoteOnsets = 0)
+            transMAtrixOnsets = self._constructTransMatrix(self.lyricsWithModels, atNoteOnsets = 1)
             from hmm.continuous.GMHMM  import GMHMM
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, numDimensions, transMAtrix, transMAtrixOnsets)
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, NUM_DIMENSIONS, transMAtrix, transMAtrixOnsets)
     
-    def  _constructTransMatrixHMMNetwork(self, lyricsWithModels, atNoteOnsets=0):
+    def  _constructTransMatrix(self, lyricsWithModels, atNoteOnsets=0):
         '''
         iterate over states and put their wait probs in a matrix 
         '''
@@ -183,55 +181,7 @@ class Decoder(object):
         
 
     
-    def _constructHMMNetworkParameters(self,  numStates,  withModels=True, sequenceStates=None):
-        '''
-        tranform other htkModel params to  format of gyuz's hmm class.
-        similar code in method _DurationHMM_constructNetworkParams. This left here for GMM class without duration
-        '''
-        
-       
-        
-        means = numpy.empty((numStates, numMixtures, numDimensions))
-        
-        # init covars
-        covars = [[ numpy.matrix(numpy.eye(numDimensions,numDimensions)) for j in xrange(numMixtures)] for i in xrange(numStates)]
-        
-        weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
-        
-        # start probs :
-        pi = numpy.zeros((numStates), dtype=numpy.double)
-        
-        # avoid log(0) 
-        pi.fill(sys.float_info.min)
-#          allow to start only at first state
-        pi[0] = 1
-        
-        # equal prob. for states to start
-#         pi = numpy.ones( (numStates)) *(1.0/numStates)
-        
-        if not withModels:
-            return None, None, None, pi
 
-        
-        sequenceStates = self.lyricsWithModels.statesNetwork
-         
-        if sequenceStates==None:
-            sys.exit('no state sequence')
-               
-        for i in range(len(sequenceStates) ):
-            state  = sequenceStates[i] 
-            
-            for (numMixture, weight, mixture) in state.mixtures:
-                
-                weights[i,numMixture-1] = weight
-                
-                means[i,numMixture-1,:] = mixture.mean.vector
-                
-                variance_ = mixture.var.vector
-                for k in  range(len( variance_) ):
-                    covars[i][numMixture-1][k,k] = variance_[k]
-        return means, covars, weights, pi
-    
             
       
         
@@ -276,8 +226,6 @@ class Decoder(object):
         backtrack optimal path of states from backpointers
         interprete states to words      
         '''
-        
-       
         
         # self.hmmNetwork.phi is set in decoder.decodeAudio()
         from hmm.Path import Path

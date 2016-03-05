@@ -100,7 +100,6 @@ def decode(lyricsWithModels, observationFeatures, URIrecordingNoExt):
     
     #  decodes
     decoder.hmmNetwork.initDecodingParameters(observationFeatures)
-    lenObs = len(observationFeatures)
-    chiBackPointer, psiBackPointer = decoder.hmmNetwork._viterbiForcedDur(lenObs)
+    chiBackPointer, psiBackPointer = decoder.hmmNetwork._viterbiForcedDur()
 #   
     decoder.backtrack( chiBackPointer, psiBackPointer)

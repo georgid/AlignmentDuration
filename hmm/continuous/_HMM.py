@@ -7,8 +7,6 @@ from hmm.continuous._ContinuousHMM import _ContinuousHMM
 import numpy
 import sys
 from numpy.core.numeric import Infinity
-from hmm.continuous._DurationHMM import PATH_LOGS
-import math
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from align.FeatureExtractor import tsToFrameNumber
 from hmm.ParametersAlgo import ParametersAlgo
@@ -19,36 +17,37 @@ class _HMM(_ContinuousHMM):
     classical Viterbi
     '''
     
-    def __init__(self,statesNetwork, numMixtures, numDimensions, transMatrix, transMatrixOnsets):
+    def __init__(self,statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrix, transMatrixOnsets):
     
 #     def __init__(self,n,m,d=1,transMatrix=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
             '''
             See _ContinuousHMM constructor for more information
             '''
-            means, covars, weights, pi = self._constructHMMNetworkParameters(statesNetwork, numMixtures, numDimensions)
+            means, covars, weights, pi = self._constructHMMNetworkParameters(statesNetwork, numMixtures, NUM_DIMENSIONS)
              
             n = len(statesNetwork)
             min_std=0.01
             init_type='uniform'
             precision=numpy.double
             verbose = False 
-            _ContinuousHMM.__init__(self, n, numMixtures, numDimensions, transMatrix, transMatrixOnsets, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
+            _ContinuousHMM.__init__(self, n, numMixtures, NUM_DIMENSIONS, transMatrix, transMatrixOnsets, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
     
             self.statesNetwork = statesNetwork
             
 
       
-    def _constructHMMNetworkParameters(self,  statesSequence, numMixtures, numDimensions):
+    def _constructHMMNetworkParameters(self,  statesSequence, numMixtures, NUM_DIMENSIONS):
         '''
         tranform other htkModel params to  format of gyuz's hmm class
+        NOTE: better design is to put it in Decoder because this way parameters are not-dependent on Lyrics (.e.g. no statesSequence as arg in the constructor)
         '''
         
        
         numStates = len(statesSequence)
-        means = numpy.empty((numStates, numMixtures, numDimensions))
+        means = numpy.empty((numStates, numMixtures, NUM_DIMENSIONS))
         
         # init covars
-        covars = [[ numpy.matrix(numpy.eye(numDimensions,numDimensions)) for j in xrange(numMixtures)] for i in xrange(numStates)]
+        covars = [[ numpy.matrix(numpy.eye(NUM_DIMENSIONS,NUM_DIMENSIONS)) for j in xrange(numMixtures)] for i in xrange(numStates)]
         
         weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
         
@@ -88,43 +87,25 @@ class _HMM(_ContinuousHMM):
         
         
         
-    def initDecodingParameters(self, observations):
-        '''
-        helper method to init all params
-        '''
-        lenObservations = len(observations)
-        
-        self._mapB(observations)
-#         self._mapB_OLD(observations)
-
-    
-        
-        self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
-        self.phi.fill(-Infinity)
-    
-       
-        # backpointer: form which prev. state
-        self.psi = numpy.empty((lenObservations, self.n), dtype=self.precision)
-        self.psi.fill(-1)
-        
-        for j in xrange(self.n):
-            currLogPi = numpy.log(self.pi[j])
-            self.phi[0][j] = currLogPi + self.B_map[j][0]
-            self.psi[0][j] = 0
-        
-    def initDecodingParametersOracle(self, lyricsWithModels,  onsetTimestamps, fromTs, toTs):
+    def initDecodingParameters(self,  observationsORLyricsWithModels,  onsetTimestamps, fromTs, toTs):
         '''
         TODO: this and other method should be in _BaseHMM instead of here, becasue they are duplicated in _DurationHMM with slight changes
         '''
-        durInSeconds = toTs - fromTs
-        lenObservations = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
+        if ParametersAlgo.WITH_ORACLE:
+            
+            durInSeconds = toTs - fromTs
+            lenObservations = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
+            self._mapBOracle( observationsORLyricsWithModels, lenObservations, fromTs)
+        else:
+            lenObservations = len(observationsORLyricsWithModels)
+            self._mapB(observationsORLyricsWithModels)
         
-        self.noteOnsets = numpy.zeros((lenObservations,))
-        for onsetTimestamp in onsetTimestamps:
-            frameNum = tsToFrameNumber(onsetTimestamp)
-            self.noteOnsets[frameNum] = 1
-        self._mapBOracle( lyricsWithModels, lenObservations, fromTs)
-        
+        if onsetTimestamps != None:
+            self.noteOnsets = numpy.zeros((lenObservations,))
+            for onsetTimestamp in onsetTimestamps:
+                frameNum = tsToFrameNumber(onsetTimestamp)
+                self.noteOnsets[frameNum] = 1
+            
         self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
         self.phi.fill(-Infinity)
     
@@ -133,14 +114,18 @@ class _HMM(_ContinuousHMM):
         self.psi = numpy.empty((lenObservations, self.n), dtype=self.precision)
         self.psi.fill(-1)
         
-        for j in xrange(self.n):
-            currLogPi = numpy.log(self.pi[j])
-            self.phi[0][j] = currLogPi + self.B_map[j][0]
-            self.psi[0][j] = 0
+        return lenObservations
         
     
     def viterbi_fast(self):
         
+        # init phi and psi at first time
+        for j in xrange(self.n):
+            currLogPi = numpy.log(self.pi[j])
+            self.phi[0][j] = currLogPi + self.B_map[j][0]
+            self.psi[0][j] = 0
+        
+        # viterbi loop    
         lenObs = numpy.shape(self.B_map)[1]
         for t in xrange(1,lenObs):
             self.logger.debug("at time {} out of {}".format(t, lenObs ))
@@ -151,7 +136,7 @@ class _HMM(_ContinuousHMM):
                         
                         if self.noteOnsets[t]:
                             sliceA = self.transMatrixOnsets[:,j]
-                            print "at time {} using matrix for note Onset".format(t)
+#                             print "at time {} using matrix for note Onset".format(t)
                         else:
                             sliceA = self.transMatrix[:,j]
                              
@@ -164,7 +149,7 @@ class _HMM(_ContinuousHMM):
 
                         self.psi[t][j] = numpy.argmax(APlusPhi)
                     
-        numpy.savetxt(PATH_LOGS + '/phi', self.phi)
-        numpy.savetxt( PATH_LOGS + '/psi', self.psi)
+#         numpy.savetxt(PATH_LOGS + '/phi', self.phi)
+#         numpy.savetxt( PATH_LOGS + '/psi', self.psi)
         return self.psi
         

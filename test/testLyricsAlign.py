@@ -6,13 +6,13 @@ Created on Jan 13, 2016
 import os
 import sys
 import json
-from align.LyricsParsing import loadOraclePhonemes
-from hmm.ParametersAlgo import ParametersAlgo
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
+from hmm.ParametersAlgo import ParametersAlgo
 
 
+from align.LyricsParsing import loadOraclePhonemes
 from align.MakamRecording import MakamRecording, parseSectionLinks
 from align.ScoreSection import ScoreSection
 from align.MakamScore import loadMakamScore2
@@ -44,8 +44,9 @@ with open(sectionAnnosSourceURI) as f3:
         
 def testLyricsAlign():
     
-    ParametersAlgo.WITH_ORACLE = 0
     outputDir =  os.path.join( currDir, '../example/output/' )
+    
+
     
     ### comment for Juanjos pitch
 #     extractedPitch = os.path.splitext(audioFileURI)[0] + '.pitch'
@@ -56,8 +57,18 @@ def testLyricsAlign():
     with open(sectionAnnosSourceURI) as f:
         sectionLinksDict = json.load(f)
     
-    oracleLyrics = ''
-    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, oracleLyrics, sectionAnnosDict)
+    
+    
+    if ParametersAlgo.WITH_ORACLE:
+            URIrecordingTextGrid = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.TextGrid'
+            fromSyllableIdx = 1; toSyllableIdx = 8
+            audioFileURI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.wav' 
+            phonemesAnnoAll = loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx)   
+    else:
+        audioFileURI =  os.path.join( currDir, '/Users/joro/Documents/Phd/UPF/ISTANBUL/goekhan/02_Kimseye.wav')
+        phonemesAnnoAll = ''
+        
+    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, phonemesAnnoAll, sectionAnnosDict)
       
     ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
     ret['alignedLyricsSyllables'] = totalDetectedTokenList
@@ -66,46 +77,6 @@ def testLyricsAlign():
 
 
 
-
-
-
-def testLyricsAlignOracle():
-    '''
-    oracle is with no silence padding
-    '''
-    with open(sectionLinksSourceURI) as f:
-        sectionLinksDict = json.load(f)
-    
-    ParametersAlgo.WITH_ORACLE = 1
-    URIrecordingTextGrid = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.TextGrid'
-    fromSyllableIdx = 1; toSyllableIdx = 8
-    audioFileURI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.wav' 
-     
-        
-    phonemesAnnoAll = loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx)
-    extractedPitchList = None
-    outputDir =  os.path.join( currDir, '../example/output/' )
-
-    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, phonemesAnnoAll, sectionAnnosDict)
-
-    
-        
-    ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
-    ret['alignedLyricsSyllables'] = totalDetectedTokenList
-    ret['sectionlinks'] = sectionLinksDict
-    print ret 
-        
-          
-#         detectedAlignedfileName = URIrecordingNoExt + tokenLevelAlignedSuffix
-#         if not os.path.isfile(detectedAlignedfileName):
-#             detectedAlignedfileName =  tokenList2TabFile(detectedTokenList, URIrecordingNoExt, tokenLevelAlignedSuffix)
-                
-        ##### eval   
-#         ANNOTATION_EXT = '.TextGrid'
-    #     # eval on phrase level
-    #     evalLevel = 2
-    #     correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, -1, -1 )
-    #     print "accuracy= {}".format(correctDuration / totalDuration)
     
 
 def testExtendSectionLinksSelectedSections():
@@ -139,7 +110,7 @@ def testMakamRecording():
 
 
 if __name__ == '__main__':
-#     testLyricsAlign()
-    testLyricsAlignOracle()
+    testLyricsAlign()
+#     testLyricsAlignOracle()
 #     testExtendSectionLinksSelectedSections()
 #     testMakamRecording()

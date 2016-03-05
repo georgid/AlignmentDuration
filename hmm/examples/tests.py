@@ -247,8 +247,7 @@ def test_decoding(pathToComposition, whichSection):
     decoder = getDecoder(lyricsWithModels, URIRecordingChunk)
     
     decoder.hmmNetwork.phi = numpy.loadtxt('phi_init')
-    lenObs = len(observationFeatures)
-    chiBackPointer, psiBackPointer = decoder.hmmNetwork._viterbiForcedDur(lenObs)
+    chiBackPointer, psiBackPointer = decoder.hmmNetwork._viterbiForcedDur()
 
 
 def test_initialization(lyricsWithModels, URIrecordingNoExt, observationFeatures):

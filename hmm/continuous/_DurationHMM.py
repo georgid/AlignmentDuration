@@ -17,6 +17,7 @@ from hmm.continuous.ExpDurationPdf import ExpDurationPdf
 
 import essentia.standard
 import logging
+from hmm.continuous._HMM import _HMM
 
 # to replace 0: avoid log(0) = -inf. -Inf + p(d) makes useless the effect of  p(d)
 MINIMAL_PROB = sys.float_info.min
@@ -28,7 +29,7 @@ from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
 # put intermediate output in examples dir
 PATH_LOGS= os.path.dirname(os.path.realpath(sys.argv[0]))
 # print 'PATH_LOGS is '  + PATH_LOGS
-PATH_LOGS = '/Users/joro/Downloads/'
+
 
 
 ALPHA =  0.99
@@ -36,80 +37,23 @@ ALPHA =  0.99
 
 
 
-class _DurationHMM(_ContinuousHMM):
+class _DurationHMM(_HMM):
     '''
     Implements the decoding with duration probabilities, but should not be used directly.
     '''
-    def __init__(self,statesNetwork, numMixtures, numDimensions):
+    
+    def __init__(self,statesNetwork, numMixtures, NUM_DIMENSIONS):
     
 #     def __init__(self,n,m,d=1,A=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
             '''
             See _ContinuousHMM constructor for more information
             '''
-            means, covars, weights, pi = self._constructHMMNetworkParameters(statesNetwork, numMixtures, numDimensions)
-             
-            n = len(statesNetwork)
-            min_std=0.01
-            init_type='uniform'
-            precision=numpy.double
-            verbose = False 
-            _ContinuousHMM.__init__(self, n, numMixtures, numDimensions, None, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
-    
-            self.statesNetwork = statesNetwork
+            _HMM.__init__(self, statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrix=None, transMatrixOnsets=None)
             
             self.setDurForStates(listDurations=[])
             
             self.ALPHA = ALPHA # could be redefined by setAlpha() method
 
-      
-    def _constructHMMNetworkParameters(self,  statesSequence, numMixtures, numDimensions):
-        '''
-        tranform other htkModel params to  format of gyuz's hmm class
-        '''
-        
-       
-        numStates = len(statesSequence)
-        means = numpy.empty((numStates, numMixtures, numDimensions))
-        
-        # init covars
-        covars = [[ numpy.matrix(numpy.eye(numDimensions,numDimensions)) for j in xrange(numMixtures)] for i in xrange(numStates)]
-        
-        weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
-        
-        # start probs :
-        pi = numpy.zeros((numStates), dtype=numpy.double)
-        
-        # avoid log(0) 
-        pi.fill(sys.float_info.min)
-#          allow to start only at first state
-        pi[0] = 1
-
-#         pi[0] = 0.33
-#         pi[1] = 0.33
-#         pi[2] = 0.33
-        
-        # equal prob. for states to start
-#         pi = numpy.ones( (numStates)) *(1.0/numStates)
-        
-    
-         
-        if statesSequence==None:
-            sys.exit('no state sequence')
-               
-        for i in range(len(statesSequence) ):
-            state  = statesSequence[i] 
-            
-            for (numMixture, weight, mixture) in state.mixtures:
-                
-                weights[i,numMixture-1] = weight
-                
-                means[i,numMixture-1,:] = mixture.mean.vector
-                
-                variance_ = mixture.var.vector
-                for k in  range(len( variance_) ):
-                    covars[i][numMixture-1][k,k] = variance_[k]
-        return means, covars, weights, pi
-    
                 
     def setALPHA(self, ALPHA):
         # DURATION_WEIGHT 
@@ -168,12 +112,12 @@ class _DurationHMM(_ContinuousHMM):
             
             
     
-    def _viterbiForcedDur(self, lenObservations):
+    def _viterbiForcedDur(self):
         # sanity check. make sure durations are init from score
       
-        
+        lenObs = numpy.shape(self.B_map)[1]
         print "decoding..."
-        for t in range(self.R_MAX,lenObservations):                          
+        for t in range(self.R_MAX,lenObs):                          
             for currState in xrange(1, self.n):
                 maxPhi, fromState, maxDurIndex = self._calcCurrStatePhi(t, currState) # get max duration quantities
                 self.phi[t][currState] = maxPhi
@@ -193,70 +137,19 @@ class _DurationHMM(_ContinuousHMM):
     
     
     
+
     
-    
-    def initDecodingParametersOracle(self, lyricsWithModels, fromTs, toTs):
+    def initDecodingParameters(self,  observationsORLyricsWithModels,  onsetTimestamps, fromTs, toTs):
         '''
         helper method to init all params
-        '''
+        '''    
         
-#         sampleRate = 44100
-#         URI_wav = URIRecordingNoExt + '.wav'
-#
-#         loader = essentia.standard.MonoLoader(filename = URI_wav, sampleRate = sampleRate)
-#         audio = loader()
-#         print len(audio)
-#         durInSeconds = len(audio) / float(sampleRate) 
-#       
-  
-        durInSeconds = toTs - fromTs
-        lenObservations = int(math.floor(durInSeconds * float(NUMFRAMESPERSEC)))
+        lenObservations = super(_DurationHMM,self).initDecodingParameters( observationsORLyricsWithModels,  onsetTimestamps, fromTs, toTs)
         
-        try: 
-            self.durationMap
-        except NameError:
-            sys.exit(NameError.message)
-        
-        self._mapBOracle( lyricsWithModels, lenObservations, fromTs)
-#         self._mapB_OLD(observations)
-        
-    
         # backpointer: how much duration waited in curr state
         self.chi = numpy.empty((lenObservations, self.n), dtype=self.precision)
         self.chi.fill(-1)
-       
-        # backpointer: prev. state
-        self.psi = numpy.empty((lenObservations, self.n), dtype=self.precision)
-        self.psi.fill(-1)
-   
-        # init. t< R_MAX
-        if (self.R_MAX >= lenObservations):
-            sys.exit("MAX_Dur {} of a state is more than total number of observations {}. Unable to decode".format(self.R_MAX, lenObservations))
-        self._initBeginingPhis(lenObservations)
-        return lenObservations
-    
-    def initDecodingParameters(self, observations):
-        '''
-        helper method to init all params
-        '''
-        lenObservations = len(observations)
-        try: 
-            self.durationMap
-        except NameError:
-            sys.exit(NameError.message)
         
-        self._mapB(observations)
-#         self._mapB_OLD(observations)
-        
-    
-        # backpointer: how much duration waited in curr state
-        self.chi = numpy.empty((lenObservations, self.n), dtype=self.precision)
-        self.chi.fill(-1)
-       
-        # backpointer: prev. state
-        self.psi = numpy.empty((lenObservations, self.n), dtype=self.precision)
-        self.psi.fill(-1)
-   
         # init. t< R_MAX
         if (self.R_MAX >= lenObservations):
             sys.exit("MAX_Dur {} of a state is more than total number of observations {}. Unable to decode".format(self.R_MAX, lenObservations))
@@ -459,8 +352,8 @@ class _DurationHMM(_ContinuousHMM):
         
         print "init beginning phis"
          # for convenience put as class vars
-        self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
-        self.phi.fill(-Infinity)
+#         self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
+#         self.phi.fill(-Infinity)
         
         
         # init t=0

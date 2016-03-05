@@ -24,7 +24,7 @@ import sys
 import json
 import subprocess
 from align.MakamRecording import parseSectionLinks, MakamRecording
-from align.Decoder import logger
+from align.Decoder import logger, DETECTION_TOKEN_LEVEL, WITH_DURATIONS, Decoder
 from hmm.ParametersAlgo import ParametersAlgo
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 # pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
@@ -54,7 +54,6 @@ MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 from MakamScore import  loadMakamScore2
 from hmm.examples.main import loadSmallAudioFragment,\
     loadSmallAudioFragmentOracle
-from Decoder import Decoder
 
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
@@ -81,10 +80,9 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
         withAnnotations = True
         
         mr,  htkParser = loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, sectionAnnosDict, withAnnotations)
-        if not ParametersAlgo.WITH_ORACLE:
-            tokenLevelAlignedSuffix = '.alignedLyrics'
-        else:
-            tokenLevelAlignedSuffix = '.alignedLyricsoracle'   
+        tokenLevelAlignedSuffix = determineSuffix(WITH_DURATIONS, ParametersAlgo.WITH_ORACLE, DETECTION_TOKEN_LEVEL)
+    
+    
         totalDetectedTokenList = []
         
         totalCorrectDurations = 0
@@ -231,7 +229,7 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, phonemesOra
     #         decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
         
         else:   
-                print "{} already exists. No decoding".format(detectedAlignedfileName)
+                print "{}\n already exists. No decoding".format(detectedAlignedfileName)
                 detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
                 if ParametersAlgo.WITH_ORACLE:
                     outputURI = URIRecordingChunkResynthesizedNoExt + '.path_oracle'
@@ -333,3 +331,12 @@ def stereoToMono(wavFileURI):
         monoWriter(audio)
         return wavFileURI
     
+
+def determineSuffix(withDuration, withOracle, decodedTokenLevel):
+    tokenAlignedSuffix = '.'
+    tokenAlignedSuffix += decodedTokenLevel
+    if withDuration: tokenAlignedSuffix += 'Duration'
+    if withOracle: tokenAlignedSuffix += 'Oracle'
+    
+    tokenAlignedSuffix += 'Aligned' 
+    return tokenAlignedSuffix

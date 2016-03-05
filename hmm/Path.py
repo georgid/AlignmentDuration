@@ -73,6 +73,9 @@ class Path(object):
         self.pathRaw = pathRaw
     
     def _backtrack(self, hmm,  finalTime):
+        '''
+        backtrack Viterbi starting from last state
+        '''
         
         totalTIme, numStates = numpy.shape(hmm.psi)
         rawPath = numpy.empty( (totalTIme), dtype=int )
