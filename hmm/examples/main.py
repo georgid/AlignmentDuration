@@ -20,6 +20,7 @@ from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 #     sys.path.append(pathJingju )
 from hmm.ParametersAlgo import ParametersAlgo
 import logging
+from align.LyricsParsing import loadOraclePhonemes
 
 
 # file parsing tools as external lib 
@@ -58,12 +59,19 @@ def loadSmallAudioFragment(lyrics, extractedPitchList,  URIrecordingNoExt, URIRe
     
     return lyricsWithModels, observationFeatures, URIRecordingChunk
 
-def loadSmallAudioFragmentOracle(URIrecordingNoExt, htkParser, lyrics, phonemeAnnotaions ):
+def loadSmallAudioFragmentOracle(URIRecordingChunkResynthesizedNoExt, htkParser, lyrics):
 
         
         # lyricsWithModelsORacle used only as helper to get its stateNetwork with durs, but not functionally - e.g. their models are not used
-        withPaddedSilence = False # dont model silence at end and beginnning. this away we dont need annotatation of sp at end and beginning 
+        withPaddedSilence = False # dont model silence at end and beginnning. this away we dont need to do annotatation of sp at end and beginning 
         lyricsWithModelsORacle = LyricsWithModels(lyrics,  htkParser,  ParametersAlgo.DEVIATION_IN_SEC, withPaddedSilence)
+        
+        
+        URIrecordingTextGrid  = URIRecordingChunkResynthesizedNoExt  + '.TextGrid'
+        fromSyllableIdx = 1; toSyllableIdx = 8
+        phonemeAnnotaions = loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx)   
+    
+        
         lyricsWithModelsORacle.setPhonemeNumFrameDurs( phonemeAnnotaions)
         
         return lyricsWithModelsORacle

@@ -81,12 +81,11 @@ class Decoder(object):
         self.path = None
     
     
-    def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles, fromTsTextGrid=0, toTsTextGrid=0):
+    def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles, onsetTimestamps, fromTsTextGrid=0, toTsTextGrid=0):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
-        onsetTimestamps = parserNoteOnsets(self.URIrecordingChunkNoExt + '.wav')
- 
+        
         
         if not ParametersAlgo.WITH_ORACLE:
             self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
@@ -100,7 +99,6 @@ class Decoder(object):
                 
         self.hmmNetwork.initDecodingParameters(observationFeatures, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
 
-
         # standard viterbi forced alignment
         if not WITH_DURATIONS:
             
@@ -110,7 +108,7 @@ class Decoder(object):
         else:   # duration-HMM
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur()
             
-       
+        visualizeMatrix(self.hmmNetwork.phi)
         
            
         detectedWordList, self.path = self.backtrack(chiBackPointer, psiBackPointer )
@@ -160,6 +158,7 @@ class Decoder(object):
         for idx, stateWithDur in enumerate(lyricsWithModels.statesNetwork):
             if atNoteOnsets:
                 waitProb = stateWithDur.waitProb
+#                   waitProb = 1  
             else:
                 waitProb = 1
             
@@ -175,7 +174,7 @@ class Decoder(object):
         from sklearn.preprocessing import normalize
         transMAtrix = normalize(transMAtrix, axis=1, norm='l1')
              
-        visualizeMatrix(transMAtrix, atNoteOnsets+1)
+#         visualizeMatrix(transMAtrix, atNoteOnsets+1)
         return numpy.log(transMAtrix)   
             
         
@@ -254,7 +253,8 @@ class Decoder(object):
 
     
 def visualizeMatrix(psi, figNum=1):
-#         psi = numpy.rot90(psi)
+        psi = numpy.flipud(psi)
+        psi = numpy.rot90(psi)
         import matplotlib.pyplot as plt
         plt.figure(figNum)
         ax = plt.imshow(psi, interpolation='none')

@@ -6,7 +6,7 @@ Created on Nov 4, 2014
 import numpy
 import sys
 import logging
-from align.Decoder import WITH_DURATIONS, BACKTRACK_MARGIN_PERCENT, visualizeMatrix
+from align.Decoder import WITH_DURATIONS, BACKTRACK_MARGIN_PERCENT
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -49,9 +49,12 @@ class Path(object):
                 
                 self._path2stateIndices()
                 numdecodedStates = len(self.indicesStateStarts)
-
-                currLikelihood = self.getPhiLikelihood(phi, finalTime) / float(numdecodedStates)
-            
+                
+                try:
+                    currLikelihood = self.getPhiLikelihood(phi, finalTime) / float(numdecodedStates)
+                except FloatingPointError:
+                    logger.warning('currLikelihood is underflow')
+                    currLikelihood = 0
             
             # final sanity check 
             if numStates != numdecodedStates:
@@ -66,8 +69,8 @@ class Path(object):
         phi from last state for given final time
         '''
         length, numStates = numpy.shape(phi)
-        return phi[finalTime, numStates -1] 
-        
+        phi_= phi[finalTime, numStates -1] 
+        return phi_
         
     def setPatRaw(self, pathRaw):
         self.pathRaw = pathRaw

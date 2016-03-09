@@ -103,19 +103,34 @@ class LyricsWithModels(Lyrics):
         assign phoneme a pointer <setNumFirstState> to its initial state in the state network (serves as link among the two)
         each state gets 1/n-th of total num of states. 
         '''
+         
         
         self.statesNetwork = []
         stateCount = 0
         
+
         
         for phnIdx, phoneme in enumerate(self.phonemesNetwork):
+            
+            
+            statesPhoneme = phoneme.htkModel.states
+            
+            if ParametersAlgo.ONLY_MIDDLE_STATE:
+                if len( phoneme.htkModel.states) == 1:
+                    idxMiddleState = 0
+                elif len( phoneme.htkModel.states) == 3:             
+                    idxMiddleState = 1
+                else:
+                    sys.exit("not implemented. only 3 or 1 state per phoneme supported")
+                statesPhoneme = [phoneme.htkModel.states[idxMiddleState]]
             
             phoneme.setNumFirstState(stateCount)
             
             if not hasattr(phoneme, 'htkModel'):
                 sys.exit("phoneme {} has no htkModel assigned".format(phoneme.ID))
+            
             # update state counter
-            currStateCount = len(phoneme.htkModel.states)
+            currStateCount = len(statesPhoneme)
             stateCount += currStateCount
             
             distributionType='normal'
@@ -123,7 +138,7 @@ class LyricsWithModels(Lyrics):
             if (phnIdx == 0 or phnIdx == len(self.phonemesNetwork)-1 ) and self.withPaddedSilence:
                 distributionType='exponential'
             
-            for idxState, (numStateFromHtk, state ) in enumerate( phoneme.htkModel.states):
+            for idxState, (numStateFromHtk, state ) in enumerate(statesPhoneme):
                 currStateWithDur = self.createStateWithDur(phoneme, currStateCount, idxState, state, distributionType)
                 self.statesNetwork.append(currStateWithDur)
           
@@ -173,36 +188,7 @@ class LyricsWithModels(Lyrics):
         
         
 
-                 
-               
-    def _phonemes2stateNetworkOnlyMiddle(self):
-        '''
-        expand to self.statesNetwork . TAKE ONLY middle state for now
-        @deprecated
-        '''
-        
-        self.statesNetwork = []
-        stateCount = 0
-        
-        for phoneme in self.phonemesNetwork:
-            
-            phoneme.setNumFirstState(stateCount)
-            # update
-            stateCount += 1
-            
-        
-            if len( phoneme.htkModel.states) == 1:
-                idxMiddleState = 0
-            elif len( phoneme.htkModel.states) == 3:             
-                idxMiddleState = 1
-            else:
-                sys.exit("not implemented. only 3 or 1 state per phoneme supported")
-            
-            (numState, state ) = phoneme.htkModel.states[idxMiddleState]
-            currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxMiddleState)
-            currStateWithDur.setDurationInFrames(phoneme.getDurationInFrames())
-            
-            self.statesNetwork.append(currStateWithDur)
+                
     
     
     
@@ -282,10 +268,7 @@ class LyricsWithModels(Lyrics):
         # consonant-handling policy
         self.calcPhonemeDurs()
 
-        if ParametersAlgo.ONLY_MIDDLE_STATE:
-            self._phonemes2stateNetworkOnlyMiddle()
-        else:
-            self._phonemes2stateNetwork()
+        self._phonemes2stateNetwork()
 #             self._phonemes2stateNetworkWeights()
         
         self.duratioInFramesSet = True
@@ -316,10 +299,7 @@ class LyricsWithModels(Lyrics):
         # consonant-handling policy
         self.calcPhonemeDurs()
 
-        if ParametersAlgo.ONLY_MIDDLE_STATE:
-            self._phonemes2stateNetworkOnlyMiddle()
-        else:
-            self._phonemes2stateNetwork()
+        self._phonemes2stateNetwork()
 #             self._phonemes2stateNetworkWeights()
         
         self.duratioInFramesSet = True   
@@ -367,10 +347,7 @@ class LyricsWithModels(Lyrics):
         
         
         # expand to states       
-        if ParametersAlgo.ONLY_MIDDLE_STATE:
-            self._phonemes2stateNetworkOnlyMiddle()
-        else:
-            self._phonemes2stateNetwork()
+        self._phonemes2stateNetwork()
 #             self._phonemes2stateNetworkWeights()
         
         self.duratioInFramesSet = True    

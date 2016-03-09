@@ -59,16 +59,9 @@ def testLyricsAlign():
     
     
     
-    if ParametersAlgo.WITH_ORACLE:
-            URIrecordingTextGrid = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.TextGrid'
-            fromSyllableIdx = 1; toSyllableIdx = 8
-            audioFileURI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/HMMDuration/hmm/examples/KiseyeZeminPhoneLevel_2_zemin.wav' 
-            phonemesAnnoAll = loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx)   
-    else:
-        audioFileURI =  os.path.join( currDir, '/Users/joro/Documents/Phd/UPF/ISTANBUL/goekhan/02_Kimseye.wav')
-        phonemesAnnoAll = ''
+
         
-    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, phonemesAnnoAll, sectionAnnosDict)
+    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, sectionAnnosDict)
       
     ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
     ret['alignedLyricsSyllables'] = totalDetectedTokenList

@@ -10,6 +10,7 @@ from numpy.core.numeric import Infinity
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from align.FeatureExtractor import tsToFrameNumber
 from hmm.ParametersAlgo import ParametersAlgo
+from align.Aligner import logger
 
 
 class _HMM(_ContinuousHMM):
@@ -87,24 +88,27 @@ class _HMM(_ContinuousHMM):
         
         
         
-    def initDecodingParameters(self,  observationsORLyricsWithModels,  onsetTimestamps, fromTs, toTs):
+
+
+
+    def initDecodingParameters(self,  observationsORLyricsWithModels,  onsetTimestamps, fromTsTextGrid, toTsTextGrid):
         '''
-        TODO: this and other method should be in _BaseHMM instead of here, becasue they are duplicated in _DurationHMM with slight changes
+        init observation probs map_B 
+        and onsets if they are specified (!=None)  
         '''
         if ParametersAlgo.WITH_ORACLE:
             
-            durInSeconds = toTs - fromTs
+            durInSeconds = toTsTextGrid - fromTsTextGrid
             lenObservations = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
-            self._mapBOracle( observationsORLyricsWithModels, lenObservations, fromTs)
+            self._mapBOracle( observationsORLyricsWithModels, lenObservations, fromTsTextGrid)
         else:
             lenObservations = len(observationsORLyricsWithModels)
             self._mapB(observationsORLyricsWithModels)
         
-        if onsetTimestamps != None:
-            self.noteOnsets = numpy.zeros((lenObservations,))
-            for onsetTimestamp in onsetTimestamps:
-                frameNum = tsToFrameNumber(onsetTimestamp)
-                self.noteOnsets[frameNum] = 1
+        
+        
+            
+        self.noteOnsets = self.onsetTsToOnsetFrames(onsetTimestamps, lenObservations)
             
         self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
         self.phi.fill(-Infinity)
@@ -115,7 +119,27 @@ class _HMM(_ContinuousHMM):
         self.psi.fill(-1)
         
         return lenObservations
+    
+    def onsetTsToOnsetFrames(self, onsetTimestamps, lenObservations):
         
+        if onsetTimestamps == None:
+            noteOnsets = numpy.ones((lenObservations,)) # note onsets all activated: e.g. with normal transMatrix
+        else:
+        
+            noteOnsets = numpy.zeros((lenObservations, ))
+            
+            for onsetTimestamp in onsetTimestamps:
+                frameNum = tsToFrameNumber(onsetTimestamp)
+                if frameNum >= lenObservations or frameNum < 0:
+                    logger.warning("onset has ts {} > totalnumFrames {}".format(onsetTimestamp, lenObservations))
+                    continue
+                onsetTolInFrames = ParametersAlgo.NUMFRAMESPERSECOND * ParametersAlgo.ONSET_TOLERANCE_WINDOW
+                fromFrame = max(0, frameNum - onsetTolInFrames)
+                toFrame = min(lenObservations, frameNum + onsetTolInFrames)
+                noteOnsets[fromFrame:toFrame + 1] = 1  
+        
+        return noteOnsets  
+    
     
     def viterbi_fast(self):
         

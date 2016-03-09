@@ -139,12 +139,12 @@ class _DurationHMM(_HMM):
     
 
     
-    def initDecodingParameters(self,  observationsORLyricsWithModels,  onsetTimestamps, fromTs, toTs):
+    def initDecodingParameters(self,  observationsORLyricsWithModels,  onsetTimestamps, fromTsTextGrid, toTsTextGrid):
         '''
         helper method to init all params
         '''    
         
-        lenObservations = super(_DurationHMM,self).initDecodingParameters( observationsORLyricsWithModels,  onsetTimestamps, fromTs, toTs)
+        lenObservations = super(_DurationHMM,self).initDecodingParameters( observationsORLyricsWithModels,  onsetTimestamps, fromTsTextGrid, toTsTextGrid)
         
         # backpointer: how much duration waited in curr state
         self.chi = numpy.empty((lenObservations, self.n), dtype=self.precision)

@@ -18,7 +18,7 @@ class ParametersAlgo(object):
     # in frames
     CONSONANT_DURATION = NUMFRAMESPERSECOND * 0.1;
     
-    ONLY_MIDDLE_STATE = 0
+    ONLY_MIDDLE_STATE = 1
     
     WITH_SHORT_PAUSES = 1
     
@@ -26,4 +26,17 @@ class ParametersAlgo(object):
     
     WITH_ORACLE = 1
     
+    WITH_SECTION_ANNOTATIONS = 1
+    
+    POLYPHONIC = 0
+    
+#     WITH_ORACLE_ONSETS = 1
+    ### no onsets at all. 
+    WITH_ORACLE_ONSETS = -1
+    
+    ONSET_TOLERANCE_WINDOW = 0.02 # seconds
+    ONSET_TOLERANCE_WINDOW = 0 # seconds
+
+    
+    CUTOFF_BIN_OBS_PROBS = 4 
     

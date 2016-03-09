@@ -10,6 +10,7 @@ from Constants import NUM_FRAMES_PERSECOND, NUMSTATES_SIL, NUMSTATES_PHONEME
 from align.Phoneme import Phoneme
 import os
 import logging
+from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid
 
 
 
@@ -19,7 +20,6 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 if pathEvaluation not in sys.path:
     sys.path.append(pathEvaluation)
     
-from WordLevelEvaluator import readNonEmptyTokensTextGrid,  tierAliases
 
 
 def loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx):
@@ -38,6 +38,19 @@ def loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx):
         phonemesAnnoAll.extend(phonemesAnno)
     
     return phonemesAnnoAll
+
+
+def getOnsetsFromPhonemeAnnos(URIRecordingChunkResynthesizedNoExt):
+    onsetTimestamps = []
+    highLevel = tierAliases.pinyin # read syllable in pinyin
+    lowLevel = tierAliases.xsampadetails # read phonemesAnno
+# go through the phonemes. load all
+    phonemesAnnoList, fromPhonemeIdx, toPhonemeIdx, syllableText, phonemesAnnoListNoPauses = parsePhonemes(URIRecordingChunkResynthesizedNoExt + '.TextGrid', 0, highLevel, lowLevel)
+    for phoneme in phonemesAnnoList:
+        onsetTimestamps.append(phoneme[0])
+    
+    return onsetTimestamps
+
 
 def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
     '''

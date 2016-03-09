@@ -196,7 +196,6 @@ class _ContinuousHMM(_BaseHMM):
 #             logLiksForj -= sumLogLiks
             self.B_map[j,:] = logLiksForj
         
-#         self.visualizeBMap()
 
          
         #### vocal/non-vocal     
@@ -226,19 +225,20 @@ class _ContinuousHMM(_BaseHMM):
 
                  
         self._normalizeBByMaxLog()
+        cutOffHistogram(self.B_map, ParametersAlgo.CUTOFF_BIN_OBS_PROBS)
         
 #         if self.logger.level == logging.INFO:
 #         ax = self.visualizeBMap()
 #         self.visualizePath(ax)
          
-       
+ 
 
     def visualizeBMap(self): 
             import matplotlib.pyplot as plt
             import matplotlib
             matplotlib.interactive(False)
 
-#             plt.figure(figsize=(16,8))
+            plt.figure(figsize=(16,8))
             fig, ax = plt.subplots()
 #             ax.imshow(self.B_map, extent=[0, 200, 0, 100], interpolation='none')
             plt.imshow(self.B_map, interpolation='none')
@@ -246,8 +246,8 @@ class _ContinuousHMM(_BaseHMM):
 #             plt.colorbar()
 #             fig.colorbar()
             ax.autoscale(False)
+            plt.show(block=True)
             return ax
-#             plt.show(block=False)
 
     def visualizePath(self, ax):
         import matplotlib.pyplot as plt
@@ -532,6 +532,25 @@ def logsumexp(arr, axis=0):
     old_settings = np.seterr( under='raise')
     return out
 
+def cutOffHistogram( matrix_, cutOffIndex):
+        '''
+        assigns values in matrix_ below a threshold to the treshold
+        '''
+        
+        lenObs = matrix_.shape[1]
+        for j in range(lenObs):
+            # n-counts, edges - similarity values
+            counts, edges = numpy.histogram(matrix_[:,j])
+            #% cut after first cuttOffIndex peaks
+            cutOffVal = edges[-cutOffIndex]
+            
+            indices = numpy.where(matrix_[:,j] < cutOffVal)
+            matrix_[indices, j] = MINIMAL_PROB
+     
     
-  
+if __name__=='__main__':
+    obsMatrixURI = '/Users/joro/Downloads/obsMatrix'
+    obsMatrix = numpy.loadtxt(obsMatrixURI)
+    cutOffHistogram(obsMatrix, cutOffIndex=2)
+    print obsMatrix
     
