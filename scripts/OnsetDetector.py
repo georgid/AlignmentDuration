@@ -59,8 +59,9 @@ def parserNoteOnsetsGrTruth(groundTruthNotesURI, startTime, endTime):
     return chunkOnsetTimes
 
 def parserNoteOnsets(audioFileURI):
-    
-    
+    '''
+    with cante
+    '''
     
     onsetsURI = os.path.splitext(audioFileURI)[0] + '.notes.csv'
     pitchURI = os.path.splitext(audioFileURI)[0] + '.pitch.csv'

@@ -6,6 +6,7 @@ Created on Oct 8, 2014
 from Phonetizer import Phonetizer
 import sys
 import numpy
+from hmm.ParametersAlgo import ParametersAlgo
 class Phoneme:
     def __init__(self, phonemeID):
         self.ID = phonemeID;
@@ -47,6 +48,9 @@ class Phoneme:
         '''
         based on assigned htk model
         '''
+        
+        if ParametersAlgo.ONLY_MIDDLE_STATE:
+            return 1
         try: self.htkModel
         except NameError:
             sys.exit("cannot get numsttes. phoneme {} has no htk model assigned ", self.ID)
@@ -76,6 +80,20 @@ class Phoneme:
             return True
         
         return False
+    
+    def isVowelOrLiquid(self):
+        
+        if (self.isVowel() or
+        self.ID == 'L' or
+        self.ID == 'LL' or
+        self.ID == 'N' or
+        self.ID == 'NN' or
+        self.ID == 'M' or
+        self.ID == 'MM'):
+            return True
+        return False 
+        
+    
     
     def getTransMatrix(self):
         '''

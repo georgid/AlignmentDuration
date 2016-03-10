@@ -225,13 +225,14 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
             if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
                 onsetTimestamps =  parserNoteOnsetsGrTruth(URIrecordingNoExt + '.alignedNotes.txt', currSectionLink.beginTs, currSectionLink.endTs)
                 
-                #### use phone annotations instead:
-                onsetTimestamps = getOnsetsFromPhonemeAnnos(URIRecordingChunkResynthesizedNoExt)
+#                 #### EXPERIMENT: use phone annotations instead:
+#                 onsetTimestamps = getOnsetsFromPhonemeAnnos(URIRecordingChunkResynthesizedNoExt)
                 
             elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
                 onsetTimestamps = parserNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
             else: 
                 onsetTimestamps = None
+            
             detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
             
             phiOptPath = {'phi': decoder.path.phiPathLikelihood}

@@ -12,7 +12,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from hmm.ParametersAlgo import ParametersAlgo
 
 
-from align.LyricsParsing import loadOraclePhonemes
 from align.MakamRecording import MakamRecording, parseSectionLinks
 from align.ScoreSection import ScoreSection
 from align.MakamScore import loadMakamScore2
