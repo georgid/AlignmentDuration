@@ -13,6 +13,8 @@ class Phoneme:
         self.durationInMinUnit = None;
         self.durationInNumFrames = None;
         self.numFirstState = -1
+        
+        self.lastInSyll = False
     
     def setBeginTs(self, beginTs):
         '''
@@ -63,7 +65,10 @@ class Phoneme:
             
     
     def __str__(self):
-        return self.ID
+        string_phoneme = self.ID
+        if self.lastInSyll:
+            string_phoneme+= " last in syllable" 
+        return string_phoneme
     
     def isVowel(self):
         
@@ -89,7 +94,8 @@ class Phoneme:
         self.ID == 'N' or
         self.ID == 'NN' or
         self.ID == 'M' or
-        self.ID == 'MM'):
+        self.ID == 'MM' or 
+        self.ID == 'Y'):
             return True
         return False 
         
@@ -112,4 +118,9 @@ class Phoneme:
     
         return currTransMat  
     
+    def isLastInSyll(self):
+        return self.lastInSyll
+    
+    def setIsLastInSyll(self, lastInSyll):
+        self.lastInSyll = lastInSyll
         

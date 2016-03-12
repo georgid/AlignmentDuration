@@ -23,7 +23,7 @@ import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= 1
+WITH_DURATIONS= 0
 
 
 
@@ -87,7 +87,7 @@ class Decoder(object):
         '''
         
         
-        if not ParametersAlgo.WITH_ORACLE:
+        if not ParametersAlgo.WITH_ORACLE_PHONEMES:
             self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
             if  WITH_DURATIONS:
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
@@ -102,13 +102,15 @@ class Decoder(object):
         # standard viterbi forced alignment
         if not WITH_DURATIONS:
             
-            psiBackPointer = self.hmmNetwork.viterbi_fast()
+            psiBackPointer = self.hmmNetwork.viterbi_fast_forced()
             chiBackPointer = None
         
         else:   # duration-HMM
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur()
             
-        visualizeMatrix(self.hmmNetwork.phi)
+#         visualizeMatrix(self.hmmNetwork.phi)
+        visualizeMatrix(self.hmmNetwork.psi)
+
         
            
         detectedWordList, self.path = self.backtrack(chiBackPointer, psiBackPointer )
@@ -147,6 +149,9 @@ class Decoder(object):
             from hmm.continuous.GMHMM  import GMHMM
             self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, NUM_DIMENSIONS, transMAtrix, transMAtrixOnsets)
     
+    
+
+    
     def  _constructTransMatrix(self, lyricsWithModels, atNoteOnsets=0):
         '''
         iterate over states and put their wait probs in a matrix 
@@ -155,16 +160,18 @@ class Decoder(object):
         totalNumStates = len(lyricsWithModels.statesNetwork)
         transMAtrix = numpy.zeros((totalNumStates, totalNumStates), dtype=numpy.double)
         
-        for idx, stateWithDur in enumerate(lyricsWithModels.statesNetwork):
+        for idxCurrState in range(len(lyricsWithModels.statesNetwork)):
+             
+            stateWithDur = lyricsWithModels.statesNetwork[idxCurrState]
             if atNoteOnsets:
-                waitProb = stateWithDur.waitProb
+                waitProb = defineWaitProb(lyricsWithModels.statesNetwork, idxCurrState)
 #                   waitProb = 1  
             else:
-                waitProb = 1
+                waitProb = stateWithDur.waitProb
             
-            transMAtrix[idx, idx] = waitProb
-            if (idx+1) < transMAtrix.shape[1]:
-                transMAtrix[idx, idx+1] = 1- waitProb
+            transMAtrix[idxCurrState, idxCurrState] = waitProb
+            if (idxCurrState+1) < transMAtrix.shape[1]:
+                transMAtrix[idxCurrState, idxCurrState+1] = 1- waitProb
          
         # avoid log(0) 
         indicesZero = numpy.where(transMAtrix==0)
@@ -235,7 +242,7 @@ class Decoder(object):
             sys.path.append(pathUtils )
     
 
-        if ParametersAlgo.WITH_ORACLE:
+        if ParametersAlgo.WITH_ORACLE_PHONEMES:
             outputURI = self.URIrecordingChunkNoExt + '.path_oracle'
         else:
             outputURI = self.URIrecordingChunkNoExt + '.path'
@@ -251,10 +258,44 @@ class Decoder(object):
     #         path.printDurations()
         return detectedTokenList, self.path
 
+def defineWaitProb(statesNetwork, idxState):
+    '''
+    change trasna probs based on rules 
+    '''
+    q = 0.99
+    r = 0.01
+    if not ParametersAlgo.ONLY_MIDDLE_STATE:
+        sys.exit("align.Decoder.defineWaitProb  implemented only for 1-state phonemes ")
+    
+    currStateWithDur = statesNetwork[idxState]
+    if idxState == len(statesNetwork)-1: # ignore onset at last phonemes
+        return currStateWithDur.waitProb
+    
+    nextStateWithDur =  statesNetwork[idxState+1]
+    currPhoneme = currStateWithDur.phoneme
+    nextPhoneme = nextStateWithDur.phoneme
+    
+    if currPhoneme.isLastInSyll(): # inter-syllable
+        if currPhoneme.isVowel() and not nextPhoneme.isVowelOrLiquid(): # rule 1
+            return q
+        elif not currPhoneme.isVowel() and nextPhoneme.isVowelOrLiquid(): # rule 2
+            return r 
+    else: # not last in syllable, intra-syllable
+        if currPhoneme.isVowel() and not nextPhoneme.isVowel(): # rule 3
+            return q
+        elif not currPhoneme.isVowelOrLiquid() and nextPhoneme.isVowel(): # rule 4:
+            return r
+        elif currPhoneme.isVowel() and nextPhoneme.isVowel():
+            logging.warning("two consecutive vowels in a syllable. not implemented! {} and {}".format(currPhoneme.ID, nextPhoneme.ID))
+            return 1
+            
+        
+    #  onset has no contribution in other cases    
+    return currStateWithDur.waitProb
     
 def visualizeMatrix(psi, figNum=1):
-        psi = numpy.flipud(psi)
-        psi = numpy.rot90(psi)
+#         psi = numpy.flipud(psi)
+#         psi = numpy.rot90(psi)
         import matplotlib.pyplot as plt
         plt.figure(figNum)
         ax = plt.imshow(psi, interpolation='none')

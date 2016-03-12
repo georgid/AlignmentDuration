@@ -129,7 +129,7 @@ class _ContinuousHMM(_BaseHMM):
         '''
         indices = []
         for currIdx, stateWithDur in enumerate(self.statesNetwork):
-            if stateWithDur.phonemeName == 'sil' or stateWithDur.phonemeName == 'sp':
+            if stateWithDur.phoneme.ID == 'sil' or stateWithDur.phoneme.ID == 'sp':
                 indices.append(currIdx)
         return indices
     

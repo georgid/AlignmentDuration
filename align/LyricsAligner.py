@@ -80,7 +80,7 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
         usePersistentFiles = True
         
         mr,  htkParser = loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, sectionAnnosDict, ParametersAlgo.WITH_SECTION_ANNOTATIONS)
-        tokenLevelAlignedSuffix = determineSuffix(WITH_DURATIONS, ParametersAlgo.WITH_ORACLE, ParametersAlgo.WITH_ORACLE_ONSETS, DETECTION_TOKEN_LEVEL)
+        tokenLevelAlignedSuffix = determineSuffix(WITH_DURATIONS, ParametersAlgo.WITH_ORACLE_PHONEMES, ParametersAlgo.WITH_ORACLE_ONSETS, DETECTION_TOKEN_LEVEL)
     
     
         totalDetectedTokenList = []
@@ -129,7 +129,7 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
                 URIRecordingChunkResynthesizedNoExt = createNameChunk(recordingNoExtURI, currSectionAnno.beginTs, currSectionAnno.endTs) 
                 detectedTokenList, detectedPath, maxPhiScore = alignLyricsSection( lyrics, extractedPitchList,  ParametersAlgo.POLYPHONIC, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser)
                 
-                break
+#                 break
                 evalLevel = tierAliases.phrases
                 correctDuration = 0
                 totalDuration = 1
@@ -200,7 +200,7 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
         detectedAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
         if not os.path.isfile(detectedAlignedfileName):
             
-            if  ParametersAlgo.WITH_ORACLE:
+            if  ParametersAlgo.WITH_ORACLE_PHONEMES:
                 lyricsWithModelsOracle = loadSmallAudioFragmentOracle(URIRecordingChunkResynthesizedNoExt, htkParser, lyrics )
                 # obsFeatures is alias for LyricsWithModelsOracle
                 obsFeatures = lyricsWithModels = lyricsWithModelsOracle 
@@ -209,8 +209,8 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
                 lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, extractedPitchList,   URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink, htkParser)
             
         # DEBUG: score-derived phoneme  durations
-    #     lyricsWithModels.printPhonemeNetwork()
-            lyricsWithModels.printWordsAndStates()
+            lyricsWithModels.printPhonemeNetwork()
+#             lyricsWithModels.printWordsAndStates()
             alpha = 0.97
             decoder = Decoder(lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
         #  TODO: DEBUG: do not load models
@@ -218,7 +218,7 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
         #################### decode
             
             fromTsTextGrid = -1; toTsTextGrid = -1
-            if ParametersAlgo.WITH_ORACLE:
+            if ParametersAlgo.WITH_ORACLE_PHONEMES:
                 fromTsTextGrid = 0; toTsTextGrid = 20.88
             
             ##### note onsets
@@ -249,7 +249,7 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
         else:   
                 print "{}\n already exists. No decoding".format(detectedAlignedfileName)
                 detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
-                if ParametersAlgo.WITH_ORACLE:
+                if ParametersAlgo.WITH_ORACLE_PHONEMES:
                     outputURI = URIRecordingChunkResynthesizedNoExt + '.path_oracle'
                 else:
                     outputURI = URIRecordingChunkResynthesizedNoExt + '.path'

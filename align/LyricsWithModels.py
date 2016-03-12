@@ -63,6 +63,7 @@ class LyricsWithModels(Lyrics):
        
         if self.withPaddedSilence:    
             tmpPhoneme =  Phoneme('sp');
+            tmpPhoneme.setIsLastInSyll(True)
             self.phonemesNetwork.insert(0, tmpPhoneme)
             self.phonemesNetwork.append(tmpPhoneme)
        
@@ -81,14 +82,14 @@ class LyricsWithModels(Lyrics):
          
 
         if distributionType == 'normal':
-            currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, distributionType, self.deviationInSec)
+            currStateWithDur = StateWithDur(state.mixtures, phoneme, idxState, distributionType, self.deviationInSec)
             dur = float(phoneme.durationInNumFrames) / float(currStateCount)
             if dur < 0:
                 sys.exit("duration for phoneme {}={}. please decrease fixed consonant duration or make sure audio fragment is not too short".format(dur, phoneme.ID))
             currStateWithDur.setDurationInFrames(dur)
         
         elif distributionType == 'exponential':
-            currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState, distributionType )
+            currStateWithDur = StateWithDur(state.mixtures, phoneme, idxState, distributionType )
             currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
             
         transMatrix = phoneme.getTransMatrix()
@@ -113,7 +114,7 @@ class LyricsWithModels(Lyrics):
         for phnIdx, phoneme in enumerate(self.phonemesNetwork):
             
             
-            statesPhoneme = phoneme.htkModel.states
+            phonemeStates = phoneme.htkModel.states
             
             if ParametersAlgo.ONLY_MIDDLE_STATE:
                 if len( phoneme.htkModel.states) == 1:
@@ -122,7 +123,7 @@ class LyricsWithModels(Lyrics):
                     idxMiddleState = 1
                 else:
                     sys.exit("not implemented. only 3 or 1 state per phoneme supported")
-                statesPhoneme = [phoneme.htkModel.states[idxMiddleState]]
+                phonemeStates = [phoneme.htkModel.states[idxMiddleState]]
             
             phoneme.setNumFirstState(stateCount)
             
@@ -130,7 +131,7 @@ class LyricsWithModels(Lyrics):
                 sys.exit("phoneme {} has no htkModel assigned".format(phoneme.ID))
             
             # update state counter
-            currStateCount = len(statesPhoneme)
+            currStateCount = len(phonemeStates)
             stateCount += currStateCount
             
             distributionType='normal'
@@ -138,7 +139,7 @@ class LyricsWithModels(Lyrics):
             if (phnIdx == 0 or phnIdx == len(self.phonemesNetwork)-1 ) and self.withPaddedSilence:
                 distributionType='exponential'
             
-            for idxState, (numStateFromHtk, state ) in enumerate(statesPhoneme):
+            for idxState, (numStateFromHtk, state ) in enumerate(phonemeStates):
                 currStateWithDur = self.createStateWithDur(phoneme, currStateCount, idxState, state, distributionType)
                 self.statesNetwork.append(currStateWithDur)
           
@@ -177,7 +178,7 @@ class LyricsWithModels(Lyrics):
             statesList = phoneme.htkModel.states
             # assign durations
             for idxState, (numStateFromHtk, state ) in enumerate( phoneme.htkModel.states):
-                 currStateWithDur = StateWithDur(state.mixtures, phoneme.__str__(), idxState)
+                 currStateWithDur = StateWithDur(state.mixtures, phoneme, idxState)
                  
                  # normalize to sum to one
                  weigthState = float(waitProbs[idxState]) / float(sum(waitProbs))

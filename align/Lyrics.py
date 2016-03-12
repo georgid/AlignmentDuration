@@ -40,7 +40,9 @@ class Lyrics(object):
         for word_ in self.listWords:
             for syllable_ in word_.syllables:
                 syllable_.expandToPhonemes()
-                self.phonemesNetwork.extend(syllable_.getPhonemes() )
+                phonemesInSyll = syllable_.getPhonemes()
+                phonemesInSyll[-1].setIsLastInSyll(True)
+                self.phonemesNetwork.extend(phonemesInSyll )
             
 #             word_.setNumFirstPhoneme(currNumPhoneme)
             # update index
@@ -86,7 +88,7 @@ class Lyrics(object):
         '''
                
         for i, phoneme in enumerate(self.phonemesNetwork):
-            print "{}: {} {}".format(i, phoneme.ID, phoneme.durationInMinUnit)
+            print "{}: {} {}".format(i, phoneme.__str__(), phoneme.durationInMinUnit)
 #                         print "{}".format(phoneme.ID)
 
                  

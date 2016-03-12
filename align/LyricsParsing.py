@@ -11,6 +11,7 @@ from align.Phoneme import Phoneme
 import os
 import logging
 from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid
+from hmm.ParametersAlgo import ParametersAlgo
 
 
 
@@ -27,7 +28,10 @@ def loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx):
     LOAD ORACLE PHONEMES as annotatetd in TextGrid
     '''
     highLevel = tierAliases.pinyin # read syllable in pinyin
-    lowLevel = tierAliases.xsampadetails # read phonemesAnno
+    if ParametersAlgo.WITH_SHORT_PAUSES:
+        lowLevel = tierAliases.xsampadetails_with_sp
+    else:
+        lowLevel = tierAliases.xsampadetails # read phonemesAnno
     
     phonemesAnnoAll = []
     for syllableIdx in range(fromSyllableIdx, toSyllableIdx): # for each  syllable including non-lyrics (.e.g. _SAZ_) syllables
@@ -41,6 +45,9 @@ def loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx):
 
 
 def getOnsetsFromPhonemeAnnos(URIRecordingChunkResynthesizedNoExt):
+    '''
+    use oracle phonemes as if they were onsets, Deprecated
+    '''
     onsetTimestamps = []
     highLevel = tierAliases.pinyin # read syllable in pinyin
     lowLevel = tierAliases.xsampadetails # read phonemesAnno
@@ -169,7 +176,7 @@ def _constructTimeStampsForTokenDetected(  text, startNoteNumber, countFirstStat
 
 def parsePhonemes(lyricsTextGrid, syllableIdx, highLevel, lowLevel):
     '''
-    parse phonemes for given syllable
+    parse phoneme ground truth timestamps for given syllable
     @highlevel - tier name syllable/word
     @lowLevel tier name phonemes
     '''

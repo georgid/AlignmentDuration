@@ -11,6 +11,8 @@ from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from align.FeatureExtractor import tsToFrameNumber
 from hmm.ParametersAlgo import ParametersAlgo
 from align.Aligner import logger
+from align.Decoder import visualizeMatrix
+from scipy.constants.constants import psi
 
 
 class _HMM(_ContinuousHMM):
@@ -96,7 +98,7 @@ class _HMM(_ContinuousHMM):
         init observation probs map_B 
         and onsets if they are specified (!=None)  
         '''
-        if ParametersAlgo.WITH_ORACLE:
+        if ParametersAlgo.WITH_ORACLE_PHONEMES:
             
             durInSeconds = toTsTextGrid - fromTsTextGrid
             lenObservations = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
@@ -139,7 +141,52 @@ class _HMM(_ContinuousHMM):
                 noteOnsets[fromFrame:toFrame + 1] = 1  
         
         return noteOnsets  
-    
+
+    def viterbi_fast_forced(self):
+        '''
+        considers only previous state in desicion
+        '''
+        
+        # init phi and psi at first time
+        for j in xrange(self.n):
+            currLogPi = numpy.log(self.pi[j])
+            self.phi[0][j] = currLogPi + self.B_map[j][0]
+        
+        # viterbi loop    
+        lenObs = numpy.shape(self.B_map)[1]
+        for t in xrange(1,lenObs):
+            self.logger.debug("at time {} out of {}".format(t, lenObs ))
+            for j in xrange(self.n):
+                        prevState = j-1
+                        # if beginning state, no prev. state
+                        if j == 0:
+                            prevState = 0
+                        
+                        if self.noteOnsets[t]:
+                            sliceA = self.transMatrixOnsets[prevState:j+1,j]
+#                             print "at time {} using matrix for note Onset".format(t)
+                        else:
+                            sliceA = self.transMatrix[prevState:j+1,j]
+                             
+#                         print "shape transMatrix:" + str(self.transMatrix.shape)
+#                         print "shape phi:" + str(self.phi.shape)
+                        APlusPhi = numpy.add(self.phi[t-1,prevState:j+1], sliceA)
+                        
+                        self.phi[t][j] = numpy.max(APlusPhi)
+                        self.psi[t][j] = numpy.argmax(APlusPhi) + prevState
+
+                        self.phi[t][j] =+ self.B_map[j][t]
+
+            ##### visualize each selected chunk
+            tmpArray = numpy.zeros((1,self.psi.shape[1]))
+            tmpArray[0,:] = self.psi[t,:]
+#             visualizeMatrix(tmpArray)
+                    
+#         numpy.savetxt(PATH_LOGS + '/phi', self.phi)
+#         numpy.savetxt( PATH_LOGS + '/psi', self.psi)
+        
+        return self.psi 
+   
     
     def viterbi_fast(self):
         
@@ -147,7 +194,6 @@ class _HMM(_ContinuousHMM):
         for j in xrange(self.n):
             currLogPi = numpy.log(self.pi[j])
             self.phi[0][j] = currLogPi + self.B_map[j][0]
-            self.psi[0][j] = 0
         
         # viterbi loop    
         lenObs = numpy.shape(self.B_map)[1]
@@ -172,6 +218,10 @@ class _HMM(_ContinuousHMM):
                         self.phi[t][j] =+ self.B_map[j][t]
 
                         self.psi[t][j] = numpy.argmax(APlusPhi)
+            ##### visualize each selected chunk
+            tmpArray = numpy.zeros((1,self.psi.shape[1]))
+            tmpArray[0,:] = self.psi[t,:]
+#             visualizeMatrix(tmpArray)
                     
 #         numpy.savetxt(PATH_LOGS + '/phi', self.phi)
 #         numpy.savetxt( PATH_LOGS + '/psi', self.psi)

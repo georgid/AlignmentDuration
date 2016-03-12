@@ -92,7 +92,10 @@ class Path(object):
         
         while(t>0):
             # backpointer
-            currState = hmm.psi[t, currState]
+            pointer = hmm.psi[t, currState]
+            if pointer == -1:
+                sys.exit("at time {} the backpointer for state {} is not defined".format(t,currState))
+            currState = pointer
             rawPath[t-1] = currState
             ### update 
             t = t-1

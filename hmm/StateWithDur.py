@@ -19,12 +19,12 @@ class StateWithDur(State):
     '''
 
 
-    def __init__(self, mixtures, phonemeName, idxInPhoneme, distribType='normal', deviationInSec=0.1):
+    def __init__(self, mixtures, phoneme, idxInPhoneme, distribType='normal', deviationInSec=0.1):
         '''
         Constructor
         '''
         State.__init__(self, mixtures)
-        self.phonemeName = phonemeName
+        self.phoneme = phoneme
         self.idxInPhoneme  = idxInPhoneme
         
         try:
@@ -77,6 +77,6 @@ class StateWithDur(State):
             return int(self.durationDistribution.getMinRefDur())
     
     def __str__(self):
-        return self.phonemeName + "_"  + str(self.idxInPhoneme)
+        return self.phoneme.ID + "_"  + str(self.idxInPhoneme)
         
         
