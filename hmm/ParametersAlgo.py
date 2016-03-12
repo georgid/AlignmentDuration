@@ -21,7 +21,7 @@ class ParametersAlgo(object):
     
     ONLY_MIDDLE_STATE = 1
     
-    WITH_SHORT_PAUSES = 0
+    WITH_SHORT_PAUSES = 1
     
     WITH_PADDED_SILENCE = 1
     
@@ -31,11 +31,11 @@ class ParametersAlgo(object):
     
     POLYPHONIC = 0
     
-    WITH_ORACLE_ONSETS = 0
+    WITH_ORACLE_ONSETS = 1
     ### no onsets at all. 
 #     WITH_ORACLE_ONSETS = -1
     
-    ONSET_TOLERANCE_WINDOW = 0.02 # seconds
+    ONSET_TOLERANCE_WINDOW = 0.02 # seconds. to work implement decoding with one onset only
     ONSET_TOLERANCE_WINDOW = 0 # seconds
 
     

@@ -164,14 +164,13 @@ class Decoder(object):
              
             stateWithDur = lyricsWithModels.statesNetwork[idxCurrState]
             if atNoteOnsets:
-                waitProb = defineWaitProb(lyricsWithModels.statesNetwork, idxCurrState)
-#                   waitProb = 1  
+                forwProb = defineForwardTransProb(lyricsWithModels.statesNetwork, idxCurrState)
             else:
-                waitProb = stateWithDur.waitProb
+                forwProb = 1 - stateWithDur.waitProb
             
-            transMAtrix[idxCurrState, idxCurrState] = waitProb
+            transMAtrix[idxCurrState, idxCurrState] = 1- forwProb # waitProb
             if (idxCurrState+1) < transMAtrix.shape[1]:
-                transMAtrix[idxCurrState, idxCurrState+1] = 1- waitProb
+                transMAtrix[idxCurrState, idxCurrState+1] = forwProb
          
         # avoid log(0) 
         indicesZero = numpy.where(transMAtrix==0)
@@ -258,12 +257,12 @@ class Decoder(object):
     #         path.printDurations()
         return detectedTokenList, self.path
 
-def defineWaitProb(statesNetwork, idxState):
+def defineForwardTransProb(statesNetwork, idxState):
     '''
     change trasna probs based on rules 
     '''
-    q = 0.99
-    r = 0.01
+    q = 0.01
+    r = 0.99
     if not ParametersAlgo.ONLY_MIDDLE_STATE:
         sys.exit("align.Decoder.defineWaitProb  implemented only for 1-state phonemes ")
     
