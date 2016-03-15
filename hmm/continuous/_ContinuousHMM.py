@@ -133,8 +133,16 @@ class _ContinuousHMM(_BaseHMM):
                 indices.append(currIdx)
         return indices
     
+    def _mapBStub(self, lenFeatureVectors):
+        '''
+        for sanity check all probs set to 1
+        '''
+        self.B_map = numpy.zeros( (self.n, lenFeatureVectors), dtype=self.precision)
+        self.B_map.fill(1)
+        self.B_map = numpy.log( self.B_map) 
+        
     
-    def _mapBOracle(self,  lyricsWithModelsOracle, lenObservations, fromTs):
+    def _mapBOracle(self,  lyricsWithModelsOracle, lenFeatureVectors, fromTs):
         '''
         loop though phoneme states from  lyricsWithModelsOracle. 
         For each one, for the frames of its duration assign 1 in B_map and
@@ -144,7 +152,7 @@ class _ContinuousHMM(_BaseHMM):
         '''
         
         # init matrix to be zero
-        self.B_map = numpy.zeros( (self.n, lenObservations), dtype=self.precision)
+        self.B_map = numpy.zeros( (self.n, lenFeatureVectors), dtype=self.precision)
         self.B_map.fill(MINIMAL_PROB)
 #         firstPhoneme = lyricsWithModelsOracle.phonemesNetwork[0]
 #         offSet = firstPhoneme.beginTs - fromTs
@@ -225,7 +233,7 @@ class _ContinuousHMM(_BaseHMM):
 
                  
         self._normalizeBByMaxLog()
-        cutOffHistogram(self.B_map, ParametersAlgo.CUTOFF_BIN_OBS_PROBS)
+#         cutOffHistogram(self.B_map, ParametersAlgo.CUTOFF_BIN_OBS_PROBS)
         
 #         if self.logger.level == logging.INFO:
 #         ax = self.visualizeBMap()

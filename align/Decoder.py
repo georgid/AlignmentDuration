@@ -81,7 +81,7 @@ class Decoder(object):
         self.path = None
     
     
-    def decodeAudio( self, observationFeatures, listNonVocalFragments, usePersistentFiles, onsetTimestamps, fromTsTextGrid=0, toTsTextGrid=0):
+    def decodeAudio( self, featureVectors, listNonVocalFragments, usePersistentFiles, onsetTimestamps, fromTsTextGrid=0, toTsTextGrid=0):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
@@ -93,11 +93,11 @@ class Decoder(object):
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
             # double check that features are in same dimension as model
-            if observationFeatures.shape[1] != NUM_DIMENSIONS:
-                sys.exit("dimension of feature vector should be {} but is {} ".format(NUM_DIMENSIONS, observationFeatures.shape[1]) )
+            if featureVectors.shape[1] != NUM_DIMENSIONS:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(NUM_DIMENSIONS, featureVectors.shape[1]) )
             
                 
-        self.hmmNetwork.initDecodingParameters(observationFeatures, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
+        self.hmmNetwork.initDecodingParameters(featureVectors, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
 
         # standard viterbi forced alignment
         if not WITH_DURATIONS:
@@ -163,14 +163,54 @@ class Decoder(object):
         for idxCurrState in range(len(lyricsWithModels.statesNetwork)):
              
             stateWithDur = lyricsWithModels.statesNetwork[idxCurrState]
-            if atNoteOnsets:
-                forwProb = defineForwardTransProb(lyricsWithModels.statesNetwork, idxCurrState)
-            else:
-                forwProb = 1 - stateWithDur.waitProb
             
-            transMAtrix[idxCurrState, idxCurrState] = 1- forwProb # waitProb
-            if (idxCurrState+1) < transMAtrix.shape[1]:
-                transMAtrix[idxCurrState, idxCurrState+1] = forwProb
+            
+            if (idxCurrState+2) < transMAtrix.shape[1]:
+           
+                    nextState = lyricsWithModels.statesNetwork[idxCurrState+1]
+                    
+                    if atNoteOnsets:
+                        forwProb1, forwProb2 = defineForwardTransProbs(lyricsWithModels.statesNetwork, idxCurrState)
+                    else:
+                        
+                        
+                        if  nextState.phoneme.ID == 'sp':
+                            forwProb1 = 1 - stateWithDur.waitProb / 2.0
+                            forwProb2 = 1 - stateWithDur.waitProb / 2.0
+                        else:
+                            forwProb1 = 1 - stateWithDur.waitProb 
+                            forwProb2 = 0
+                   
+                    if forwProb1 + forwProb2 >= 1: # waitProb = 1-forw-forw2
+                       forwProb1 /= 2.0
+                       forwProb2 /= 2.0
+                    transMAtrix[idxCurrState, idxCurrState] = 1 - forwProb1 - forwProb2 # waitProb
+                    transMAtrix[idxCurrState, idxCurrState + 1] = forwProb1
+                    transMAtrix[idxCurrState, idxCurrState + 2] = forwProb2  
+                    
+                    
+            elif (idxCurrState+1) < transMAtrix.shape[1]: # two last states
+                       
+                if atNoteOnsets:
+                    # forwProb = 0
+                        forwProb1, forwProb2 = defineForwardTransProbs(lyricsWithModels.statesNetwork, idxCurrState)
+                else:
+                                       
+                    forwProb1 = 1 - stateWithDur.waitProb
+                
+                transMAtrix[idxCurrState, idxCurrState] = 1 - forwProb1
+                transMAtrix[idxCurrState, idxCurrState+1] = forwProb1
+            
+            else: # at very last state
+                
+                transMAtrix[idxCurrState, idxCurrState] = stateWithDur.waitProb # waitProb
+            
+
+            
+   
+            
+            
+                 
          
         # avoid log(0) 
         indicesZero = numpy.where(transMAtrix==0)
@@ -257,40 +297,65 @@ class Decoder(object):
     #         path.printDurations()
         return detectedTokenList, self.path
 
-def defineForwardTransProb(statesNetwork, idxState):
+def defineForwardTransProbs(statesNetwork, idxCurrState):
     '''
-    change trasna probs based on rules 
+    at onset present, change trasna probs based on rules.
+    consider special case sp
     '''
-    q = 0.01
-    r = 0.99
+    
+    nextStateWithDur = statesNetwork[idxCurrState+1]
+    currStateWithDur = statesNetwork[idxCurrState]
+                
+ 
     if not ParametersAlgo.ONLY_MIDDLE_STATE:
         sys.exit("align.Decoder.defineWaitProb  implemented only for 1-state phonemes ")
     
-    currStateWithDur = statesNetwork[idxState]
-    if idxState == len(statesNetwork)-1: # ignore onset at last phonemes
-        return currStateWithDur.waitProb
+#     if idxState == len(statesNetwork)-1: # ignore onset at last phonemes
+#         return currStateWithDur.waitProb
     
-    nextStateWithDur =  statesNetwork[idxState+1]
     currPhoneme = currStateWithDur.phoneme
     nextPhoneme = nextStateWithDur.phoneme
     
-    if currPhoneme.isLastInSyll(): # inter-syllable
-        if currPhoneme.isVowel() and not nextPhoneme.isVowelOrLiquid(): # rule 1
-            return q
-        elif not currPhoneme.isVowel() and nextPhoneme.isVowelOrLiquid(): # rule 2
-            return r 
-    else: # not last in syllable, intra-syllable
-        if currPhoneme.isVowel() and not nextPhoneme.isVowel(): # rule 3
-            return q
-        elif not currPhoneme.isVowelOrLiquid() and nextPhoneme.isVowel(): # rule 4:
-            return r
-        elif currPhoneme.isVowel() and nextPhoneme.isVowel():
-            logging.warning("two consecutive vowels in a syllable. not implemented! {} and {}".format(currPhoneme.ID, nextPhoneme.ID))
-            return 1
-            
+    if nextPhoneme.ID == 'sp' and (idxCurrState+2) < len(statesNetwork):
+        forwProb1 = getForwProb(currStateWithDur, nextStateWithDur )
         
+        nextNextStateWithDur = statesNetwork[idxCurrState+2]
+        currPhoneme.setIsLastInSyll(1)
+        forwProb2 = getForwProb(currStateWithDur, nextNextStateWithDur )
+        currPhoneme.setIsLastInSyll(0)
+        return forwProb1, forwProb2
+            
+    
+    else: # everything  different from configuration: sp-state followed by other state
+        forwProb1 = getForwProb(currStateWithDur, nextStateWithDur )
+        return forwProb1, 0
+        
+ 
+        
+
+
+def getForwProb(currStateWithDur, followingStateWithDur):
+    
+    currPhoneme = currStateWithDur.phoneme
+    followingPhoneme = followingStateWithDur.phoneme
+    q = 0.01
+    r = 0.99
+    if currPhoneme.isLastInSyll(): # inter-syllable
+            if currPhoneme.isVowel() and not followingPhoneme.isVowelOrLiquid(): # rule 1
+                return q
+            elif not currPhoneme.isVowel() and followingPhoneme.isVowelOrLiquid(): # rule 2
+                return r 
+    else: # not last in syllable, intra-syllable
+            if currPhoneme.isVowel() and not followingPhoneme.isVowel(): # rule 3
+                return q
+            elif not currPhoneme.isVowelOrLiquid() and followingPhoneme.isVowel(): # rule 4:
+                return r
+            elif currPhoneme.isVowel() and followingPhoneme.isVowel():
+                logging.warning("two consecutive vowels in a syllable. not implemented! {} and {}".format(currPhoneme.ID, followingPhoneme.ID))
+                return 1
+    
     #  onset has no contribution in other cases    
-    return currStateWithDur.waitProb
+    return 1- currStateWithDur.waitProb
     
 def visualizeMatrix(psi, figNum=1):
 #         psi = numpy.flipud(psi)

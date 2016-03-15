@@ -25,7 +25,9 @@ class ParametersAlgo(object):
     
     WITH_PADDED_SILENCE = 1
     
-    WITH_ORACLE_PHONEMES = 1
+    # no feature vectors at all. all observ, probs. set to 1
+    WITH_ORACLE_PHONEMES = -1
+#     WITH_ORACLE_PHONEMES = 1
     
     WITH_SECTION_ANNOTATIONS = 1
     
@@ -33,11 +35,12 @@ class ParametersAlgo(object):
     
     WITH_ORACLE_ONSETS = 1
     ### no onsets at all. 
-#     WITH_ORACLE_ONSETS = -1
+    WITH_ORACLE_ONSETS = -1
     
     ONSET_TOLERANCE_WINDOW = 0.02 # seconds. to work implement decoding with one onset only
     ONSET_TOLERANCE_WINDOW = 0 # seconds
 
     
-    CUTOFF_BIN_OBS_PROBS = 4 
+    CUTOFF_BIN_OBS_PROBS = 10
+    
     

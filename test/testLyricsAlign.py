@@ -6,6 +6,7 @@ Created on Jan 13, 2016
 import os
 import sys
 import json
+from align.Decoder import Decoder
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
@@ -99,6 +100,12 @@ def testMakamRecording():
     
     mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict )
     
+
+# def testDecoding():
+#     
+#     lyricsWithModels = LyricsWithModels(lyrics, htkParser,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
+#     decoder = Decoder(lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
+
 
 
 if __name__ == '__main__':

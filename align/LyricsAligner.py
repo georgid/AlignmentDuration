@@ -202,11 +202,11 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
             
             if  ParametersAlgo.WITH_ORACLE_PHONEMES:
                 lyricsWithModelsOracle = loadSmallAudioFragmentOracle(URIRecordingChunkResynthesizedNoExt, htkParser, lyrics )
-                # obsFeatures is alias for LyricsWithModelsOracle
-                obsFeatures = lyricsWithModels = lyricsWithModelsOracle 
+                # featureVectors is alias for LyricsWithModelsOracle
+                featureVectors = lyricsWithModels = lyricsWithModelsOracle 
             else:
             #     ###### extract audio features
-                lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, extractedPitchList,   URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink, htkParser)
+                lyricsWithModels, featureVectors, URIrecordingChunk = loadSmallAudioFragment(lyrics, extractedPitchList,   URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink, htkParser)
             
         # DEBUG: score-derived phoneme  durations
             lyricsWithModels.printPhonemeNetwork()
@@ -233,7 +233,7 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
             else: 
                 onsetTimestamps = None
             
-            detectedTokenList = decoder.decodeAudio(obsFeatures, listNonVocalFragments, usePersistentFiles, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
+            detectedTokenList = decoder.decodeAudio(featureVectors, listNonVocalFragments, usePersistentFiles, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
             
             phiOptPath = {'phi': decoder.path.phiPathLikelihood}
             detectedPath = decoder.path.pathRaw

@@ -93,34 +93,37 @@ class _HMM(_ContinuousHMM):
 
 
 
-    def initDecodingParameters(self,  observationsORLyricsWithModels,  onsetTimestamps, fromTsTextGrid, toTsTextGrid):
+    def initDecodingParameters(self,  featureVectorsORLyricsWithModels,  onsetTimestamps, fromTsTextGrid, toTsTextGrid):
         '''
         init observation probs map_B 
         and onsets if they are specified (!=None)  
         '''
-        if ParametersAlgo.WITH_ORACLE_PHONEMES:
+        
+        if ParametersAlgo.WITH_ORACLE_PHONEMES == -1:
+            lenFeatures = 50
+            self._mapBStub(lenFeatures)
+        elif ParametersAlgo.WITH_ORACLE_PHONEMES == 1:
+                
+                durInSeconds = toTsTextGrid - fromTsTextGrid
+                lenFeatures = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
+                self._mapBOracle( featureVectorsORLyricsWithModels, lenFeatures, fromTsTextGrid)
+        else: # with featureVectors
+                lenFeatures = len(featureVectorsORLyricsWithModels)
+                self._mapB(featureVectorsORLyricsWithModels)
             
-            durInSeconds = toTsTextGrid - fromTsTextGrid
-            lenObservations = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
-            self._mapBOracle( observationsORLyricsWithModels, lenObservations, fromTsTextGrid)
-        else:
-            lenObservations = len(observationsORLyricsWithModels)
-            self._mapB(observationsORLyricsWithModels)
         
         
-        
+        self.noteOnsets = self.onsetTsToOnsetFrames(onsetTimestamps, lenFeatures)
             
-        self.noteOnsets = self.onsetTsToOnsetFrames(onsetTimestamps, lenObservations)
-            
-        self.phi = numpy.empty((lenObservations,self.n),dtype=self.precision)
+        self.phi = numpy.empty((lenFeatures,self.n),dtype=self.precision)
         self.phi.fill(-Infinity)
     
        
         # backpointer: form which prev. state
-        self.psi = numpy.empty((lenObservations, self.n), dtype=self.precision)
+        self.psi = numpy.empty((lenFeatures, self.n), dtype=self.precision)
         self.psi.fill(-1)
         
-        return lenObservations
+        return lenFeatures
     
     def onsetTsToOnsetFrames(self, onsetTimestamps, lenObservations):
         
@@ -157,23 +160,23 @@ class _HMM(_ContinuousHMM):
         for t in xrange(1,lenObs):
             self.logger.debug("at time {} out of {}".format(t, lenObs ))
             for j in xrange(self.n):
-                        prevState = j-1
+                        fromState = j-2
                         # if beginning state, no prev. state
-                        if j == 0:
-                            prevState = 0
+                        if j == 0 or j==1:
+                            fromState = 0
                         
                         if self.noteOnsets[t]:
-                            sliceA = self.transMatrixOnsets[prevState:j+1,j]
+                            sliceA = self.transMatrixOnsets[fromState:j+1,j]
 #                             print "at time {} using matrix for note Onset".format(t)
                         else:
-                            sliceA = self.transMatrix[prevState:j+1,j]
+                            sliceA = self.transMatrix[fromState:j+1,j]
                              
 #                         print "shape transMatrix:" + str(self.transMatrix.shape)
 #                         print "shape phi:" + str(self.phi.shape)
-                        APlusPhi = numpy.add(self.phi[t-1,prevState:j+1], sliceA)
+                        APlusPhi = numpy.add(self.phi[t-1,fromState:j+1], sliceA)
                         
                         self.phi[t][j] = numpy.max(APlusPhi)
-                        self.psi[t][j] = numpy.argmax(APlusPhi) + prevState
+                        self.psi[t][j] = numpy.argmax(APlusPhi) + fromState
 
                         self.phi[t][j] =+ self.B_map[j][t]
 

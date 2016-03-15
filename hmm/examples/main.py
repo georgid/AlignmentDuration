@@ -51,13 +51,14 @@ def loadSmallAudioFragment(lyrics, extractedPitchList,  URIrecordingNoExt, URIRe
 
     lyricsWithModels = LyricsWithModels(lyrics, htkParser,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
      
-    observationFeatures, URIRecordingChunk = loadMFCCs(URIrecordingNoExt, extractedPitchList,  URIRecordingChunkResynthesizedNoExt, withSynthesis, sectionLink) #     observationFeatures = observationFeatures[0:1000]
-
-    lyricsWithModels.duration2numFrameDuration(observationFeatures, URIrecordingNoExt)
+    featureVectors, URIRecordingChunk = loadMFCCs(URIrecordingNoExt, extractedPitchList,  URIRecordingChunkResynthesizedNoExt, withSynthesis, sectionLink) #     featureVectors = featureVectors[0:1000]
+    
+    # needed only with duration model
+    lyricsWithModels.duration2numFrameDuration(featureVectors, URIrecordingNoExt)
 #     lyricsWithModels.printPhonemeNetwork()
 
     
-    return lyricsWithModels, observationFeatures, URIRecordingChunk
+    return lyricsWithModels, featureVectors, URIRecordingChunk
 
 def loadSmallAudioFragmentOracle(URIRecordingChunkResynthesizedNoExt, htkParser, lyrics):
 
