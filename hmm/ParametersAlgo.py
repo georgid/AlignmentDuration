@@ -3,6 +3,7 @@ Created on May 28, 2015
 
 @author: joro
 '''
+import logging
 
 ######### PARAMS:
 class ParametersAlgo(object):
@@ -27,7 +28,7 @@ class ParametersAlgo(object):
     
     # no feature vectors at all. all observ, probs. set to 1
     WITH_ORACLE_PHONEMES = -1
-#     WITH_ORACLE_PHONEMES = 1
+#     WITH_ORACLE_PHONEMES = 0
     
     WITH_SECTION_ANNOTATIONS = 1
     
@@ -44,3 +45,7 @@ class ParametersAlgo(object):
     CUTOFF_BIN_OBS_PROBS = 10
     
     
+    
+    #####
+    LOGGING_LEVEL = logging.DEBUG
+    VISUALIZE = True

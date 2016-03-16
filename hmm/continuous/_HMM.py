@@ -100,7 +100,7 @@ class _HMM(_ContinuousHMM):
         '''
         
         if ParametersAlgo.WITH_ORACLE_PHONEMES == -1:
-            lenFeatures = 50
+            lenFeatures = 80
             self._mapBStub(lenFeatures)
         elif ParametersAlgo.WITH_ORACLE_PHONEMES == 1:
                 
@@ -160,9 +160,9 @@ class _HMM(_ContinuousHMM):
         for t in xrange(1,lenObs):
             self.logger.debug("at time {} out of {}".format(t, lenObs ))
             for j in xrange(self.n):
-                        fromState = j-2
+                        fromState = j-1
                         # if beginning state, no prev. state
-                        if j == 0 or j==1:
+                        if j == 0: #or j==1:
                             fromState = 0
                         
                         if self.noteOnsets[t]:
@@ -173,17 +173,26 @@ class _HMM(_ContinuousHMM):
                              
 #                         print "shape transMatrix:" + str(self.transMatrix.shape)
 #                         print "shape phi:" + str(self.phi.shape)
+#                         if j <= t:
+#                             print 'at time {} and state {} a_j-1,j and a_j,j = {}'.format(t, j, sliceA)
                         APlusPhi = numpy.add(self.phi[t-1,fromState:j+1], sliceA)
+#                         if j <= t:
+#                             print 'at time {} and state {} a_j-1,j and a_j,j + phis = {}'.format(t, j, APlusPhi)
+                         
                         
                         self.phi[t][j] = numpy.max(APlusPhi)
                         self.psi[t][j] = numpy.argmax(APlusPhi) + fromState
 
-                        self.phi[t][j] =+ self.B_map[j][t]
+                        self.phi[t][j] += self.B_map[j][t]
+#                         if j <= t:
+#                             print self.phi[t][j]
+#                             print '\n'
 
             ##### visualize each selected chunk
             tmpArray = numpy.zeros((1,self.psi.shape[1]))
             tmpArray[0,:] = self.psi[t,:]
 #             visualizeMatrix(tmpArray)
+#             visualizeMatrix(self.phi, 'phi at time {}'.format(t))
                     
 #         numpy.savetxt(PATH_LOGS + '/phi', self.phi)
 #         numpy.savetxt( PATH_LOGS + '/psi', self.psi)
@@ -218,7 +227,7 @@ class _HMM(_ContinuousHMM):
                         APlusPhi = numpy.add(self.phi[t-1,:], sliceA)
                         
                         self.phi[t][j] = numpy.max(APlusPhi)
-                        self.phi[t][j] =+ self.B_map[j][t]
+                        self.phi[t][j] += self.B_map[j][t]
 
                         self.psi[t][j] = numpy.argmax(APlusPhi)
             ##### visualize each selected chunk

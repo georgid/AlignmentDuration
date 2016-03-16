@@ -133,7 +133,7 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
                 evalLevel = tierAliases.phrases
                 correctDuration = 0
                 totalDuration = 1
-#                 correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
+                correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
     
                 totalCorrectDurations += correctDuration
                 totalDurations += totalDuration
@@ -198,7 +198,7 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
     #     read from file result
       
         detectedAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
-        if not os.path.isfile(detectedAlignedfileName):
+        if  os.path.isfile(detectedAlignedfileName):
             
             if  ParametersAlgo.WITH_ORACLE_PHONEMES:
                 lyricsWithModelsOracle = loadSmallAudioFragmentOracle(URIRecordingChunkResynthesizedNoExt, htkParser, lyrics )
@@ -354,7 +354,8 @@ def determineSuffix(withDuration, withOracle, withOracleOnsets, decodedTokenLeve
     tokenAlignedSuffix = '.'
     tokenAlignedSuffix += decodedTokenLevel
     if withDuration: tokenAlignedSuffix += 'Duration'
-    if withOracle: tokenAlignedSuffix += 'OraclePhonemes'
+    if withOracle == 1: tokenAlignedSuffix += 'OraclePhonemes'
+    elif withOracle == -1: tokenAlignedSuffix += 'NoPhonemes'
     if withOracleOnsets: tokenAlignedSuffix += 'OracleOnsets'
     
     tokenAlignedSuffix += 'Aligned' 

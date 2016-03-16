@@ -11,6 +11,7 @@ from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDet
 from Constants import NUM_DIMENSIONS, numMixtures
 from hmm.ParametersAlgo import ParametersAlgo
 from scripts.OnsetDetector import parserNoteOnsets
+from align.visualize import visualizeMatrix, visualizeBMap, visualizePath
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
@@ -108,12 +109,18 @@ class Decoder(object):
         else:   # duration-HMM
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur()
             
-#         visualizeMatrix(self.hmmNetwork.phi)
-        visualizeMatrix(self.hmmNetwork.psi)
-
-        
            
         detectedWordList, self.path = self.backtrack(chiBackPointer, psiBackPointer )
+
+
+        if ParametersAlgo.VISUALIZE:
+#             ax = visualizeBMap(self.hmmNetwork.B_map)        
+#             visualizePath(ax,self.path.pathRaw, self.hmmNetwork.B_map)
+
+            ax = visualizeMatrix(self.hmmNetwork.phi, 'phi' )
+#             ax = visualizeMatrix(self.hmmNetwork.psi, 'psi' )
+            visualizePath(ax,self.path.pathRaw, self.hmmNetwork.B_map)
+
             
         print "\n"
          # DEBUG
@@ -357,14 +364,4 @@ def getForwProb(currStateWithDur, followingStateWithDur):
     #  onset has no contribution in other cases    
     return 1- currStateWithDur.waitProb
     
-def visualizeMatrix(psi, figNum=1):
-#         psi = numpy.flipud(psi)
-#         psi = numpy.rot90(psi)
-        import matplotlib.pyplot as plt
-        plt.figure(figNum)
-        ax = plt.imshow(psi, interpolation='none')
-        plt.colorbar(ax)
-        plt.grid(True)
-#         plt.tight_layout()
-        plt.show()  
-        
+

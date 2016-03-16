@@ -139,6 +139,7 @@ class _ContinuousHMM(_BaseHMM):
         '''
         self.B_map = numpy.zeros( (self.n, lenFeatureVectors), dtype=self.precision)
         self.B_map.fill(1)
+        self._addNonPossibleObs()
         self.B_map = numpy.log( self.B_map) 
         
     
@@ -181,12 +182,21 @@ class _ContinuousHMM(_BaseHMM):
                         startFrameNumber =  finalDurInFrames+1  
             #TODO: silence at beginning and end
         
+        self._addNonPossibleObs()
         self.B_map = numpy.log( self.B_map) 
         self._normalizeBByMaxLog()
         
-        if self.logger.level == logging.DEBUG:
-            self.visualizeBMap()
     
+    def _addNonPossibleObs(self, inLogDomain=False):
+        '''
+        not possible to go there becasue of alignment. do before log numpy
+        '''
+        upper = np.triu(self.B_map)
+        indicesZero = np.where(upper==0)
+        if inLogDomain:
+            self.B_map[indicesZero] = numpy.log(MINIMAL_PROB)
+        else:
+            self.B_map[indicesZero] = MINIMAL_PROB
         
     def _mapB(self, observations):
         '''
@@ -229,46 +239,17 @@ class _ContinuousHMM(_BaseHMM):
                 
                 self.B_map[:,startFrame:endFrame+1] =  numpy.log(MINIMAL_PROB)
                 self.B_map[numpy.array([indicesSilent]),startFrame:endFrame+1] =  numpy.log(1)
-#                 self.visualizeBMap()
 
                  
+        self._addNonPossibleObs(inLogDomain=True)
         self._normalizeBByMaxLog()
 #         cutOffHistogram(self.B_map, ParametersAlgo.CUTOFF_BIN_OBS_PROBS)
-        
-#         if self.logger.level == logging.INFO:
-#         ax = self.visualizeBMap()
-#         self.visualizePath(ax)
+
+
          
  
 
-    def visualizeBMap(self): 
-            import matplotlib.pyplot as plt
-            import matplotlib
-            matplotlib.interactive(False)
-
-            plt.figure(figsize=(16,8))
-            fig, ax = plt.subplots()
-#             ax.imshow(self.B_map, extent=[0, 200, 0, 100], interpolation='none')
-            plt.imshow(self.B_map, interpolation='none')
-
-#             plt.colorbar()
-#             fig.colorbar()
-            ax.autoscale(False)
-            plt.show(block=True)
-            return ax
-
-    def visualizePath(self, ax):
-        import matplotlib.pyplot as plt
-        path = readListTextFile('path')
-            
-        if self.B_map.shape[1] != len(path):
-            sys.exit("obs features are {}, but path has duration {}".format(self.B_map.shape[1], len(path)))
-        
-        
-        
-        ax.plot(path, marker='x', color='k', markersize=5)
-        
-        plt.show()
+  
         
     
     def _mapB_OLD(self, observations):
