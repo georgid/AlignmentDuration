@@ -20,12 +20,7 @@ try:
 except ImportError:
    from distutils.command.build_py import build_py
    
-try:
-   from Cython.Distutils import build_ext
-except ImportError:
-   use_cython = False
-else:
-   use_cython = True
+from Cython.Distutils import build_ext
    
 
 # py_inc = [get_python_inc()]
