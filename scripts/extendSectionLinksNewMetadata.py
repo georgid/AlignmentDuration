@@ -25,7 +25,6 @@ from utilsLyrics.Utilz import  findFileByExtensions
 
 pathSectionAnnosSource = '/Users/joro/Downloads/turkish_makam_section_dataset-2014_jnmr/audio_metadata/'
 
-pathDestinationDataset = '/Users/joro/Downloads/lyrics-2-audio-test-data/'
 
 URI_datasetOld = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis/'
 
@@ -35,7 +34,7 @@ dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
 
 
 
-def extendNewMetadata(musicbrainzid, recordingDir):
+def extendNewMetadata(musicbrainzid, inpuRecordingDir, pathDestinationDataset):
     '''
     annotations with score sections names zemin meyan > convert to > annotations with sections names C1, B1. etc
     uses old makamScore and makamRecording (and SymbTrParser old ) because we need the matchSections and its neater to use it form the constructor of MakamRecording
@@ -53,14 +52,15 @@ def extendNewMetadata(musicbrainzid, recordingDir):
     pathToAudioFile = 'blah'
     
     
-    pathToRecording, pathToSectionAnnotations = getURISectionAnnotation(recordingDir, compositionPath) 
+    pathToRecording, pathToSectionAnnotations = getURISectionAnnotation(inpuRecordingDir, compositionPath) 
     makamRecording = MakamRecordingOld(makamScore, pathToAudioFile, pathToSectionAnnotations)
     print makamRecording.sectionIndices
     
     
     ###### 2. load score sections metadata new C1,C2 etc.
     sectionMetadata = dunya.docserver.get_document_as_json(w['mbid'], "metadata", "metadata", 1, version="0.1")
-
+#     print sectionMetadata
+    
     scoreSectionAnnos = sectionMetadata['sections']
     if len(scoreSectionAnnos) != len(makamScore.sectionToLyricsMap):
         sys.exit("text score sections with len {} and scoreSectionAnnos with len {}".format(len(makamScore.sectionToLyricsMap), len(scoreSectionAnnos) ) ) 
@@ -148,6 +148,8 @@ def getURISectionAnnotation(recordingDir, pathToComposition):
 
 if __name__ == '__main__':
     
+    pathDestinationDataset = '/Users/joro/Downloads/ISTANBULSymbTr2/'
+
     for musicbrainzid, recordingDir in zip(recMBIDs, recordingDirs):
-         extendNewMetadata(musicbrainzid, recordingDir )
+         extendNewMetadata(musicbrainzid, recordingDir, pathDestinationDataset )
          raw_input("press for next piece...")

@@ -157,12 +157,16 @@ def _constructTimeStampsForToken(  text, startNoteNumber, countFirstState, count
         return detectedWord, totalDuration 
 
 
+
+
+
+
 def _constructTimeStampsForTokenDetected(  text, startNoteNumber, countFirstState, countLastState, path, dummy):
         '''
         helper method. timestamps of detected word/syllable , read frames from path
         '''
-        currWordBeginFrame = path.indicesStateStarts[countFirstState]
-        currWordEndFrame = path.indicesStateStarts[countLastState]
+        currWordBeginFrame, currWordEndFrame = getBoundaryFrames(countFirstState, countLastState, path)    
+        
     #             # debug:
     #             print self.pathRaw[currWordBeginFrame]
     # timestamp:
@@ -173,6 +177,24 @@ def _constructTimeStampsForTokenDetected(  text, startNoteNumber, countFirstStat
 #         print detectedWord
         
         return detectedWord, dummy
+
+
+def getBoundaryFrames(countFirstState, countLastState, path):
+    i = 0
+    while countFirstState > path.pathRaw[path.indicesStateStarts[i]]:
+        i += 1
+    
+    currWordBeginFrame = path.indicesStateStarts[i]
+    while i < len(path.indicesStateStarts) and countLastState > path.pathRaw[path.indicesStateStarts[i]]:
+        i += 1
+    
+    currWordEndFrame = path.indicesStateStarts[i]
+    
+#     currWordBeginFrame = path.indicesStateStarts[countFirstState]
+#     currWordEndFrame = path.indicesStateStarts[countLastState]
+    
+    return currWordBeginFrame, currWordEndFrame
+
 
 def parsePhonemes(lyricsTextGrid, syllableIdx, highLevel, lowLevel):
     '''

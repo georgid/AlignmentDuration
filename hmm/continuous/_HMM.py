@@ -160,9 +160,9 @@ class _HMM(_ContinuousHMM):
         for t in xrange(1,lenObs):
             self.logger.debug("at time {} out of {}".format(t, lenObs ))
             for j in xrange(self.n):
-                        fromState = j-1
+                        fromState = j-2
                         # if beginning state, no prev. state
-                        if j == 0: #or j==1:
+                        if j == 0 or j==1:
                             fromState = 0
                         
                         if self.noteOnsets[t]:

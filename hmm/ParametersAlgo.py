@@ -28,7 +28,7 @@ class ParametersAlgo(object):
     
     # no feature vectors at all. all observ, probs. set to 1
     WITH_ORACLE_PHONEMES = -1
-#     WITH_ORACLE_PHONEMES = 0
+    WITH_ORACLE_PHONEMES = 0
     
     WITH_SECTION_ANNOTATIONS = 1
     
@@ -36,7 +36,7 @@ class ParametersAlgo(object):
     
     WITH_ORACLE_ONSETS = 1
     ### no onsets at all. 
-    WITH_ORACLE_ONSETS = -1
+#     WITH_ORACLE_ONSETS = -1
     
     ONSET_TOLERANCE_WINDOW = 0.02 # seconds. to work implement decoding with one onset only
     ONSET_TOLERANCE_WINDOW = 0 # seconds
@@ -48,4 +48,4 @@ class ParametersAlgo(object):
     
     #####
     LOGGING_LEVEL = logging.DEBUG
-    VISUALIZE = True
+    VISUALIZE = 1

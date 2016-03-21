@@ -32,13 +32,12 @@ class Path(object):
             # infer from pointer matrix 
             totalTime, numStates = numpy.shape(psiBackPointer)
             finalTime = totalTime
-            numdecodedStates = -1
+            self.pathRaw = [1]
             totalAllowedDevTime = (totalTime - BACKTRACK_MARGIN_PERCENT * totalTime)
             
-            # numStates != numdecodedStates needed in forced alignment
-            while numStates != numdecodedStates and finalTime >= totalAllowedDevTime:
+            while self.pathRaw[0] != 0 and finalTime >= totalAllowedDevTime: # not reached first state
                 '''
-                decrease final time until numDecodedStates aligns with numStates expected
+                decrease final time until reached first state
                 '''
                 finalTime = finalTime - 1
                 logger.debug('backtracking from final time {}'.format(finalTime))
@@ -46,18 +45,17 @@ class Path(object):
                     self.pathRaw = self._backtrackForcedDur(chiBackPointers, psiBackPointer, finalTime)
                 else:
                     self.pathRaw = self._backtrack(hmm, finalTime)
-                
-                self._path2stateIndices()
-                numdecodedStates = len(self.indicesStateStarts)
-                
+                    
                 try:
+                    self.path2stateIndices()
+                    numdecodedStates = len(self.indicesStateStarts)
                     currLikelihood = self.getPhiLikelihood(phi, finalTime) / float(numdecodedStates)
                 except FloatingPointError:
                     logger.warning('currLikelihood is underflow')
                     currLikelihood = 0
             
             # final sanity check 
-            if numStates != numdecodedStates:
+            if self.pathRaw[0] != 0:
                 logger.debug(' backtracking NOT completed! stopped because reached totalAllowedDevTime  {}'.format(totalAllowedDevTime))
             
             self.phiPathLikelihood = currLikelihood
@@ -72,23 +70,23 @@ class Path(object):
         phi_= phi[finalTime, numStates -1] 
         return phi_
         
-    def setPatRaw(self, pathRaw):
+    def setPathRaw(self, pathRaw):
         self.pathRaw = pathRaw
     
     def _backtrack(self, hmm,  finalTime):
         '''
-        backtrack Viterbi starting from last state
+        backtrack Viterbi starting from last state. no durations, standard viterbi
         '''
         
         totalTIme, numStates = numpy.shape(hmm.psi)
-        rawPath = numpy.empty( (totalTIme), dtype=int )
+        rawPath = numpy.zeros( (finalTime + 1), dtype=int )
         
         t = finalTime
         # start from last state
         currState = numStates - 1
         # start from state with biggest prob
-#         currState = numpy.argmax(hmm.phi[t,:])
-        rawPath[t] = currState
+#         currState = numpy.argmax(hmm.phi[finalTime,:])
+        rawPath[finalTime] = currState
         
         while(t>0):
             # backpointer
@@ -162,7 +160,7 @@ class Path(object):
    
         return rawPath
     
-    def _path2stateIndices(self):
+    def path2stateIndices(self):
         '''
          indices in pathRaw where a new state starts. 
          the array index is the consequtive state count from sequence  
@@ -170,7 +168,7 @@ class Path(object):
         self.indicesStateStarts = []
         currState = -1
         for i, p in enumerate(self.pathRaw):
-            if not p == currState:
+            if p != currState:
               self.indicesStateStarts.append(i)
               currState = p
               

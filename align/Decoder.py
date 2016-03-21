@@ -246,20 +246,21 @@ class Decoder(object):
         '''
         # indices in pathRaw
         self.path = path
-        self.path._path2stateIndices()
+        self.path.path2stateIndices()
         
         #sanity check
         numStates = len(self.lyricsWithModels.statesNetwork)
         numdecodedStates = len(self.path.indicesStateStarts)
         
-        if numStates != numdecodedStates:
-            logging.warn("detected path has {} states, but stateNetwork transcript has {} states \n \
-            WORKAROUND: adding missing states at beginning of path. This should not happen often ".format( numdecodedStates, numStates ) )
-            # num misssed states in the beginning of the path
-            howManyMissedStates = numStates - numdecodedStates
-            # WORKAROUND: assume missed states start at time 0. Append zeros
-            for i in range(howManyMissedStates):
-                self.path.indicesStateStarts[:0] = [0]
+        if WITH_DURATIONS:
+            if numStates != numdecodedStates:
+                logging.warn("detected path has {} states, but stateNetwork transcript has {} states \n \
+                WORKAROUND: adding missing states at beginning of path. This should not happen often ".format( numdecodedStates, numStates ) )
+                # num misssed states in the beginning of the path
+                howManyMissedStates = numStates - numdecodedStates
+                # WORKAROUND: assume missed states start at time 0. Append zeros
+                for i in range(howManyMissedStates):
+                    self.path.indicesStateStarts[:0] = [0]
         dummy= 0
         if tokenLevel == 'words':
             detectedTokenList = expandlyrics2WordList (self.lyricsWithModels, self.path, dummy, _constructTimeStampsForTokenDetected)

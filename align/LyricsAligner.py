@@ -133,7 +133,7 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
                 evalLevel = tierAliases.phrases
                 correctDuration = 0
                 totalDuration = 1
-                correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
+#                 correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
     
                 totalCorrectDurations += correctDuration
                 totalDurations += totalDuration
@@ -198,7 +198,7 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
     #     read from file result
       
         detectedAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
-        if  os.path.isfile(detectedAlignedfileName):
+        if not os.path.isfile(detectedAlignedfileName):
             
             if  ParametersAlgo.WITH_ORACLE_PHONEMES:
                 lyricsWithModelsOracle = loadSmallAudioFragmentOracle(URIRecordingChunkResynthesizedNoExt, htkParser, lyrics )
@@ -223,7 +223,9 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
             
             ##### note onsets
             if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
-                onsetTimestamps =  parserNoteOnsetsGrTruth(URIrecordingNoExt + '.alignedNotes.txt', currSectionLink.beginTs, currSectionLink.endTs)
+                URIrecOnsets = URIrecordingNoExt + '.alignedNotes.txt'
+
+                onsetTimestamps =  parserNoteOnsetsGrTruth(URIrecOnsets, currSectionLink.beginTs, currSectionLink.endTs)
                 
 #                 #### EXPERIMENT: use phone annotations instead:
 #                 onsetTimestamps = getOnsetsFromPhonemeAnnos(URIRecordingChunkResynthesizedNoExt)

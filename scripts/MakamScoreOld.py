@@ -9,9 +9,8 @@ Created on Mar 3, 2014
 
 import os
 import sys
-import imp
 from align.Phonetizer import Phonetizer
-from align.Decoder import logger
+import logging
 
 # trick to make terminal NOT assume ascii
 reload(sys).setdefaultencoding("utf-8")
@@ -92,7 +91,7 @@ class MakamScoreOld():
         #python indexing starts from zero
         lyrics = self.sectionToLyricsMap[sectionNumber][3]
         if not lyrics.listWords:
-            logger.warn("no lyrics for demanded section {} : {}".format(sectionNumber, self.sectionToLyricsMap[sectionNumber][0] ))
+            logging.warn("no lyrics for demanded section {} : {}".format(sectionNumber, self.sectionToLyricsMap[sectionNumber][0] ))
             return None
         return lyrics 
  
