@@ -4,7 +4,6 @@ Created on Mar 4, 2016
 @author: joro
 '''
 import os
-from docutils.parsers.rst.directives import path
 import subprocess
 
 
