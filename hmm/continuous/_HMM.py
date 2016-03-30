@@ -10,7 +10,6 @@ from numpy.core.numeric import Infinity
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from align.FeatureExtractor import tsToFrameNumber
 from hmm.ParametersAlgo import ParametersAlgo
-from align.Aligner import logger
 from align.Decoder import visualizeMatrix
 from scipy.constants.constants import psi
 
@@ -127,16 +126,15 @@ class _HMM(_ContinuousHMM):
     
     def onsetTsToOnsetFrames(self, onsetTimestamps, lenObservations):
         
-        if onsetTimestamps == None:
-            noteOnsets = numpy.ones((lenObservations,)) # note onsets all activated: e.g. with normal transMatrix
-        else:
+        noteOnsets = numpy.zeros((lenObservations,)) # note onsets all activated: e.g. with normal transMatrix
+        if onsetTimestamps != None:
         
             noteOnsets = numpy.zeros((lenObservations, ))
             
             for onsetTimestamp in onsetTimestamps:
                 frameNum = tsToFrameNumber(onsetTimestamp)
                 if frameNum >= lenObservations or frameNum < 0:
-                    logger.warning("onset has ts {} > totalnumFrames {}".format(onsetTimestamp, lenObservations))
+                    self.logger.warning("onset has ts {} < first frame or > totalnumFrames {}".format(onsetTimestamp, lenObservations))
                     continue
                 onsetTolInFrames = ParametersAlgo.NUMFRAMESPERSECOND * ParametersAlgo.ONSET_TOLERANCE_WINDOW
                 fromFrame = max(0, frameNum - onsetTolInFrames)
@@ -167,7 +165,7 @@ class _HMM(_ContinuousHMM):
                         
                         if self.noteOnsets[t]:
                             sliceA = self.transMatrixOnsets[fromState:j+1,j]
-#                             print "at time {} using matrix for note Onset".format(t)
+                            print "at time {} using matrix for note Onset".format(t)
                         else:
                             sliceA = self.transMatrix[fromState:j+1,j]
                              

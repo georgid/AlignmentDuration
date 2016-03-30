@@ -35,11 +35,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 #     sys.path.append(pathPycompmusic)
 
 
-pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
-if pathEvaluation not in sys.path:
-    sys.path.append(pathEvaluation)
-    
-from AccuracyEvaluator import _evalAccuracy
+
 
 
 import compmusic.extractors
@@ -74,12 +70,15 @@ def createNameChunk(recordingNoExtURI, beginTs, endTs):
     URIRecordingChunkResynthesizedNoExt = recordingNoExtURI + "_" + "{}".format(beginTs) + '_' + "{}".format(endTs)
     return URIRecordingChunkResynthesizedNoExt
 
-def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, sectionAnnosDict=None):
+def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, WITH_SECTION_ANNOTATIONS):
 
         # parameters 
         usePersistentFiles = True
-        
-        mr,  htkParser = loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, sectionAnnosDict, ParametersAlgo.WITH_SECTION_ANNOTATIONS)
+        if WITH_SECTION_ANNOTATIONS and sectionLinksDict == None:
+            
+            sys.exit("specified to work with section annotation for file {} , but it is not provided.  ".format(audioFileURI))
+
+        mr,  htkParser = loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, WITH_SECTION_ANNOTATIONS)
         tokenLevelAlignedSuffix = determineSuffix(WITH_DURATIONS, ParametersAlgo.WITH_ORACLE_PHONEMES, ParametersAlgo.WITH_ORACLE_ONSETS, DETECTION_TOKEN_LEVEL)
     
     
@@ -90,7 +89,7 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
     
         recordingNoExtURI = os.path.splitext(audioFileURI)[0]    
         
-        if not ParametersAlgo.WITH_SECTION_ANNOTATIONS: 
+        if not WITH_SECTION_ANNOTATIONS: 
         
             for  currSectionLink in mr.sectionLinks :
                 if currSectionLink.melodicStructure.startswith('ARANAGME'):
@@ -130,9 +129,15 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
                 detectedTokenList, detectedPath, maxPhiScore = alignLyricsSection( lyrics, extractedPitchList,  ParametersAlgo.POLYPHONIC, [],  usePersistentFiles, tokenLevelAlignedSuffix, recordingNoExtURI, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser)
                 
 #                 break
-                evalLevel = tierAliases.phrases
                 correctDuration = 0
                 totalDuration = 1
+                
+#                 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
+#                 if pathEvaluation not in sys.path:
+#                     sys.path.append(pathEvaluation)
+#     
+#                 from AccuracyEvaluator import _evalAccuracy
+#                 evalLevel = tierAliases.words
 #                 correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
     
                 totalCorrectDurations += correctDuration
@@ -146,7 +151,7 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
             return totalDetectedTokenList, sectionLinksDict
         
 
-def loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, sectionAnnosDict, withAnnotations):
+def loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI,  withAnnotations):
     '''
     refactored method
     '''
@@ -155,7 +160,7 @@ def loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audi
 
     
     makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataDict)
-    mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict, withAnnotations)
+    mr = MakamRecording(makamScore, sectionLinksDict, withAnnotations)
     
     return mr, htkParser   
     
@@ -358,7 +363,8 @@ def determineSuffix(withDuration, withOracle, withOracleOnsets, decodedTokenLeve
     if withDuration: tokenAlignedSuffix += 'Duration'
     if withOracle == 1: tokenAlignedSuffix += 'OraclePhonemes'
     elif withOracle == -1: tokenAlignedSuffix += 'NoPhonemes'
-    if withOracleOnsets: tokenAlignedSuffix += 'OracleOnsets'
+    if withOracleOnsets == 1: tokenAlignedSuffix += 'OracleOnsets'
+    elif withOracleOnsets == 0: tokenAlignedSuffix += 'Onsets'
     
     tokenAlignedSuffix += 'Aligned' 
     return tokenAlignedSuffix

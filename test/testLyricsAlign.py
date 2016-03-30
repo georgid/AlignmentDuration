@@ -6,47 +6,47 @@ Created on Jan 13, 2016
 import os
 import sys
 import json
-from align.Decoder import Decoder
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
-from hmm.ParametersAlgo import ParametersAlgo
 
 
 from align.MakamRecording import MakamRecording, parseSectionLinks
 from align.ScoreSection import ScoreSection
 from align.MakamScore import loadMakamScore2
 
-from align.LyricsAligner import alignRecording, extendSectionLinksSelectedSections
+from align.LyricsAligner import alignRecording, extendSectionLinksSelectedSections,\
+    stereoToMono
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 
-# test with section links
-symbtrtxtURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.txt')
-sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.sectionsMetadata.json' )
-sectionLinksSourceURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.sectionLinks.json' )
-audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.wav')
 
-# test with section anno and acapella
-symbtrtxtURI = '/Users/joro/Downloads/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.txt'
-sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.sectionsMetadata.json' )
-sectionAnnosSourceURI = os.path.join( currDir, '../example/567b6a3c-0f08-42f8-b844-e9affdc9d215.json' )
-audioFileURI =  os.path.join( currDir, '/Users/joro/Documents/Phd/UPF/ISTANBUL/goekhan/02_Kimseye.wav')
-
-
-with open(sectionLinksSourceURI) as f:
-        sectionLinksDict = json.load(f)
-with open(sectionMetadataURI) as f2:
-        sectionMetadataDict = json.load(f2)
-with open(sectionAnnosSourceURI) as f3:
-        sectionAnnosDict = json.load(f3)
-
+WITH_SECTION_ANNOTATIONS = 1
         
 def testLyricsAlign():
     
+    # test with section links
+    symbtrtxtURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.txt')
+    sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.sectionsMetadata.json' )
+    sectionLinksSourceURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.sectionLinks.json' )
+    audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.wav')
+    
+    # test with section anno and acapella
+    symbtrtxtURI = os.path.join( currDir,'../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.txt')
+    sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.sectionsMetadata.json' )
+    sectionAnnosSourceURI = os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/567b6a3c-0f08-42f8-b844-e9affdc9d215.json' )
+    audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/02_Kimseye.wav')
+    
+    
+    with open(sectionLinksSourceURI) as f:
+            sectionLinksDict = json.load(f)
+    with open(sectionMetadataURI) as f2:
+            sectionMetadataDict = json.load(f2)
+
+
     outputDir =  os.path.join( currDir, '../example/output/' )
     
-
+    
     
     ### comment for Juanjos pitch
 #     extractedPitch = os.path.splitext(audioFileURI)[0] + '.pitch'
@@ -54,14 +54,16 @@ def testLyricsAlign():
 #         extractedPitchList = json.load(f)
     extractedPitchList = None
     
-    with open(sectionAnnosSourceURI) as f:
-        sectionLinksDict = json.load(f)
+    if WITH_SECTION_ANNOTATIONS:
+        
+        with open(sectionAnnosSourceURI) as f:
+            sectionLinksDict = json.load(f)
     
     
-    
+    audioFileURI = stereoToMono(audioFileURI)               
 
         
-    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, sectionAnnosDict)
+    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, WITH_SECTION_ANNOTATIONS)
       
     ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
     ret['alignedLyricsSyllables'] = totalDetectedTokenList

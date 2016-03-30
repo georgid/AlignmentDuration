@@ -243,7 +243,7 @@ class _ContinuousHMM(_BaseHMM):
                  
         self._addNonPossibleObs(inLogDomain=True)
         self._normalizeBByMaxLog()
-#         cutOffHistogram(self.B_map, ParametersAlgo.CUTOFF_BIN_OBS_PROBS)
+        cutOffHistogram(self.B_map, ParametersAlgo.CUTOFF_BIN_OBS_PROBS)
 
 
          
@@ -523,18 +523,22 @@ def logsumexp(arr, axis=0):
 
 def cutOffHistogram( matrix_, cutOffIndex):
         '''
-        assigns values in matrix_ below a threshold to the treshold
+        assigns values in matrix_ below a threshold to be equal to MIN_PROB
         '''
         
         lenObs = matrix_.shape[1]
         for j in range(lenObs):
             # n-counts, edges - similarity values
-            counts, edges = numpy.histogram(matrix_[:,j])
+#             counts, edges = numpy.histogram( numpy.e**(matrix_[:,j]) , bins = 5000) 
+            counts, edges = numpy.histogram(matrix_[:,j],  bins = 100)
             #% cut after first cuttOffIndex peaks
             cutOffVal = edges[-cutOffIndex]
+            cutOffVal = edges[cutOffIndex]
             
+#             indices = numpy.where(numpy.e**(matrix_[:,j]) < cutOffVal)
             indices = numpy.where(matrix_[:,j] < cutOffVal)
-            matrix_[indices, j] = MINIMAL_PROB
+
+            matrix_[indices, j] = numpy.log(MINIMAL_PROB)
      
     
 if __name__=='__main__':

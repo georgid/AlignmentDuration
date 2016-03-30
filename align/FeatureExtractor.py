@@ -10,10 +10,8 @@ import logging
 
 import htkmfc
 import subprocess
-from Decoder import logger
 import glob
 import essentia.standard
-from django.contrib.gis.shortcuts import numpy
 import math
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
@@ -44,16 +42,6 @@ from hmm.ParametersAlgo import ParametersAlgo
 from csv import reader
 
 
-def loadNoteOnsets(URIRecordingChunkResynthesizedNoExt, extractedPitchList):
-    '''
-    load note onsets using note detection algorithm
-    '''
-    #TODO
-    # STUB:
-    noteOnsets = numpy.zeros(len(extractedPitchList))
-    noteOnsets[1]= 1
-    noteOnsets[4]= 1 
-    return noteOnsets
     
 
 def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthesizedNoExt,  withSynthesis, sectionLink): 
@@ -68,13 +56,12 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     
     URIRecordingChunkResynthesized = URIRecordingChunkResynthesizedNoExt + '.wav'
     
-    logger.setLevel(logging.INFO)
-    logger.info("working on sectionLink: {}".format(URIRecordingChunkResynthesized))
+    logging.info("working on sectionLink: {}".format(URIRecordingChunkResynthesized))
     
     # resynthesize audio chunk:
     if withSynthesis: 
         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
-            logger.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
+            logging.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
             hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
             resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     else:
@@ -146,7 +133,7 @@ def _extractMFCCs( URIRecordingChunk):
         HCopyCommand = [PATH_TO_HCOPY, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FILES + 'wav_config_singing', URIRecordingChunk, mfcFileName]
 
 #         if not os.path.isfile(mfcFileName):
-        logger.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
+        logging.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
         pipe= subprocess.Popen(HCopyCommand)
         pipe.wait()
         return mfcFileName
@@ -156,6 +143,12 @@ def tsToFrameNumber(ts):
     get which frame is for a given ts, according to htk's feature extraction  
     '''
     return   int(math.floor( (ts - ParametersAlgo.WINDOW_SIZE/2.0) * ParametersAlgo.NUMFRAMESPERSECOND))
+ 
+def frameNumberToTs(frameNum):
+    '''
+    get which ts is for a given frame, according to htk's feature extraction  
+    '''
+    return float(frameNum) /    float(ParametersAlgo.NUMFRAMESPERSECOND) + ParametersAlgo.WINDOW_SIZE/2.0
     
 
         

@@ -24,7 +24,7 @@ import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= 0
+WITH_DURATIONS= 1
 
 
 
@@ -114,10 +114,10 @@ class Decoder(object):
 
 
         if ParametersAlgo.VISUALIZE:
-#             ax = visualizeBMap(self.hmmNetwork.B_map)        
+            ax = visualizeBMap(self.hmmNetwork.B_map)        
 #             visualizePath(ax,self.path.pathRaw, self.hmmNetwork.B_map)
 
-            ax = visualizeMatrix(self.hmmNetwork.phi, 'phi' )
+#             ax = visualizeMatrix(self.hmmNetwork.phi, 'phi' )
 #             ax = visualizeMatrix(self.hmmNetwork.psi, 'psi' )
             visualizePath(ax,self.path.pathRaw, self.hmmNetwork.B_map)
 

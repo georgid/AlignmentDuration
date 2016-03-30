@@ -12,6 +12,7 @@ import os
 import logging
 from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid
 from hmm.ParametersAlgo import ParametersAlgo
+from align.FeatureExtractor import frameNumberToTs
 
 
 
@@ -148,6 +149,8 @@ def _constructTimeStampsForToken(  text, startNoteNumber, countFirstState, count
         
             
     # timestamp:
+        
+        
         startTs = float(currWordBeginFrame) / NUM_FRAMES_PERSECOND
         endTs = float(currWordEndFrame) / NUM_FRAMES_PERSECOND
         
@@ -170,9 +173,9 @@ def _constructTimeStampsForTokenDetected(  text, startNoteNumber, countFirstStat
     #             # debug:
     #             print self.pathRaw[currWordBeginFrame]
     # timestamp:
-        startTs = float(currWordBeginFrame) / NUM_FRAMES_PERSECOND
-        endTs = float(currWordEndFrame) / NUM_FRAMES_PERSECOND
-        
+
+        startTs = frameNumberToTs(currWordBeginFrame)
+        endTs = frameNumberToTs(currWordEndFrame)
         detectedWord = [startTs, endTs, text, startNoteNumber]
 #         print detectedWord
         

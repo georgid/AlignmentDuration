@@ -43,12 +43,12 @@ https://github.com/MTG/HMM.git
 
 -------------------------------------------------------
 
-implementational logic is in doitOneChunk.alignOneChunk().
-Both doitOneRecording and  doitAllRecordings are calling it behind the scenes
+
+USAGE :
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/test/testLyricsAlign.py
 
 
-USAGE:
-
+all from here is DEPRACATED: 
 EXAMPLE: doitOneChunk()
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/doitOneChunk.py /Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/ /Users/joro/Documents/Phd/UPF/adaptation_data_soloVoice/ISTANBUL/idil/05_Semahat_Ozdenses_-_Bir_Ihtimal_Daha_Var_0_zemin_from_69_5205_to_84_2 True False 0.97 False 2
 

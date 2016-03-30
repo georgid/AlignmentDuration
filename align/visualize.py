@@ -17,13 +17,13 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 if not pathEvaluation in sys.path:
     sys.path.append(pathEvaluation)
 
+# 
+# from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat, addAlignmentResultToTextGridFIle, \
+#   _alignmentResult2TextGrid
 
-from PraatVisualiser import addAlignmentResultToTextGrid, openTextGridInPraat, addAlignmentResultToTextGridFIle, \
-  _alignmentResult2TextGrid
+# from tab2PraatAndOpenWithPRaat import tab2PraatAndOpenWithPRaat 
 
-from tab2PraatAndOpenWithPRaat import tab2PraatAndOpenWithPRaat 
-
-from TextGrid_Parsing import tier_names
+# from TextGrid_Parsing import tier_names
 
 
 import matplotlib.pylab as plt
@@ -79,44 +79,6 @@ def visualizePath( ax, path, B_map):
 
 
 
-def visualiseInPraat(URIrecordingNoExt,  withDuration, detectedFileName, detectedWordList = [], grTruthDurationWordList=[]):
-    ### OPTIONAL############# : PRAAT
-    pathToAudioFile = URIrecordingNoExt + '.wav'
-    URIGrTruth = URIrecordingNoExt + ANNOTATION_EXT
-    
-    AlignedSuffix, phonemesAlignedSuffix = determineSuffix
-    
-# gr truth
-# TODO: what to do with detection.
-#     if grTruthDurationWordList != None and grTruthDurationWordList != []:
-#         grTruthDurationfileExtension = '.grTruthDuration'
-#         
-#         
-#         tokenList2TextGrid(tokenAlignedfileName, URIGrTruth)
-
-# detected
-    if detectedWordList != None and detectedWordList != []:
-        if not withDuration and os.path.isfile(detectedWordList):
-            alignedResultPath, fileNameWordAnno = addAlignmentResultToTextGridFIle(detectedWordList, URIGrTruth, wordsAlignedSuffix, phonemesAlignedSuffix)
-        else:
-            tokenList2TextGrid(detectedFileName, URIGrTruth)
-         
-        # TODO: add phone-level for detected
-        
-
-# open final TextGrid in Praat 
-#     openTextGridInPraat(alignedResultPath, fileNameWordAnno, pathToAudioFile)
-
-
-def tokenList2TextGrid(tokenAlignedfileName, URIGrTruthTextGrid):
-    
-
-     
-    if os.path.isfile(URIGrTruthTextGrid):
-         alignedResultPath, fileNameWordAnno = _alignmentResult2TextGrid(URIGrTruthTextGrid, tokenAlignedfileName) 
-    else:
-#  if no Textgrid groundTruthAnnotation present : open with Praat
-        tab2PraatAndOpenWithPRaat(['dummy', tokenAlignedfileName] )
     
 
 def plotStuff():

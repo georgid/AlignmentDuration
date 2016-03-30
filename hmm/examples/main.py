@@ -30,7 +30,7 @@ projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__
     
 from align.LyricsWithModels import LyricsWithModels
 from align.Decoder import Decoder
-from align.FeatureExtractor import loadMFCCs, loadNoteOnsets
+from align.FeatureExtractor import loadMFCCs
 
 modelDIR = projDir + '/model/'
 HMM_LIST_URI = modelDIR + '/monophones0'

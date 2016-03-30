@@ -15,7 +15,7 @@ class ParametersAlgo(object):
     # unit: num frames
     NUMFRAMESPERSECOND = 100
     # same as WINDOWSIZE in wavconfig singing. unit:  seconds. TOOD: read from there automatically
-    WINDOW_SIZE = 0.25
+    WINDOW_SIZE = 0.025
     
     # in frames
     CONSONANT_DURATION = NUMFRAMESPERSECOND * 0.1;
@@ -29,23 +29,22 @@ class ParametersAlgo(object):
     # no feature vectors at all. all observ, probs. set to 1
     WITH_ORACLE_PHONEMES = -1
     WITH_ORACLE_PHONEMES = 0
+
     
-    WITH_SECTION_ANNOTATIONS = 1
-    
-    POLYPHONIC = 0
+    POLYPHONIC = 1
     
     WITH_ORACLE_ONSETS = 1
     ### no onsets at all. 
-#     WITH_ORACLE_ONSETS = -1
+    WITH_ORACLE_ONSETS = -1
     
     ONSET_TOLERANCE_WINDOW = 0.02 # seconds. to work implement decoding with one onset only
-    ONSET_TOLERANCE_WINDOW = 0 # seconds
+#     ONSET_TOLERANCE_WINDOW = 0 # seconds
 
-    
-    CUTOFF_BIN_OBS_PROBS = 10
+    # in _ContinousHMM.b_map cut probabilities
+    CUTOFF_BIN_OBS_PROBS = 30
     
     
     
     #####
     LOGGING_LEVEL = logging.DEBUG
-    VISUALIZE = 1
+    VISUALIZE = 0

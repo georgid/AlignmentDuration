@@ -15,7 +15,7 @@ class MakamRecording:
     '''
 
 
-    def __init__(self, makamScore, sectionLinksDict, sectionAnnosDict, withAnnotations):
+    def __init__(self, makamScore, sectionLinksDict, withAnnotations):
         '''
         Constructor
         '''
@@ -24,8 +24,8 @@ class MakamRecording:
         if not withAnnotations:
             sectionLinks = parseSectionLinks(sectionLinksDict)
             self._loadsectionTimeStampsLinksNew(sectionLinks)
-        else:
-            self._loadsectionTimeStampsAnno(sectionAnnosDict)
+        else: # sectionLinksDict is alias for sectionAnnosDict
+            self._loadsectionTimeStampsAnno(sectionLinksDict)
         
     
     def _loadsectionTimeStampsLinksNew(self, sectionLinksTxt):
@@ -48,9 +48,10 @@ class MakamRecording:
  
     def _loadsectionTimeStampsAnno(self, sectionAnnosDict):
             '''
-            loads annotations in the form of SectionLinks from file .sectionAnno
+            loads annotations in the same format as SectionLinks from file .sectionAnno
             '''
             
+#################### from file ####################            
 #             if not os.path.isfile(URISectionsAnnotationsFile):
 #                     sys.exit("no file {}".format(URISectionsAnnotationsFile))
 #             
@@ -68,7 +69,8 @@ class MakamRecording:
 #     
 #     
 #             elif ext == '.json':
-                    
+
+################ from dict as json directly                    
             if 'section_annotations' not in sectionAnnosDict:
                 sys.exit('annotation should have key section_annotations')
                 
