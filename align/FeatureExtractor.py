@@ -113,14 +113,14 @@ def _extractPredominantPitch(URI_recording_noExt):
     
     ####### json serialized array format
 
-    from compmusic.extractors.makam import pitch
-    extractor = pitch.PitchExtractMakam()
-    results = extractor.run(URI_recording_noExt + '.wav')
-    extractedPitchList = results['pitch']
+#     from compmusic.extractors.makam import pitch
+#     extractor = pitch.PitchExtractMakam()
+#     results = extractor.run(URI_recording_noExt + '.wav')
+#     extractedPitchList = results['pitch']
     
-#     melodiaInput = URI_recording_noExt + '.pitch'
-#     with open(melodiaInput) as f:
-#         extractedPitchList = json.load(f)
+    melodiaInput = URI_recording_noExt + '.pitch'
+    with open(melodiaInput) as f:
+        extractedPitchList = json.load(f)
     
     
     return extractedPitchList
