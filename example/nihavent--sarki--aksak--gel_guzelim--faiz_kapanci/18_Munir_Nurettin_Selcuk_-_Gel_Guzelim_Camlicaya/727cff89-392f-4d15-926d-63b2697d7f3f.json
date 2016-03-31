@@ -1,0 +1,131 @@
+{
+    "instrumentation": "solo singing", 
+    "work_relations": [
+        {
+            "mbid": "9aaf5c0b-4642-40fd-97ba-c861265872ce", 
+            "title": "Gel G\u00fczelim \u00c7aml\u0131ca'ya"
+        }
+    ], 
+    "symbTr": "nihavent--sarki--aksak--gel_guzelim--faiz_kapanci", 
+    "title": "Gel G\u00fczelim \u00c7aml\u0131ca'ya", 
+    "section_annotations": [
+        {
+            "time_unit": "sec", 
+            "name": "Aranagme", 
+            "melodicStructure": "ARANAGME_1",
+            "lyricStructure": "INSTRUMENTAL", 
+            "time": [
+                0.420003, 
+                20.867514
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Zemin", 
+            "melodicStructure": "B1",
+            "lyricStructure": "B1", 
+            "time": [
+                20.867514, 
+                31.168639
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Zemin", 
+            "melodicStructure": "B2",
+            "lyricStructure": "B1", 
+            "time": [
+                31.168639, 
+                41.226604
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Nakarat", 
+            "melodicStructure": "C1", 
+            "lyricStructure": "C1", 
+            "time": [
+                41.226604, 
+                51.162989
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Nakarat2", 
+            "melodicStructure": "D1", 
+            "lyricStructure": "C1", 
+            "time": [
+                51.162989, 
+                61.53043
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Meyan", 
+            "melodicStructure": "E1", 
+            "lyricStructure": "D1",
+            "time": [
+                61.53043, 
+                71.389446
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Meyan2", 
+            "melodicStructure": "F1", 
+            "lyricStructure": "D1",
+            "time": [
+                71.389446, 
+                82.591367
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Nakarat", 
+            "melodicStructure": "C2", 
+            "lyricStructure": "E1",
+            "time": [
+                82.591367, 
+                92.798544
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Nakarat2", 
+            "melodicStructure": "D2", 
+            "lyricStructure": "E1",
+            "time": [
+                92.798544, 
+                101.419656
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Gazel", 
+            "time": [
+                101.419656, 
+                173.57174
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Nakarat", 
+            "melodicStructure": "C2", 
+            "lyricStructure": "E1",
+            "time": [
+                173.57174, 
+                184.591291
+            ]
+        }, 
+        {
+            "time_unit": "sec", 
+            "name": "Nakarat2", 
+            "melodicStructure": "D2", 
+            "lyricStructure": "E1",
+            "time": [
+                184.591291, 
+                195.478209
+            ]
+        }
+    ]
+}

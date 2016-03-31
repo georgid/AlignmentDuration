@@ -13,6 +13,7 @@ import subprocess
 import glob
 import essentia.standard
 import math
+import json
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
 import tempfile
@@ -49,7 +50,7 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
         
-#     extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
+    extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
     
 
     URI_recording = URI_recording_noExt + '.wav'
@@ -96,26 +97,26 @@ def _extractPredominantPitch(URI_recording_noExt):
 #     extractedPitchList = readListOfListTextFile_gen(melodiaInput)
     
     ####### juanjos melody
-    dirName = os.path.dirname(os.path.realpath(URI_recording_noExt + '.wav'))
-    os.chdir(dirName)
-
-    pathToPitch = os.path.join(dirName, glob.glob("*.pitch")[0])
-    f = open(pathToPitch) 
-    extractedPitchList = []
-    for line in reader(f):
-        currLine = []
-        for e in line:
-            currLine.append(float(e))
-        extractedPitchList.append(currLine)
+#     dirName = os.path.dirname(os.path.realpath(URI_recording_noExt + '.wav'))
+#     os.chdir(dirName)
+# 
+#     pathToPitch = os.path.join(dirName, glob.glob("*.pitch")[0])
+#     f = open(pathToPitch) 
+#     extractedPitchList = []
+#     for line in reader(f):
+#         currLine = []
+#         for e in line:
+#             currLine.append(float(e))
+#         extractedPitchList.append(currLine)
         
 
     
     ####### json serialized array format
 
-#     from compmusic.extractors.makam import pitch
-#     extractor = pitch.PitchExtractMakam()
-#     results = extractor.run(URI_recording_noExt + '.wav')
-#     extractedPitchList = json.loads(results['pitch'])
+    from compmusic.extractors.makam import pitch
+    extractor = pitch.PitchExtractMakam()
+    results = extractor.run(URI_recording_noExt + '.wav')
+    extractedPitchList = results['pitch']
     
 #     melodiaInput = URI_recording_noExt + '.pitch'
 #     with open(melodiaInput) as f:
