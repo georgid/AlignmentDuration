@@ -12,9 +12,7 @@ Created on Mar 3, 2014
 
 import os
 import sys
-import imp
 from Phonetizer import Phonetizer
-from Decoder import logger
 from SymbTrParser2 import SymbTrParser2
 from align.SectionLink import SectionAnno
 
@@ -25,7 +23,6 @@ reload(sys).setdefaultencoding("utf-8")
 from utilsLyrics.Utilz import writeListToTextFile, findFileByExtensions
 import codecs
 
-import glob
 from SymbTrParser import SymbTrParser
 # from utils.Utils import writeListToTextFile
 

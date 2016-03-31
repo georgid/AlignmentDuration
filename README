@@ -45,6 +45,9 @@ https://github.com/MTG/HMM.git
 
 
 USAGE :
+pycompmusic/compmusic/extractors/makam/lyricsalign.py
+
+to test without pycommusic: 
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/test/testLyricsAlign.py
 
 

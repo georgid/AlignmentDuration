@@ -1,0 +1,10 @@
+cd test2/pycompmusic
+git pull
+~/env/bin/python setup.py install
+
+cd AlignmentDuration
+git pull
+~/env/bin/python setup.py install
+
+
+~/env/bin/python ~/test2/pycompmusic/compmusic/extractors/makam/lyricsalign.py
