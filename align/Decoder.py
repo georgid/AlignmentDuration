@@ -49,7 +49,7 @@ logger.setLevel(loggingLevel)
 
 # level into which to segments decoded result stateNetwork
 DETECTION_TOKEN_LEVEL= 'syllables'
-DETECTION_TOKEN_LEVEL= 'words'
+# DETECTION_TOKEN_LEVEL= 'words'
 
 # in backtracking allow to start this much from end back
 BACKTRACK_MARGIN_PERCENT= 0.2

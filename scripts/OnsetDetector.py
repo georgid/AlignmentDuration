@@ -36,7 +36,10 @@ def extractPitch(audioFileURI):
     writeCsv(outFileURI, extractedPitchList)
 
 def parserNoteOnsetsGrTruth(groundTruthNotesURI, startTime, endTime):
-
+    
+    '''
+    from annotated nots for score-following 
+    '''
     onsetTimes = []
     from csv import reader
     with open(groundTruthNotesURI) as f:

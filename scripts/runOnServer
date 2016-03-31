@@ -7,4 +7,9 @@ git pull
 ~/env/bin/python setup.py install
 
 
-~/env/bin/python ~/test2/pycompmusic/compmusic/extractors/makam/lyricsalign.py
+
+locally:
+/homedtic/georgid//env/bin/python /homedtic/georgid/AlignmentDuration/test/testLyricsAlign.py
+
+on dunya server:
+/homedtic/georgid//env/bin/python/env/bin/python /homedtic/georgid//env/bin/python/test2/pycompmusic/compmusic/extractors/makam/lyricsalign.py

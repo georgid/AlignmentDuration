@@ -16,8 +16,10 @@
 # this program.  If not, see http://www.gnu.org/licenses/
 
 # Lyrics-to-audio alignment with syllable duration modeling
-#
-#
+""" please cite:
+Dzhambazov, G., & Serra X. (2015).  Modeling of Phoneme Durations for Alignment between Polyphonic Audio and Lyrics.
+Sound and Music Computing Conference 2015.
+"""
 
 import os
 import sys
