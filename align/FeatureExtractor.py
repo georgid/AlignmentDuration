@@ -52,7 +52,7 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
         
-    extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
+   # extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
     
 
     URI_recording = URI_recording_noExt + '.wav'

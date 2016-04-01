@@ -4,9 +4,7 @@ Created on Oct 31, 2014
 @author: joro
 '''
 import numpy
-import os
 import sys
-import math
 
 from numpy.core.numeric import Infinity
 
@@ -18,6 +16,7 @@ from hmm.continuous.ExpDurationPdf import ExpDurationPdf
 import essentia.standard
 import logging
 from hmm.continuous._HMM import _HMM
+import tempfile
 
 # to replace 0: avoid log(0) = -inf. -Inf + p(d) makes useless the effect of  p(d)
 MINIMAL_PROB = sys.float_info.min
@@ -26,9 +25,7 @@ MINIMAL_PROB = sys.float_info.min
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
 
-# put intermediate output in examples dir
-PATH_LOGS= os.path.dirname(os.path.realpath(sys.argv[0]))
-# print 'PATH_LOGS is '  + PATH_LOGS
+PATH_LOGS = tempfile.mkdtemp()
 
 
 
