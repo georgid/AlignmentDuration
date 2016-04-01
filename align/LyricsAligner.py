@@ -76,6 +76,8 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
 
         # parameters 
         usePersistentFiles = True
+        if extractedPitchList == None:
+            sys.exit("no pitch series provided for audio {}".format(audioFileURI))
         if WITH_SECTION_ANNOTATIONS and sectionLinksDict == None:
             
             sys.exit("specified to work with section annotation for file {} , but it is not provided.  ".format(audioFileURI))

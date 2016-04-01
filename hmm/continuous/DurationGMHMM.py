@@ -9,6 +9,7 @@ import numpy
 from _DurationHMM import _DurationHMM
 
 from sklearn.mixture import GMM as GMM_
+import sys
 # GMM class from
 # http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GMM.html
 
@@ -63,8 +64,10 @@ class DurationGMHMM(_DurationHMM):
         uses sciKit learn's GMM class
         '''
 #         old_settings = numpy.seterr(under='warn')
-
-        (logprob,responsibilities) = self.GMMs[j].score_samples(observations)
+        try:
+            (logprob,responsibilities) = self.GMMs[j].score_samples(observations)
+        except FloatingPointError,e:
+            sys.exit( "{} \n make sure you do git clone https://github.com/georgid/scikit-learn  \n python setup.py install \n see README".format(e) )
         return logprob  
         
         
