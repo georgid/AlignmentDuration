@@ -24,7 +24,7 @@ import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= 1
+WITH_DURATIONS= 0
 
 
 
@@ -49,7 +49,7 @@ logger.setLevel(loggingLevel)
 
 # level into which to segments decoded result stateNetwork
 DETECTION_TOKEN_LEVEL= 'syllables'
-# DETECTION_TOKEN_LEVEL= 'words'
+DETECTION_TOKEN_LEVEL= 'words'
 
 # in backtracking allow to start this much from end back
 BACKTRACK_MARGIN_PERCENT= 0.2
@@ -172,23 +172,23 @@ class Decoder(object):
             stateWithDur = lyricsWithModels.statesNetwork[idxCurrState]
             
             
-            if (idxCurrState+2) < transMAtrix.shape[1]:
+            if (idxCurrState+2) < transMAtrix.shape[1]: # MAIN CASE
            
                     nextState = lyricsWithModels.statesNetwork[idxCurrState+1]
                     
                     if atNoteOnsets:
                         forwProb1, forwProb2 = defineForwardTransProbs(lyricsWithModels.statesNetwork, idxCurrState)
-                    else:
+                    else: # going to next phoneme=sp or skipping it is equaly likely 
                         
                         
                         if  nextState.phoneme.ID == 'sp':
                             forwProb1 = 1 - stateWithDur.waitProb / 2.0
                             forwProb2 = 1 - stateWithDur.waitProb / 2.0
-                        else:
+                        else: # no note onset and no sp: use transition trained from model
                             forwProb1 = 1 - stateWithDur.waitProb 
                             forwProb2 = 0
                    
-                    if forwProb1 + forwProb2 >= 1: # waitProb = 1-forw-forw2
+                    while (forwProb1 + forwProb2 >= 1): # waitProb = 1-forw-forw2
                        forwProb1 /= 2.0
                        forwProb2 /= 2.0
                     transMAtrix[idxCurrState, idxCurrState] = 1 - forwProb1 - forwProb2 # waitProb
@@ -196,7 +196,7 @@ class Decoder(object):
                     transMAtrix[idxCurrState, idxCurrState + 2] = forwProb2  
                     
                     
-            elif (idxCurrState+1) < transMAtrix.shape[1]: # two last states
+            elif (idxCurrState+1) < transMAtrix.shape[1]: # SPECIAL CASE: two last states
                        
                 if atNoteOnsets:
                     # forwProb = 0
@@ -208,7 +208,7 @@ class Decoder(object):
                 transMAtrix[idxCurrState, idxCurrState] = 1 - forwProb1
                 transMAtrix[idxCurrState, idxCurrState+1] = forwProb1
             
-            else: # at very last state
+            else: #  SPECIAL CASE: at very last state
                 
                 transMAtrix[idxCurrState, idxCurrState] = stateWithDur.waitProb # waitProb
             
@@ -324,25 +324,27 @@ def defineForwardTransProbs(statesNetwork, idxCurrState):
     currPhoneme = currStateWithDur.phoneme
     nextPhoneme = nextStateWithDur.phoneme
     
-    if nextPhoneme.ID == 'sp' and (idxCurrState+2) < len(statesNetwork):
-        forwProb1 = getForwProb(currStateWithDur, nextStateWithDur )
+    # normally should go to only next state as in forced alignment
+    forwProb1 = getForwProb(currStateWithDur, nextStateWithDur )
+    forwProb2 = 0
+    
+    if nextPhoneme.ID == 'sp' and (idxCurrState+2) < len(statesNetwork):   #### add skipping forward trans prob
         
+        ### skipping sp to next state
         nextNextStateWithDur = statesNetwork[idxCurrState+2]
-        currPhoneme.setIsLastInSyll(1)
+        currPhoneme.setIsLastInSyll(1) # 
         forwProb2 = getForwProb(currStateWithDur, nextNextStateWithDur )
         currPhoneme.setIsLastInSyll(0)
-        return forwProb1, forwProb2
             
     
-    else: # everything  different from configuration: sp-state followed by other state
-        forwProb1 = getForwProb(currStateWithDur, nextStateWithDur )
-        return forwProb1, 0
+    
+    return forwProb1, forwProb2
         
  
         
 
 
-def getForwProb(currStateWithDur, followingStateWithDur):
+def getForwProb(currStateWithDur, followingStateWithDur):# TODO add t
     
     currPhoneme = currStateWithDur.phoneme
     followingPhoneme = followingStateWithDur.phoneme

@@ -31,9 +31,9 @@ class ParametersAlgo(object):
     WITH_ORACLE_PHONEMES = 0
 
     
-    POLYPHONIC = 1
+    POLYPHONIC = 0
     
-    WITH_ORACLE_ONSETS = 1
+    WITH_ORACLE_ONSETS = 0
     ### no onsets at all. 
     WITH_ORACLE_ONSETS = -1
     

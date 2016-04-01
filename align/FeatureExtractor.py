@@ -50,7 +50,6 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     for now lead extracted with HTK, read in matlab and seriqlized to txt file
     '''
         
-    extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
     
 
     URI_recording = URI_recording_noExt + '.wav'
@@ -63,6 +62,9 @@ def loadMFCCs(URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthe
     if withSynthesis: 
         if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
             logging.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
+            
+            if extractedPitchList == None:
+                extractedPitchList = _extractPredominantPitch(URI_recording_noExt)
             hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
             resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
     else:

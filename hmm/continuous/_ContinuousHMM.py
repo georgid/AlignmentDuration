@@ -189,7 +189,7 @@ class _ContinuousHMM(_BaseHMM):
     
     def _addNonPossibleObs(self, inLogDomain=False):
         '''
-        not possible to go there becasue of alignment. do before log numpy
+        not possible to go in bottom left corner, because of forced alignment. do before log numpy
         '''
         upper = np.triu(self.B_map)
         indicesZero = np.where(upper==0)

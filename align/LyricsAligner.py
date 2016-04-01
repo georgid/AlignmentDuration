@@ -134,13 +134,13 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
                 correctDuration = 0
                 totalDuration = 1
                 
-#                 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
-#                 if pathEvaluation not in sys.path:
-#                     sys.path.append(pathEvaluation)
-#     
-#                 from AccuracyEvaluator import _evalAccuracy
-#                 evalLevel = tierAliases.words
-#                 correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
+                pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
+                if pathEvaluation not in sys.path:
+                    sys.path.append(pathEvaluation)
+     
+                from AccuracyEvaluator import _evalAccuracy
+                evalLevel = tierAliases.words
+                correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
     
                 totalCorrectDurations += correctDuration
                 totalDurations += totalDuration
