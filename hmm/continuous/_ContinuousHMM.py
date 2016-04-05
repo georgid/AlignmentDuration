@@ -11,7 +11,7 @@ import sys
 import logging
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from hmm.ParametersAlgo import ParametersAlgo
-from align.FeatureExtractor import tsToFrameNumber
+from onsets.OnsetDetector import tsToFrameNumber
 # from sklearn.utils.extmath import logsumexp
 
 parentDir = os.path.abspath(  os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir ) )
@@ -56,7 +56,7 @@ class _ContinuousHMM(_BaseHMM):
     - verbose      a flag for printing progress information, mainly when learning
     '''
 
-    def __init__(self,n,m,d=1,transMatrix=None, transMatrixOnsets=None, means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double,verbose=False):
+    def __init__(self,n,m,d=1,transMatrices=None, means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double,verbose=False):
         '''
         Construct a new Continuous HMM.
         In order to initialize the model with custom parameters,
@@ -68,8 +68,7 @@ class _ContinuousHMM(_BaseHMM):
         _BaseHMM.__init__(self,n,m,precision,verbose) #@UndefinedVariable
         
         self.d = d
-        self.transMatrix = transMatrix
-        self.transMatrixOnsets = transMatrixOnsets
+        self.transMatrices = transMatrices
         self.pi = pi
         self.means = means
         self.covars = covars

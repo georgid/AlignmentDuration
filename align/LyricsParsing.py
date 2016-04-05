@@ -12,7 +12,7 @@ import os
 import logging
 from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid
 from hmm.ParametersAlgo import ParametersAlgo
-from align.FeatureExtractor import frameNumberToTs
+from onsets.OnsetDetector import frameNumberToTs
 
 
 

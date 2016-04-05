@@ -1,3 +1,4 @@
+from align.FeatureExtractor import FeatureExtractor
 
 # Copyright 2015,2016 Music Technology Group - Universitat Pompeu Fabra
 #
@@ -29,7 +30,6 @@ from align.MakamRecording import parseSectionLinks, MakamRecording
 from align.Decoder import logger, DETECTION_TOKEN_LEVEL, WITH_DURATIONS, Decoder
 from hmm.ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
-from scripts.OnsetDetector import parserNoteOnsetsGrTruth, parserNoteOnsets
 from align.LyricsParsing import parsePhonemes, getOnsetsFromPhonemeAnnos
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 # pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
@@ -205,15 +205,17 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
     #     read from file result
       
         detectedAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
+        fe = FeatureExtractor() 
         if not os.path.isfile(detectedAlignedfileName):
             
             if  ParametersAlgo.WITH_ORACLE_PHONEMES:
                 lyricsWithModelsOracle = loadSmallAudioFragmentOracle(URIRecordingChunkResynthesizedNoExt, htkParser, lyrics )
                 # featureVectors is alias for LyricsWithModelsOracle
-                featureVectors = lyricsWithModels = lyricsWithModelsOracle 
+                fe.featureVectors = lyricsWithModels = lyricsWithModelsOracle 
             else:
             #     ###### extract audio features
                 lyricsWithModels, featureVectors, URIrecordingChunk = loadSmallAudioFragment(lyrics, extractedPitchList,   URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, bool(withSynthesis), currSectionLink, htkParser)
+                fe.featureVectors = featureVectors
             
         # DEBUG: score-derived phoneme  durations
             lyricsWithModels.printPhonemeNetwork()
@@ -232,17 +234,16 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
             if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
                 URIrecOnsets = URIrecordingNoExt + '.alignedNotes.txt'
 
-                onsetTimestamps =  parserNoteOnsetsGrTruth(URIrecOnsets, currSectionLink.beginTs, currSectionLink.endTs)
+                fe.onsetDetector.parserNoteOnsetsGrTruth(URIrecOnsets, currSectionLink.beginTs, currSectionLink.endTs)
                 
 #                 #### EXPERIMENT: use phone annotations instead:
 #                 onsetTimestamps = getOnsetsFromPhonemeAnnos(URIRecordingChunkResynthesizedNoExt)
                 
             elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
-                onsetTimestamps = parserNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
-            else: 
-                onsetTimestamps = None
+                
+                fe.onsetDetector.parserNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
             
-            detectedTokenList = decoder.decodeAudio(featureVectors, listNonVocalFragments, usePersistentFiles, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
+            detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, usePersistentFiles,  fromTsTextGrid, toTsTextGrid)
             
             phiOptPath = {'phi': decoder.path.phiPathLikelihood}
             detectedPath = decoder.path.pathRaw

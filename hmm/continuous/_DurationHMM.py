@@ -48,7 +48,7 @@ class _DurationHMM(_HMM):
             '''
             See _ContinuousHMM constructor for more information
             '''
-            _HMM.__init__(self, statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrix=None, transMatrixOnsets=None)
+            _HMM.__init__(self, statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrices=None)
             
             self.setDurForStates(listDurations=[])
             
@@ -139,12 +139,12 @@ class _DurationHMM(_HMM):
     
 
     
-    def initDecodingParameters(self,  featureVectorsORLyricsWithModels,  onsetTimestamps, fromTsTextGrid, toTsTextGrid):
+    def initDecodingParameters(self,  featureExtractor,  fromTsTextGrid, toTsTextGrid):
         '''
         helper method to init all params
         '''    
         
-        lenObservations = super(_DurationHMM,self).initDecodingParameters( featureVectorsORLyricsWithModels,  onsetTimestamps, fromTsTextGrid, toTsTextGrid)
+        lenObservations = super(_DurationHMM,self).initDecodingParameters( featureExtractor,  fromTsTextGrid, toTsTextGrid)
         
         # backpointer: how much duration waited in curr state
         self.chi = numpy.empty((lenObservations, self.n), dtype=self.precision)

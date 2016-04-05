@@ -10,8 +10,9 @@ from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDet
     expandlyrics2SyllableList
 from Constants import NUM_DIMENSIONS, numMixtures
 from hmm.ParametersAlgo import ParametersAlgo
-from scripts.OnsetDetector import parserNoteOnsets
-from align.visualize import visualizeMatrix, visualizeBMap, visualizePath
+from align.visualize import visualizeMatrix, visualizeBMap, visualizePath,\
+    visualizeTransMatrix
+from onsets.OnsetSmooting import OnsetSmoothingFunction
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
@@ -75,6 +76,7 @@ class Decoder(object):
         '''
         self.hmmNetwork = []
         
+        self.onsetSmoothingFunction = OnsetSmoothingFunction(ParametersAlgo.ONSET_SIGMA_IN_FRAMES)
         self._constructHmmNetwork(numStates, float(ALPHA), withModels)
         self.hmmNetwork.logger.setLevel(loggingLevel)
         
@@ -82,7 +84,7 @@ class Decoder(object):
         self.path = None
     
     
-    def decodeAudio( self, featureVectors, listNonVocalFragments, usePersistentFiles, onsetTimestamps, fromTsTextGrid=0, toTsTextGrid=0):
+    def decodeAudio( self, featureExtractor, listNonVocalFragments, usePersistentFiles,  fromTsTextGrid=0, toTsTextGrid=0):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
@@ -94,11 +96,11 @@ class Decoder(object):
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
             # double check that features are in same dimension as model
-            if featureVectors.shape[1] != NUM_DIMENSIONS:
-                sys.exit("dimension of feature vector should be {} but is {} ".format(NUM_DIMENSIONS, featureVectors.shape[1]) )
+            if featureExtractor.featureVectors.shape[1] != NUM_DIMENSIONS:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(NUM_DIMENSIONS, featureExtractor.featureVectors.shape[1]) )
             
                 
-        self.hmmNetwork.initDecodingParameters(featureVectors, onsetTimestamps, fromTsTextGrid, toTsTextGrid)
+        self.hmmNetwork.initDecodingParameters(featureExtractor, fromTsTextGrid, toTsTextGrid)
 
         # standard viterbi forced alignment
         if not WITH_DURATIONS:
@@ -150,16 +152,21 @@ class Decoder(object):
         
             # construct means, covars, and all the rest params
             #########    
+            transMatrices = list()
+            for onsetDist in range(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1):
+                transMatrices.append( self._constructTransMatrix(self.lyricsWithModels, onsetDist) )
             
-            transMAtrix = self._constructTransMatrix(self.lyricsWithModels, atNoteOnsets = 0)
-            transMAtrixOnsets = self._constructTransMatrix(self.lyricsWithModels, atNoteOnsets = 1)
+            transMatrices.append( self._constructTransMatrix(self.lyricsWithModels,  onsetDist = ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1) )
+            
+            import matplotlib.pyplot as plt
+            plt.show()
             from hmm.continuous.GMHMM  import GMHMM
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, NUM_DIMENSIONS, transMAtrix, transMAtrixOnsets)
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrices)
     
     
 
     
-    def  _constructTransMatrix(self, lyricsWithModels, atNoteOnsets=0):
+    def  _constructTransMatrix(self, lyricsWithModels, onsetDist=0):
         '''
         iterate over states and put their wait probs in a matrix 
         '''
@@ -176,8 +183,8 @@ class Decoder(object):
            
                     nextState = lyricsWithModels.statesNetwork[idxCurrState+1]
                     
-                    if atNoteOnsets:
-                        forwProb1, forwProb2 = defineForwardTransProbs(lyricsWithModels.statesNetwork, idxCurrState)
+                    if onsetDist <= ParametersAlgo.ONSET_SIGMA_IN_FRAMES:
+                        forwProb1, forwProb2 = self.defineForwardTransProbs(lyricsWithModels.statesNetwork, idxCurrState, onsetDist)
                     else: # going to next phoneme=sp or skipping it is equaly likely 
                         
                         
@@ -198,9 +205,9 @@ class Decoder(object):
                     
             elif (idxCurrState+1) < transMAtrix.shape[1]: # SPECIAL CASE: two last states
                        
-                if atNoteOnsets:
+                if onsetDist <= ParametersAlgo.ONSET_SIGMA_IN_FRAMES:
                     # forwProb = 0
-                        forwProb1, forwProb2 = defineForwardTransProbs(lyricsWithModels.statesNetwork, idxCurrState)
+                        forwProb1, forwProb2 = self.defineForwardTransProbs(lyricsWithModels.statesNetwork, idxCurrState, onsetDist)
                 else:
                                        
                     forwProb1 = 1 - stateWithDur.waitProb
@@ -213,12 +220,7 @@ class Decoder(object):
                 transMAtrix[idxCurrState, idxCurrState] = stateWithDur.waitProb # waitProb
             
 
-            
-   
-            
-            
-                 
-         
+        
         # avoid log(0) 
         indicesZero = numpy.where(transMAtrix==0)
         transMAtrix[indicesZero] = sys.float_info.min
@@ -226,8 +228,10 @@ class Decoder(object):
         ###### normalize
         from sklearn.preprocessing import normalize
         transMAtrix = normalize(transMAtrix, axis=1, norm='l1')
-             
-#         visualizeMatrix(transMAtrix, atNoteOnsets+1)
+        
+        if ParametersAlgo.VISUALIZE:   
+            figureTitle = "onsetDist = {}".format(onsetDist)  
+            visualizeTransMatrix(transMAtrix, figureTitle, lyricsWithModels.phonemesNetwork )
         return numpy.log(transMAtrix)   
             
         
@@ -305,66 +309,70 @@ class Decoder(object):
     #         path.printDurations()
         return detectedTokenList, self.path
 
-def defineForwardTransProbs(statesNetwork, idxCurrState):
-    '''
-    at onset present, change trasna probs based on rules.
-    consider special case sp
-    '''
-    
-    nextStateWithDur = statesNetwork[idxCurrState+1]
-    currStateWithDur = statesNetwork[idxCurrState]
-                
- 
-    if not ParametersAlgo.ONLY_MIDDLE_STATE:
-        sys.exit("align.Decoder.defineWaitProb  implemented only for 1-state phonemes ")
-    
-#     if idxState == len(statesNetwork)-1: # ignore onset at last phonemes
-#         return currStateWithDur.waitProb
-    
-    currPhoneme = currStateWithDur.phoneme
-    nextPhoneme = nextStateWithDur.phoneme
-    
-    # normally should go to only next state as in forced alignment
-    forwProb1 = getForwProb(currStateWithDur, nextStateWithDur )
-    forwProb2 = 0
-    
-    if nextPhoneme.ID == 'sp' and (idxCurrState+2) < len(statesNetwork):   #### add skipping forward trans prob
+    def defineForwardTransProbs(self, statesNetwork, idxCurrState, onsetDist):
+        '''
+        at onset present, change trasna probs based on rules.
+        consider special case sp
+        '''
         
-        ### skipping sp to next state
-        nextNextStateWithDur = statesNetwork[idxCurrState+2]
-        currPhoneme.setIsLastInSyll(1) # 
-        forwProb2 = getForwProb(currStateWithDur, nextNextStateWithDur )
-        currPhoneme.setIsLastInSyll(0)
+        nextStateWithDur = statesNetwork[idxCurrState+1]
+        currStateWithDur = statesNetwork[idxCurrState]
+                    
+     
+        if not ParametersAlgo.ONLY_MIDDLE_STATE:
+            sys.exit("align.Decoder.defineWaitProb  implemented only for 1-state phonemes ")
+        
+    #     if idxState == len(statesNetwork)-1: # ignore onset at last phonemes
+    #         return currStateWithDur.waitProb
+        
+        currPhoneme = currStateWithDur.phoneme
+        nextPhoneme = nextStateWithDur.phoneme
+        
+        # normally should go to only next state as in forced alignment
+        forwProb1 = self.calcForwProbWithRules(currStateWithDur, nextStateWithDur, onsetDist )
+        forwProb2 = 0
+        
+        if nextPhoneme.ID == 'sp' and (idxCurrState+2) < len(statesNetwork):   #### add skipping forward trans prob
+            
+            ### skipping sp to next state
+            nextNextStateWithDur = statesNetwork[idxCurrState+2]
+            currPhoneme.setIsLastInSyll(1) # 
+            forwProb2 = self.calcForwProbWithRules(currStateWithDur, nextNextStateWithDur, onsetDist )
+            currPhoneme.setIsLastInSyll(0)
             
     
     
-    return forwProb1, forwProb2
+        return forwProb1, forwProb2
         
  
         
 
 
-def getForwProb(currStateWithDur, followingStateWithDur):# TODO add t
+    def calcForwProbWithRules(self, currStateWithDur, followingStateWithDur, onsetDist):  
+        currPhoneme = currStateWithDur.phoneme
+        followingPhoneme = followingStateWithDur.phoneme
+        q = 1.5
+        forwProb = 1 - currStateWithDur.waitProb
+        onsetWeight = self.onsetSmoothingFunction.calcOnsetWeight(onsetDist)
+        
+        if currPhoneme.isLastInSyll(): # inter-syllable
+                if currPhoneme.isVowel() and not followingPhoneme.isVowelOrLiquid(): # rule 1
+                    return max(forwProb - onsetWeight * q, 0)
+                elif not currPhoneme.isVowel() and followingPhoneme.isVowelOrLiquid(): # rule 2
+                    return forwProb + onsetWeight * q 
+        else: # not last in syllable, intra-syllable
+                if currPhoneme.isVowel() and not followingPhoneme.isVowel(): # rule 3
+                    return max(forwProb - onsetWeight * q, 0)
+                elif not currPhoneme.isVowelOrLiquid() and followingPhoneme.isVowel(): # rule 4:
+                    return forwProb + onsetWeight * q
+                elif currPhoneme.isVowel() and followingPhoneme.isVowel():
+                    logging.warning("two consecutive vowels {} and {} in a syllable. not implemented! ".format(currPhoneme.ID, followingPhoneme.ID))
+                    return forwProb
+        
+        #  onset has no contribution in other cases    
+        return forwProb
+
+
     
-    currPhoneme = currStateWithDur.phoneme
-    followingPhoneme = followingStateWithDur.phoneme
-    q = 0.01
-    r = 0.99
-    if currPhoneme.isLastInSyll(): # inter-syllable
-            if currPhoneme.isVowel() and not followingPhoneme.isVowelOrLiquid(): # rule 1
-                return q
-            elif not currPhoneme.isVowel() and followingPhoneme.isVowelOrLiquid(): # rule 2
-                return r 
-    else: # not last in syllable, intra-syllable
-            if currPhoneme.isVowel() and not followingPhoneme.isVowel(): # rule 3
-                return q
-            elif not currPhoneme.isVowelOrLiquid() and followingPhoneme.isVowel(): # rule 4:
-                return r
-            elif currPhoneme.isVowel() and followingPhoneme.isVowel():
-                logging.warning("two consecutive vowels in a syllable. not implemented! {} and {}".format(currPhoneme.ID, followingPhoneme.ID))
-                return 1
-    
-    #  onset has no contribution in other cases    
-    return 1- currStateWithDur.waitProb
-    
+
 

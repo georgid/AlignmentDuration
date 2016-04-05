@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import textgrid as tgp
 import sys, os
-from scripts.OnsetDetector import writeCsv
+from onsets.OnsetDetector import writeCsv
 
 
 sys.path.append(os.path.realpath('../Batch_Processing/'))

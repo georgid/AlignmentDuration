@@ -14,6 +14,7 @@ import glob
 import essentia.standard
 import math
 import json
+from onsets.OnsetDetector import OnsetDetector
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
 import tempfile
@@ -141,17 +142,11 @@ def _extractMFCCs( URIRecordingChunk):
         pipe.wait()
         return mfcFileName
 
-def tsToFrameNumber(ts):
-    '''
-    get which frame is for a given ts, according to htk's feature extraction  
-    '''
-    return   int(math.floor( (ts - ParametersAlgo.WINDOW_SIZE/2.0) * ParametersAlgo.NUMFRAMESPERSECOND))
- 
-def frameNumberToTs(frameNum):
-    '''
-    get which ts is for a given frame, according to htk's feature extraction  
-    '''
-    return float(frameNum) /    float(ParametersAlgo.NUMFRAMESPERSECOND) + ParametersAlgo.WINDOW_SIZE/2.0
-    
+  
 
+class FeatureExtractor(object):
+    def __init__(self):
+        self.featureVectors = []
+        self.onsetDetector = OnsetDetector() 
+    
         

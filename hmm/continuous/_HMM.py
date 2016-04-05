@@ -8,10 +8,12 @@ import numpy
 import sys
 from numpy.core.numeric import Infinity
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
-from align.FeatureExtractor import tsToFrameNumber
 from hmm.ParametersAlgo import ParametersAlgo
 from align.Decoder import visualizeMatrix
 from scipy.constants.constants import psi
+from align import Decoder
+from docutils.nodes import math
+from onsets.OnsetDetector import getDistFromOnset, tsToFrameNumber
 
 
 class _HMM(_ContinuousHMM):
@@ -19,7 +21,7 @@ class _HMM(_ContinuousHMM):
     classical Viterbi
     '''
     
-    def __init__(self,statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrix, transMatrixOnsets):
+    def __init__(self,statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrices):
     
 #     def __init__(self,n,m,d=1,transMatrix=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
             '''
@@ -32,7 +34,7 @@ class _HMM(_ContinuousHMM):
             init_type='uniform'
             precision=numpy.double
             verbose = False 
-            _ContinuousHMM.__init__(self, n, numMixtures, NUM_DIMENSIONS, transMatrix, transMatrixOnsets, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
+            _ContinuousHMM.__init__(self, n, numMixtures, NUM_DIMENSIONS, transMatrices, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
     
             self.statesNetwork = statesNetwork
             
@@ -92,7 +94,7 @@ class _HMM(_ContinuousHMM):
 
 
 
-    def initDecodingParameters(self,  featureVectorsORLyricsWithModels,  onsetTimestamps, fromTsTextGrid, toTsTextGrid):
+    def initDecodingParameters(self,  featureExtractor,  fromTsTextGrid, toTsTextGrid):
         '''
         init observation probs map_B 
         and onsets if they are specified (!=None)  
@@ -101,18 +103,18 @@ class _HMM(_ContinuousHMM):
         if ParametersAlgo.WITH_ORACLE_PHONEMES == -1:
             lenFeatures = 80
             self._mapBStub(lenFeatures)
-        elif ParametersAlgo.WITH_ORACLE_PHONEMES == 1:
+        elif ParametersAlgo.WITH_ORACLE_PHONEMES == 1: # with phoneme annotations as feature vectors
                 
                 durInSeconds = toTsTextGrid - fromTsTextGrid
                 lenFeatures = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
-                self._mapBOracle( featureVectorsORLyricsWithModels, lenFeatures, fromTsTextGrid)
+                self._mapBOracle( featureExtractor.featureVectors, lenFeatures, fromTsTextGrid)
         else: # with featureVectors
-                lenFeatures = len(featureVectorsORLyricsWithModels)
-                self._mapB(featureVectorsORLyricsWithModels)
+                lenFeatures = len(featureExtractor.featureVectors)
+                self._mapB(featureExtractor.featureVectors)
             
         
         
-        self.noteOnsets = self.onsetTsToOnsetFrames(onsetTimestamps, lenFeatures)
+        self.noteOnsets = featureExtractor.onsetDetector.onsetTsToOnsetFrames( lenFeatures)
             
         self.phi = numpy.empty((lenFeatures,self.n),dtype=self.precision)
         self.phi.fill(-Infinity)
@@ -124,28 +126,12 @@ class _HMM(_ContinuousHMM):
         
         return lenFeatures
     
-    def onsetTsToOnsetFrames(self, onsetTimestamps, lenObservations):
-        
-        noteOnsets = numpy.zeros((lenObservations,)) # note onsets all activated: e.g. with normal transMatrix
-        if onsetTimestamps != None:
-        
-            noteOnsets = numpy.zeros((lenObservations, ))
-            
-            for onsetTimestamp in onsetTimestamps:
-                frameNum = tsToFrameNumber(onsetTimestamp)
-                if frameNum >= lenObservations or frameNum < 0:
-                    self.logger.warning("onset has ts {} < first frame or > totalnumFrames {}".format(onsetTimestamp, lenObservations))
-                    continue
-                onsetTolInFrames = ParametersAlgo.NUMFRAMESPERSECOND * ParametersAlgo.ONSET_TOLERANCE_WINDOW
-                fromFrame = max(0, frameNum - onsetTolInFrames)
-                toFrame = min(lenObservations, frameNum + onsetTolInFrames)
-                noteOnsets[fromFrame:toFrame + 1] = 1  
-        
-        return noteOnsets  
+    
+
 
     def viterbi_fast_forced(self):
         '''
-        considers only previous state in desicion
+        forced alignment: considers only previous state in desicion
         '''
         
         # init phi and psi at first time
@@ -162,15 +148,13 @@ class _HMM(_ContinuousHMM):
                         # if beginning state, no prev. state
                         if j == 0 or j==1:
                             fromState = 0
-                        
-                        if self.noteOnsets[t]:
-                            sliceA = self.transMatrixOnsets[fromState:j+1,j]
-                            print "at time {} using matrix for note Onset".format(t)
-                        else:
-                            sliceA = self.transMatrix[fromState:j+1,j]
+                        # distance of how many frames from closest onset
+                        onsetDist = getDistFromOnset( self.noteOnsets, t)
+                        whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
+                            
+                        sliceA = self.transMatrices[whichMatrix][fromState:j+1,j]
                              
-#                         print "shape transMatrix:" + str(self.transMatrix.shape)
-#                         print "shape phi:" + str(self.phi.shape)
+
 #                         if j <= t:
 #                             print 'at time {} and state {} a_j-1,j and a_j,j = {}'.format(t, j, sliceA)
                         APlusPhi = numpy.add(self.phi[t-1,fromState:j+1], sliceA)
@@ -199,6 +183,10 @@ class _HMM(_ContinuousHMM):
    
     
     def viterbi_fast(self):
+        '''
+        basic viterbi, no forced alignment, with onsets
+        @broken, not updated after refactoring
+        '''
         
         # init phi and psi at first time
         for j in xrange(self.n):

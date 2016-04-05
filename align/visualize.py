@@ -50,18 +50,30 @@ def visualizeBMap(b_Map):
 
 
 def visualizeMatrix(psi,  titleName):
-        psi = np.rot90(psi)
-        psi = np.flipud(psi)
+#         psi = np.rot90(psi)
+#         psi = np.flipud(psi)
 #         plt.figure(1)
+
         fig, ax1 = plt.subplots()
         ax  = plt.imshow(psi, interpolation='none')
         plt.colorbar(ax)
         plt.grid(True)
         plt.title(titleName)
+        figManager = plt.get_current_fig_manager()
+        figManager.full_screen_toggle()
 #         plt.tight_layout()
         
-        plt.show() 
+#         plt.show() 
         return ax1 
+
+def visualizeTransMatrix(matrix, titleName, phonemesNetwork):
+    visualizeMatrix(matrix,  titleName)
+    listPhonemeNames = []
+    for phoneme in phonemesNetwork:
+        listPhonemeNames.append(phoneme.ID)
+    from numpy.core.numeric import arange
+    plt.xticks(arange(len(listPhonemeNames)) , listPhonemeNames )
+    plt.yticks(arange(len(listPhonemeNames)) , listPhonemeNames )
         
 
 def visualizePath( ax, path, B_map):

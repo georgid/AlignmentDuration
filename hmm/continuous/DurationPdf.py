@@ -84,6 +84,6 @@ class DurationPdf(object):
     
 if __name__ == '__main__':
     
-    durPdf = DurationPdf()
+    durPdf = DurationPdf(2)
     for i in range(1,13+1):    
         print durPdf.getWaitLogLik(i, 5)
