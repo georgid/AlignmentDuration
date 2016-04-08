@@ -8,6 +8,7 @@ import subprocess
 import numpy
 from hmm.ParametersAlgo import ParametersAlgo
 import math
+import logging
 
 
 
@@ -107,7 +108,7 @@ class OnsetDetector(object):
             for onsetTimestamp in self.onsetTimestamps:
                 frameNum = tsToFrameNumber(onsetTimestamp)
                 if frameNum >= lenObservations or frameNum < 0:
-                    self.logger.warning("onset has ts {} < first frame or > totalnumFrames {}".format(onsetTimestamp, lenObservations))
+                    logging.warning("onset has ts {} < first frame or > totalnumFrames {}".format(onsetTimestamp, lenObservations))
                     continue
                 onsetTolInFrames = ParametersAlgo.NUMFRAMESPERSECOND * ParametersAlgo.ONSET_TOLERANCE_WINDOW
                 fromFrame = max(0, frameNum - onsetTolInFrames)

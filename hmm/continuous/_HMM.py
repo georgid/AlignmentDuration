@@ -148,9 +148,12 @@ class _HMM(_ContinuousHMM):
                         # if beginning state, no prev. state
                         if j == 0 or j==1:
                             fromState = 0
-                        # distance of how many frames from closest onset
-                        onsetDist = getDistFromOnset( self.noteOnsets, t)
-                        whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
+                        if ParametersAlgo.WITH_ORACLE_ONSETS == -1:
+                           whichMatrix = -1 # last matrix with no onset
+                        else:
+                            # distance of how many frames from closest onset
+                            onsetDist = getDistFromOnset( self.noteOnsets, t)
+                            whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
                             
                         sliceA = self.transMatrices[whichMatrix][fromState:j+1,j]
                              
