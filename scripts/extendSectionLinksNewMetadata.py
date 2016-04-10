@@ -10,6 +10,7 @@ from align.MakamRecordingOld import MakamRecordingOld
 from scripts.MakamScoreOld import loadMakamScore
 import os
 from scripts.fetchSymbTrFromGithub10SarkiTestDataset import fetchFileFromURL
+from IPython.core.display import JSON
 # from align.RecordingSegmenter import getURISectionAnnotation
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
@@ -33,8 +34,10 @@ from utilsLyrics.Utilz import  findFileByExtensions
 pathSectionAnnosSourceJNMR = '/Users/joro/Downloads/turkish_makam_section_dataset-2014_jnmr/audio_metadata/'
 
 
-URI_datasetOld = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis/'
+URI_datasetSymbTr1 = '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/'
 
+# manually modified note numbers in section.tsv file and with symbTr 2.0 .txt 
+URI_datasetSymbTr1_sectionMeta2 = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis-symbTr2/'
 
 
 dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
@@ -48,35 +51,37 @@ dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
 
 
 
-def extendNewMetadata(musicbrainzid, inpuRecordingDir, pathDestinationDataset):
+def extendNewMetadata(musicbrainzid, workmbid,  inpuRecordingDir):
     '''
     annotations with score sections names zemin meyan > convert to > annotations with sections names C1, B1. etc
     uses old makamScore and makamRecording (and SymbTrParser old ) because we need the matchSections and its neater to use it form the constructor of MakamRecording
     '''
     
     
-    rec_data = dunya.makam.get_recording(musicbrainzid )
-    w = rec_data['works'][0]
-
-    symbtrtxtURI, symbTrCompositionName  = constructSymbTrTxtURI(URI_datasetOld, w['mbid'])
-    sectionsMetadataNewLabels, sectionsMetadata = getSectionsMetadata(w, symbTrCompositionName)
-
-
-
+ 
+    ############## 1. get score section Metadata new labels 
+    symbtrtxtURI, symbTrCompositionName  = constructSymbTrTxtURI(URI_datasetSymbTr1_sectionMeta2, workmbid)
     
-    ###### 1. load old score section metadata with meyan etc. names and section annotation in json 
-    compositionPath = URI_datasetOld + symbTrCompositionName + '/'
+    compositionPath = URI_datasetSymbTr1_sectionMeta2 + symbTrCompositionName + '/'
+    makamScore_sectionMeta2 = loadMakamScore(compositionPath)
+    segment_note_bound_idx  = generateNoteBoundaryIndices(makamScore_sectionMeta2)
+    sectionsMetadataNewLabels, sectionsMetadataNewLabelsDict = getSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_note_bound_idx)
+    
+    
+    #############  2. load old section annotaion and add new labels
+    #load old score section metadata with meyan etc. names and section annotation in json 
+    compositionPath = URI_datasetSymbTr1 + symbTrCompositionName + '/'
     makamScore = loadMakamScore(compositionPath)
 #     makamScore.printSectionsAndLyrics()
     
-    if len(sectionsMetadata) != len(makamScore.sectionToLyricsMap):
-        sys.exit("for composition {} text score sections are {} and sectionsMetadata with new labels are {}".format(compositionPath, len(makamScore.sectionToLyricsMap), len(sectionsMetadata)))
+    if len(sectionsMetadataNewLabels) != len(makamScore.sectionToLyricsMap):
+        sys.exit("for composition {} text score sections are {} and sectionsMetadata with new labels are {}".format(compositionPath, len(makamScore.sectionToLyricsMap), len(sectionsMetadataNewLabels)))
 
     ###### match score sections to audio annotations (in constructor of makam recording)
     pathToAudioFile = 'blah'
     pathToRecording, pathToSectionAnnotations = getURISectionAnnotation(inpuRecordingDir, compositionPath) 
     makamRecording = MakamRecordingOld(makamScore, pathToAudioFile, pathToSectionAnnotations)
-    print makamRecording.sectionIndices
+#     print makamRecording.sectionIndices
     
     
         ########   load  section annos from source
@@ -93,18 +98,12 @@ def extendNewMetadata(musicbrainzid, inpuRecordingDir, pathDestinationDataset):
                  
         
     
-    
-    
     sectionAnnosDict['section_annotations'] = sections
     
+    return sectionsMetadataNewLabelsDict, sectionAnnosDict 
     
     
-    
-    ##### write edited sectionAnnos
-    sectionAnnosURIEdited = pathDestinationDataset + '/' + musicbrainzid  + '.json'
-    print "wirting file \n" + sectionAnnosURIEdited
-    with open(sectionAnnosURIEdited, 'w') as f8:
-        json.dump( sectionAnnosDict, f8, indent=4)
+
 
     
     
@@ -136,28 +135,50 @@ def replaceSectionsWIthNewLabesJNMR(scoreSectionsNewLables, sectionAnnosSourceUR
  
  
 
-def getSectionsMetadata(w, symbTrCompositionName):
+def getSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_note_bound_idx):
     ###### 2. load score sections metadata new C1,C2 etc.
-    sectionMetadataAll = dunya.docserver.get_document_as_json(w['mbid'], "metadata", "metadata", 1, version="0.1") #     print sectionMetadataAll
-    if w['mbid'] == 'c6e43ac6-4a18-42ab-bcc4-46e29360051e':
+    
+#     sectionMetadataAllDict = dunya.docserver.get_document_as_json(workmbid, "metadata", "metadata", 1, version="0.1") #     print sectionMetadataAllDict
+    
+        
+    ####### INSTEAD: for sections with no second verse section metadata is wrong, so generate it with symbtr with correct lyrics 
+    from symbtrdataextractor.SymbTrDataExtractor import SymbTrDataExtractor
+    
+    extractor = SymbTrDataExtractor(extract_all_labels=False, melody_sim_thres=0.75, 
+                                lyrics_sim_thres=0.75, get_recording_rels=False,
+                                print_warnings=True)
+ 
+    
+    sectionMetadataAllDict, isDataValid = extractor.extract(symbtrtxtURI, segment_note_bound_idx=segment_note_bound_idx)
+
+    
+    if workmbid == 'c6e43ac6-4a18-42ab-bcc4-46e29360051e':
         
         symbTrMetadataURL = 'https://raw.githubusercontent.com/sertansenturk/turkish_makam_corpus_stats/master/data/SymbTrData/' + symbTrCompositionName + '.json'
-        print symbTrMetadataURL
         import tempfile
         tmpDir = tempfile.mkdtemp()
         fetchFileFromURL(symbTrMetadataURL, tmpDir + '/tmp.json') 
         with open(tmpDir + '/tmp.json') as f:
-             sectionMetadataAll = json.load(f)
-             
-    sectionsMetadata = sectionMetadataAll['sections']
-    scoreSections = []
-    for section in sectionsMetadata:
-#                     print section
-        sectionNew = ScoreSection(section['name'], int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure'])
-        scoreSections.append(sectionNew)
+             sectionMetadataAllDict = json.load(f)
     
-    return scoreSections, sectionsMetadata
+    # TODO: replace with sections         
+    sectionsMetadataNewNamesDict = sectionMetadataAllDict['phrases']['automatic']
+    sectionsMetadataNewLabels = []
+    for section in sectionsMetadataNewNamesDict:
+#                     print section
+        sectionNew = ScoreSection(section['name'], int(section['start_note']), int(section['end_note']), section['melodic_structure'], section['lyric_structure'])
+        sectionsMetadataNewLabels.append(sectionNew)
+    
+    return sectionsMetadataNewLabels, sectionMetadataAllDict
    
+  
+def generateNoteBoundaryIndices(makamScore_sectionMeta2):
+    segment_note_bound_idx  = []
+    for e in makamScore_sectionMeta2.sectionToLyricsMap:
+        segment_note_bound_idx.append( e[1] )
+    segment_note_bound_idx = segment_note_bound_idx[1:]
+    
+    return segment_note_bound_idx
     
 def constructSymbTrTxtURI(URI_dataset, workMBID):
     '''
@@ -178,6 +199,8 @@ def getURISectionAnnotation(recordingDir, pathToComposition):
 #         pathToSectionAnnotations = os.path.join(pathToRecording, glob.glob('*.sectionAnno.txt')[0]) #             pathToAudio =  os.path.join(pathToRecording, glob.glob('*.wav')[0])
     listExtensions = ["sectionAnno.json", "sectionAnno.txt", "sectionAnno.tsv"]
     sectionAnnoFiles = findFileByExtensions(pathToRecording, listExtensions)
+    if len(sectionAnnoFiles) == 0:
+        sys.exit("no sectionAnno file in dir {}".format(pathToRecording))
     pathToSectionAnnotations = os.path.join(pathToRecording, sectionAnnoFiles[0])
     return pathToRecording, pathToSectionAnnotations
 
@@ -202,13 +225,31 @@ def replaceSecionsWithNewLabels_GeorgisAnnotations(sectionsMetadataNewLabels, ma
     
     return sections
 
+def write_results_as_json(sectionsMetadataNewLabelsDict, workid, sectionAnnosDict, musicbrainzid, pathSectionAnnosDestination):
+    
+    URI =  pathSectionAnnosDestination + '/scores/' + workid  + '.json'
+    print "wirting file {} \n dont forget to upload it to http://githubusercontent.com/georgid/turkish_makam_section_dataset/master/scores/".format( sectionsMetadataNewLabelsDict)
+    with open(URI, 'w') as f: 
+        json.dump(sectionsMetadataNewLabelsDict, f, indent=4)
+    
+    ##### OUTPUT 2: write edited sectionAnnos
+    sectionAnnosURIEdited = pathSectionAnnosDestination + '/audio_metadata/' + musicbrainzid  + '.json'
+    print "wirting file {} \n dont forget to upload it to http://githubusercontent.com/georgid/turkish_makam_section_dataset/master/audio_metadata/".format( sectionAnnosURIEdited)
+    with open(sectionAnnosURIEdited, 'w') as f8:
+        json.dump( sectionAnnosDict, f8, indent=4)
+        
+        
+
 
 if __name__ == '__main__':
     
-    pathSectionAnnosDestination = '/Users/joro/Documents/Phd/UPF/turkish_makam_section_dataset/audio_metadata/'
+    pathSectionAnnosDestination = '/Users/joro/Documents/Phd/UPF/turkish_makam_section_dataset/'
     
 
     for musicbrainzid in recMBIDs:
+        rec_data = dunya.makam.get_recording(musicbrainzid )
+        workmbid = rec_data['works'][0]['mbid']
         recordingDir = recMBIDs[musicbrainzid]
-        extendNewMetadata(musicbrainzid, recordingDir, pathSectionAnnosDestination )
+        sectionsMetadataNewLabelsDict, sectionAnnosDict = extendNewMetadata(musicbrainzid, workmbid, recordingDir )
+        write_results_as_json(sectionsMetadataNewLabelsDict, workmbid, sectionAnnosDict, musicbrainzid, pathSectionAnnosDestination) 
         raw_input("press for next piece...")
