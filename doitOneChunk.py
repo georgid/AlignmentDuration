@@ -15,7 +15,6 @@ from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
 from docutils.parsers.rst.directives import path
 from matplotlib.path import Path
-from eyed3.utils import LoggingAction
 import logging
 
 
@@ -53,10 +52,10 @@ if pathHMM not in sys.path:
 from hmm.Parameters import Parameters
 from hmm.examples.main  import loadSmallAudioFragment
 # from hmm.examples.main  import loadSmallAudioFragmentOracle
-
-from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix
+from parse.TextGrid_Parsing import tierAliases
+from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError,  determineSuffixOld
 from AccuracyEvaluator import _evalAccuracy, evalAccuracy
-from TextGrid_Parsing import TextGrid2WordList
+from parse.TextGrid_Parsing import TextGrid2WordList
 from PraatVisualiser import tokenList2TabFile
 
 # TODO: read mfccs with matlab htk_read
@@ -158,7 +157,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, whichSection, pathToComposit
 #     correctDurationScoreDev, totalDuration  = getReferenceDurations(URIrecordingNoExt, lyricsWithModels, evalLevel)
     correctDurationScoreDev = 0
     
-    tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffix(withDuration, withSynthesis, evalLevel)
+    tokenLevelAlignedSuffix, phonemesAlignedSuffix = determineSuffixOld(withDuration, withSynthesis, evalLevel)
     if withDuration:
         fromTs = -1
         toTs = -1

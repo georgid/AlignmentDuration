@@ -13,7 +13,7 @@ from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
 from sciKitGMM import SciKitGMM
-from Cython.Compiler.Naming import self_cname
+import logging
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 HMMDurationPath = os.path.join(parentDir, 'HMMDuration')
 if not HMMDurationPath in sys.path:
@@ -33,7 +33,6 @@ from hmm.ParametersAlgo import ParametersAlgo
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 if pathEvaluation not in sys.path:
     sys.path.append(pathEvaluation)
-from WordLevelEvaluator import readNonEmptyTokensTextGrid
 
 
 pathUtils = os.path.join(parentDir, 'utilsLyrics')
@@ -97,7 +96,7 @@ class LyricsWithGMMs(Lyrics):
         
         path, fileName = os.path.split(URIRecordingNoExt)
         path, fold = os.path.split(path) # which Fold
-        fold = 'fold1'
+#         fold = 'fold1'
         modelsURI =  os.path.join( MODELS_DIR + fold,  str(modelName) + '.pkl' )
         import pickle
         try:
@@ -253,7 +252,10 @@ class LyricsWithGMMs(Lyrics):
             for syllable_ in word_.syllables:
 
                 if syllable_.durationInMinUnit == 0: # workaround for unknown values. better: if whole sentence unknown use withRules. 
+                    logging.warning("syllable {} with duration = 0".format(syllable_))
+                
                     syllable_.durationInMinUnit = 1
+                    
                 numFramesInSyllable = round(float(syllable_.durationInMinUnit) * numFramesPerMinUnit)
                 if numFramesInSyllable == 0.0:
                     sys.exit(" frames per syllable {} are 0.0. Check durationInMinUnit {} and numFramesPerMinUnit={}".format(syllable_.text, syllable_.durationInMinUnit,  numFramesPerMinUnit))
