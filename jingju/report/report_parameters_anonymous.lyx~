@@ -706,7 +706,7 @@ overall
 \begin_inset Text
 
 \begin_layout Plain Layout
-56.8
+56.56
 \end_layout
 
 \end_inset
@@ -715,7 +715,7 @@ overall
 \begin_inset Text
 
 \begin_layout Plain Layout
-66.14
+48.81
 \end_layout
 
 \end_inset
@@ -852,7 +852,7 @@ TODO: comment more
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics

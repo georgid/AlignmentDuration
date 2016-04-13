@@ -35,7 +35,7 @@ def runWithParameters(argv):
     correctDurationHTK = 0
     totalDurationHTK = 1
     accuracyListHTK = []
-    #correctDurationHTK, totalDurationHTK, accuracyListHTK = runitHTK(["dummy", URIrecordingNoExt ])       
+#     correctDurationHTK, totalDurationHTK, accuracyListHTK = runitHTK(["dummy", URIrecordingNoExt ])       
     
     
     # load total # different sentences + their rspective ts
@@ -72,19 +72,19 @@ def runWithParameters(argv):
         currSentence.printSyllables()
         
         withOracle = 1
-#         correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, withRules, URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSentence)
+        correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, withRules, URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSentence)
 
         
             
         # calc local acc
         withOracle = 0
-        correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle, withRules, URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence)
-        if tokenListAligned == None:
-            continue
-        tokenListAlignedAll.extend(tokenListAligned)
-          
-
-    tokenAlignedfileName =  tokenList2TabFile(tokenListAlignedAll, URIrecordingNoExt, '.syllables_total_dev_' + str(ParametersAlgo.DEVIATION_IN_SEC))
+  #      correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle, withRules, URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence)
+#         if tokenListAligned == None:
+#             continue
+#         tokenListAlignedAll.extend(tokenListAligned)
+#           
+# 
+#     tokenAlignedfileName =  tokenList2TabFile(tokenListAlignedAll, URIrecordingNoExt, '.syllables_total_dev_' + str(ParametersAlgo.DEVIATION_IN_SEC))
 
     plotAccuracyList(accuracyListOracle, 'oracle', 'r')
     plotAccuracyList(accuracyList, 'DHMM', 'g')

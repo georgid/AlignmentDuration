@@ -26,7 +26,7 @@ import numpy
 # if false, use transition probabilities from htkModels
 WITH_DURATIONS= True
 
-# WITH_DURATIONS= False
+WITH_DURATIONS= False
 
 
 

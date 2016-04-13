@@ -50,7 +50,8 @@ if pathHMM not in sys.path:
     sys.path.append(pathHMM)
     
 from hmm.Parameters import Parameters
-from hmm.examples.main  import loadSmallAudioFragment
+from hmm.examples.main  import loadSmallAudioFragment,\
+    loadSmallAudioFragmentOracle
 # from hmm.examples.main  import loadSmallAudioFragmentOracle
 from parse.TextGrid_Parsing import tierAliases
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError,  determineSuffixOld
@@ -207,6 +208,7 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
         
 #     read from file result
     URIRecordingChunkNoExt = URIrecordingNoExt + "_" + str(fromTs) + '_' + str(toTs)
+    tokenLevelAlignedSuffix = '_'
     detectedAlignedfileName = URIRecordingChunkNoExt + tokenLevelAlignedSuffix
     if not os.path.isfile(detectedAlignedfileName):
         #     ###### 2) extract audio features
@@ -214,8 +216,8 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
         if  withOracle:
             lyricsWithModels = '' 
 
-#             lyricsWithModelsORacle = loadSmallAudioFragmentOracle(URIrecordingNoExt, lyrics, phonemesAnnoAll )
-#             lyricsWithModels = lyricsWithModelsORacle
+            lyricsWithModelsORacle = loadSmallAudioFragmentOracle(URIrecordingNoExt, lyrics, phonemesAnnoAll )
+            lyricsWithModels = lyricsWithModelsORacle
         else:                      
             lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, withHTK, URIrecordingNoExt, bool(withSynthesis), fromTs, toTs)
       
