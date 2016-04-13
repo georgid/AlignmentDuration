@@ -39,8 +39,9 @@ pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from utilsLyrics.Utilz import loadDictFromTabFile
 
+currDir = os.path.abspath( os.path.dirname(os.path.realpath(__file__)))
+MODELS_SCRIPTS = currDir + '/models_jingju/'
 
-MODELS_DIR = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/models/'
 
 class LyricsWithGMMs(Lyrics):
     '''
@@ -87,7 +88,7 @@ class LyricsWithGMMs(Lyrics):
 #         thisDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__) ) )
         
         
-        dictURI =  os.path.join(MODELS_DIR, 'modelName2FileNameDict') 
+        dictURI =  os.path.join(MODELS_SCRIPTS, 'modelName2FileNameDict') 
         modelName2FileNameDict = loadDictFromTabFile(dictURI)
         
         # table convert model names
@@ -97,7 +98,7 @@ class LyricsWithGMMs(Lyrics):
         path, fileName = os.path.split(URIRecordingNoExt)
         path, fold = os.path.split(path) # which Fold
 #         fold = 'fold1'
-        modelsURI =  os.path.join( MODELS_DIR + fold,  str(modelName) + '.pkl' )
+        modelsURI =  os.path.join( ParametersAlgo.MODELS_DIR + fold + '/GMM/',  str(modelName) + '.pkl' )
         import pickle
         try:
             model = pickle.load(file(modelsURI))

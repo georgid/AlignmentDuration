@@ -1,0 +1,52 @@
+Copyright © 2015  Music Technology Group - Universitat Pompeu Fabra
+
+NAME: JingjuAlignment
+
+DESCRIPTION 
+ tool for Aligning lyrics to audio automatically using Hidden Markov Models with Explicit Duration
+For one jingju aria with different parameters
+Aligns each lyrics sentence in term and aggregates results. End of sentence is infered from  white space in TextGrid file. 
+Scores are used to assign duration to each syllable. Score should be in musicXML format in <pathToRecordings> and named  <recordingName>_score.xml
+
+
+
+LICENSE:
+AlignmentDuration is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation (FSF), either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses/
+
+
+
+BUILD INSTRUCTIONS: 
+git clone https://github.com/georgid/JingjuAlignment.git
+
+
+to run you need to put in parent dir these python projects: 
+
+* htkModelParser
+git clone https://github.com/georgid/htkModelParser.git
+
+* Duration-explicit HMM decoding 
+git clone https://github.com/georgid/HMMDuration.git
+
+* Duration-explicit lyrics-alignment modeling 
+git clone https://github.com/georgid/AlignmentDuration.git
+
+* Evaluation of accuracy 
+git clone https://github.com/georgid/AlignmentEvaluation.git
+
+* utilsLyrics
+git clone https://github.com/georgid/utilsLyrics.git
+
+* resynthesis of vocal harmonic spectrum
+git clone https://github.com/georgid/sms-tools.git
+
+
+USAGE: runWithParams.py   <pathToRecordings> <withScores> <deviationINSec> <recordingName> <withVocalPrediciton>
+
+example usage:
+# python runWithParams.py tests 1 0.1 dan-xipi_01 1
+
+as wel see tests/AlignOneChunkTest to test segment(=1, or =2) from aria

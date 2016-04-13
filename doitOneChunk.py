@@ -212,8 +212,7 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
         #     ###### 2) extract audio features
         
         if  withOracle:
-           
-           lyricsWithModels = '' 
+            lyricsWithModels = '' 
 
 #             lyricsWithModelsORacle = loadSmallAudioFragmentOracle(URIrecordingNoExt, lyrics, phonemesAnnoAll )
 #             lyricsWithModels = lyricsWithModelsORacle

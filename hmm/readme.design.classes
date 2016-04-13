@@ -1,0 +1,67 @@
+_DurationHMM 
+===========-
+extends continuous._ContinuousHMM
+tackles the explicit-duration decoding as explained in Chen, Ruofeng, et al. "CHORD RECOGNITION USING DURATION-EXPLICIT HIDDEN MARKOV MODELS."
+
+fields: 
+self.silDurationPdf - distribution for beginning and end 'sil'  states
+self.durationMap -  durations in frames assigned based on score. 
+
+
+Methods: 
+durations (in #frames) are set for model from a list
+hmm.continuous._DurationHMM._DurationHMM.setDurForStates
+
+
+hmm.continuous._DurationHMM._DurationHMM.getWaitLogLik 
+returns duration liklihoods from self.durationPdf 
+
+ Currently only forced alignment implemented:
+ _viterbiForcedDur()
+  
+ hmm.continuous._DurationHMM._DurationHMM._calcUpdateQuantity
+ handles the recursive update rule
+ 
+ 
+DurationPdf
+================== 
+likelihoods for duration distributions with different durations are precomputed and stored persistently  in a file lookupTable 
+has currently only normal distribution 
+ 
+  
+ExpDurationPdf
+------------------
+exponential distribution based on the wait prob of model
+
+ 
+ _ContinousHMM
+ ================
+_mapB_old() - computing pdfs of GMMs in a table B_map 
+the original method from guyz.   has been changed to allow the persistent storage of p(y_t|x_i) because calc_b_j() is very slow. 
+ persistent storage is controlled by self.usePersistentFiles()
+
+setNonVocal(): listNonVocalFragments: if listNonVocalFragments is empty then no predicted vocal fragments will be taken into account  
+ 
+_mapB() - uses skikit learn for computing pdfs of GMMs: actual computation happens in hmm.continuous.GMHMM.GMHMM._pdfAllFeatures and normalization here
+ uses 
+ 
+ 
+ Path
+==================
+ Convenience class - holds the resulting optimal self.pathRaw (state sequence) 
+ 
+ the backtracking is done in _backtrackForcedDur() for when withDuration = TRUE 
+ and 
+ _backtrackForced() when withDuration = FALSE
+ 
+ 
+ examples.main
+ ================
+ top-level  functions
+ 
+ hmm.examples.main.parsePhoenemeAnnoDursOracle()
+ 	load phoneme names and timestamps
+ 	NOTE: To decode with oracle phonemes durations still phoneme models should be used. 
+	This is so because we use code from LyricsWithModels as utility to expand models to their states. 
+	Therefore we need to load htk models corresponding to each phoneme parsed from annotation. 
+ 

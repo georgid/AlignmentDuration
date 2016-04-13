@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+m	m
+f	f
+n	n
+l	l
+g	k
+h	x
+r	r\'
+y	j
+w	w

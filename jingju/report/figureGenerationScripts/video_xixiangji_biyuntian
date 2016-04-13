@@ -1,0 +1,5 @@
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/JingjuAlignment/runWithParams.py /Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/fold1/xixiangji_biyuntian 3 1
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentEvaluation/tab2PraatAndOpenWithPRaat.py /Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/fold1/xixiangji_biyuntian.syllables_total
+
+select original and generated TextGrid and merge them
