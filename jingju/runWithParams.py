@@ -3,9 +3,7 @@ Created on Dec 5, 2014
 
 @author: joro
 '''
-import logging
 import sys
-import numpy
 from MusicXmlParser import MusicXMLParser
 from hmm.ParametersAlgo import ParametersAlgo
 
@@ -22,16 +20,15 @@ from utilsLyrics.Utilz import getMeanAndStDevError, tokenList2TabFile
 
 def runWithParameters(argv):
     
-    if len(argv) != 4:
+    if len(argv) != 3:
             print ("Tool to get alignment accuracy of one jingju aria with different parameters ")
-            print ("usage: {}   <URIRecording No Extension>  <deviation_INSeconds> withRules".format(argv[0]) )
+            print ("usage: {}   <URIRecording No Extension>  <deviation_INSeconds>".format(argv[0]) )
             sys.exit()
     
     URIrecordingNoExt =  argv[1]
     lyricsTextGrid = URIrecordingNoExt + '.TextGrid'
     
    
-    withRules = int(argv[3])
     correctDurationHTK = 0
     totalDurationHTK = 1
     accuracyListHTK = []
@@ -40,7 +37,7 @@ def runWithParameters(argv):
     
     # load total # different sentences + their rspective ts
 #         fromTss, toTss = loadSectionTimeStamps(sectionAnnoURI)
-    listSentences = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid, withRules) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
+    listSentences = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
     
     if float(argv[2]) == 0.0:
        sys.exit('DEVIATION_IN_SEC cannot be 0.0' ) 
@@ -64,26 +61,31 @@ def runWithParameters(argv):
     totalDuration = 1
     accuracyList = []
     tokenListAlignedAll = []
+
     
     withVocalPrediction = 0
 #     for whichSentence, currSentence in  reversed(list(enumerate(listSentences))):
     for whichSentence, currSentence in  enumerate(listSentences):
         
-        currSentence.printSyllables()
+        if currSentence.isLastSyllLong == '1':
+            pass
+        if currSentence.isNonKeySyllLong == '1':
+            continue
+#         currSentence.printSyllables()
         
         withOracle = 1
-        correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, withRules, URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSentence)
+        correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSentence)
 
         
             
         # calc local acc
         withOracle = 0
-  #      correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle, withRules, URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence)
+#         correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle,  URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence)
 #         if tokenListAligned == None:
 #             continue
 #         tokenListAlignedAll.extend(tokenListAligned)
-#           
-# 
+#            
+#  
 #     tokenAlignedfileName =  tokenList2TabFile(tokenListAlignedAll, URIrecordingNoExt, '.syllables_total_dev_' + str(ParametersAlgo.DEVIATION_IN_SEC))
 
     plotAccuracyList(accuracyListOracle, 'oracle', 'r')
@@ -119,9 +121,9 @@ def calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctD
 
 
 
-def doit( withOracle, withRules, URIrecordingNoExt, musicXMLParser, withDurations, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence):
+def doit( withOracle,  URIrecordingNoExt, musicXMLParser, withDurations, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence):
    
-    currCorrectDuration, currTotalDuration, detectedTokenList, sentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSentence, withOracle, withDurations, withVocalPrediction, withRules) # calc local accuracy
+    currCorrectDuration, currTotalDuration, detectedTokenList, sentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSentence, withOracle, withDurations, withVocalPrediction) # calc local accuracy
     if detectedTokenList != None:
         currAcc, correctDuration, totalDuration = calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctDuration, totalDuration)
     accuracyList.append(currAcc)

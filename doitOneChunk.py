@@ -208,7 +208,6 @@ def alignOneChunk(lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVoc
         
 #     read from file result
     URIRecordingChunkNoExt = URIrecordingNoExt + "_" + str(fromTs) + '_' + str(toTs)
-    tokenLevelAlignedSuffix = '_'
     detectedAlignedfileName = URIRecordingChunkNoExt + tokenLevelAlignedSuffix
     if not os.path.isfile(detectedAlignedfileName):
         #     ###### 2) extract audio features

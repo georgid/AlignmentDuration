@@ -540,6 +540,16 @@ TODO:
 \color inherit
  describe how it works...
  
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: jingju.SyllableJingju.SyllableJingju.calcPhonemeDurations
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

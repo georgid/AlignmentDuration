@@ -10,16 +10,16 @@ from hmm import ParametersAlgo
 
 def runWithParametersAll(argv):
     
-    if len(argv) != 6:
+    if len(argv) != 5:
             print ("Tool to get alignment accuracy of of one jingju aria with different parameters ")
-            print ("usage: {}    <deviation_INSeconds> <withRules> <withVocalPrediciton> <pathToData>".format(argv[0]) )
+            print ("usage: {}    <deviation_INSeconds> <withVocalPrediciton> <pathToData>".format(argv[0]) )
             sys.exit()
 
     path = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat/'
     path = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/'
-    path = argv[4]
+    path = argv[3]
     
-    pathModels = argv[5]
+    pathModels = argv[4]
     parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
     ParametersAlgo.MODELS_DIR = parentDir +   pathModels
@@ -35,16 +35,36 @@ def runWithParametersAll(argv):
     totalDuration = 0
     
     folds = ['fold1/', 'fold2/', 'fold3/']            
-    for fold_ in folds:
-        pathFold = os.path.join(path,fold_)
-        URiREcordings = findFilesByExtension(pathFold, 'wav')
-        if len(URiREcordings) == 0:
-            sys.exit("path {} has no wav recordings".format(pathFold))
-        for URiREcording in URiREcordings:
+    
+#     for fold_ in folds:
+#         pathFold = os.path.join(path,fold_)
+#         URiREcordings = findFilesByExtension(pathFold, 'wav')
+#         if len(URiREcordings) == 0:
+#             sys.exit("path {} has no wav recordings".format(pathFold))
+#         for URiREcording in URiREcordings:
+#             URiREcording = os.path.splitext(URiREcording)[0] 
+#             print "working on " + URiREcording
+#             
+#             a, b, c, d, e, f = runWithParameters( ["dummy", URiREcording,  argv[1], argv[2]] )
+#             
+#             correctDurationHTK += a 
+#             totalDurationHTK += b
+#             
+#             correctDurationOracle += c
+#             totalDurationOracle += d
+#             
+#             correctDuration += e
+#             totalDuration += f
+    URiREcordings = [
+#                     '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/fold2/zhuangyuanmei_daocishi.TextGrid', 
+#                     '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/fold1/xixiangji_biyuntian.TextGrid',
+                    '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/fold1/zhuangyuanmei_tianbofu.TextGrid'
+                    ]    
+    for URiREcording in URiREcordings:
             URiREcording = os.path.splitext(URiREcording)[0] 
             print "working on " + URiREcording
             
-            a, b, c, d, e, f = runWithParameters( ["dummy", URiREcording,  argv[1], argv[2]] )
+            a, b, c, d, e, f = runWithParameters( ["dummy", URiREcording,  argv[1]] )
             
             correctDurationHTK += a 
             totalDurationHTK += b

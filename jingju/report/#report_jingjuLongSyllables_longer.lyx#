@@ -97,9 +97,13 @@ Introduction
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
 
 \color black
-Lyrics are one of the most important aspects of vocal music.
+LONG: Lyrics are one of the most important aspects of vocal music.
  When a performance is heard, most listeners will fol- low the lyrics of
  the main vocal melody.
  The task of lyrics synchronisation (a.k.a.
@@ -107,22 +111,11 @@ Lyrics are one of the most important aspects of vocal music.
  match between two musical respresentations of a composition: the singing
  voice and the corresponding lyrics.
  Tracking lyrics may be used to automatically outline the structure of an
- audio recording (inferred from lyric), 
-\begin_inset Note Note
-status open
+ audio recording (inferred from lyric), which can be beneficial for musicologist
+s or singing students.
+\end_layout
 
 \begin_layout Plain Layout
-
-\color black
-which can be beneficial for musicologists or singing students.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 
 \color black
 The problem of lyrics-to-audio alignment has inherent relation to text-to-speech
@@ -133,8 +126,21 @@ Text-to-speech alignment has been a research field for more than 20 years
  and thus yielded established successful ways for modeling phonemes.
  However applying speech-based modeling techniques directly to musical signal
  did not lead to satisfactory results.
+\end_layout
+
+\end_inset
+
  Compared to speech, singing voice has some substantially different characterist
-ics: harmonics, pitch range, pronunciation, vibrato etc.
+ics
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+: harmonics, pitch range, pronunciation, vibrato etc.
+\end_layout
+
+\end_inset
+
  In particular, unlike speech, for singing voice, durations of vocals have
  on average somewhat higher variation 
 \begin_inset CommandInset citation
@@ -155,11 +161,20 @@ key "kruspekeyword"
 A further confinement of current work is imposed by the speech models: Typically
  phonemes are trained on a large speech corpus and later adapted to singing
  voice.
- This is necessary because of the lack of a big enough annotated training
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+ LONG: This is necessary because of the lack of a big enough annotated training
  singing voice corpus.
  However this is rather cumbersome process and requires a language-specific
  speech corpus.
- Furthermore it has been recently shown that this way might be suboptimal.
+ Furthermore 
+\end_layout
+
+\end_inset
+
+It has been recently shown that this way might be suboptimal.
 \end_layout
 
 \begin_layout Standard
@@ -248,7 +263,17 @@ Banshi indicates tempo as well: usually a banshi changes thoughout an aria
 \end_layout
 
 \begin_layout Standard
-Another complication are the dphtongs and triphtong syllables in the language.
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+LONG: Another complication are the dphtongs and triphtong syllables in the
+ language.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -293,7 +318,7 @@ key "yu2010hidden"
 \begin_layout Standard
 Very few works have trained models directly from singing voice: 
 \color red
-Anna Kruspe, Hansen, lyrically - duration.
+YILE: Anna Kruspe, Hansen, maybe lyrically
 \end_layout
 
 \begin_layout Standard
@@ -470,6 +495,17 @@ IMPL: in SentenceJingju.SentenceJingju.assignReferenceDurations()
 
 \end_inset
 
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+in practice we consider (2 4 last) for sentence with 6-7-8 syllables, (3
+ 6 last) for sentence with 9 or more syllables, and no rules otherwise
+\end_layout
+
+\end_inset
+
  Additionally, we observed in the dataset that usually the final 
 \emph on
 key syllable
@@ -515,6 +551,16 @@ TODO:
 \color inherit
  describe how it works...
  
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: jingju.SyllableJingju.SyllableJingju.calcPhonemeDurations
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -600,7 +646,7 @@ Recent work shows that recognition of phonemes trained on singing voice
  on speech [hansen, kruspe].
  Therefore we have trained directly on singing voice....
 \color red
-MORE
+YILE: MORE
 \end_layout
 
 \begin_layout Section
@@ -896,7 +942,19 @@ overall
 \begin_inset Text
 
 \begin_layout Plain Layout
-56.8
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+56.56
 \end_layout
 
 \end_inset
@@ -905,7 +963,19 @@ overall
 \begin_inset Text
 
 \begin_layout Plain Layout
-66.14
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+48.81
 \end_layout
 
 \end_inset

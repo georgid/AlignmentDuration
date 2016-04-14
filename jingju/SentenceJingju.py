@@ -17,7 +17,7 @@ class SentenceJingju(Lyrics):
     '''
 
 
-    def __init__(self, listSyllables,  beginTs, endTs, fromSyllableIdx, toSyllableIdx, banshiType, withRules):
+    def __init__(self, listSyllables,  beginTs, endTs, fromSyllableIdx, toSyllableIdx, banshiType, withRules, isLastSyllLong, isNonKeySyllLong):
         '''
         '''
         
@@ -44,6 +44,9 @@ class SentenceJingju(Lyrics):
         self.endTs = endTs
         self.fromSyllableIdx = fromSyllableIdx
         self.toSyllableIdx = toSyllableIdx
+        self.isLastSyllLong = isLastSyllLong
+        self.isNonKeySyllLong = isNonKeySyllLong
+        
     
     def assignReferenceDurations(self):
     

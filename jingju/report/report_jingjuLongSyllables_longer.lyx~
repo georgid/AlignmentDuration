@@ -724,10 +724,33 @@ For each state for a phoneme, for the frames of its duration assign 1 in
 
 \end_inset
 
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+2.0 is much better than 0.1.
+ 2.0 is comparable to 1.0.
+ vowel gets longer deviationInSec.
+ Try first reading syllable durs from textGrid and )
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+weighting factor alpha = 0.97
+\end_layout
+
+\end_inset
+
 As a baseline we considered same models but without duration modeling.
  
 \begin_inset Note Comment
-status collapsed
+status open
 
 \begin_layout Plain Layout
 if phoneme is not present in model, approximate by copying the model for
@@ -851,12 +874,21 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-baseline
+oracle
 \end_layout
 
 \end_inset
 </cell>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+baseline
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -865,22 +897,13 @@ DHMM
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-oracle
-\end_layout
-
-\end_inset
-</cell>
 </row>
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-Vowel_duration = 3.0
+overall
 \end_layout
 
 \end_inset
@@ -889,16 +912,28 @@ Vowel_duration = 3.0
 \begin_inset Text
 
 \begin_layout Plain Layout
+79
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
 56.56
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-48
 \end_layout
 
 \end_inset
@@ -907,7 +942,19 @@ Vowel_duration = 3.0
 \begin_inset Text
 
 \begin_layout Plain Layout
-91.87
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+48.81
 \end_layout
 
 \end_inset
@@ -918,7 +965,7 @@ Vowel_duration = 3.0
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+median per lyrics line
 \end_layout
 
 \end_inset
@@ -927,7 +974,7 @@ Vowel_duration = 3.0
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+98
 \end_layout
 
 \end_inset
@@ -936,7 +983,7 @@ Vowel_duration = 3.0
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+75.2
 \end_layout
 
 \end_inset
@@ -945,7 +992,7 @@ Vowel_duration = 3.0
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+82.3
 \end_layout
 
 \end_inset
@@ -1043,7 +1090,7 @@ status open
 
 \begin_layout Plain Layout
 TODO: comment more.
- Not implemented change of banshi rules.
+ Not implemented dou rules.
  So results are without them, median per lyrics line is not real.
 \end_layout
 
@@ -1056,7 +1103,7 @@ TODO: comment more.
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
