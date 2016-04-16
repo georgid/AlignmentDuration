@@ -32,9 +32,10 @@ from hmm.ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
 from align.LyricsParsing import parsePhonemes, getOnsetsFromPhonemeAnnos
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
-# pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
-# if pathPycompmusic not in sys.path:
-#     sys.path.append(pathPycompmusic)
+
+pathPycompmusic = os.path.join(parentDir, 'pycompmusic')
+if pathPycompmusic not in sys.path:
+    sys.path.append(pathPycompmusic)
 
 
 

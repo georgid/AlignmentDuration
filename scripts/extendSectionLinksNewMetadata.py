@@ -162,7 +162,7 @@ def getSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_n
              sectionMetadataAllDict = json.load(f)
     
     # TODO: replace with sections         
-    sectionsMetadataNewNamesDict = sectionMetadataAllDict['phrases']['automatic']
+    sectionsMetadataNewNamesDict = sectionMetadataAllDict['segmentations']
     sectionsMetadataNewLabels = []
     for section in sectionsMetadataNewNamesDict:
 #                     print section
@@ -228,13 +228,13 @@ def replaceSecionsWithNewLabels_GeorgisAnnotations(sectionsMetadataNewLabels, ma
 def write_results_as_json(sectionsMetadataNewLabelsDict, workid, sectionAnnosDict, musicbrainzid, pathSectionAnnosDestination):
     
     URI =  pathSectionAnnosDestination + '/scores/' + workid  + '.json'
-    print "wirting file {} \n dont forget to upload it to http://githubusercontent.com/georgid/turkish_makam_section_dataset/master/scores/".format( sectionsMetadataNewLabelsDict)
+    print "wirting file \n {} \n dont forget to upload it to http://githubusercontent.com/georgid/turkish_makam_section_dataset/master/scores/".format( URI)
     with open(URI, 'w') as f: 
         json.dump(sectionsMetadataNewLabelsDict, f, indent=4)
     
     ##### OUTPUT 2: write edited sectionAnnos
     sectionAnnosURIEdited = pathSectionAnnosDestination + '/audio_metadata/' + musicbrainzid  + '.json'
-    print "wirting file {} \n dont forget to upload it to http://githubusercontent.com/georgid/turkish_makam_section_dataset/master/audio_metadata/".format( sectionAnnosURIEdited)
+    print "wirting file \n{} \n dont forget to upload it to http://githubusercontent.com/georgid/turkish_makam_section_dataset/master/audio_metadata/".format( sectionAnnosURIEdited)
     with open(sectionAnnosURIEdited, 'w') as f8:
         json.dump( sectionAnnosDict, f8, indent=4)
         
