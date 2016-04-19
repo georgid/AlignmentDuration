@@ -17,31 +17,37 @@ class SentenceJingju(Lyrics):
     '''
 
 
-    def __init__(self, listSyllables,  beginTs, endTs, fromSyllableIdx, toSyllableIdx, banshiType, withRules, isLastSyllLong, isNonKeySyllLong):
+    def __init__(self, listSyllables,  beginTs, endTs, fromSyllableIdx, toSyllableIdx, banshiType,  isLastSyllLong, isNonKeySyllLong):
         '''
         '''
         
-                
-        listWords = []
+        listWords = []    
+        #### for Oracle    
+        self.listWordsFromTextGrid = []
         for syllable in listSyllables:
             # word of only one syllable
             word, dummy = createWord([], syllable)
-            listWords.append(word)
+            if syllable.text != 'REST':
+                listWords.append(word)
+            self.listWordsFromTextGrid.append(word)
+        
+        # TODO add syllable rest after each each read syllable
             
         Phonetizer.initLookupTable(True,  'XSAMPA2METUphonemeLookupTableSYNTH')
 
         # load phonetic dict 
 #         Phonetizer.initPhoneticDict('syl2phn46.txt')
         Phonetizer.phoneticDict = createDictSyll2XSAMPA() 
-
+        
+        
         Lyrics.__init__(self, listWords)
         
-        if withRules:
-            self.assignReferenceDurations()
+        self.assignReferenceDurations()
         
         self.banshiType = banshiType
         self.beginTs = beginTs
         self.endTs = endTs
+        ### indices in TextGrid
         self.fromSyllableIdx = fromSyllableIdx
         self.toSyllableIdx = toSyllableIdx
         self.isLastSyllLong = isLastSyllLong
@@ -61,20 +67,7 @@ class SentenceJingju(Lyrics):
                 
                 
 
-    def findIndicesFirstAndSecondDou(self, lenSyllables, firstDouCount, secondDouCount):
-        '''
-        utility method
-        '''
-        count = 0
-        for idx in range(lenSyllables):
-            if self.listWords[idx].syllables[0].text != 'REST':
-                count += 1
-            if count == firstDouCount:
-                firstDouIdx = idx - 1
-            if count == secondDouCount:
-                secondDouIdx = idx - 1
-        
-        return firstDouIdx, secondDouIdx
+
 
 
     def _computeReferenceDurations(self):
@@ -102,7 +95,7 @@ class SentenceJingju(Lyrics):
                 firstDouCount = 3
                 secondDouCount = 6
             
-            firstDouIdx, secondDouIdx = self.findIndicesFirstAndSecondDou(lenSyllables, firstDouCount, secondDouCount)
+            firstDouIdx, secondDouIdx = self._findIndicesFirstAndSecondDou(lenSyllables, firstDouCount, secondDouCount)
                      
             durations[firstDouIdx] = FIRST_DOU_DURATION_RATIO 
             durations[secondDouIdx] = SECOND_DOU_DURATION_RATIO
@@ -118,6 +111,22 @@ class SentenceJingju(Lyrics):
             durRest = (1 - totalAssignedDurations) / float(lenSyllables - lenSyllablesDiffThan0)
         for i in range(len(durations)):
             if durations[i] == 0: durations[i] = durRest
+            
+        durations = numpy.multiply( durations, lenSyllablesNoRests)
         
         return durations
-       
+    
+    def _findIndicesFirstAndSecondDou(self, lenSyllables, firstDouCount, secondDouCount):
+        '''
+        utility method. have to skip rests in counting syllables 
+        '''
+        count = 0
+        for idx in range(lenSyllables):
+            if self.listWords[idx].syllables[0].text != 'REST':
+                count += 1
+            if count == firstDouCount:
+                firstDouIdx = idx 
+            if count == secondDouCount:
+                secondDouIdx = idx 
+        
+        return firstDouIdx, secondDouIdx

@@ -61,7 +61,7 @@ def runWithParameters(argv):
              
             if currToSyllable < tempoIndices[0]-1 or currToSyllable > tempoIndices[1]-1:
                 continue 
-            currCorrectDuration, currTotalDuration = doitOneChunkAlign(URIrecordingNoExt, musicXMLParser,  whichSentence, currSentence, withScores, withVocalPrediction)  
+            currCorrectDuration, currTotalDuration = doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser,  whichSentence, currSentence, withScores, withVocalPrediction)  
             currAcc = currCorrectDuration / currTotalDuration
             print "sentence {}: acc ={:.2f}".format(whichSentence, currAcc)
             correctDuration += currCorrectDuration

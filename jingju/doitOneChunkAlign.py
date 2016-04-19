@@ -70,7 +70,7 @@ def loadLyrics(URIrecordingNoExt, currSentence):
     lyricsWithModels.printWordsAndStates()
 
 
-def doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSentence, withOracle, withDurations, withVocalPrediction):
+def doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSentence, currSentence, withOracle, withDurations, withVocalPrediction):
     '''
     align one chunk only.
     @param musicXMLParser: parsed  score for whole recording
@@ -118,8 +118,8 @@ def doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSent
         phonemesAnnoAll = []
         for idx, syllableIdx in enumerate(range(currSentence.fromSyllableIdx, currSentence.toSyllableIdx+1)): # for each  syllable including silent syllables
             # go through the phonemes. load all 
-            currSyllable = currSentence.listWords[idx].syllables[0]
-            phonemesAnno, syllableTxt = loadPhonemesAnnoOneSyll(URIrecordingNoExt + ANNOTATION_EXT, syllableIdx, currSyllable)
+            currSyllable = currSentence.listWordsFromTextGrid[idx].syllables[0]
+            phonemesAnno, syllableTxt = loadPhonemesAnnoOneSyll(lyricsTextGrid, syllableIdx, currSyllable)
             phonemesAnnoAll.extend(phonemesAnno)
          
 
@@ -129,7 +129,7 @@ def doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSent
     
     detectedTokenList, detectedPath = alignOneChunk( lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha, usePersistentFiles, tokenLevelAlignedSuffix, currSentence.beginTs, currSentence.endTs, URIrecordingNoExt)
      
-    correctDuration, totalDuration = _evalAccuracy(URIrecordingNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSentence.fromSyllableIdx, currSentence.toSyllableIdx  )
+    correctDuration, totalDuration = _evalAccuracy(lyricsTextGrid, detectedTokenList, evalLevel, currSentence.fromSyllableIdx, currSentence.toSyllableIdx  )
     acc = correctDuration / totalDuration
     print "result is: " + str(acc)
     

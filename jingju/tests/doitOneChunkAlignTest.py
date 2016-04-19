@@ -82,7 +82,7 @@ def doitOneChunkTest():
     from hmm.ParametersAlgo import ParametersAlgo
     ParametersAlgo.DEVIATION_IN_SEC = 3
     
-    currCorrectDuration, currTotalDuration, detectedTokenList, currSentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, sentence, withOracle, withDurations, withVocalPrediction, withRules)  
+    currCorrectDuration, currTotalDuration, detectedTokenList, currSentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSentence, sentence, withOracle, withDurations, withVocalPrediction, withRules)  
     
     currAcc = currCorrectDuration / currTotalDuration
     print "sentence {}: acc ={:.2f}".format(whichSentence, currAcc)

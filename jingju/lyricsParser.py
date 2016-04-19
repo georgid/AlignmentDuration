@@ -136,15 +136,19 @@ def divideIntoSentencesFromAnnoWithSil(annotationURI, withRules=1):
     lowLevel = tierAliases.pinyin # read syllables in pinyin 
     syllablesList, dummy =  readNonEmptyTokensTextGrid(annotationURI, lowLevel, 0, -1)
     
-    isLastSyllLevel = tierAliases.isLastSyllLong # read lines (sentences) tier
-    dummy, isLastSyllLongFlags =  readNonEmptyTokensTextGrid(annotationURI, isLastSyllLevel, 0, -1)
     
     isNonKeySyllLevel = tierAliases.isNonKeySyllLong # read lines (sentences) tier
     dummy, isNonKeySyllLongFlags =  readNonEmptyTokensTextGrid(annotationURI, isNonKeySyllLevel, 0, -1)
-
+    
+#     isLastSyllLevel = tierAliases.isLastSyllLong # read lines (sentences) tier
+#     dummy, isLastSyllLongFlags =  readNonEmptyTokensTextGrid(annotationURI, isLastSyllLevel, 0, -1)
+    # stub to avoid preparing isNonKeySyllLong  tier in praat 
+    isLastSyllLongFlags = [[0,0,0]] * len(isNonKeySyllLongFlags)
+    
     syllablePointer = 0
     
     listSentences = []
+    
     for currSentence, isLastSyllLongFlag, isNonKeySyllLongFlag in zip(annotationLinesListNoPauses,isLastSyllLongFlags, isNonKeySyllLongFlags):
         
         currSentenceBeginTs = currSentence[0]
@@ -154,7 +158,7 @@ def divideIntoSentencesFromAnnoWithSil(annotationURI, withRules=1):
          _findBeginEndIndices(syllablesList, syllablePointer, currSentenceBeginTs, currSentenceEndTs, highLevel )
         
         banshiType = 'none'
-        currSentence = SentenceJingju(currSectionSyllables,  currSentenceBeginTs, currSentenceEndTs, fromSyllableIdx, toSyllableIdx, banshiType, withRules,isLastSyllLongFlag[2], isNonKeySyllLongFlag[2] )
+        currSentence = SentenceJingju(currSectionSyllables,  currSentenceBeginTs, currSentenceEndTs, fromSyllableIdx, toSyllableIdx, banshiType, isLastSyllLongFlag[2], isNonKeySyllLongFlag[2] )
         listSentences.append(currSentence)
     
     

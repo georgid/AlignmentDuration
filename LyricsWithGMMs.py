@@ -173,14 +173,23 @@ class LyricsWithGMMs(Lyrics):
             gmm = phoneme.sciKitGMM.gmm   
             idxMiddleState = 0
             
-            deviation = self.deviationInSec
-            if phoneme.isVowelJingju():
-                deviation = self.deviationInSec
-            else: # consonant
-                deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
             
-            currStateWithDur = StateWithDur(None, phoneme.ID, idxMiddleState, 'normal' , deviation, gmm)
-            currStateWithDur.setDurationInFrames(phoneme.durationInNumFrames)
+            if phoneme.ID != 'REST':
+   
+            
+                deviation = self.deviationInSec
+                if phoneme.isVowelJingju():
+                    deviation = self.deviationInSec
+                else: # consonant
+                    deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
+                
+                currStateWithDur = StateWithDur(None, phoneme.ID, idxMiddleState, 'normal' , deviation, gmm)
+                currStateWithDur.setDurationInFrames(phoneme.durationInNumFrames)
+            
+            else:
+                    
+                currStateWithDur = StateWithDur(None, phoneme.ID, idxMiddleState, 'exponential' , deviation, gmm)
+                currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
             
             self.statesNetwork.append(currStateWithDur)
     

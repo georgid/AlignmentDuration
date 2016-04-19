@@ -14,6 +14,8 @@ from matplotlib.pyplot import legend
 
 import matplotlib.pyplot as plt
 from utilsLyrics.Utilz import getMeanAndStDevError, tokenList2TabFile
+import os
+from docutils.parsers.rst.directives import path
 
 
 
@@ -26,7 +28,9 @@ def runWithParameters(argv):
             sys.exit()
     
     URIrecordingNoExt =  argv[1]
-    lyricsTextGrid = URIrecordingNoExt + '.TextGrid'
+    b = os.path.basename(URIrecordingNoExt)
+    lyricsTextGrid =  os.path.join(os.path.dirname(URIrecordingNoExt), os.pardir, os.pardir,b+'.TextGrid')
+    
     
    
     correctDurationHTK = 0
@@ -70,23 +74,23 @@ def runWithParameters(argv):
         if currSentence.isLastSyllLong == '1':
             pass
         if currSentence.isNonKeySyllLong == '1':
-            continue
+            pass
 #         currSentence.printSyllables()
         
         withOracle = 1
-        correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSentence)
+#         correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, URIrecordingNoExt, lyricsTextGrid, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSentence)
 
         
             
         # calc local acc
         withOracle = 0
-#         correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle,  URIrecordingNoExt, musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence)
-#         if tokenListAligned == None:
-#             continue
-#         tokenListAlignedAll.extend(tokenListAligned)
-#            
-#  
-#     tokenAlignedfileName =  tokenList2TabFile(tokenListAlignedAll, URIrecordingNoExt, '.syllables_total_dev_' + str(ParametersAlgo.DEVIATION_IN_SEC))
+        correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle,   URIrecordingNoExt, lyricsTextGrid, musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence)
+        if tokenListAligned == None:
+            continue
+        tokenListAlignedAll.extend(tokenListAligned)
+            
+  
+    tokenAlignedfileName =  tokenList2TabFile(tokenListAlignedAll, URIrecordingNoExt, '.syllables_total_dev_' + str(ParametersAlgo.DEVIATION_IN_SEC))
 
     plotAccuracyList(accuracyListOracle, 'oracle', 'r')
     plotAccuracyList(accuracyList, 'DHMM', 'g')
@@ -121,9 +125,9 @@ def calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctD
 
 
 
-def doit( withOracle,  URIrecordingNoExt, musicXMLParser, withDurations, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence):
+def doit( withOracle,  URIrecordingNoExt, lyricsTextGrid, musicXMLParser, withDurations, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence):
    
-    currCorrectDuration, currTotalDuration, detectedTokenList, sentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSentence, withOracle, withDurations, withVocalPrediction) # calc local accuracy
+    currCorrectDuration, currTotalDuration, detectedTokenList, sentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSentence, currSentence, withOracle,  withDurations, withVocalPrediction) # calc local accuracy
     if detectedTokenList != None:
         currAcc, correctDuration, totalDuration = calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctDuration, totalDuration)
     accuracyList.append(currAcc)

@@ -1,0 +1,672 @@
+#LyX file created by tex2lyx 2.1
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+% -----------------------------------------------
+% Template for FMA2016
+% (based on ISMIR 2010 Template)
+% -----------------------------------------------
+%
+% To compile run:
+% pdflatex fma2016template.tex
+% bibtex fma2016template
+% pdflatex fma2016template.tex (probably twice)
+%
+% requires the newapa Bibtex style
+
+\usepackage{fma2016}
+
+
+% Title.
+% ------
+\title{PAPER TEMPLATE FOR FMA2016}
+
+% Single address
+% To use with only one author or several with the _same address_
+% ---------------
+%\oneauthor
+% {Author}
+% {Affiliation \\ {\tt {author}@fma.edu}}
+%
+\oneauthor
+ {Author1, Author2}
+ {Affiliation \\ {\tt \{author1,author2\}@fma.edu}}
+%
+% Two addresses
+% --------------
+%\twoauthors
+%  {First author, Second Author} {Affiliation1 \\ {\tt author1@fma.edu, author2@afm.edu}}
+%  {Third author} {Affiliation2 \\ {\tt author3@fma.edu}}
+%
+% Three addresses
+% --------------
+%\threeauthors
+%  {First author} {Affiliation1 \\ {\tt author1@fma.edu}}
+%  {Second author} {Affiliation2 \\ {\tt author2@fma.edu}}
+%  {Third author} {Affiliation3 \\ {\tt author3@fma.edu}}
+
+
+
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 2
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+maketitle
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Abstract
+Only provide a short abstract at this place for a full paper. For an extended abstract, this abstract section should be removed.
+\end_layout
+
+\begin_layout Abstract
+The abstract should be placed at the top left column and should contain about 150-200 words. Font size is 9pt. 
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:introduction"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This template includes all the information about format-ting manuscripts for the FMA proceedings. Please follow these guidelines to give the final proceedings a uniform look. If you have questions, please contact the workshop organizers. This template can be downloaded from the FMA website (http://fma-2016.sciencesconf.org).
+\end_layout
+
+\begin_layout Section
+Page Size
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:page_size"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The proceedings will be printed on 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+underline{portrait A4-size paper}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+underline{(21.0cm x 29.7cm)}
+\end_layout
+
+\end_inset
+
+. All material on each page should fit within a rectangle of 17.2cm x 25.2cm, centered on the page, beginning 2.0cm from the top of the page and ending with 2.5cm from the bottom. The left and right margins should be 1.9cm. The text should be in two 8.2cm columns with a 0.8cm gutter. All text must be in a two-column format. Text must be fully justified.
+\end_layout
+
+\begin_layout Section
+Typeset Text
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:typeset_text"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Normal or Body Text
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:body"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Please use a 10pt (point) Times font. Sans-serif or non-proportional fonts can be used only for special purposes, such as distinguishing source code text.
+\end_layout
+
+\begin_layout Standard
+The first paragraph in each section should not be indented, but all other paragraphs should be.
+\end_layout
+
+\begin_layout Subsection
+Title and Authors
+\end_layout
+
+\begin_layout Standard
+The title is 14pt Times, bold, caps, upper case, centered. Authors' names are centered. The lead author's name is to be listed first (left-most), and the co-authors' names after. If the addresses for all authors are the same, include the address only once, centered. If the authors have different addresses, put the addresses, evenly spaced, under each authors' name.
+\end_layout
+
+\begin_layout Subsection
+Page Numbering, Headers and Footers
+\end_layout
+
+\begin_layout Standard
+Do not include headers, footers or page numbers in your submission. These will be added when the publications are assembled.
+\end_layout
+
+\begin_layout Section
+First Level Headings
+\end_layout
+
+\begin_layout Standard
+First level headings are in Times 10pt bold, centered with 1 line of space above the section head, and 1/2 space below it. For a section header immediately followed by a subsection header, the space should be merged.
+\end_layout
+
+\begin_layout Subsection
+Second Level Headings
+\end_layout
+
+\begin_layout Standard
+Second level headings are in Times 10pt bold, flush left, with 1 line of space above the section head, and 1/2 space below it. The first letter of each significant word is capitalized.
+\end_layout
+
+\begin_layout Subsubsection
+Third and Further Level Headings
+\end_layout
+
+\begin_layout Standard
+Third level headings are in Times 10pt italic, flush left, with 1/2 line of space above the section head, and 1/2 space below it. The first letter of each significant word is capitalized.
+\end_layout
+
+\begin_layout Standard
+Using more than three levels of headings is highly discouraged.
+\end_layout
+
+\begin_layout Section
+Footnotes and Figures
+\end_layout
+
+\begin_layout Subsection
+Footnotes
+\end_layout
+
+\begin_layout Standard
+Indicate footnotes with a number in the text.
+\begin_inset Foot
+status collapsed
+
+
+\begin_layout Standard
+This is a footnote.
+\end_layout
+
+\end_inset
+
+ Use 8pt type for footnotes. Place the footnotes at the bottom of the page on which they appear. Precede the footnote with a 0.5pt horizontal rule.
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Float table
+placement h
+wide false
+sideways false
+status open
+
+
+\begin_layout Standard
+\align center
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="2" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Column A 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Column B 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Value 1 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Value 2 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Caption Standard
+
+\begin_layout Standard
+Table captions should be placed below the table.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:example"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Float figure
+wide true
+sideways false
+status open
+
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+centerline{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics 
+	filename figure.png
+	width 7.49cm
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+hskip
+\end_layout
+
+\end_inset
+
+1.5cm
+\begin_inset Graphics 
+	filename figure.png
+	width 7.49cm
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Caption Standard
+
+\begin_layout Standard
+Figure captions should be placed below the figure.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:example"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Figures, Tables and Captions
+\end_layout
+
+\begin_layout Standard
+All artwork must be centered, neat, clean, and legible. All lines should be very dark for purposes of reproduction and art work should not be hand-drawn. It is recommended that all figures make sense in black-and-white form. Figure and table numbers and captions always appear below the figure. Leave 1 line space between the figure or table and the caption. Each figure or table is numbered consecutively. Captions should be Times 10pt. Place tables/figures in text as close to the reference as possible. References to tables and figures should be capitalized, for example: see 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+figref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+fig:example
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+tabref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+tab:example
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+. Figures and tables may extend across both columns to a maximum width of 17.2cm.
+\end_layout
+
+\begin_layout Section
+Equations
+\end_layout
+
+\begin_layout Standard
+Equations should be placed on separated lines and numbered. The number should be on the right side, in parentheses.
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Formula \begin{equation}
+E=mc^{2}
+\end{equation}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Citations
+\end_layout
+
+\begin_layout Standard
+All bibliographical references should be listed at the end, inside a section named 
+\begin_inset Quotes eld
+\end_inset
+
+REFERENCES,
+\begin_inset Quotes erd
+\end_inset
+
+ numbered and in alphabetical order. Also, all references listed should be cited in the text. When referring to a document, use author-year (APA) style. E.g., 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand citet
+after ""
+before ""
+key "Someone2010"
+
+\end_inset
+
+ raised the question whether…
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+Previous research has shown that X always implies Y 
+\begin_inset CommandInset citation
+LatexCommand citep
+after ""
+before ""
+key "Smith2005,Author2000"
+
+\end_inset
+
+.
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand citet
+after ""
+before ""
+key "Writer2004"
+
+\end_inset
+
+ studied…
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+% Reference sheet at: ftp://ftp.tex.ac.uk/tex-archive/macros/latex/contrib/natbib/natnotes.pdf
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "fma2016bibliography"
+options "default"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
