@@ -33,7 +33,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 
 
 import Phonetizer
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 
 
 def validatePhonemesWholeAria(lyricsTextGrid):
@@ -162,7 +162,7 @@ def loadPhonemesAnnoOneSyll(lyricsTextGrid, syllableIdx, syllable):
     
     if syllableText == '': # skip empty syllables
          
-        phoenemeSil = Phoneme('sil')
+        phoenemeSil = PhonemeJingju('sil')
         phoenemeSil.setBeginTs(phonemesAnnoList[fromPhonemeIdx][0])
         phoenemeSil.setEndTs(phonemesAnnoList[fromPhonemeIdx][1])
         phonemesAnno = [phoenemeSil]
@@ -193,7 +193,7 @@ def loadPhonemesAnnoOneSyll(lyricsTextGrid, syllableIdx, syllable):
 def phonemeTokens2Classes( phonemeTokensAnno):
     phonemesAnnoList = []
     for phonemeAnno in phonemeTokensAnno:
-        currPhn = Phoneme(phonemeAnno[2].strip())
+        currPhn = PhonemeJingju(phonemeAnno[2].strip())
         currPhn.setBeginTs(phonemeAnno[0])
         currPhn.setEndTs(phonemeAnno[1])
         phonemesAnnoList.append(currPhn)

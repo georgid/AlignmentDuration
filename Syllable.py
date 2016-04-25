@@ -3,7 +3,7 @@ Created on Oct 8, 2014
 
 @author: joro
 '''
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 import sys
 from Phonetizer import Phonetizer
 from Decoder import logger
@@ -40,19 +40,19 @@ class Syllable(_SyllableBase):
             # instrument
             if self.text == '_SAZ_':
                 # TODO: replace with other model instead of silence
-                self.phonemes.append(Phoneme('sil'))
+                self.phonemes.append(PhonemeJingju('sil'))
                 # TODO: does sp at end of sp make sence? 
-                self.phonemes.append(Phoneme('sp'))
+                self.phonemes.append(PhonemeJingju('sp'))
             
             # text from lyrics
             else:
                 phonemeIDs = Phonetizer.grapheme2Phoneme(self.text)
                 
                 for phonemeID in phonemeIDs:
-                    self.phonemes.append(Phoneme(phonemeID))
+                    self.phonemes.append(PhonemeJingju(phonemeID))
             
                 if self.hasShortPauseAtEnd:
-                    self.phonemes.append(Phoneme('sp'))
+                    self.phonemes.append(PhonemeJingju('sp'))
             
         
         def calcPhonemeDurations(self):

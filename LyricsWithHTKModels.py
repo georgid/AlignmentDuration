@@ -6,7 +6,7 @@ Created on Oct 27, 2014
 from Lyrics import Lyrics
 import os
 import sys
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
@@ -88,7 +88,7 @@ class LyricsWithHTKModels(Lyrics):
         self.spState = StateWithDur(state.mixtures, 'sp', 0, distribType='exponential' )
         self.spState.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
             
-        tmpPhoneme =  Phoneme('sp')
+        tmpPhoneme =  PhonemeJingju('sp')
         spTransMatrix = tmpPhoneme.getTransMatrix(spmodel)
         self.spState.setWaitProb(spTransMatrix[1,1])
         ######## end of create sp state   

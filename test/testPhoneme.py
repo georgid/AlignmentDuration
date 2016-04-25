@@ -3,11 +3,11 @@ Created on Dec 11, 2015
 
 @author: joro
 '''
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 
 
 def testIsVowel():
-    phonemeVowel = Phoneme('i') 
+    phonemeVowel = PhonemeJingju('i') 
     isVowel = phonemeVowel.isVowelJingju()
     
     if isVowel:

@@ -19,7 +19,7 @@ if pathHMMDuration not in sys.path:
     sys.path.append(pathHMMDuration)
 
 
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 from Phonetizer import Phonetizer
 from _SyllableBase import _SyllableBase
 
@@ -43,15 +43,7 @@ class SyllableJingju(_SyllableBase):
         
 
 
-        def createPhonemeClasses(self, phonemesList):
-            '''
-            no mapping to turkish
-            '''
-            for phonemeID in phonemesList:
-                self.phonemes.append(Phoneme(phonemeID))
-            
-            if self.hasShortPauseAtEnd:
-                self.phonemes.append(Phoneme('sp'))
+
 
 
         def expandToPhonemes(self):
@@ -69,11 +61,11 @@ class SyllableJingju(_SyllableBase):
             #  notes for instrument
             if self.text == 'REST' or self.text == '':
                 # TODO: replace with other model instead of silence
-                silPhoneme = Phoneme('sil')
+                silPhoneme = PhonemeJingju('sil')
 #                 silPhoneme.durationInNumFrames = 100
                 self.phonemes.append(silPhoneme)
                 # TODO: does sp at end of sp make sence? 
-#                 self.phonemes.append(Phoneme('sp'))
+#                 self.phonemes.append(PhonemeJingju('sp'))
                 self.hasShortPauseAtEnd = False
                 return
             
@@ -92,11 +84,24 @@ class SyllableJingju(_SyllableBase):
 
               
             ####################
-            #### create Phonemes objects form phoneme IDs. map to turkish METU
+            #### create Phonemes objects form phoneme IDs
             
-            self.createPhonemeClasses(xsampaPhonemes)
+            self._createPhonemeClasses(xsampaPhonemes)
         
-
+        
+        
+        def _createPhonemeClasses(self, phonemesList):
+            '''
+            utility
+            '''
+            for phonemeID in phonemesList:
+                self.phonemes.append(PhonemeJingju(phonemeID))
+            
+            if self.hasShortPauseAtEnd:
+                self.phonemes.append(PhonemeJingju('sp'))
+                
+                
+                
         
         def calcPhonemeDurations(self):
             '''
@@ -154,5 +159,6 @@ class SyllableJingju(_SyllableBase):
                     for currPhoneme in self.phonemes:
                         currPhoneme.durationInNumFrames = self.durationInNumFrames / len(self.phonemes) 
      
+
 
        

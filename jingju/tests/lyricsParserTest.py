@@ -5,7 +5,7 @@ Created on Nov 6, 2015
 '''
 from lyricsParser import splitThePhoneme, splitDuplicateSyllablePhonemes,\
     createSyllable
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 from PhonetizerDict import tokenizePhonemes
 from SyllableJingju import SyllableJingju
 
@@ -13,11 +13,11 @@ from SyllableJingju import SyllableJingju
     
 def testSplitThePhoneme():
     
-    doublePhoneme = Phoneme('En')
+    doublePhoneme = PhonemeJingju('En')
     doublePhoneme.setBeginTs(1.4)
     doublePhoneme.setEndTs(3.4)
     
-    firstPhoeneme = Phoneme('E')
+    firstPhoeneme = PhonemeJingju('E')
     ph1 , ph2 = splitThePhoneme(doublePhoneme, firstPhoeneme)
     print ph1.beginTs, ph2.beginTs
     
@@ -26,12 +26,12 @@ def testMergeDuplicateSyllablePhonemes():
     
     
     
-    doublePhoneme = Phoneme('eI^')
+    doublePhoneme = PhonemeJingju('eI^')
     doublePhoneme.setBeginTs(1.4)
     doublePhoneme.setEndTs(1.8)
     phonemesAnno.append(doublePhoneme)
     
-    doublePhoneme2 = Phoneme('eI^')
+    doublePhoneme2 = PhonemeJingju('eI^')
     doublePhoneme2.setBeginTs(2.4)
     doublePhoneme2.setEndTs(2.8)
     phonemesAnno.append(doublePhoneme2)
@@ -45,12 +45,12 @@ def testMergeDuplicateSyllablePhonemes3():
     phonemesAnno = []
     
     
-    doublePhoneme = Phoneme('j')
+    doublePhoneme = PhonemeJingju('j')
     doublePhoneme.setBeginTs(1.4)
     doublePhoneme.setEndTs(1.8)
     phonemesAnno.append(doublePhoneme)
     
-    doublePhoneme2 = Phoneme('En')
+    doublePhoneme2 = PhonemeJingju('En')
     doublePhoneme2.setBeginTs(2.4)
     doublePhoneme2.setEndTs(2.8)
     phonemesAnno.append(doublePhoneme2)
@@ -71,22 +71,22 @@ def testMergeDuplicateSyllablePhonemes2():
     
     
     
-    doublePhoneme = Phoneme('@')
+    doublePhoneme = PhonemeJingju('@')
     doublePhoneme.setBeginTs(1.4)
     doublePhoneme.setEndTs(1.8)
     phonemesAnno.append(doublePhoneme)
     
-    doublePhoneme2 = Phoneme("r\\'")
+    doublePhoneme2 = PhonemeJingju("r\\'")
     doublePhoneme2.setBeginTs(2.4)
     doublePhoneme2.setEndTs(2.8)
     phonemesAnno.append(doublePhoneme2)
     
-    doublePhoneme3 = Phoneme('')
+    doublePhoneme3 = PhonemeJingju('')
     doublePhoneme3.setBeginTs(2.9)
     doublePhoneme3.setEndTs(2.94)
     phonemesAnno.append(doublePhoneme3)
     
-    doublePhoneme4 = Phoneme("r\\'")
+    doublePhoneme4 = PhonemeJingju("r\\'")
     doublePhoneme4.setBeginTs(3.1)
     doublePhoneme4.setEndTs(3.9)
     phonemesAnno.append(doublePhoneme4)

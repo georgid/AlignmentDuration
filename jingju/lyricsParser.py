@@ -41,7 +41,7 @@ pathHMMDuration = os.path.join(parentDir, 'AlignmentDuration')
 if pathHMMDuration not in sys.path:
     sys.path.append(pathHMMDuration)
 
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 from Phonetizer import Phonetizer
 
 from SyllableJingju import SyllableJingju
@@ -101,8 +101,8 @@ def splitThePhoneme(doublePhoneme, firstPhoeneme, syllableIdx):
     idx = doublePhoneme.ID.find(firstPhoenemeTxt) # find substring
     secondPhonemeTxt = doublePhoneme.ID[idx + len(firstPhoenemeTxt):]
 
-    splitPhoneme1 = Phoneme(firstPhoenemeTxt)
-    splitPhoneme2 = Phoneme(secondPhonemeTxt)
+    splitPhoneme1 = PhonemeJingju(firstPhoenemeTxt)
+    splitPhoneme2 = PhonemeJingju(secondPhonemeTxt)
     
     from hmm.ParametersAlgo import ParametersAlgo
     

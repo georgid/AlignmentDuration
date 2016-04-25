@@ -9,7 +9,7 @@ import numpy
 from sciKitGMM import SciKitGMM
 from utilsLyrics.Utilz import loadTextFile
 
-class Phoneme:
+class PhonemeJingju:
     def __init__(self, phonemeID):
         self.ID = phonemeID;
         self.durationInMinUnit = None;

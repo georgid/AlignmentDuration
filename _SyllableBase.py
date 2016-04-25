@@ -9,7 +9,7 @@ Created on Oct 8, 2014
 
 @author: joro
 '''
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 import sys
 from Phonetizer import Phonetizer
 from Decoder import logger

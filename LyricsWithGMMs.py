@@ -8,7 +8,7 @@ Created on Nov 18, 2015
 from Lyrics import Lyrics
 import os
 import sys
-from Phoneme import Phoneme
+from PhonemeJingju import PhonemeJingju
 from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
@@ -45,7 +45,7 @@ MODELS_SCRIPTS = currDir + '/models_jingju/'
 
 class LyricsWithGMMs(Lyrics):
     '''
-    lyrics with each Phoneme having a link to a model of scikit learn GMMs
+    lyrics with each PhonemeJingju having a link to a model of scikit learn GMMs
     No handling of durationInMinUnit information. For it see Decoder.Decoder.decodeAudio 
     '''
 
