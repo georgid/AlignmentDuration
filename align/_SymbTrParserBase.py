@@ -49,10 +49,14 @@ class _SymbTrParserBase(object):
 
    ##################################################################################
     
-    def _loadSectionBoundaries(self, sectionMetadata):
-        scoreSectionAnnos = sectionMetadata['sections']
+def _loadSectionBoundaries(self, sectionMetadata):
+        if hasattr(sectionMetadata, 'segmentations'):
+            scoreSectionAnnos = sectionMetadata['segmentations'] # if with_section_annotations, it is called segmentations because of symbtrdataextractor
+        else:
+            scoreSectionAnnos = sectionMetadata['sections']
+        
         for section in scoreSectionAnnos:
-                    sectionNew = ScoreSection(section['name'],  int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure']) 
+                    sectionNew = ScoreSection(section['name'],  int(section['start_note']), int(section['end_note']), section['melodic_structure'], section['lyric_structure']) 
                     
                     self.sections.append(sectionNew)
     
