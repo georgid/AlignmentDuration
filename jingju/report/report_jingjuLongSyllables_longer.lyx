@@ -1273,6 +1273,12 @@ status open
 \begin_layout Plain Layout
 IMPL: run with commit: https://github.com/georgid/JingjuAlignment/commit/87e593d2
 c32c6a385c69691370f2bb8ee77328cf
+\begin_inset Newline newline
+\end_inset
+
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/jingju
+/runWithParamsAll.py 2 0 /Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/ly
+rics2audio/praat_rules/3folds/ 3
 \end_layout
 
 \begin_layout Plain Layout
