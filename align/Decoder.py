@@ -9,7 +9,7 @@ import logging
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDetected,\
     expandlyrics2SyllableList
 from Constants import NUM_DIMENSIONS, numMixtures
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 from align.visualize import visualizeMatrix, visualizeBMap, visualizePath,\
     visualizeTransMatrix
 from onsets.OnsetSmooting import OnsetSmoothingFunction
@@ -25,7 +25,7 @@ import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= 1
+WITH_DURATIONS= 0
 
 
 

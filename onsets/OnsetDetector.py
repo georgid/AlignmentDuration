@@ -6,7 +6,7 @@ Created on Mar 4, 2016
 import os
 import subprocess
 import numpy
-from hmm.ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 import math
 import logging
 

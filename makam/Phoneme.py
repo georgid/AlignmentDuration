@@ -5,7 +5,7 @@ Created on Oct 8, 2014
 '''
 import sys
 import numpy
-from hmm.ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 class Phoneme:
     def __init__(self, phonemeID):
         self.ID = phonemeID;

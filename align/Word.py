@@ -3,7 +3,7 @@ Created on Oct 8, 2014
 
 @author: joro
 '''
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 
 class Word():
         ''' just a list of syllables. order  matters '''

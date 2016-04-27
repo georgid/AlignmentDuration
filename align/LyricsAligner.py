@@ -28,7 +28,7 @@ import json
 import subprocess
 from makam.MakamRecording import parseSectionLinks, MakamRecording
 from align.Decoder import logger, DETECTION_TOKEN_LEVEL, WITH_DURATIONS, Decoder
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
 from align.LyricsParsing import parsePhonemes, getOnsetsFromPhonemeAnnos
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 

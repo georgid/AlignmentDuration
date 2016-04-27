@@ -5,7 +5,7 @@ Created on Dec 5, 2014
 '''
 import sys
 from MusicXmlParser import MusicXMLParser
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 
 from doitOneChunkAlign import doitOneChunkAlign
 from lyricsParser import divideIntoSentencesFromAnnoWithSil

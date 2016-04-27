@@ -47,7 +47,7 @@ from doitOneChunk import alignOneChunk
 pathHMM = os.path.join(parentDir, 'HMMDuration')
 from hmm.examples.main  import   loadSmallAudioFragment
 # from hmm.examples.main  import loadSmallAudioFragmentOracle
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 
 
 

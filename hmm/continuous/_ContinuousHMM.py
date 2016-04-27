@@ -10,7 +10,7 @@ import os
 import sys
 import logging
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
-from hmm.ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 from onsets.OnsetDetector import tsToFrameNumber
 # from sklearn.utils.extmath import logsumexp
 

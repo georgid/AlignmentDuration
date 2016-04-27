@@ -39,7 +39,7 @@ PATH_TO_CONFIG_FILES= currDir + '/input_files/'
 
 parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 
 from csv import reader
 

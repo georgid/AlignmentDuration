@@ -11,7 +11,7 @@ from makam.Phoneme import Phoneme
 import os
 import logging
 from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 from onsets.OnsetDetector import frameNumberToTs
 
 

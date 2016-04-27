@@ -18,7 +18,7 @@ from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 # 
 # if pathJingju not in sys.path:
 #     sys.path.append(pathJingju )
-from hmm.ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 import logging
 from align.LyricsParsing import loadOraclePhonemes
 

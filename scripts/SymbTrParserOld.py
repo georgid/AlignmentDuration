@@ -8,7 +8,7 @@ import codecs
 import os
 import sys
 from align.Word import Word, createWord
-from align.Syllable import Syllable, MINIMAL_DURATION_UNIT
+from makam.Syllable import Syllable, MINIMAL_DURATION_UNIT
 from align.Lyrics import Lyrics
 from _SymbTrParserBaseOld import _SymbTrParserBaseOld
 from align.Phonetizer import Phonetizer

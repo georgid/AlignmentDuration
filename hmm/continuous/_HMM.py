@@ -8,7 +8,7 @@ import numpy
 import sys
 from numpy.core.numeric import Infinity
 from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
-from hmm.ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 from align.Decoder import visualizeMatrix
 from scipy.constants.constants import psi
 from align import Decoder

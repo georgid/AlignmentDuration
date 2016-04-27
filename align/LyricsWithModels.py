@@ -10,7 +10,7 @@ from makam.Phoneme import Phoneme
 from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
     

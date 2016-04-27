@@ -24,7 +24,7 @@ from align.Phonetizer import Phonetizer
 from align._SyllableBase import _SyllableBase
 
 
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 import logging 
 
 logger = logging.getLogger(__name__)

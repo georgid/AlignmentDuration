@@ -102,7 +102,7 @@ def splitThePhoneme(doublePhoneme, firstPhoeneme, syllableIdx):
     splitPhoneme1 = PhonemeJingju(firstPhoenemeTxt)
     splitPhoneme2 = PhonemeJingju(secondPhonemeTxt)
     
-    from hmm.ParametersAlgo import ParametersAlgo
+    from ParametersAlgo import ParametersAlgo
     
     splitPhoneme1.setBeginTs(doublePhoneme.beginTs)
     if not splitPhoneme1.isVowelJingju(): # first is consonant

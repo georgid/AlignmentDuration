@@ -25,7 +25,7 @@ from htkparser.htk_converter import HtkConverter
 from Decoder import logger
 
 from hmm.Parameters import MAX_SILENCE_DURATION
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 
 # htkModelParser = os.path.join(parentDir, 'htk2s3')
 # sys.path.append(htkModelParser)

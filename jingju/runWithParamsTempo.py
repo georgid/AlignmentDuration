@@ -8,7 +8,7 @@ import sys
 import numpy
 from MusicXmlParser import MusicXMLParser
 from lyricsParser import divideIntoSentencesFromAnnoOld
-from hmm.ParametersAlgo import ParametersAlgo
+from ParametersAlgo import ParametersAlgo
 from doitOneChunkAlign import doitOneChunkAlign
 
 def runWithParameters(argv):

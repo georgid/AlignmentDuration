@@ -79,7 +79,7 @@ def doitOneChunkTest():
     withOracle  = 1
     withRules = 1
     
-    from hmm.ParametersAlgo import ParametersAlgo
+    from ParametersAlgo import ParametersAlgo
     ParametersAlgo.DEVIATION_IN_SEC = 3
     
     currCorrectDuration, currTotalDuration, detectedTokenList, currSentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSentence, sentence, withOracle, withDurations, withVocalPrediction, withRules)  
