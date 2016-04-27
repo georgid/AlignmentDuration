@@ -20,8 +20,8 @@ if pathHMMDuration not in sys.path:
 
 
 from PhonemeJingju import PhonemeJingju
-from Phonetizer import Phonetizer
-from _SyllableBase import _SyllableBase
+from align.Phonetizer import Phonetizer
+from align._SyllableBase import _SyllableBase
 
 
 from hmm.ParametersAlgo import ParametersAlgo

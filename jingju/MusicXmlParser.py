@@ -11,11 +11,8 @@ from cjklib.characterlookup import CharacterLookup
 
 import logging
 
-from Lyrics import Lyrics
-from Word import Word
 from lyricsParser import stripPunctuationSigns, \
      createSyllable
-from Phonetizer import Phonetizer
 import sys
 import os.path
 from SentenceJingju import SentenceJingju
@@ -210,20 +207,6 @@ class MusicXMLParser(object):
 
 
 
-        
-
-
-def createWord(syllablesInCurrWord, currSyllable):
-        '''
-        create a new word ending in currect syllable  
-        '''        
-        currSyllable.text = currSyllable.text.rstrip()
-        currSyllable.setHasShortPauseAtEnd(True)
-        syllablesInCurrWord.append(currSyllable)
-    # create new word
-        word = Word(syllablesInCurrWord)
-        return word, syllablesInCurrWord   
-    
     
 
 def mandarinToPinyin(mandarinChar):

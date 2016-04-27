@@ -26,7 +26,7 @@ import os
 import sys
 import json
 import subprocess
-from align.MakamRecording import parseSectionLinks, MakamRecording
+from makam.MakamRecording import parseSectionLinks, MakamRecording
 from align.Decoder import logger, DETECTION_TOKEN_LEVEL, WITH_DURATIONS, Decoder
 from hmm.ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
@@ -52,7 +52,7 @@ modelDIR = currDir + '/model/'
 HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
-from MakamScore import  loadMakamScore2
+from makam.MakamScore import  loadMakamScore2
 from hmm.examples.main import loadSmallAudioFragment,\
     loadSmallAudioFragmentOracle
 

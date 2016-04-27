@@ -3,7 +3,6 @@ Created on Oct 8, 2014
 
 @author: joro
 '''
-from Phonetizer import Phonetizer
 import sys
 import numpy
 from sciKitGMM import SciKitGMM

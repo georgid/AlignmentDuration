@@ -8,7 +8,6 @@ visualizes errors for different as graph. matplotlib
 '''
 import sys
 import os
-from Phonetizer import Phonetizer
 from matplotlib.axes import Axes
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
 

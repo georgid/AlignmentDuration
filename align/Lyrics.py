@@ -3,7 +3,6 @@ Created on Oct 27, 2014
 
 @author: joro
 '''
-from Phoneme import Phoneme
 
 
 class Lyrics(object):

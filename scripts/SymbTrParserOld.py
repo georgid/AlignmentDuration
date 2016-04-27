@@ -7,7 +7,7 @@ contains SymbTr Parser class
 import codecs
 import os
 import sys
-from align.Word import Word
+from align.Word import Word, createWord
 from align.Syllable import Syllable, MINIMAL_DURATION_UNIT
 from align.Lyrics import Lyrics
 from _SymbTrParserBaseOld import _SymbTrParserBaseOld
@@ -308,16 +308,6 @@ class SymbTrParserOld(_SymbTrParserBaseOld):
      
 # begin index does not update, because no change in aranagme. 
 
-def createWord(syllablesInCurrWord, currSyllable):
-        '''
-        create a new word ending in currect syllable  
-        '''        
-        currSyllable.text = currSyllable.text.rstrip()
-        currSyllable.setHasShortPauseAtEnd(False)
-        syllablesInCurrWord.append(currSyllable)
-    # create new word
-        word = Word(syllablesInCurrWord)
-        return word, syllablesInCurrWord
     
 
 #################################################################################

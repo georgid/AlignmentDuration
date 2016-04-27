@@ -5,6 +5,7 @@ Created on Nov 5, 2015
 '''
 import os
 import sys
+from utilsLyrics.Utilz import readLookupTable
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
@@ -13,7 +14,6 @@ if pathHMMDuration not in sys.path:
     sys.path.append(pathHMMDuration)
 
 
-import Phonetizer
 
 from collections import deque
 
@@ -26,7 +26,7 @@ def createDictSyll2XSAMPA():
         ##### load pinyin syllables
         currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
         
-        pinyinSyllDict = Phonetizer.readLookupTable(os.path.join(currDir, 'syl2phn46.txt'))
+        pinyinSyllDict = readLookupTable(os.path.join(currDir, 'syl2phn46.txt'))
 
         ###### load mappings for consonants, vowels, specials
         consonants, consonants2, vocals, specials = loadXSAMPAPhonetizers()
@@ -82,10 +82,10 @@ def loadXSAMPAPhonetizers():
     '''
     currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 
-    consonants = Phonetizer.readLookupTable(os.path.join(currDir, 'syl2phoneme.consonants.txt'))
-    consonants2 = Phonetizer.readLookupTable(os.path.join(currDir, 'syl2phoneme.consonants2.txt'))
-    vocals = Phonetizer.readLookupTable(os.path.join(currDir, 'syl2phoneme.vowels.txt'))
-    specials = Phonetizer.readLookupTable(os.path.join(currDir, 'syl2phoneme.specials.txt'))
+    consonants = readLookupTable(os.path.join(currDir, 'syl2phoneme.consonants.txt'))
+    consonants2 = readLookupTable(os.path.join(currDir, 'syl2phoneme.consonants2.txt'))
+    vocals = readLookupTable(os.path.join(currDir, 'syl2phoneme.vowels.txt'))
+    specials = readLookupTable(os.path.join(currDir, 'syl2phoneme.specials.txt'))
     return consonants, consonants2, vocals, specials
 
 

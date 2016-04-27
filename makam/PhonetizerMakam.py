@@ -1,10 +1,10 @@
 '''
     phonetizer class used to do the expansion of the graphemes in a syllable to phonemes
-    For all entities of lyrics the g2p rules are the same, so PhonetizerMakam.lookupTable should be instantiated only once on highest level  
+    For all entities of lyrics the g2p rules are the same, so Phonetizer.lookupTable should be instantiated only once on highest level  
 @author: joro
 '''
 import sys
-from utilsLyrics.Utilz import readLookupTable
+from align.Phonetizer import Phonetizer
 
 
 
@@ -34,34 +34,18 @@ def combineDiacriticsChars( listA, utfCode):
     return  listA
 
 
-class PhonetizerMakam(object):
-    lookupTable = dict()
-    withSynthesis = 0
-    phoneticDict = dict() 
-    
-    @staticmethod
-    def initLookupTable(withSynthesis, URItable):
-        # if not yet created:
-        if not PhonetizerMakam.lookupTable:
-            PhonetizerMakam.lookupTable = readLookupTable(URItable)
-            PhonetizerMakam.withSynthesis = withSynthesis
-    
-    @staticmethod    
-    def initPhoneticDict(URLdict):
-        # if not yet created:
-        if not PhonetizerMakam.phoneticDict:
-            PhonetizerMakam.phoneticDict = readLookupTable(URLdict)
+
         
     
        
 
-    @staticmethod
-    def grapheme2phonemeList(grapheme, phonemesList):
+#     @staticmethod
+def grapheme2phonemeList(grapheme, phonemesList):
         '''
         map a grapheme to a list of phonemes. used in JingJu 
         '''
-        if grapheme in PhonetizerMakam.lookupTable:
-            currPhoneme = PhonetizerMakam.lookupTable[grapheme]
+        if grapheme in Phonetizer.lookupTable:
+            currPhoneme = Phonetizer.lookupTable[grapheme]
             if currPhoneme != "":
                 if isinstance(currPhoneme, list):
                     phonemesList.extend(currPhoneme)
@@ -71,8 +55,8 @@ class PhonetizerMakam(object):
             sys.exit("grapheme {0} not in graheme-to-phoneme lookup table".format(grapheme))
         return phonemesList
     
-    @staticmethod
-    def grapheme2Phoneme(word):
+#     @staticmethod
+def grapheme2Phoneme(word):
         '''
         grapheme2phoneme for a whole word
         '''
@@ -103,7 +87,7 @@ class PhonetizerMakam(object):
 
         for i in range(len(s)):
             s[i] = s[i].lower()
-            phonemesList = PhonetizerMakam.grapheme2phonemeList(s[i], phonemesList)
+            phonemesList = grapheme2phonemeList(s[i], phonemesList)
         
                 
         return phonemesList
@@ -111,7 +95,7 @@ class PhonetizerMakam(object):
 
 
 if __name__=="__main__":
-#      PhonetizerMakam.initLookupTable(True, 'grapheme2METUphonemeLookupTableSYNTH' )
-    PhonetizerMakam.initLookupTable(False, 'phonemeMandarin2METUphonemeLookupTable' )
-    print PhonetizerMakam.lookupTable
+#      Phonetizer.initLookupTable(True, 'grapheme2METUphonemeLookupTableSYNTH' )
+    Phonetizer.initLookupTable(False, 'phonemeMandarin2METUphonemeLookupTable' )
+    print Phonetizer.lookupTable
     

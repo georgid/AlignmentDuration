@@ -5,10 +5,10 @@ Created on Dec 9, 2015
 '''
 from PhonetizerDict import createDictSyll2XSAMPA
 
-from Phonetizer import Phonetizer
-from Lyrics import Lyrics
-from SymbTrParser import createWord
+from align.Phonetizer import Phonetizer
+from align.Lyrics import Lyrics
 import numpy
+from align.Word import createWord
 
 
 class SentenceJingju(Lyrics):

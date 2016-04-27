@@ -32,7 +32,6 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 
 
 
-import Phonetizer
 from PhonemeJingju import PhonemeJingju
 
 

@@ -3,6 +3,7 @@ Created on Oct 8, 2014
 
 @author: joro
 '''
+from hmm.ParametersAlgo import ParametersAlgo
 
 class Word():
         ''' just a list of syllables. order  matters '''
@@ -48,7 +49,17 @@ class Word():
  
                          
 
-
+def createWord(syllablesInCurrWord, currSyllable):
+        '''
+        create a new word ending in currect syllable  
+        '''        
+        currSyllable.text = currSyllable.text.rstrip()
+        currSyllable.setHasShortPauseAtEnd(ParametersAlgo.WITH_SHORT_PAUSES)
+        syllablesInCurrWord.append(currSyllable)
+    # create new word
+        word = Word(syllablesInCurrWord)
+        return word, syllablesInCurrWord
+    
             
             
             

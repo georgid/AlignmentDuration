@@ -38,13 +38,8 @@ from htkparser.htk_converter import HtkConverter
 
 
 
-from Phonetizer import Phonetizer
 
-from SymbTrParser import createWord
-
-from Lyrics import Lyrics
     
-from parse.TextGrid_Parsing import readNonEmptyTokensTextGrid
 from AccuracyEvaluator import _evalAccuracy
 from doitOneChunk import alignOneChunk
 

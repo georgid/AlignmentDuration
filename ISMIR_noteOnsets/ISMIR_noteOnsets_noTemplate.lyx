@@ -1,0 +1,824 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{multicol}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 10page%
+\topmargin 10theight%
+\rightmargin 10page%
+\bottommargin 10pheight%
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Abstract
+Lyrics-to-audio alignment aims to automatically match given lyrics and musical
+ audio.
+ In this work we extend a state of the art approach for lyrics-to-audio
+ alignment with information about note onsets.
+ In particular, we consider the fact that proceeding to next lyrics syllable
+ usually implies a change to a new musical note.
+ To this end we formulate rules that guide the transition between consecutive
+ phonemes when a note onset in present.
+ These rules are incorporated into the transition matrix of a variable time
+ hidden Markov model (VTHMM) phonetic recognizer based on mel frequency
+ cepstral coefficients (MFCCs), which are extracted in a way robust to backgroun
+d instrumental sounds.
+ An estimated melodic contour is input to an automatic note transcription
+ algorithm, from which the note onsets are derived.
+ The proposed approach is evaluated on 12 acapella audio recordings of Turkish
+ Makam music using a word-level accuracy measure.
+ Evaluation of the alignment is also presented on a polyphonic version of
+ the dataset in order to assess how degradation in the extracted onsets
+ affects performance.
+ Results show that the proposed model outperforms a baseline approach unaware
+ of onset transition rules.
+ To the best of our knowledge, this is the first work tackling lyrics tracking,
+ which combines timbral features with a melodic feature.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Compare two onset detects,
+\end_layout
+
+\begin_layout Plain Layout
+compare two pitch detect algs: is better voicing leading to more corect
+ onsets ? 
+\end_layout
+
+\begin_layout Plain Layout
+Increase recall even if more false positives.
+ (well explained in Fujiharas journal paper)
+\end_layout
+
+\begin_layout Plain Layout
+-----------------
+\end_layout
+
+\begin_layout Plain Layout
+Note onsets are input to the alignment as a binary variable.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+noteOnstes field of _HMM.
+ set in hmm.continuous._HMM._HMM.initDecodingParameters and use in hmm.continuous._HMM.
+_HMM.viterbi_fast
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Decoding: non-time-homogeneous transiotion matrix
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+two transition matrices: hmm.continuous._HMM.transMAtrix and hmm.continuous._HMM.trans
+MAtrixOnsets
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+--------
+\end_layout
+
+\begin_layout Plain Layout
+1.
+ do alignment
+\end_layout
+
+\begin_layout Plain Layout
+2.
+ either do filler model (ONLY one state?) or alignment polyphionic 
+\end_layout
+
+\begin_layout Plain Layout
+3.
+ if alignment polyphonic -> lyrics refinement as a way to do structure detection.
+ If filler compare acapella and polyphonic
+\end_layout
+
+\begin_layout Plain Layout
+----
+\end_layout
+
+\begin_layout Plain Layout
+sanity check : test model with oracle note onsets 
+\end_layout
+
+\begin_layout Plain Layout
+weight with a coeff around candidate note onset 
+\end_layout
+
+\begin_layout Plain Layout
+-----
+\end_layout
+
+\begin_layout Plain Layout
+data: add more.
+ currently they are 6 here: 
+\end_layout
+
+\begin_layout Plain Layout
+--------
+\end_layout
+
+\begin_layout Plain Layout
+To our knowledge there has not been any work combining these two concepts.
+ With the recent advancement of algorithms for automatic note transcription,
+ the use of reliably detected note onsets becomes reasonable.
+  
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Lyrics are one of the most important aspects of vocal music.
+ When a performance is heard, most listeners will follow the lyrics of the
+ main vocal melody.
+ The goal of automatic lyrics-to-audio alignment is to generate a temporal
+ relationship between textual lyrics and sung audio.
+ In this particular work, the goal is to detect the start and end times
+ of every phrase from lyrics.
+\end_layout
+
+\begin_layout Standard
+In recent years there has been substantial amount of work on the extraction
+ of pitch of predominant singing voice from polyphonic music 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "salamon2014melody"
+
+\end_inset
+
+.
+ Some algorithms have been tailored to the music characteristics of a particular
+ singing tradition [sercan, nadine, ].
+ This has paved the way to an increased accuracy of note transcription algorithm
+s, one of the reasons for which being that they take usually as input only
+ the detected pitch contour [M.
+ Mauch - tutorial].
+ On the other hand, only few recent works have adressed polyphonic lyrics-to-aud
+io alignment, which remains a hard task [].
+ In particular, to model the timbre of the spectral components of singing
+ voice might not be straight forward.
+ Why? ...
+\end_layout
+
+\begin_layout Standard
+
+\color red
+TODO: about the phenomenon of singing and onset.
+ In a change of a syllable there is a change in onset.
+
+\color inherit
+ 
+\end_layout
+
+\begin_layout Standard
+In this work we present a novel idea of how to extend a standard approach
+ to lyrics-to-audio alignemnt by utilizing detected note onsets of autmatically
+ transcribed notes as a complementary cue.
+ We evaluate the alignment of words in turkish makam.
+ We run a state of the art note segmenter [] to obtain candidate note onsets
+ based on a pitch extraction developed in particular for this music tradition.
+ 
+\end_layout
+
+\begin_layout Section
+Related work
+\end_layout
+
+\begin_layout Standard
+Lyric-to-audio alignment
+\end_layout
+
+\begin_layout Section
+Method
+\end_layout
+
+\begin_layout Standard
+A general overview of the system is presented in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "overview"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename systemOverview
+	width 80page%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Overview of the modules of the proposed approach.
+ Leftmost column represents audio preprocessing steps, while the middle
+ column shows how not onsets are modeled.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "overview"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For each phoneme a HMM is trained from a corpus of turkish speech utilizing
+ MFCCs.
+ The lyrics words are expanded to phonemes based on grapheme-to-phoneme
+ rules for Turkish [12, Table 1] and the trained HMMs are concatenated into
+ a phonemes network.
+ To keep simple the transition matrix only one HMM-state per phoneme and
+ its trained wait probability is considered.
+ A phoneme for silence is added at end of each word, which is optional on
+ decoding.
+ This way it will appear in the detected sequence only if there is some
+ non-vocal part or the singer makes a break for breathing.
+\end_layout
+
+\begin_layout Subsection
+Transition model
+\end_layout
+
+\begin_layout Standard
+We utilize a super transition matrix with time-dependent self-transition
+ probabilities which falls in the general category of variable transition
+ HMM (VTHMM) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "johnson2005capacity"
+
+\end_inset
+
+.
+ For particular states transitions are modified depending on the presence
+ of a note onset.
+ To this end we introduce a binary onset feature 
+\begin_inset Formula $\Delta n_{t}=(0,1)$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $t'$
+\end_inset
+
+ be the timestamp of the closest to given time t onset 
+\begin_inset Formula $\Delta n_{t'}=1$
+\end_inset
+
+.
+ Now the transition probability can be rewritten as 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+a_{ij}(t)=\begin{cases}
+a_{ij}-g(t,t')q, & R1\text{\mbox{\thinspace{or}\thinspace}}R3\\
+a_{ij}+g(t,t')q, & R2\thinspace\mbox{or\thinspace}R4
+\end{cases}
+\]
+
+\end_inset
+
+
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: Matrix is defined in align.Decoder.Decoder._constructTransMatrix and
+ used in decoding in hmm.continuous._HMM._HMM.viterbi_fast_forced()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The term 
+\begin_inset Formula $q$
+\end_inset
+
+ is a constant whereas is a weighting factor sampled from a normal distribution
+ with mean at t': 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+g(t,t')=\begin{cases}
+g(t;t',\sigma^{2})\sim\backslash mathcal\{N\}(t',\backslash sigma\mathcircumflex\{2\}) & |t-t'|<\sigma\\
+0 & else
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Higher 
+\begin_inset Formula $r$
+\end_inset
+
+ encourages and higher 
+\begin_inset Formula $q$
+\end_inset
+
+ discourages transiting from state 
+\begin_inset Formula $i$
+\end_inset
+
+ at previous frame 
+\begin_inset Formula $t-1$
+\end_inset
+
+, having an onset at time 
+\begin_inset Formula $t$
+\end_inset
+
+.
+ Rules R1 to R4 are derived from the phonemes sequence by picking the states
+ i and j for two consecutive phonemes.
+ Let 
+\begin_inset Formula $V$
+\end_inset
+
+ stands for vowel, 
+\begin_inset Formula $C$
+\end_inset
+
+ for consonant and 
+\begin_inset Formula $VL$
+\end_inset
+
+ for vowel or liquids (LL, M, NN) or the semivowel Y.
+ Rules 
+\begin_inset Formula $R1$
+\end_inset
+
+ and 
+\begin_inset Formula $R2$
+\end_inset
+
+ represent inter-syllable transition, e.g.
+ phoneme 
+\begin_inset Formula $i$
+\end_inset
+
+ is followed by phoneme 
+\begin_inset Formula $j$
+\end_inset
+
+ from the following syllable :
+\begin_inset Formula 
+\[
+\begin{array}{c}
+R1:\quad i=V\quad j=\neg VL\\
+R2:\quad i=C\quad j=VL
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For example in rule R2 if a syllable ends in a consonant, a note transition
+ imposes with high probability that a switch to the following vowel or liquid
+ is done.
+ Rules 
+\begin_inset Formula $R3$
+\end_inset
+
+ and 
+\begin_inset Formula $R4$
+\end_inset
+
+ are for intra-syllabic phoneme patterns:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{array}{c}
+R3:\quad i=V\quad j=C\\
+R4:\quad i=\neg VL\quad j=V
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An example of Rule 4 can be seen for the syllable KK-AA in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "example_annotaion"
+
+\end_inset
+
+ where the note onset signals the change to the vowel AA, opposed, for example,
+ to onset at Y for the syllable Y-E-T.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename example_Rule4.png
+	lyxscale 20
+	height 38pheight%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Ground truth annotation of syllables (in orange/top), phonemes (in red/middle)
+ and notes (with blue/changing position).
+ Audio excerpt corresponding to word şikayet with syllables SH-IY, KK-AA
+ and Y-E-T.
+\begin_inset CommandInset label
+LatexCommand label
+name "example_annotaion"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: forw probs based on rules are implemented in align.Decoder.defineForwardTran
+sProbs.
+ 
+\end_layout
+
+\end_inset
+
+TODO: [ref
+\begin_inset Quotes erd
+\end_inset
+
+ example of such rules].
+ The optional silent phoneme is handled as a special case: transition probabilit
+y from phoneme i to 'sp' is derived according to intra-syllable rules, and
+ the one from i skipping to next phoneme after 'sp' according to inter-syllable
+ rules.
+ 
+\end_layout
+
+\begin_layout Subsection
+Decoding
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+if there is space 
+\end_layout
+
+\end_inset
+
+The most likely state sequence is found by means of a forced alignment Viterbi
+ decoding.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ To be able to control the influence of the onsets, we have introduced a
+ weighting factor 
+\begin_inset Formula $\gamma$
+\end_inset
+
+:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\delta_{t}(j)=\max_{i\in(j,\thinspace j-1)}\delta_{t-1}(i)\thinspace a_{ij}(t)\thinspace b_{j}(O_{t})
+\]
+
+\end_inset
+
+Here 
+\begin_inset Formula $b_{i}(O_{t})$
+\end_inset
+
+ is the observation probability for state 
+\begin_inset Formula $i$
+\end_inset
+
+ for feature vector 
+\begin_inset Formula $O_{t}$
+\end_inset
+
+ and 
+\begin_inset Formula $\delta_{t}(i)$
+\end_inset
+
+ is the probability for the path with highest probability ending in state
+ 
+\begin_inset Formula $i$
+\end_inset
+
+ at time 
+\begin_inset Formula $t$
+\end_inset
+
+ (complying with the notation of 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "III. B"
+key "rabiner1989tutorial"
+
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+To deal with Silent state 'sp' both method align.Decoder.defineForwardTransProbs
+ for onsets and align.Decoder.Decoder._constructTransMatrix have two cases.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Dataset
+\end_layout
+
+\begin_layout Standard
+TODO: Another contribution of this work is that we compiled a small corpus
+ with annotations 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Annotations are made avaialble here
+\end_layout
+
+\end_inset
+
+.
+ The corpus has been selected from a collection of...
+ and has been annotated on the word-level especially for this study.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: dataset is in /Users/joro/Downloads/ISTANBULSymbTr2/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+TODO: Evaluation Metric
+\end_layout
+
+\begin_layout Section
+Experiments
+\end_layout
+
+\begin_layout Subsection
+Experiment 1: Oracle alignment
+\end_layout
+
+\begin_layout Standard
+As a precursor to the following experiments, an alignment is performed with
+ an input of manually annotated notes as an oracle for note onsets.
+ This is done to test the general feasibility of the proposed model on the
+ dataset unbiased from errors in a note-onset detecting algorithm and to
+ set a glass-ceiling alignment accuracy.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Maybe adjust gamma and r and q on all but one recordings and test on last
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Subsection
+With ground truth pitch: 
+\end_layout
+
+\begin_layout Plain Layout
+adjust parameters of Nadine so that it has highest possible recall, which
+ Sercan or Juanjo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Experiment 2: Alignment with two note onset detectors
+\end_layout
+
+\begin_layout Standard
+Comment on Vibrato.
+ Comment on voice detection.
+ Pitch detection is sercans method that has been tailored for this music
+ tradition.
+ 
+\end_layout
+
+\begin_layout Subsection
+Experiment 3: Alignment on polyphonic
+\end_layout
+
+\begin_layout Standard
+TODO:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefLyrics2Audio,JabRefOnsetDetection"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Rong, Durieu
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

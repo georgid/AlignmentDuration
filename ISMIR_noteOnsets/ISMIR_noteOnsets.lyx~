@@ -1,0 +1,2947 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+% -----------------------------------------------
+% Template for ISMIR Papers
+% 2016 version, based on previous ISMIR templates
+
+% Requirements :
+% * 6+1 page length maximum
+% * 2MB maximum file size
+% * Copyright note must appear in the bottom left corner of first page
+% (see conference website for additional details)
+% -----------------------------------------------
+
+\usepackage{ismir}
+\usepackage{cite}
+
+% Title.
+% ------
+\title{On the use of note onsets for improved lyrics-to-audio alignment}
+
+% Note: Please do NOT use \thanks or a \footnote in any of the author markup
+
+% Single address
+% To use with only one author or several with the same address
+% ---------------
+%\oneauthor
+% {Names should be omitted for double-blind reviewing}
+% {Affiliations should be omitted for double-blind reviewing}
+
+% Two addresses
+% --------------
+%\twoauthors
+%  {First author} {School \\ Department}
+%  {Second author} {Company \\ Address}
+
+%% To make customize author list in Creative Common license, uncomment and customize the next line
+%  \def\authorname{First Author, Second Author} 
+
+
+% Three addresses
+% --------------
+\threeauthors
+  {First Author} {Affiliation1 \\ {\tt author1@ismir.edu}}
+  {Second Author} {\bf Retain these fake authors in\\\bf submission to preserve the formatting}
+  {Third Author} {Affiliation3 \\ {\tt author3@ismir.edu}}
+
+%% To make customize author list in Creative Common license, uncomment and customize the next line
+%  \def\authorname{First Author, Second Author, Third Author} 
+
+% Four or more addresses
+% OR alternative format for large number of co-authors
+% ------------
+%\multauthor
+%{First author$^1$ \hspace{1cm} Second author$^1$ \hspace{1cm} Third author$^2$} { \bfseries{Fourth author$^3$ \hspace{1cm} Fifth author$^2$ \hspace{1cm} Sixth author$^1$}\\
+%  $^1$ Department of Computer Science, University , Country\\
+%$^2$ International Laboratories, City, Country\\
+%$^3$  Company, Address\\
+%{\tt\small CorrespondenceAuthor@ismir.edu, PossibleOtherAuthor@ismir.edu}
+%}
+%\def\authorname{First author, Second author, Third author, Fourth author, Fifth author, Sixth author}
+
+
+\sloppy % please retain sloppy command for improved formatting
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 2
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+sloppy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+maketitle
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Abstract
+Lyrics-to-audio alignment aims to automatically match given lyrics and musical
+ audio.
+ In this work we extend a state of the art approach for lyrics-to-audio
+ alignment with information about note onsets.
+ In particular, we consider the fact that proceeding to next lyrics syllable
+ usually implies a change to a new musical note.
+ To this end we formulate rules that guide the transition between consecutive
+ phonemes when a note onset in present.
+ These rules are incorporated into the transition matrix of a variable time
+ hidden Markov model (VTHMM) phonetic recognizer based on mel frequency
+ cepstral coefficients (MFCCs), which are extracted in a way robust to backgroun
+d instrumental sounds.
+ An estimated melodic contour is input to an automatic note transcription
+ algorithm, from which the note onsets are derived.
+ The proposed approach is evaluated on 12 acapella audio recordings of Turkish
+ Makam music using a phrase-level accuracy measure.
+ Evaluation of the alignment is also presented on a polyphonic version of
+ the dataset in order to assess how degradation in the extracted onsets
+ affects performance.
+ Results show that the proposed model outperforms a baseline approach unaware
+ of onset transition rules.
+ To the best of our knowledge, this is the first work tackling lyrics tracking,
+ which combines timbral features with a melodic feature.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Compare two onset detects,
+\end_layout
+
+\begin_layout Plain Layout
+compare two pitch detect algs: is better voicing leading to more corect
+ onsets ? 
+\end_layout
+
+\begin_layout Plain Layout
+Increase recall even if more false positives.
+ (well explained in Fujiharas journal paper)
+\end_layout
+
+\begin_layout Plain Layout
+-----------------
+\end_layout
+
+\begin_layout Plain Layout
+Note onsets are input to the alignment as a binary variable.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+noteOnstes field of _HMM.
+ set in hmm.continuous._HMM._HMM.initDecodingParameters and use in hmm.continuous._HMM.
+_HMM.viterbi_fast
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Decoding: non-time-homogeneous transiotion matrix
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+two transition matrices: hmm.continuous._HMM.transMAtrix and hmm.continuous._HMM.trans
+MAtrixOnsets
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+--------
+\end_layout
+
+\begin_layout Plain Layout
+1.
+ do alignment
+\end_layout
+
+\begin_layout Plain Layout
+2.
+ either do filler model (ONLY one state?) or alignment polyphionic 
+\end_layout
+
+\begin_layout Plain Layout
+3.
+ if alignment polyphonic -> lyrics refinement as a way to do structure detection.
+ If filler compare acapella and polyphonic
+\end_layout
+
+\begin_layout Plain Layout
+----
+\end_layout
+
+\begin_layout Plain Layout
+-----
+\end_layout
+
+\begin_layout Plain Layout
+data: add more.
+ currently they are 6 here: 
+\end_layout
+
+\begin_layout Plain Layout
+--------
+\end_layout
+
+\begin_layout Plain Layout
+To our knowledge there has not been any work combining these two concepts.
+ With the recent advancement of algorithms for automatic note transcription,
+ the use of reliably detected note onsets becomes reasonable.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Lyrics are one of the most important aspects of vocal music.
+ When a performance is heard, most listeners will follow the lyrics of the
+ main vocal melody.
+ The goal of automatic lyrics-to-audio alignment is to generate a temporal
+ relationship between textual lyrics and sung audio.
+ In this particular work, the goal is to detect the start and end times
+ of every phrase (1-4 words) from lyrics.
+\end_layout
+
+\begin_layout Standard
+In recent years there has been substantial amount of work on the extraction
+ of pitch of predominant singing voice from polyphonic music 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "salamon2014melody"
+
+\end_inset
+
+.
+ Some algorithms have been tailored to the music characteristics of a particular
+ singing tradition 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kroher2015automatic"
+
+\end_inset
+
+.
+ This has paved the way to an increased accuracy of note transcription algorithm
+s.
+ One of the reasons for this is that a correctly detected melody contour
+ is a fundamental precondition for note transcription.
+ On the other hand, lyrics-to-audio alignment is a challenging task: to
+ track the timbral characteristics of singing voice might not be straight
+ forward.
+ Additional challenge is posed when accompanying instruments are present:
+ their spectral peaks might overlap and occlude the spectral components
+ of voice.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Why? ...
+\end_layout
+
+\end_inset
+
+Despite that, most work has focused on tracking change from one to another
+ phoneme only by timbral features 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2012lyrics"
+
+\end_inset
+
+.
+ In fact, at the change of phoneme in parallel to timbre other musical aspects
+ change: for example an articulation accent or change of pitch, both of
+ which contribute to the perception of a distinct vocal note onset.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+especially on preceding to a next lyrics, there is always new note
+\end_layout
+
+\end_inset
+
+The fact that the first vowel onset in a syllable occurs simultaneously
+ to a note onset has been used successfully in rule-based synthesis of singing
+ voice 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sundberg2006kth"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+In this work we present a novel idea of how to extend a standard approach
+ for lyrics-to-audio alignment by utilizing as a complementary cue automatically
+ detected vocal note onsets.
+ We apply a state of the art note transcription method to obtain candidate
+ note onsets.
+ The proposed approach has been evaluated on time boundaries of short lyrics
+ phrases on acapella recordings from Turkish Makam music.
+ An experiment on polyphonic audio reveals the potential of the approach
+ for real-world application.
+\end_layout
+
+\begin_layout Section
+Related work
+\end_layout
+
+\begin_layout Subsection
+Lyrics-to-audio alignment
+\end_layout
+
+\begin_layout Standard
+The problem of lyrics-to-audio alignment has inherent relation to the problem
+ of text-to-speech alignment.
+ For this reason most of current studies exploit an approach adopted from
+ speech: building a model for each phoneme based on phoneme acoustic features
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer,Mesaros96automaticalignment"
+
+\end_inset
+
+.
+ To model phoneme timbre usually MFCCs are employed.
+ A state of the art work following this approach 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ proposes a technique to adapt a phonetic recognizer trained on speech:
+ the MFCC-based speech phoneme models are adapted to the acoustics of singing
+ voice.
+ Further, automatic segregation of the vocal line is performed, in order
+ to reduce the spectral content of background instruments.
+ In general, in this approach authors consider only models of phonetic timbre
+ and are thus focused on making them more robust as a mean to improve performanc
+e.
+ 
+\end_layout
+
+\begin_layout Standard
+Few works for tracking lyrics combine timbral features with other characteristic
+s of the main vocal melody.
+ For example in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "gong2015real"
+
+\end_inset
+
+ a system for automatic score following of singing voice combines melodic
+ and lyrics information: observation probabilities of pitch templates and
+ vowel templates are fused to improved alignment.
+ To our knowledge no work, which does not involve musical score, has employed
+ features of the vocal melody contour in general, and note onsets in particular.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Recognition of phonemes.
+ Durrieu 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Only recent work used durations []
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Automatic note segmentation
+\end_layout
+
+\begin_layout Standard
+While the general problem of automatic music transcription has been a long-inves
+tigated problem, automatic singing transcription has attracted the attention
+ of MIR researcher only in recent years.
+ A fundamental part of singing transcription is automatic note segmentation.
+ A probabilistic note event model, using a HMM trained on manual transcriptions
+ is presented in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "krige2008explicit"
+
+\end_inset
+
+.
+ The idea is that a note consists of different states representing its attack,
+ sustain and decay phase.
+ Then an onset is detected when the decoding path goes though an attack
+ state of a new note.
+\end_layout
+
+\begin_layout Standard
+A recent work on singing transcription with particularly good onset accuracy
+ has been developed for singing voice from the flamenco genre 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kroher2015automatic"
+
+\end_inset
+
+.
+ It consists of two stages: predominant vocal extraction and note transcription.
+ As the primary step of note transcription notes are segmented by a set
+ of onset detection functions based on pitch contour and volume characteristics,
+ which take into account the peculiar for flamenco singing high degree of
+ microtonal ornamentation.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: mauch.
+ A good overview of automatic singing transcription can be found in [mauch
+ - tutorial].
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Proposed approach
+\end_layout
+
+\begin_layout Standard
+A general overview of the proposed approach is presented in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "overview"
+
+\end_inset
+
+.
+ An acapella audio recording and its lyrics are input.
+ A variable time hidden Markov model (VTHMM), guided by phoneme transition
+ rules, returns start and end timestamps of aligned words.
+ For brevity in the rest of the paper our approach will be referred to as
+ VTHMM.
+\end_layout
+
+\begin_layout Standard
+First an audio recording is manually divided into segments corresponding
+ to structural sections (e.g.
+ verse, chorus) as indicated in a structural annotation, whereby instrumental-on
+ly sections are discarded.
+ All further steps are performed on each audio segment.
+ If we had used automatic segmentation instead, potential erroneous lyrics
+ and features could have biased the comparison of a baseline system and
+ VTHMM.
+ As we focus on evaluating the effect of VTHMM, manual segmentation is preferred.
+ In what follows each of the modules is described in details.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename systemOverview_acapella.svg
+	width 115col%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Overview of the modules of the proposed approach.
+ One can see how phoneme transition rules are derived.
+ Then together with the phonemes network and the features extracted from
+ audio segments are input to the VTHMM alignment
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "overview"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Vocal pitch extraction 
+\end_layout
+
+\begin_layout Standard
+To extract the melody contour of singing voice, we utilize a method that
+ performs detection of vocal segments and in the same time pitch extraction
+ for the detected segments 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "atli2014audio"
+
+\end_inset
+
+.
+ It relies on the basic methodology of 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "salamon2012melody"
+
+\end_inset
+
+, but modifies the way in which the final melody contour is selected from
+ a set of candidate contours, in order to reflect the specificities of Turkish
+ Makam music: 1) It chooses a finer bin resolution of only 7.5 cents that
+ approximately corresponds to the smallest noticeable change in Makam melodic
+ scales.
+ 2) Unlike the original methodology, it does not discard time intervals
+ where the peaks of the pitch contours have relatively low magnitude.
+ This accommodates time intervals at the end of the melodic phrases, where
+ Makam singers might sing softer.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+it does not do voicing...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Note segmentation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Note-segmentation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In a next step, to obtain reliable estimate of singing note onsets, we adapt
+ the automatic singing transcription method, developed for polyphonic flamenco
+ recordings 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kroher2015automatic"
+
+\end_inset
+
+.
+ It has been designed to handle singing with high degree of vocal pitch
+ ornamentation.
+ We expect that this makes it suitable for material from Makam classical
+ singing having as well heavily vibrato and melismas
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+and accompaniment of string instruments - doe that matter in Nadine?
+\end_layout
+
+\end_inset
+
+.
+ We replace the original first stage predominant vocal extraction method
+ with the vocal pitch detection method described above.
+
+\color red
+ 
+\end_layout
+
+\begin_layout Standard
+The algorithm 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kroher2015automatic"
+
+\end_inset
+
+ considers two cases of onsets: interval onsets and steady pitch onsets.
+ Gaussian derivative filter detects interval onsets as long-term changes
+ of the pitch contour, whereas steady-pitch onsets are inferred from pitch
+ discontinuities.
+ 
+\color black
+As in the current work phoneme transitions 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color black
+transitions not instroduced?
+\end_layout
+
+\end_inset
+
+ are modified only when onsets are present, we opt for increasing recall
+ at the cost of losing on precision.
+ This is achieved by reducing the value of the parameters 
+\begin_inset Formula $cF$
+\end_inset
+
+: the minimum output of the Gaussian filter.
+ The extracted note onsets are converted into 
+\color inherit
+a binary onset activation at each frame 
+\begin_inset Formula $\Delta n_{t}=(0,1)$
+\end_inset
+
+.
+
+\color black
+ Recall rates of extracted note onsets are reported in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "results"
+
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color black
+which can be seen on Figure
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsection
+Phoneme models
+\end_layout
+
+\begin_layout Standard
+The formant frequencies of spoken phonemes can be induced from the spectral
+ envelope of speech.
+ To this end, we utilize the first 12 MFCCs and their delta to the previous
+ time instant, extracted as described in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "young1993htk"
+
+\end_inset
+
+.
+ For each phoneme a one-state HMM, for which a 9-mixture Gaussian distribution
+ is fitted on the feature vector.
+ The lyrics are expanded to phonemes based on grapheme-to-phoneme rules
+ for Turkish 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "Table 1"
+key "Salor2007580"
+
+\end_inset
+
+ and the trained HMMs are concatenated into a phonemes network.
+ The phoneme set utilized has been developed for Turkish and is described
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Salor2007580"
+
+\end_inset
+
+.
+ A HMM for silent pause 
+\emph on
+sp
+\emph default
+ is added at the end of each word, which is optional on decoding.
+ This way it will appear in the detected sequence only if there is some
+ non-vocal part or the singer makes a break for breathing.
+ 
+\end_layout
+
+\begin_layout Subsection
+Transition model
+\end_layout
+
+\begin_layout Standard
+We utilize a super transition matrix with time-dependent self-transition
+ probabilities which falls in the general category of variable time HMM
+ (VTHMM) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "johnson2005capacity"
+
+\end_inset
+
+.
+ For particular states, transitions are modified depending on the presence
+ of time-adjacent note onset.
+ Let 
+\begin_inset Formula $t'$
+\end_inset
+
+ be the timestamp of the closest to given time 
+\begin_inset Formula $t$
+\end_inset
+
+ onset 
+\begin_inset Formula $\Delta n_{t'}=1$
+\end_inset
+
+.
+ Now the transition probability can be rewritten as 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+a_{ij}(t)=\begin{cases}
+a_{ij}-g(t,t')q, & R1\text{\mbox{\thinspace{or}\thinspace}}R3\\
+a_{ij}+g(t,t')q, & R2\thinspace\mbox{or\thinspace}R4
+\end{cases}\label{eq:transition model}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: implemented as ONSET_SIGMA_IN_FRAMES different matrices each defined
+ in align.Decoder.Decoder._constructTransMatrix and used in decoding in hmm.continuo
+us._HMM._HMM.viterbi_fast_forced()
+\end_layout
+
+\begin_layout Plain Layout
+The forward trans prob is defined in align.Decoder.defineForwardTransProbs
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $R1$
+\end_inset
+
+ to 
+\begin_inset Formula $R4$
+\end_inset
+
+ stand for phoneme transition rules similar to these presented in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "sundberg2006kth"
+
+\end_inset
+
+.
+ They are derived from the phonemes network by picking the states 
+\begin_inset Formula $i$
+\end_inset
+
+ and 
+\begin_inset Formula $j$
+\end_inset
+
+ for two consecutive phonemes.
+ The term 
+\begin_inset Formula $q$
+\end_inset
+
+ is a constant whereas 
+\begin_inset Formula $g(t,t')$
+\end_inset
+
+ is a weighting factor sampled from a normal distribution with mean at 
+\begin_inset Formula $t'$
+\end_inset
+
+: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+g(t,t')=\begin{cases}
+f(t;t',\sigma^{2})\sim\mathcal{N}(t',\sigma^{2}), & |t-t'|\le\sigma^{2}\\
+0 & else
+\end{cases}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since singing voice onsets are regions in time, they span over multiple
+ consecutive frames.
+ To reflect that 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+fact, 
+\begin_inset Formula $g(t,t')$
+\end_inset
+
+ serves to smooth in time the influence of the discrete detected 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $\Delta n_{t}$
+\end_inset
+
+, where 
+\begin_inset Formula $\sigma^{2}$
+\end_inset
+
+ has been selected to be 
+\begin_inset Formula $0.075$
+\end_inset
+
+ seconds.
+ In this way an onset influences a region of 0.15 seconds - a threshold suggested
+ for vocal onset detection evaluation in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "gomez2013towards"
+
+\end_inset
+
+.
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: ParametersAlgo.ONSET_SIGMA
+\end_layout
+
+\end_inset
+
+ Furthermore, this allows to handle slight timestamp inaccuracies of the
+ estimated note onsets.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Phoneme transition rules
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $V$
+\end_inset
+
+ stands for vowel, 
+\begin_inset Formula $C$
+\end_inset
+
+ for consonant and 
+\begin_inset Formula $L$
+\end_inset
+
+ for vowel, liquid (LL, M, NN) or the semivowel Y.
+ Rules 
+\begin_inset Formula $R1$
+\end_inset
+
+ and 
+\begin_inset Formula $R2$
+\end_inset
+
+ represent inter-syllable transition, e.g.
+ phoneme 
+\begin_inset Formula $i$
+\end_inset
+
+ is followed by phoneme 
+\begin_inset Formula $j$
+\end_inset
+
+ from the following syllable:
+\begin_inset Formula 
+\begin{equation}
+\begin{array}{c}
+R1:\quad i=V\quad j=\neg L\\
+R2:\quad i=C\quad j=L
+\end{array}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For example in rule R2 if a syllable ends in a consonant, a note onset imposes
+ with high probability that a switch to the following vowel or liquid is
+ done.
+ Rules 
+\begin_inset Formula $R3$
+\end_inset
+
+ and 
+\begin_inset Formula $R4$
+\end_inset
+
+ are for intra-syllabic phoneme patterns:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\begin{array}{c}
+R3:\quad i=V\quad j=C\\
+R4:\quad i=\neg L\quad j=V
+\end{array}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Essentially, if current phoneme is vocal and next is non-voiced (e.g.
+ 
+\begin_inset Formula $R1$
+\end_inset
+
+, 
+\begin_inset Formula $R3$
+\end_inset
+
+), Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:transition model"
+
+\end_inset
+
+ discourages transition no next phoneme and encourages transition in the
+ opposite cases.
+ An example of 
+\begin_inset Formula $R4$
+\end_inset
+
+ can be seen for the syllable KK-AA in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "example_annotaion"
+
+\end_inset
+
+ where the note onset triggers the change to the vowel AA, opposed, for
+ example, to onset at Y for the syllable Y-E-T.
+ 
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename example_Rule4.png
+	lyxscale 20
+	width 41page%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Ground truth annotation of syllables (in orange/top), phonemes (in red/middle)
+ and notes (with blue/changing position).
+ Audio excerpt corresponding to word şikayet with syllables SH-IY, KK-AA
+ and Y-E-T.
+\begin_inset CommandInset label
+LatexCommand label
+name "example_annotaion"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ Note that these rules assume that a syllable has one vowel, which is the
+ case for Turkish 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+One-vowel syllabic languages include as well Japanese and to some extent
+ Italian
+\end_layout
+
+\end_inset
+
+.
+ The optional silent phoneme 
+\emph on
+sp
+\emph default
+ is handled as a special case: transition probability from any phoneme to
+ 
+\emph on
+sp
+\emph default
+ is derived according to intra-syllable rules, and the one from any phoneme
+ skipping to the phoneme following 
+\emph on
+sp
+\emph default
+ is derived according to inter-syllable rules.
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: forw probs based on rules are implemented in align.Decoder.defineForwardTran
+sProbs.
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+To deal with Silent state 'sp' both method align.Decoder.defineForwardTransProbs
+ for onsets and align.Decoder.Decoder._constructTransMatrix have two cases.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Alignment
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+if there is space 
+\end_layout
+
+\end_inset
+
+The most likely state sequence is found by means of a forced alignment Viterbi
+ decoding.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ To be able to control the influence of the onsets, we have introduced a
+ weighting factor 
+\begin_inset Formula $\gamma$
+\end_inset
+
+:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\delta_{t}(j)=\max_{i\in(j,\thinspace j-1)}\delta_{t-1}(i)\thinspace a_{ij}(t)\thinspace b_{j}(O_{t})
+\end{equation}
+
+\end_inset
+
+Here 
+\begin_inset Formula $b_{j}(O_{t})$
+\end_inset
+
+ is the observation probability for state 
+\begin_inset Formula $i$
+\end_inset
+
+ for feature vector 
+\begin_inset Formula $O_{t}$
+\end_inset
+
+ and 
+\begin_inset Formula $\delta_{t}(j)$
+\end_inset
+
+ is the probability for the path with highest probability ending in state
+ 
+\begin_inset Formula $j$
+\end_inset
+
+ at time 
+\begin_inset Formula $t$
+\end_inset
+
+ (complying with the notation of 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "III. B"
+key "rabiner1989tutorial"
+
+\end_inset
+
+.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+To encourage reproducibility of this research an efficient open-source implement
+ation together with documentaion is available here.
+ link suppressed for anonymity
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide true
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Kimseye_phonemeLevel_comparison_VTHMM.png
+	width 85page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Example of boundaries of phonemes for the word şikayet (SH-IY-KK-AA-Y-E-T):
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+emph{on top}
+\end_layout
+
+\end_inset
+
+: spectrum and pitch; 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+emph{then from top to bottom}
+\end_layout
+
+\end_inset
+
+: ground truth boundaries, phonemes detected with HMM, detected onsets,
+ phonemes detected with VTHMM; (excerpt from the recording 'Kimseye etmem
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+c{s}
+\end_layout
+
+\end_inset
+
+ikayet' by Bekir Unluater).
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "example alignment"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Dataset
+\end_layout
+
+\begin_layout Standard
+
+\color black
+The test dataset consists of 12 a-cappella performances of 11 compositions
+ 
+\color inherit
+with total duration of 
+\color black
+19 minutes.
+ The performances are drawn from 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color black
+CompMusic
+\end_layout
+
+\end_inset
+
+ anonymous corpus of classical Turkish Makam repertoire with provided annotation
+s of musical sections 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "anonyGeorgi"
+
+\end_inset
+
+.
+ Solo vocal versions of the originals have been sung by professional singers,
+\color inherit
+ especially recorded for this study, due to the lack of appropriate acapella
+ material in this music tradition.
+ A performance has been recorded in-sync with the original recording, whereby
+ instrumental sections are left as silence.
+ This assures that the order, in which sections are performed, is kept the
+ same.
+ Another contribution of this work is that we make available the annotated
+ phrase time boundaries
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Annotations and audio are available under CC license here.
+ link suppressed for anonymity
+\end_layout
+
+\end_inset
+
+.
+ A musical phrase (as proposed by 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "karaosmanouglu2014symbolic"
+
+\end_inset
+
+) spans 1 to 4 words depending on the duration of the words.
+ Table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "dataset"
+
+\end_inset
+
+ presents statistics about phrases, while the total number of words in the
+ dataset is 732.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+total #sections
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+#phrases per section
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+#words per phrase
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+75
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2 to 5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1 to 4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+phrase statistics about dataset
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "dataset"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Additionally, the singing voice for 6 recordings from the dataset has been
+ annotated with MIDI notes following the musical score 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Creating the annotation is a time-consuming task, but we plan to annotate
+ the whole dataset in the future
+\end_layout
+
+\end_inset
+
+.
+ On annotation special care is taken to set the note onset on the time instant,
+ at which a steady melodic contour begins, avoiding setting it on a preceding
+ unvoiced phoneme, which is important for rules R3 and R4 to make sense
+ (see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "example_annotaion"
+
+\end_inset
+
+).
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: dataset is in /Users/joro/Downloads/ISTANBULSymbTr2/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Evaluation metric
+\end_layout
+
+\begin_layout Standard
+Alignment is evaluated in terms of alignment accuracy as the percentage
+ of duration of correctly aligned regions from total audio duration (see
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "figure 9"
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ for an example).
+ A value of 100 means perfect matching of all phrase boundaries in the evaluated
+ audio.
+ Accuracy can be reported not only for an audio segment, but as well on
+ total for a recording, or on total for all recordings together.
+\end_layout
+
+\begin_layout Section
+Experiments
+\end_layout
+
+\begin_layout Subsection
+Experiment 1: alignment with oracle onsets
+\end_layout
+
+\begin_layout Standard
+As a precursor to the following experiments, an alignment is run between
+ lyrics and 6 of the recordings with an input of manually annotated notes
+ as an oracle for note onsets.
+ This is done to test the general feasibility of the proposed model on the
+ dataset unbiased from errors in the note segmentation  algorithm and to
+ set a glass-ceiling alignment accuracy.
+ We have tested with different values for 
+\begin_inset Formula $q$
+\end_inset
+
+ from Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:transition model"
+
+\end_inset
+
+ achieving best accuracy of 91.5% at 
+\begin_inset Formula $q=0.23$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Experiment 2: comparison to a baseline
+\end_layout
+
+\begin_layout Standard
+As a baseline we conduct alignment with unaffected phoneme transition probabilit
+ies, e.g.
+ setting all 
+\begin_inset Formula $\Delta n_{t}=0$
+\end_inset
+
+, which resulted in alignment accuracy of 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+75.2
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+%.
+ Further we measured the impact of the onset detector, varying onset detection
+ recall by changing the 
+\color black
+minimum output of the Gaussian filter
+\color inherit
+ 
+\color black
+(parameter 
+\begin_inset Formula $cF$
+\end_inset
+
+ of the note segmentation method
+\color inherit
+ introduced in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Note-segmentation"
+
+\end_inset
+
+).
+ We adopt their threshold: an onset is considered as correctly detected
+ if it is located within 0.15 seconds of a ground truth onset, as has been
+ previously suggested in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "gomez2013towards"
+
+\end_inset
+
+.
+ In table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "results"
+
+\end_inset
+
+ is summarized alignment accuracy with VTHMM depending on recall.
+ On acapella best improvement over the baseline is achieved at recall of
+ 75% (at 
+\begin_inset Formula $cF=3.5$
+\end_inset
+
+).
+ This is somewhat lower than the best recall of 81-84% achieved for flamenco
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kroher2015automatic"
+
+\end_inset
+
+.
+ Setting recall higher than that degraded performance because there are
+ too many false alarms resulting in forcing false transitions.
+ 
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="7">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $cF$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+3.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+acapella
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+OR
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+62.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+65.7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+73.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+75.3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+78.2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+AA
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+79.1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+82.3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+85.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\color black
+85.7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+82.0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+polyphonic
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+OR
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+58.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+64.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+71.9
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+72.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+74.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+AA
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+65.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+68.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\color black
+72.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+72.1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+71.3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+VTHMM
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ performance on acapella and polyphonic audio, depending on onset detection
+ recall (OR).
+ Alignment accuracy (AA) is reported on total for all recordings.
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "results"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "example alignment"
+
+\end_inset
+
+ allows a glance at the level of detected phonemes: the baseline HMM switches
+ to the following phoneme after some similar for all phonemes amount of
+ time.
+ One reason for this might be that the waiting time in a state in HMMs with
+ fixed transition matrix cannot be randomly long 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "yu2010hidden"
+
+\end_inset
+
+.
+ In contrast, for VTHMM the presence of note onsets at vowels activates
+ rules R1 or R3, which allows waiting in the same state more time as there
+ are more onsets (for example AA from the word SH-IY-KK-AA-Y-E-T has associated
+ 5 onsets).
+ We chose to modify 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $cF$
+\end_inset
+
+ because setting it to lower values increases the recall of 
+\family default
+\series default
+\shape default
+\size default
+\emph on
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+interval onsets
+\emph default
+: Often in our dataset to a vowel, sustained relatively long, correspond
+ several notes with different pitch.
+ In fact characteristic for Turkish classical music is that a single syllable
+ may have a complex melodic progression spanning many (up to 12 in our dataset)
+ notes 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "ederer2011theory"
+
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Further, rule R2 and R4
+\end_layout
+
+\end_inset
+
+However, for cases of vowels held long on same pitch, conceptually VTHMM
+ is not capable of bringing any benefit.
+ This is illustrated as well in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "example alignment"
+
+\end_inset
+
+ by the prematurely detected end boundary of E from the word SH-IY-KK-AA-Y-E-T.
+ 
+\end_layout
+
+\begin_layout Standard
+Further, we examined alignment accuracy per recording (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "per-recording alignment"
+
+\end_inset
+
+).
+ It can be observed that VTHMM performs consistently better than the baseline
+ HMM (with some exceptions of where accuracy is close).
+ 
+\end_layout
+
+\begin_layout Subsection
+Experiment 3: recognition of phonemes
+\end_layout
+
+\begin_layout Standard
+In general comparison to other lyrics alignment systems is hurdled because
+ there is no hitherto work developed for Turkish language.
+ However, to have an idea of how adequate are the trained phoneme HMMs we
+ have annotated phoneme boundaries for some excerpts of total length of
+ 6 minutes.
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "hansen2012recognition"
+
+\end_inset
+
+ phonemes are recognized in acapella singing with no lyrics given in advance.
+ With phoneme MFCC-based HMMs - the same as our modeling setting - a phoneme
+ recall rate of 44% is reported.
+ Although in our case of forced alignment, recognizing phonemes is relatively
+ easier, given that the phonemes are ordered in a sequence, we measure lower
+ overall phoneme recall of 37%.
+ This indicates that acoustic phoneme models trained only on speech might
+ not be the most optimal choice.
+\end_layout
+
+\begin_layout Section
+Extension to polyphonic material
+\end_layout
+
+\begin_layout Standard
+To test the feasibility of the proposed approach on polyphonic material,
+ the alignment is evaluated on the original versions of the recordings in
+ the dataset.
+ Typical for Turkish Makam is that vocal and accompanying instruments follow
+ a the same melodic contour in their corresponding registers with slight
+ melodic variations.
+ However, the vocal line has usually melodic predominance.
+ This special type of polyphonic musical interaction is termed heterophony
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "ederer2011theory"
+
+\end_inset
+
+.
+ In the test dataset a singer is accompanied by one to several string instrument
+s.
+ 
+\end_layout
+
+\begin_layout Standard
+We applied the vocal pitch extraction and note segmentation methods directly,
+ since both are methods developed for singing voice in a setting that has
+ heterophonic characteristics.
+ However, instrumental spectral peaks deteriorate significantly the shape
+ of the vocal spectrum.
+ To attenuate the negative influence of instrumental spectrum, a vocal resynthes
+is step is necessary.
+\end_layout
+
+\begin_layout Subsection
+Vocal resynthesis
+\end_layout
+
+\begin_layout Standard
+For the regions with predominant vocal, based on the extracted melodic contours
+ and a set of peaks in the original spectrum, the vocal content is resynthesized
+ as separate audio using a harmonic model 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Serra89asystem"
+
+\end_inset
+
+.
+ MFCCs are extracted from the resynthesized vocal part, because the harmonic
+ partials preserve the overall spectral shape of the original singing voice
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+In fact, resynthesis is not an obligatory step, but was performed in order
+ to allow to track the intelligibility of different vocals after the application
+ of the vocal detection
+\end_layout
+
+\end_inset
+
+.
+ More details and examples of the resynthesis step can be found in previous
+ work that showed that the application of the harmonic model is suitable
+ for aligning lyrics in Makam music 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "anonymity"
+
+\end_inset
+
+.
+ A conceptually similar resynthesis step has been as well taken in current
+ methods for alignment of lyrics in polyphonic Western pop music 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer,Mesaros96automaticalignment"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide true
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename scatterCorrelation.png
+	width 85page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comparison between results for VTHMM and baseline HMM on acapella.
+ A connected line represents results for one recording.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "per-recording alignment"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Experiment 4: comparison of acapella and polyphonic
+\end_layout
+
+\begin_layout Standard
+The onset recall rates after note segmentation are not much worse than acapella
+ as presented in table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "results"
+
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+More detailed
+\end_layout
+
+\end_inset
+
+Although the degree of degradation in onset detection is slight, degradation
+ in alignment accuracy is reasonable.
+ This can be attributed most probably to the fact that our MFCC-based models
+ are not very discriminative and get confused by artifacts, induced from
+ other instruments on resynthesis.
+ However, applying VTHMM still improves over the baseline (see table 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "results baseline"
+
+\end_inset
+
+).
+ Note that the margin in accuracy between the baseline and the oracle glass
+ ceiling is only about 8% on polyphonic recordings, which is about twice
+ wider in the case of solo voice.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement h
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="4">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HMM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+best VTHMM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+oracle
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+acapella
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+75.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+85.7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+91.5
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+polyphonic
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+67.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+72.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+74.9
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comparison of accuracy of baseline HMM, VTHMM and, VTHMM with oracle onsets.
+ Alignment accuracy is reported on total for all recordings.
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "results baseline"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+In this work we evaluated the behavior of a HMM-based phonetic recognizer
+ for lyrics-to-audio alignment in two settings: with and without considering
+ singing voice onsets as additional cue.
+ Compared to hitherto work on lyrics alignment, this is, to our knowledge,
+ the first attempt to include information about an aspect of the melodic
+ contour in the inference process.
+ Updating transition probabilities according to onset-aware phoneme transition
+ rules resulted in an improvement of absolute 10 percent for aligning phrases
+ of solo voice from Turkish Makam recordings.
+ In particular, due to rules discouraging premature transition, the decoding
+ is allowed to stay adequate duration in sustained vowels.
+ 
+\end_layout
+
+\begin_layout Standard
+Alignment on same data with instrumental accompaniment brought as well some
+ small improvement over a baseline with no onset modeling.
+ Having onset detection performing not substantially worse than acapella
+ indicates that improving the phoneme acoustic models in the future could
+ lead to even more reasonable improvement.
+\end_layout
+
+\begin_layout Standard
+A limitation of the current alignment system is the prerequisite for manually-do
+ne structural segmentation, which we plan to automate in the future.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "JabRefOnsetDetection,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefLyrics2Audio,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRef_saerch_by_lyrics,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefCompMusicNon-Lyrics"
+options "default"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+% For non bibtex users:
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{thebibliography}{citations}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+bibitem {Author:00}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%E.
+ Author.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%``The Title of the Conference Paper,''
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%{
+\backslash
+it Proceedings of the International Symposium
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%on Music Information Retrieval}, pp.~000--111, 2000.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+bibitem{Someone:10}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%A.
+ Someone, B.
+ Someone, and C.
+ Someone.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%``The Title of the Journal Paper,''
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%{
+\backslash
+it Journal of New Music Research},
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Vol.~A, No.~B, pp.~111--222, 2010.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%
+\backslash
+bibitem{Someone:04} X.
+ Someone and Y.
+ Someone.
+ {
+\backslash
+it Title of the Book},
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%    Editorial Acme, Porto, 2012.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{thebibliography}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
