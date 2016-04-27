@@ -1,0 +1,4 @@
+# -*- coding: utf-8 -*-
+ch	c
+sh	c
+zh	c

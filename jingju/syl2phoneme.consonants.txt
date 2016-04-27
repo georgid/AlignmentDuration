@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+m	m
+f	f
+n	n
+l	l
+g	k
+h	x
+r	r\'
+y	j
+w	w
+b	c
+d	c
+j	c
+k	c
+p	c
+q	c
+s	c
+t	c
+x	c
+z	c
+c	c

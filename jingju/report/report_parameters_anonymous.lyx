@@ -1,0 +1,1730 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{multicol}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\setcitestyle{authoryear,open={(},close={)}}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 10page%
+\topmargin 10theight%
+\rightmargin 10page%
+\bottommargin 10pheight%
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Automatic alignment of long syllables in acapella Beijing opera
+\end_layout
+
+\begin_layout Author
+Anonymous Author, Anonymous Author, Anonymous Author, Anonymous Author
+\end_layout
+
+\begin_layout Address
+\align center
+Anonymous Institute
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+
+\color black
+The task of automatic lyrics-to-audio alignment (LAA) is to find in an automatic
+ way a match between two musical aspects of a composition: the singing voice
+ and the corresponding lyrics.
+ Tracking lyrics may be used to automatically outline the structure of the
+ audio recording (inferred from lyric), which can be beneficial for musicologist
+s or singing students.
+\end_layout
+
+\begin_layout Standard
+
+\color black
+With a few exceptions 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "wong2007automatic"
+
+\end_inset
+
+, to-date computational research on LAA has been focused mainly on western
+ popular music
+\color inherit
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "fujihara2012lyrics"
+
+\end_inset
+
+.
+ Unlike popular music, in traditional genres, duration of vocals might vary
+ substantially from one syllable to the next.
+ Actors of Beijing opera, in particular, tend to prolong particular vowels
+ to pertain to the poetic rhythm of the story, being sung.
+ More specifically a lyrics line is usually divided into 3 units - 
+\emph on
+dou
+\emph default
+, each consisting of 2 to 5 written characters 
+\begin_inset CommandInset citation
+LatexCommand citep
+after "Chapter III"
+key "wichmann1991listening"
+
+\end_inset
+
+.
+ To outline a 
+\emph on
+dou
+\emph default
+, an actor has the option to sustain the vocal of its final syllable 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+We use the
+\emph on
+ 
+\emph default
+term
+\emph on
+ syllable 
+\emph default
+as equivalent to one written character.
+ Final syllables in this work will be referred as 
+\emph on
+key syllables
+\end_layout
+
+\end_inset
+
+ (sometimes performing ornamentation/vibrato), resulting in a substantially
+ longer vowel.
+\end_layout
+
+\begin_layout Standard
+In this work we model explicitly phoneme durations by a probabilistic method
+ capturing lyrics principles of Beijing opera.
+\end_layout
+
+\begin_layout Section
+Method Overview
+\end_layout
+
+\begin_layout Standard
+First an audio recording is manually divided into lines as indicated in
+ the lyrics script of the aria.
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+Lyrics are read from TextGrid annotation layer 'lines' IMPL: lyricsParser.divideI
+ntoSectionsFromAnno
+\end_layout
+
+\end_inset
+
+Then each line is represented as a sequence of phoneme models, tied into
+ a 
+\color black
+probabilistic duration-aware model 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "anonymous"
+
+\end_inset
+
+.
+
+\color inherit
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color black
+LAA is
+\color red
+ 
+\color inherit
+typically based on modeling phonemes with HMMs.
+ However, HMMs - originally applied in speech-to-text alignment have the
+ drawback that they might not be capable to represent well vocals with longer
+ durations.
+ Unlike speech, for singing voice, durations of vowels have higher variation
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kruspekeyword"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Each phoneme model yields an observation probability for singing audio,
+ based on its timbral features.
+ Finally, accuracy (as defined in 
+\begin_inset CommandInset citation
+LatexCommand citealt
+after "Fig. 9"
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+) is evaluated at beginning and ending timestamps of each Mandarin syllable.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Section
+Vocal/nonvocal segmentation
+\end_layout
+
+\begin_layout Plain Layout
+tested on dan-xipi-01, resulted in worse accuracy.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+TODO: test on all with and without vocal
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Durational model
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:DHMM"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+First,
+\emph on
+ 
+\emph default
+all probable 
+\emph on
+key syllables 
+\emph default
+with regard to the 
+\emph on
+dou
+\emph default
+ grouping patterns (e.g.
+ 3 + 3 + 4 syllables in 10-syllable line) are assigned longer reference
+ durations.
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: in SentenceJingju.SentenceJingju.assignReferenceDurations()
+\end_layout
+
+\end_inset
+
+ Second, the reference duration of each syllable is divided among its constituen
+t phonemes, considering the initial-final division of Mandarin syllables
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "duanmu2000phonology"
+
+\end_inset
+
+, which forms a sequence of phoneme reference durations 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: SyllableBeijing.SyllableJingju.calcPhonemeDurations
+\end_layout
+
+\begin_layout Plain Layout
+sp at end of syllables are not optional.
+ They are assigned duration as a consonant A, which might result in actual
+ duration from 0 to A 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A metrical pattern (
+\emph on
+banshi
+\emph default
+) in an aria can be changed up to several times 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "wichmann1991listening"
+
+\end_inset
+
+.
+ We observed in the dataset that usually the final 
+\emph on
+key syllable
+\emph default
+ of the last line in a 
+\emph on
+banshi
+\emph default
+ is prolonged additionally.
+ Thus we defined 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+ of final 
+\emph on
+key syllables
+\emph default
+ considering 
+\emph on
+banshi
+\emph default
+ changes.
+\end_layout
+
+\begin_layout Standard
+
+\color black
+We propose a duration-aware hidden Markov model (DHMM).
+ It models the duration of a phoneme as a normal distribution, centered
+ at 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+ with a standard deviation 
+\begin_inset Formula $d$
+\end_inset
+
+.
+ A proper 
+\begin_inset Formula $d$
+\end_inset
+
+ assures that a phoneme sung longer or shorter than the expected 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+ can be adequately handled.
+\end_layout
+
+\begin_layout Section
+Experimental Setup
+\end_layout
+
+\begin_layout Standard
+Our dataset consists of excerpts from 15 arias with acapella female voice
+ of total duration of 67 minutes.
+ A line has an average duration of 18.3 seconds and 9 syllables 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The dataset has been especially annotated for this study.
+ Annotations are made available on http://anonymous 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+http://compmusic.upf.edu/node/286
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+To define a glass ceiling accuracy an alignment was performed considering
+ phoneme annotations as an oracle for acoustic features.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Looking at phoneme annotations, we set the probability of a phoneme to 1
+ during its time interval and 0 otherwise.
+\end_layout
+
+\end_inset
+
+ We found that accuracy is overall close to 100%
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\color black
+We have utilized fixed vowel and consonant standard deviations 
+\begin_inset Formula $d_{v}$
+\end_inset
+
+ and 
+\begin_inset Formula $d_{c}$
+\end_inset
+
+.
+
+\color inherit
+ Most optimal results were obtained at the values: consonant duration =
+ 0.3, 
+\begin_inset Formula $d_{c}$
+\end_inset
+
+ = 0.7; 
+\begin_inset Formula $d_{v}$
+\end_inset
+
+ = 3.0 
+\end_layout
+
+\end_inset
+
+, which means that the model is generally feasible to hand the highly-varying
+ vocal durations of Beijing singing.
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+done by setting parameter withOracle in doitOneChunkAlign.doitOneChunkAlign
+\end_layout
+
+\begin_layout Plain Layout
+For each state for a phoneme, for the frames of its duration assign 1 in
+ B_map.
+ So B_map is zero for all other phonemes.
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+2.0 is much better than 0.1.
+ 2.0 is comparable to 1.0.
+ vowel gets longer deviationInSec.
+ Try first reading syllable durs from textGrid and )
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+weighting factor alpha = 0.97
+\end_layout
+
+\end_inset
+
+As a baseline we considered same models but without duration modeling.
+ 
+\color green
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ Recent work shows that recognition of phonemes trained on singing voice
+ can yield better performance compared to the traditional way of training
+ on speech [hansen, kruspe].
+\end_layout
+
+\end_inset
+
+
+\color inherit
+
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+if phoneme is not present in model, approximate by copying the model for
+ a closely sounding phoneme.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+missing
+\begin_inset Quotes erd
+\end_inset
+
+ -> 
+\begin_inset Quotes eld
+\end_inset
+
+replace by
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+U^ -> copy u
+\end_layout
+
+\begin_layout Plain Layout
+@ -> copy e
+\end_layout
+
+\begin_layout Plain Layout
+9 -> copy O
+\end_layout
+
+\begin_layout Plain Layout
+----
+\end_layout
+
+\begin_layout Plain Layout
+for these since capital letters are used, they dont make difference when
+ loading .pkl files.
+\end_layout
+
+\begin_layout Plain Layout
+N -> copy n
+\end_layout
+
+\begin_layout Plain Layout
+A -> copy a
+\end_layout
+
+\begin_layout Plain Layout
+o -> copy O
+\end_layout
+
+\end_inset
+
+For both baseline and DHMM, to assure good generalization of results, evaluation
+ was done by cross validation with 3-equally sized folds.
+ 
+\color green
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color green
+where phoneme models are trained on a subset of the dataset using the phoneme-le
+vel annotations and evaluated on a hold-out subset.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Results
+\end_layout
+
+\begin_layout Standard
+Table 1 shows how the proposed duration model outperforms the baseline alignment.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="4">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+oracle
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+baseline
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+DHMM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+overall
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+79
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+56.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+66.14
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+median per lyrics line
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+98
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+75.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+82.3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comparison of total oracle, baseline and DHMM alignment.
+ Accuracy is reported as accumulate correct duration over accumulate total
+ duration over all lines from a set of arias.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: run with commit: https://github.com/georgid/JingjuAlignment/commit/87e593d2
+c32c6a385c69691370f2bb8ee77328cf
+\end_layout
+
+\begin_layout Plain Layout
+see comments of commit in github
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "comparison-one-aria"
+
+\end_inset
+
+ is depicted the model's accuracy for an aria with very long 
+\emph on
+key syllables
+\emph default
+, for which the baseline model performs poor, whereas the DHMM aligns decently
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Please find attached a video recording demonstrating the alignment accuracy
+\end_layout
+
+\end_inset
+
+.
+ One can see the advantage of the proposed model for example for lyrics
+ line 5.
+ Looking at oracle, one can conclude that reaching closer to it can be achieved
+ in the future by designing features which capture phoneme identities in
+ a more robust way.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: comment more
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figure_Accuracy_xixiangji_biuntian.png
+	width 90page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comparison of oracle, baseline and DHMM results on one aria.
+ Each point represents one lyrics line, vertical lines represent 
+\emph on
+banshi
+\emph default
+ changes 
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "comparison-one-aria"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+TODO: show picture example of aria where there is difference 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+code in runWithParams.py.
+ results in dir /Users/joro/Documents/Phd/UPF/arias_dev_01_t_70 and /Users/joro/
+Documents/Phd/UPF/arias_dev_05_t_70
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="6">
+<features rotate="90" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+deviationInSec
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+laosheng-erhuang_04 (14 min)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+laosheng-xipi_02 (4 min)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+dan-xipi_01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+dan-xipi_02
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+without reading score duration
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+26.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25.00
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+45.30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+28.26
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+21.74
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+with reading score durarions
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+32.01 ()
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+45.05 ()
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+63.77 (60.20)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+18.39
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+38.74
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+43.88
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50.14
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color blue
+21.3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+dan_xipi_01 has best score: seems it s due to female voice, not to tempo.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace bigskip
+\end_inset
+
+----------
+\end_layout
+
+\begin_layout Plain Layout
+Tempo (not done yet):
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="5">
+<features rotate="90" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+deviationInSec
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+slow
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+mid
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+fast
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+without score
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+23.26
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+36.88
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+41.78
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+with score
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+36.22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+46.24
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+51.44
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+41.68
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+45.17
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+40.71
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Slow tempo has a lot of variation, not stable results.
+ middle tempo is better
+\end_layout
+
+\begin_layout Plain Layout
+increasing the deviation brings improvement when tempo is slow, but affects
+ results negatively for mid and fast tempo.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefLyrics2Audio,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRef_saerch_by_lyrics,JingjuAlignment"
+options "plainnat"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

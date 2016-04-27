@@ -1,0 +1,39 @@
+Phonetizer can be used as it is for all languages. It is needed to give the right graphene2PhonemeLookup Table
+
+
+ParsePhonemeAnnotation:
+functions to load phoneme annotations from xsampadetails tier
+
+loadPhonemesOneSyll
+	used in oracle to load phonemes.
+	To decode with oracle phonemes durations still phoneme models should be used. 
+	This is so because we use code from LyricsWithModels as utility to expand models to their states. 
+	Therefore we need to load htk models corresponding to each phoneme parsed from annotation. 
+	Done in hmm.examples.main.parsePhoenemeAnnoDursOracle()
+
+
+PhonetizerDict
+
+createDictSyll2XSAMPA()
+	create phonetic dictionary pinyin Syllables -> phonemes in XSAMPA 
+
+
+	
+
+SyllableJingju:
+rule-based assignment of durations using Initial-Middle-final rules
+            all consonant durations set to CONSONANT_DURATION 
+            
+            
+calcPhonemeDurations()
+	does the assignment of duration among phonemes in a syllable
+	uses rules  within a syllable (see report_parameters.lyx for details)
+	
+	
+
+MAIN LOGIC in file: doitAlignChunk
+
+
+evaluation accuracy is printed on the console after each sentence from a an aria is done
+To make it evaluate one sentence only call doitOneChunkAlignTest
+
