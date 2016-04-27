@@ -210,20 +210,6 @@ class MusicXMLParser(object):
 
 
 
-        
-
-
-def createWord(syllablesInCurrWord, currSyllable):
-        '''
-        create a new word ending in currect syllable  
-        '''        
-        currSyllable.text = currSyllable.text.rstrip()
-        currSyllable.setHasShortPauseAtEnd(True)
-        syllablesInCurrWord.append(currSyllable)
-    # create new word
-        word = Word(syllablesInCurrWord)
-        return word, syllablesInCurrWord   
-    
     
 
 def mandarinToPinyin(mandarinChar):

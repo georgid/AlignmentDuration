@@ -4,8 +4,6 @@ Created on Mar 5, 2015
 @author: joro
 '''
 import sys
-from hmm.ParametersAlgo import ParametersAlgo
-from align.Word import Word
 
 
 
@@ -99,16 +97,6 @@ class _SyllableBase():
             
 # begin index does not update, because no change in aranagme. 
 
-def createWord(syllablesInCurrWord, currSyllable):
-        '''
-        create a new word ending in currect syllable  
-        '''        
-        currSyllable.text = currSyllable.text.rstrip()
-        currSyllable.setHasShortPauseAtEnd(ParametersAlgo.WITH_SHORT_PAUSES)
-        syllablesInCurrWord.append(currSyllable)
-    # create new word
-        word = Word(syllablesInCurrWord)
-        return word, syllablesInCurrWord
-    
+
 
 

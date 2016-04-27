@@ -6,7 +6,7 @@ Created on Oct 27, 2014
 from Lyrics import Lyrics
 import os
 import sys
-from Phoneme import Phoneme
+from makam.Phoneme import Phoneme
 from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math

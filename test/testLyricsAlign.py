@@ -11,9 +11,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 
-from align.MakamRecording import MakamRecording, parseSectionLinks
+from makam.MakamRecording import MakamRecording, parseSectionLinks
 from align.ScoreSection import ScoreSection
-from align.MakamScore import loadMakamScore2
+from makam.MakamScore import loadMakamScore2
 
 from align.LyricsAligner import alignRecording, extendSectionLinksSelectedSections,\
     stereoToMono

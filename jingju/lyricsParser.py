@@ -45,7 +45,6 @@ from PhonemeJingju import PhonemeJingju
 from Phonetizer import Phonetizer
 
 from SyllableJingju import SyllableJingju
-from SymbTrParser import createWord
 
 from Lyrics import Lyrics
     

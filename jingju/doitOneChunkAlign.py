@@ -40,7 +40,6 @@ from htkparser.htk_converter import HtkConverter
 
 from Phonetizer import Phonetizer
 
-from SymbTrParser import createWord
 
 from Lyrics import Lyrics
     

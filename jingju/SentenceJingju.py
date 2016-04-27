@@ -7,8 +7,8 @@ from PhonetizerDict import createDictSyll2XSAMPA
 
 from Phonetizer import Phonetizer
 from Lyrics import Lyrics
-from SymbTrParser import createWord
 import numpy
+from align.Word import createWord
 
 
 class SentenceJingju(Lyrics):
