@@ -50,11 +50,39 @@ class _SymbTrParserBase(object):
    ##################################################################################
     
     def _loadSectionBoundaries(self, sectionMetadata):
-        scoreSectionAnnos = sectionMetadata['sections']
+        if hasattr(sectionMetadata, 'segmentations'):
+            scoreSectionAnnos = sectionMetadata['segmentations'] # if with_section_annotations, it is called segmentations because of symbtrdataextractor
+        else:
+            scoreSectionAnnos = sectionMetadata['sections']
+        
+         
         for section in scoreSectionAnnos:
-                    sectionNew = ScoreSection(section['name'],  int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure']) 
+                    if hasattr(section, 'start_note'):
+                        startNote = int(section['start_note'])
+                    else:
+                        startNote = int(section['startNote'])
+                    
+                    if hasattr(section, 'end_note'):
+                        endNote = int(section['end_note'])
+                    else:
+                        endNote = int(section['endNote']) 
+                    
+                    if hasattr(section, 'lyrics_structure'):
+                        lyrStruct = section['lyrics_structure']
+                    else:
+                        lyrStruct = section['lyricStructure']
+                        
+                    if hasattr(section, 'melodic_structure'):
+                        melStruct = section['melodic_structure']
+                    else:
+                        melStruct = section['melodicStructure']
+                    
+                        
+                    sectionNew = ScoreSection(section['name'],  startNote, endNote, melStruct, lyrStruct) 
                     
                     self.sections.append(sectionNew)
+                    
+                    
     
     def _loadSectionBoundaries_fileURI(self, sectionMetadataFileURI):
             '''

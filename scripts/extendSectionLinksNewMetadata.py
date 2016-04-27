@@ -6,11 +6,10 @@ Created on Feb 11, 2016
 import json
 import sys
 from align.ScoreSection import ScoreSection
-from align.MakamRecordingOld import MakamRecordingOld
+from MakamRecordingOld import MakamRecordingOld
 from scripts.MakamScoreOld import loadMakamScore
 import os
 from scripts.fetchSymbTrFromGithub10SarkiTestDataset import fetchFileFromURL
-from IPython.core.display import JSON
 # from align.RecordingSegmenter import getURISectionAnnotation
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
@@ -21,7 +20,6 @@ if pathUtils not in sys.path:
 import compmusic    
 from compmusic import dunya
 from compmusic.extractors.makam.lyricsalignNoteOnsets import recMBIDs
-# from align.MakamRecordingOld import MakamRecordingOld
 
 from utilsLyrics.Utilz import  findFileByExtensions
 '''
@@ -71,18 +69,17 @@ def extendNewMetadata(musicbrainzid, workmbid,  inpuRecordingDir):
     #############  2. load old section annotaion and add new labels
     #load old score section metadata with meyan etc. names and section annotation in json 
     compositionPath = URI_datasetSymbTr1 + symbTrCompositionName + '/'
-    makamScore = loadMakamScore(compositionPath)
-#     makamScore.printSectionsAndLyrics()
+    oldMetadataMakamScore = loadMakamScore(compositionPath)
     
-    if len(sectionsMetadataNewLabels) != len(makamScore.sectionToLyricsMap):
-        sys.exit("for composition {} text score sections are {} and sectionsMetadata with new labels are {}".format(compositionPath, len(makamScore.sectionToLyricsMap), len(sectionsMetadataNewLabels)))
-
+    if len(sectionsMetadataNewLabels) != len(oldMetadataMakamScore.sectionToLyricsMap):
+        sys.exit("for composition {} text score sections are {} and sectionsMetadata with new labels are {}".format(compositionPath, len(oldMetadataMakamScore.sectionToLyricsMap), len(sectionsMetadataNewLabels)))
+        
     ###### match score sections to audio annotations (in constructor of makam recording)
     pathToAudioFile = 'blah'
     pathToRecording, pathToSectionAnnotations = getURISectionAnnotation(inpuRecordingDir, compositionPath) 
-    makamRecording = MakamRecordingOld(makamScore, pathToAudioFile, pathToSectionAnnotations)
+    makamRecording = MakamRecordingOld(oldMetadataMakamScore, pathToAudioFile, pathToSectionAnnotations)
 #     print makamRecording.sectionIndices
-    
+        
     
         ########   load  section annos from source
     sectionAnnosSourceURI = pathSectionAnnosSourceJNMR + musicbrainzid + '.json'
@@ -117,7 +114,7 @@ def replaceSectionsWIthNewLabesJNMR(scoreSectionsNewLables, sectionAnnosSourceUR
     
     # sanity check
     if len(sectionsAnnos) != len(makamRecording.sectionIndices):
-        sys.exit(" annotation local in \n {} \n has length  {} whereas annotation json \n {} \n . Rewrite code with only json".format(pathToSectionAnnotations, len(makamRecording.sectionIndices), sectionAnnosSourceURI ))
+        sys.exit(" annotation local in \n {} \n has length  {} whereas annotation json \n {} \n has length {}. Rewrite code with only json".format(pathToSectionAnnotations, len(makamRecording.sectionIndices), sectionAnnosSourceURI, len(sectionsAnnos) ))
     
     for sectionAnnoTxt, sectionIdx in zip(sectionsAnnos, makamRecording.sectionIndices):
         if sectionIdx != -1:
@@ -152,14 +149,14 @@ def getSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_n
     sectionMetadataAllDict, isDataValid = extractor.extract(symbtrtxtURI, segment_note_bound_idx=segment_note_bound_idx)
 
     
-    if workmbid == 'c6e43ac6-4a18-42ab-bcc4-46e29360051e':
-        
-        symbTrMetadataURL = 'https://raw.githubusercontent.com/sertansenturk/turkish_makam_corpus_stats/master/data/SymbTrData/' + symbTrCompositionName + '.json'
-        import tempfile
-        tmpDir = tempfile.mkdtemp()
-        fetchFileFromURL(symbTrMetadataURL, tmpDir + '/tmp.json') 
-        with open(tmpDir + '/tmp.json') as f:
-             sectionMetadataAllDict = json.load(f)
+#     if workmbid == 'c6e43ac6-4a18-42ab-bcc4-46e29360051e':
+#         
+#         symbTrMetadataURL = 'https://raw.githubusercontent.com/sertansenturk/turkish_makam_corpus_stats/master/data/SymbTrData/' + symbTrCompositionName + '.json'
+#         import tempfile
+#         tmpDir = tempfile.mkdtemp()
+#         fetchFileFromURL(symbTrMetadataURL, tmpDir + '/tmp.json') 
+#         with open(tmpDir + '/tmp.json') as f:
+#              sectionMetadataAllDict = json.load(f)
     
     # TODO: replace with sections         
     sectionsMetadataNewNamesDict = sectionMetadataAllDict['segmentations']
@@ -227,8 +224,10 @@ def replaceSecionsWithNewLabels_GeorgisAnnotations(sectionsMetadataNewLabels, ma
 
 def write_results_as_json(sectionsMetadataNewLabelsDict, workid, sectionAnnosDict, musicbrainzid, pathSectionAnnosDestination):
     
-    URI =  pathSectionAnnosDestination + '/scores/' + workid  + '.json'
-    print "wirting file \n {} \n dont forget to upload it to http://githubusercontent.com/georgid/turkish_makam_section_dataset/master/scores/".format( URI)
+
+    URI =  pathSectionAnnosDestination + '/scores/metadata/' + workid  + '.json'
+    print "wirting file \n {} \n dont forget to upload it to http://githubusercontent.com/georgid/turkish_makam_section_dataset/master/scores/metadata".format( URI)
+
     with open(URI, 'w') as f: 
         json.dump(sectionsMetadataNewLabelsDict, f, indent=4)
     

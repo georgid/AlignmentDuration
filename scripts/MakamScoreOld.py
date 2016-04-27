@@ -175,6 +175,7 @@ def loadMakamScore(pathToComposition):
     sectionFile = sectionFiles[0]
         
     pathToSectionTsv = os.path.join(pathToComposition, sectionFile)
+    print "using section metadata file {}".format(pathToSectionTsv)
     makamScore = MakamScoreOld(pathTotxt, pathToSectionTsv )
     return makamScore
     
