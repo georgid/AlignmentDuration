@@ -1,0 +1,1195 @@
+Created by PLY version 3.4 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    OTHER_MACRO
+
+Grammar
+
+Rule 0     S' -> macros
+Rule 1     macros -> macro macros
+Rule 2     macros -> macro
+Rule 3     macro -> MACRO_H NAME hmmdef
+Rule 4     macro -> MACRO_O globaloptions
+Rule 5     macro -> MACRO_S NAME state
+Rule 6     macro -> MACRO_T NAME tmat
+Rule 7     macro -> MACRO_U NAME mean
+Rule 8     macro -> MACRO_V NAME var
+Rule 9     hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM
+Rule 10    hmmdef_states -> STATE INT hmmdef_state hmmdef_states
+Rule 11    hmmdef_states -> STATE INT hmmdef_state
+Rule 12    hmmdef_state -> state
+Rule 13    hmmdef_state -> MACRO_S NAME
+Rule 14    hmmdef_tmat -> tmat
+Rule 15    hmmdef_tmat -> MACRO_T NAME
+Rule 16    globaloptions -> filler
+Rule 17    state -> NUMMIXES INT state_mixtures
+Rule 18    state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures
+Rule 19    state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler
+Rule 20    state -> state_mean state_var filler
+Rule 21    state_mean -> mean
+Rule 22    state_mean -> MACRO_U NAME
+Rule 23    state_var -> var
+Rule 24    state_var -> MACRO_V NAME
+Rule 25    tmat -> TRANSP INT vector
+Rule 26    mean -> MEAN INT vector
+Rule 27    var -> VARIANCE INT vector
+Rule 28    vector -> FLOAT vector
+Rule 29    vector -> FLOAT
+Rule 30    filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1
+Rule 31    filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1
+Rule 32    filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1
+Rule 33    filler -> OTHER_TAG filler1 filler1 filler1 filler1
+Rule 34    filler -> OTHER_TAG filler1 filler1 filler1
+Rule 35    filler -> OTHER_TAG filler1 filler1
+Rule 36    filler -> OTHER_TAG filler1
+Rule 37    filler -> <empty>
+Rule 38    filler1 -> INT
+Rule 39    filler1 -> NAME
+Rule 40    filler1 -> FLOAT
+Rule 41    filler1 -> OTHER_TAG
+
+Terminals, with rules where they appear
+
+BEGINHMM             : 9
+ENDHMM               : 9
+FLOAT                : 18 19 28 29 40
+INT                  : 9 10 11 17 18 19 25 26 27 38
+MACRO_H              : 3
+MACRO_O              : 4
+MACRO_S              : 5 13
+MACRO_T              : 6 15
+MACRO_U              : 7 22
+MACRO_V              : 8 24
+MEAN                 : 26
+MIXTURE              : 18 19
+NAME                 : 3 5 6 7 8 13 15 22 24 39
+NUMMIXES             : 17
+NUMSTATES            : 9
+OTHER_MACRO          : 
+OTHER_TAG            : 30 31 32 33 34 35 36 41
+STATE                : 10 11
+TRANSP               : 25
+VARIANCE             : 27
+error                : 
+
+Nonterminals, with rules where they appear
+
+filler               : 16 18 19 20
+filler1              : 30 30 30 30 30 30 30 31 31 31 31 31 31 32 32 32 32 32 33 33 33 33 34 34 34 35 35 36
+globaloptions        : 4
+hmmdef               : 3
+hmmdef_state         : 10 11
+hmmdef_states        : 9 10
+hmmdef_tmat          : 9
+macro                : 1 2
+macros               : 1 0
+mean                 : 7 21
+state                : 5 12
+state_mean           : 18 19 20
+state_mixtures       : 17 18
+state_var            : 18 19 20
+tmat                 : 6 14
+var                  : 8 23
+vector               : 25 26 27 28
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . macros
+    (1) macros -> . macro macros
+    (2) macros -> . macro
+    (3) macro -> . MACRO_H NAME hmmdef
+    (4) macro -> . MACRO_O globaloptions
+    (5) macro -> . MACRO_S NAME state
+    (6) macro -> . MACRO_T NAME tmat
+    (7) macro -> . MACRO_U NAME mean
+    (8) macro -> . MACRO_V NAME var
+
+    MACRO_H         shift and go to state 7
+    MACRO_O         shift and go to state 6
+    MACRO_S         shift and go to state 8
+    MACRO_T         shift and go to state 2
+    MACRO_U         shift and go to state 3
+    MACRO_V         shift and go to state 1
+
+    macro                          shift and go to state 4
+    macros                         shift and go to state 5
+
+state 1
+
+    (8) macro -> MACRO_V . NAME var
+
+    NAME            shift and go to state 9
+
+
+state 2
+
+    (6) macro -> MACRO_T . NAME tmat
+
+    NAME            shift and go to state 10
+
+
+state 3
+
+    (7) macro -> MACRO_U . NAME mean
+
+    NAME            shift and go to state 11
+
+
+state 4
+
+    (1) macros -> macro . macros
+    (2) macros -> macro .
+    (1) macros -> . macro macros
+    (2) macros -> . macro
+    (3) macro -> . MACRO_H NAME hmmdef
+    (4) macro -> . MACRO_O globaloptions
+    (5) macro -> . MACRO_S NAME state
+    (6) macro -> . MACRO_T NAME tmat
+    (7) macro -> . MACRO_U NAME mean
+    (8) macro -> . MACRO_V NAME var
+
+    $end            reduce using rule 2 (macros -> macro .)
+    MACRO_H         shift and go to state 7
+    MACRO_O         shift and go to state 6
+    MACRO_S         shift and go to state 8
+    MACRO_T         shift and go to state 2
+    MACRO_U         shift and go to state 3
+    MACRO_V         shift and go to state 1
+
+    macro                          shift and go to state 4
+    macros                         shift and go to state 12
+
+state 5
+
+    (0) S' -> macros .
+
+
+
+state 6
+
+    (4) macro -> MACRO_O . globaloptions
+    (16) globaloptions -> . filler
+    (30) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1
+    (31) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1
+    (32) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1
+    (33) filler -> . OTHER_TAG filler1 filler1 filler1 filler1
+    (34) filler -> . OTHER_TAG filler1 filler1 filler1
+    (35) filler -> . OTHER_TAG filler1 filler1
+    (36) filler -> . OTHER_TAG filler1
+    (37) filler -> .
+
+    OTHER_TAG       shift and go to state 15
+    MACRO_H         reduce using rule 37 (filler -> .)
+    MACRO_O         reduce using rule 37 (filler -> .)
+    MACRO_S         reduce using rule 37 (filler -> .)
+    MACRO_T         reduce using rule 37 (filler -> .)
+    MACRO_U         reduce using rule 37 (filler -> .)
+    MACRO_V         reduce using rule 37 (filler -> .)
+    $end            reduce using rule 37 (filler -> .)
+
+    filler                         shift and go to state 13
+    globaloptions                  shift and go to state 14
+
+state 7
+
+    (3) macro -> MACRO_H . NAME hmmdef
+
+    NAME            shift and go to state 16
+
+
+state 8
+
+    (5) macro -> MACRO_S . NAME state
+
+    NAME            shift and go to state 17
+
+
+state 9
+
+    (8) macro -> MACRO_V NAME . var
+    (27) var -> . VARIANCE INT vector
+
+    VARIANCE        shift and go to state 19
+
+    var                            shift and go to state 18
+
+state 10
+
+    (6) macro -> MACRO_T NAME . tmat
+    (25) tmat -> . TRANSP INT vector
+
+    TRANSP          shift and go to state 21
+
+    tmat                           shift and go to state 20
+
+state 11
+
+    (7) macro -> MACRO_U NAME . mean
+    (26) mean -> . MEAN INT vector
+
+    MEAN            shift and go to state 23
+
+    mean                           shift and go to state 22
+
+state 12
+
+    (1) macros -> macro macros .
+
+    $end            reduce using rule 1 (macros -> macro macros .)
+
+
+state 13
+
+    (16) globaloptions -> filler .
+
+    MACRO_H         reduce using rule 16 (globaloptions -> filler .)
+    MACRO_O         reduce using rule 16 (globaloptions -> filler .)
+    MACRO_S         reduce using rule 16 (globaloptions -> filler .)
+    MACRO_T         reduce using rule 16 (globaloptions -> filler .)
+    MACRO_U         reduce using rule 16 (globaloptions -> filler .)
+    MACRO_V         reduce using rule 16 (globaloptions -> filler .)
+    $end            reduce using rule 16 (globaloptions -> filler .)
+
+
+state 14
+
+    (4) macro -> MACRO_O globaloptions .
+
+    MACRO_H         reduce using rule 4 (macro -> MACRO_O globaloptions .)
+    MACRO_O         reduce using rule 4 (macro -> MACRO_O globaloptions .)
+    MACRO_S         reduce using rule 4 (macro -> MACRO_O globaloptions .)
+    MACRO_T         reduce using rule 4 (macro -> MACRO_O globaloptions .)
+    MACRO_U         reduce using rule 4 (macro -> MACRO_O globaloptions .)
+    MACRO_V         reduce using rule 4 (macro -> MACRO_O globaloptions .)
+    $end            reduce using rule 4 (macro -> MACRO_O globaloptions .)
+
+
+state 15
+
+    (30) filler -> OTHER_TAG . filler1 filler1 filler1 filler1 filler1 filler1 filler1
+    (31) filler -> OTHER_TAG . filler1 filler1 filler1 filler1 filler1 filler1
+    (32) filler -> OTHER_TAG . filler1 filler1 filler1 filler1 filler1
+    (33) filler -> OTHER_TAG . filler1 filler1 filler1 filler1
+    (34) filler -> OTHER_TAG . filler1 filler1 filler1
+    (35) filler -> OTHER_TAG . filler1 filler1
+    (36) filler -> OTHER_TAG . filler1
+    (38) filler1 -> . INT
+    (39) filler1 -> . NAME
+    (40) filler1 -> . FLOAT
+    (41) filler1 -> . OTHER_TAG
+
+    INT             shift and go to state 24
+    NAME            shift and go to state 27
+    FLOAT           shift and go to state 25
+    OTHER_TAG       shift and go to state 28
+
+    filler1                        shift and go to state 26
+
+state 16
+
+    (3) macro -> MACRO_H NAME . hmmdef
+    (9) hmmdef -> . BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM
+
+    BEGINHMM        shift and go to state 29
+
+    hmmdef                         shift and go to state 30
+
+state 17
+
+    (5) macro -> MACRO_S NAME . state
+    (17) state -> . NUMMIXES INT state_mixtures
+    (20) state -> . state_mean state_var filler
+    (21) state_mean -> . mean
+    (22) state_mean -> . MACRO_U NAME
+    (26) mean -> . MEAN INT vector
+
+    NUMMIXES        shift and go to state 33
+    MACRO_U         shift and go to state 31
+    MEAN            shift and go to state 23
+
+    state_mean                     shift and go to state 32
+    state                          shift and go to state 34
+    mean                           shift and go to state 35
+
+state 18
+
+    (8) macro -> MACRO_V NAME var .
+
+    MACRO_H         reduce using rule 8 (macro -> MACRO_V NAME var .)
+    MACRO_O         reduce using rule 8 (macro -> MACRO_V NAME var .)
+    MACRO_S         reduce using rule 8 (macro -> MACRO_V NAME var .)
+    MACRO_T         reduce using rule 8 (macro -> MACRO_V NAME var .)
+    MACRO_U         reduce using rule 8 (macro -> MACRO_V NAME var .)
+    MACRO_V         reduce using rule 8 (macro -> MACRO_V NAME var .)
+    $end            reduce using rule 8 (macro -> MACRO_V NAME var .)
+
+
+state 19
+
+    (27) var -> VARIANCE . INT vector
+
+    INT             shift and go to state 36
+
+
+state 20
+
+    (6) macro -> MACRO_T NAME tmat .
+
+    MACRO_H         reduce using rule 6 (macro -> MACRO_T NAME tmat .)
+    MACRO_O         reduce using rule 6 (macro -> MACRO_T NAME tmat .)
+    MACRO_S         reduce using rule 6 (macro -> MACRO_T NAME tmat .)
+    MACRO_T         reduce using rule 6 (macro -> MACRO_T NAME tmat .)
+    MACRO_U         reduce using rule 6 (macro -> MACRO_T NAME tmat .)
+    MACRO_V         reduce using rule 6 (macro -> MACRO_T NAME tmat .)
+    $end            reduce using rule 6 (macro -> MACRO_T NAME tmat .)
+
+
+state 21
+
+    (25) tmat -> TRANSP . INT vector
+
+    INT             shift and go to state 37
+
+
+state 22
+
+    (7) macro -> MACRO_U NAME mean .
+
+    MACRO_H         reduce using rule 7 (macro -> MACRO_U NAME mean .)
+    MACRO_O         reduce using rule 7 (macro -> MACRO_U NAME mean .)
+    MACRO_S         reduce using rule 7 (macro -> MACRO_U NAME mean .)
+    MACRO_T         reduce using rule 7 (macro -> MACRO_U NAME mean .)
+    MACRO_U         reduce using rule 7 (macro -> MACRO_U NAME mean .)
+    MACRO_V         reduce using rule 7 (macro -> MACRO_U NAME mean .)
+    $end            reduce using rule 7 (macro -> MACRO_U NAME mean .)
+
+
+state 23
+
+    (26) mean -> MEAN . INT vector
+
+    INT             shift and go to state 38
+
+
+state 24
+
+    (38) filler1 -> INT .
+
+    INT             reduce using rule 38 (filler1 -> INT .)
+    NAME            reduce using rule 38 (filler1 -> INT .)
+    FLOAT           reduce using rule 38 (filler1 -> INT .)
+    OTHER_TAG       reduce using rule 38 (filler1 -> INT .)
+    MACRO_H         reduce using rule 38 (filler1 -> INT .)
+    MACRO_O         reduce using rule 38 (filler1 -> INT .)
+    MACRO_S         reduce using rule 38 (filler1 -> INT .)
+    MACRO_T         reduce using rule 38 (filler1 -> INT .)
+    MACRO_U         reduce using rule 38 (filler1 -> INT .)
+    MACRO_V         reduce using rule 38 (filler1 -> INT .)
+    $end            reduce using rule 38 (filler1 -> INT .)
+    STATE           reduce using rule 38 (filler1 -> INT .)
+    TRANSP          reduce using rule 38 (filler1 -> INT .)
+    MIXTURE         reduce using rule 38 (filler1 -> INT .)
+
+
+state 25
+
+    (40) filler1 -> FLOAT .
+
+    INT             reduce using rule 40 (filler1 -> FLOAT .)
+    NAME            reduce using rule 40 (filler1 -> FLOAT .)
+    FLOAT           reduce using rule 40 (filler1 -> FLOAT .)
+    OTHER_TAG       reduce using rule 40 (filler1 -> FLOAT .)
+    MACRO_H         reduce using rule 40 (filler1 -> FLOAT .)
+    MACRO_O         reduce using rule 40 (filler1 -> FLOAT .)
+    MACRO_S         reduce using rule 40 (filler1 -> FLOAT .)
+    MACRO_T         reduce using rule 40 (filler1 -> FLOAT .)
+    MACRO_U         reduce using rule 40 (filler1 -> FLOAT .)
+    MACRO_V         reduce using rule 40 (filler1 -> FLOAT .)
+    $end            reduce using rule 40 (filler1 -> FLOAT .)
+    STATE           reduce using rule 40 (filler1 -> FLOAT .)
+    TRANSP          reduce using rule 40 (filler1 -> FLOAT .)
+    MIXTURE         reduce using rule 40 (filler1 -> FLOAT .)
+
+
+state 26
+
+    (30) filler -> OTHER_TAG filler1 . filler1 filler1 filler1 filler1 filler1 filler1
+    (31) filler -> OTHER_TAG filler1 . filler1 filler1 filler1 filler1 filler1
+    (32) filler -> OTHER_TAG filler1 . filler1 filler1 filler1 filler1
+    (33) filler -> OTHER_TAG filler1 . filler1 filler1 filler1
+    (34) filler -> OTHER_TAG filler1 . filler1 filler1
+    (35) filler -> OTHER_TAG filler1 . filler1
+    (36) filler -> OTHER_TAG filler1 .
+    (38) filler1 -> . INT
+    (39) filler1 -> . NAME
+    (40) filler1 -> . FLOAT
+    (41) filler1 -> . OTHER_TAG
+
+    MACRO_H         reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    MACRO_O         reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    MACRO_S         reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    MACRO_T         reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    MACRO_U         reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    MACRO_V         reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    $end            reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    STATE           reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    TRANSP          reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    MIXTURE         reduce using rule 36 (filler -> OTHER_TAG filler1 .)
+    INT             shift and go to state 24
+    NAME            shift and go to state 27
+    FLOAT           shift and go to state 25
+    OTHER_TAG       shift and go to state 28
+
+    filler1                        shift and go to state 39
+
+state 27
+
+    (39) filler1 -> NAME .
+
+    INT             reduce using rule 39 (filler1 -> NAME .)
+    NAME            reduce using rule 39 (filler1 -> NAME .)
+    FLOAT           reduce using rule 39 (filler1 -> NAME .)
+    OTHER_TAG       reduce using rule 39 (filler1 -> NAME .)
+    MACRO_H         reduce using rule 39 (filler1 -> NAME .)
+    MACRO_O         reduce using rule 39 (filler1 -> NAME .)
+    MACRO_S         reduce using rule 39 (filler1 -> NAME .)
+    MACRO_T         reduce using rule 39 (filler1 -> NAME .)
+    MACRO_U         reduce using rule 39 (filler1 -> NAME .)
+    MACRO_V         reduce using rule 39 (filler1 -> NAME .)
+    $end            reduce using rule 39 (filler1 -> NAME .)
+    STATE           reduce using rule 39 (filler1 -> NAME .)
+    TRANSP          reduce using rule 39 (filler1 -> NAME .)
+    MIXTURE         reduce using rule 39 (filler1 -> NAME .)
+
+
+state 28
+
+    (41) filler1 -> OTHER_TAG .
+
+    INT             reduce using rule 41 (filler1 -> OTHER_TAG .)
+    NAME            reduce using rule 41 (filler1 -> OTHER_TAG .)
+    FLOAT           reduce using rule 41 (filler1 -> OTHER_TAG .)
+    OTHER_TAG       reduce using rule 41 (filler1 -> OTHER_TAG .)
+    MACRO_H         reduce using rule 41 (filler1 -> OTHER_TAG .)
+    MACRO_O         reduce using rule 41 (filler1 -> OTHER_TAG .)
+    MACRO_S         reduce using rule 41 (filler1 -> OTHER_TAG .)
+    MACRO_T         reduce using rule 41 (filler1 -> OTHER_TAG .)
+    MACRO_U         reduce using rule 41 (filler1 -> OTHER_TAG .)
+    MACRO_V         reduce using rule 41 (filler1 -> OTHER_TAG .)
+    $end            reduce using rule 41 (filler1 -> OTHER_TAG .)
+    STATE           reduce using rule 41 (filler1 -> OTHER_TAG .)
+    TRANSP          reduce using rule 41 (filler1 -> OTHER_TAG .)
+    MIXTURE         reduce using rule 41 (filler1 -> OTHER_TAG .)
+
+
+state 29
+
+    (9) hmmdef -> BEGINHMM . NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM
+
+    NUMSTATES       shift and go to state 40
+
+
+state 30
+
+    (3) macro -> MACRO_H NAME hmmdef .
+
+    MACRO_H         reduce using rule 3 (macro -> MACRO_H NAME hmmdef .)
+    MACRO_O         reduce using rule 3 (macro -> MACRO_H NAME hmmdef .)
+    MACRO_S         reduce using rule 3 (macro -> MACRO_H NAME hmmdef .)
+    MACRO_T         reduce using rule 3 (macro -> MACRO_H NAME hmmdef .)
+    MACRO_U         reduce using rule 3 (macro -> MACRO_H NAME hmmdef .)
+    MACRO_V         reduce using rule 3 (macro -> MACRO_H NAME hmmdef .)
+    $end            reduce using rule 3 (macro -> MACRO_H NAME hmmdef .)
+
+
+state 31
+
+    (22) state_mean -> MACRO_U . NAME
+
+    NAME            shift and go to state 41
+
+
+state 32
+
+    (20) state -> state_mean . state_var filler
+    (23) state_var -> . var
+    (24) state_var -> . MACRO_V NAME
+    (27) var -> . VARIANCE INT vector
+
+    MACRO_V         shift and go to state 43
+    VARIANCE        shift and go to state 19
+
+    state_var                      shift and go to state 42
+    var                            shift and go to state 44
+
+state 33
+
+    (17) state -> NUMMIXES . INT state_mixtures
+
+    INT             shift and go to state 45
+
+
+state 34
+
+    (5) macro -> MACRO_S NAME state .
+
+    MACRO_H         reduce using rule 5 (macro -> MACRO_S NAME state .)
+    MACRO_O         reduce using rule 5 (macro -> MACRO_S NAME state .)
+    MACRO_S         reduce using rule 5 (macro -> MACRO_S NAME state .)
+    MACRO_T         reduce using rule 5 (macro -> MACRO_S NAME state .)
+    MACRO_U         reduce using rule 5 (macro -> MACRO_S NAME state .)
+    MACRO_V         reduce using rule 5 (macro -> MACRO_S NAME state .)
+    $end            reduce using rule 5 (macro -> MACRO_S NAME state .)
+
+
+state 35
+
+    (21) state_mean -> mean .
+
+    MACRO_V         reduce using rule 21 (state_mean -> mean .)
+    VARIANCE        reduce using rule 21 (state_mean -> mean .)
+
+
+state 36
+
+    (27) var -> VARIANCE INT . vector
+    (28) vector -> . FLOAT vector
+    (29) vector -> . FLOAT
+
+    FLOAT           shift and go to state 47
+
+    vector                         shift and go to state 46
+
+state 37
+
+    (25) tmat -> TRANSP INT . vector
+    (28) vector -> . FLOAT vector
+    (29) vector -> . FLOAT
+
+    FLOAT           shift and go to state 47
+
+    vector                         shift and go to state 48
+
+state 38
+
+    (26) mean -> MEAN INT . vector
+    (28) vector -> . FLOAT vector
+    (29) vector -> . FLOAT
+
+    FLOAT           shift and go to state 47
+
+    vector                         shift and go to state 49
+
+state 39
+
+    (30) filler -> OTHER_TAG filler1 filler1 . filler1 filler1 filler1 filler1 filler1
+    (31) filler -> OTHER_TAG filler1 filler1 . filler1 filler1 filler1 filler1
+    (32) filler -> OTHER_TAG filler1 filler1 . filler1 filler1 filler1
+    (33) filler -> OTHER_TAG filler1 filler1 . filler1 filler1
+    (34) filler -> OTHER_TAG filler1 filler1 . filler1
+    (35) filler -> OTHER_TAG filler1 filler1 .
+    (38) filler1 -> . INT
+    (39) filler1 -> . NAME
+    (40) filler1 -> . FLOAT
+    (41) filler1 -> . OTHER_TAG
+
+    MACRO_H         reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    MACRO_O         reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    MACRO_S         reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    MACRO_T         reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    MACRO_U         reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    MACRO_V         reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    $end            reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    STATE           reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    TRANSP          reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    MIXTURE         reduce using rule 35 (filler -> OTHER_TAG filler1 filler1 .)
+    INT             shift and go to state 24
+    NAME            shift and go to state 27
+    FLOAT           shift and go to state 25
+    OTHER_TAG       shift and go to state 28
+
+    filler1                        shift and go to state 50
+
+state 40
+
+    (9) hmmdef -> BEGINHMM NUMSTATES . INT hmmdef_states hmmdef_tmat ENDHMM
+
+    INT             shift and go to state 51
+
+
+state 41
+
+    (22) state_mean -> MACRO_U NAME .
+
+    MACRO_V         reduce using rule 22 (state_mean -> MACRO_U NAME .)
+    VARIANCE        reduce using rule 22 (state_mean -> MACRO_U NAME .)
+
+
+state 42
+
+    (20) state -> state_mean state_var . filler
+    (30) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1
+    (31) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1
+    (32) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1
+    (33) filler -> . OTHER_TAG filler1 filler1 filler1 filler1
+    (34) filler -> . OTHER_TAG filler1 filler1 filler1
+    (35) filler -> . OTHER_TAG filler1 filler1
+    (36) filler -> . OTHER_TAG filler1
+    (37) filler -> .
+
+    OTHER_TAG       shift and go to state 15
+    MACRO_H         reduce using rule 37 (filler -> .)
+    MACRO_O         reduce using rule 37 (filler -> .)
+    MACRO_S         reduce using rule 37 (filler -> .)
+    MACRO_T         reduce using rule 37 (filler -> .)
+    MACRO_U         reduce using rule 37 (filler -> .)
+    MACRO_V         reduce using rule 37 (filler -> .)
+    $end            reduce using rule 37 (filler -> .)
+    STATE           reduce using rule 37 (filler -> .)
+    TRANSP          reduce using rule 37 (filler -> .)
+
+    filler                         shift and go to state 52
+
+state 43
+
+    (24) state_var -> MACRO_V . NAME
+
+    NAME            shift and go to state 53
+
+
+state 44
+
+    (23) state_var -> var .
+
+    OTHER_TAG       reduce using rule 23 (state_var -> var .)
+    MIXTURE         reduce using rule 23 (state_var -> var .)
+    MACRO_H         reduce using rule 23 (state_var -> var .)
+    MACRO_O         reduce using rule 23 (state_var -> var .)
+    MACRO_S         reduce using rule 23 (state_var -> var .)
+    MACRO_T         reduce using rule 23 (state_var -> var .)
+    MACRO_U         reduce using rule 23 (state_var -> var .)
+    MACRO_V         reduce using rule 23 (state_var -> var .)
+    $end            reduce using rule 23 (state_var -> var .)
+    STATE           reduce using rule 23 (state_var -> var .)
+    TRANSP          reduce using rule 23 (state_var -> var .)
+
+
+state 45
+
+    (17) state -> NUMMIXES INT . state_mixtures
+    (18) state_mixtures -> . MIXTURE INT FLOAT state_mean state_var filler state_mixtures
+    (19) state_mixtures -> . MIXTURE INT FLOAT state_mean state_var filler
+
+    MIXTURE         shift and go to state 54
+
+    state_mixtures                 shift and go to state 55
+
+state 46
+
+    (27) var -> VARIANCE INT vector .
+
+    OTHER_TAG       reduce using rule 27 (var -> VARIANCE INT vector .)
+    MIXTURE         reduce using rule 27 (var -> VARIANCE INT vector .)
+    MACRO_H         reduce using rule 27 (var -> VARIANCE INT vector .)
+    MACRO_O         reduce using rule 27 (var -> VARIANCE INT vector .)
+    MACRO_S         reduce using rule 27 (var -> VARIANCE INT vector .)
+    MACRO_T         reduce using rule 27 (var -> VARIANCE INT vector .)
+    MACRO_U         reduce using rule 27 (var -> VARIANCE INT vector .)
+    MACRO_V         reduce using rule 27 (var -> VARIANCE INT vector .)
+    $end            reduce using rule 27 (var -> VARIANCE INT vector .)
+    STATE           reduce using rule 27 (var -> VARIANCE INT vector .)
+    TRANSP          reduce using rule 27 (var -> VARIANCE INT vector .)
+
+
+state 47
+
+    (28) vector -> FLOAT . vector
+    (29) vector -> FLOAT .
+    (28) vector -> . FLOAT vector
+    (29) vector -> . FLOAT
+
+    MACRO_H         reduce using rule 29 (vector -> FLOAT .)
+    MACRO_O         reduce using rule 29 (vector -> FLOAT .)
+    MACRO_S         reduce using rule 29 (vector -> FLOAT .)
+    MACRO_T         reduce using rule 29 (vector -> FLOAT .)
+    MACRO_U         reduce using rule 29 (vector -> FLOAT .)
+    MACRO_V         reduce using rule 29 (vector -> FLOAT .)
+    $end            reduce using rule 29 (vector -> FLOAT .)
+    ENDHMM          reduce using rule 29 (vector -> FLOAT .)
+    OTHER_TAG       reduce using rule 29 (vector -> FLOAT .)
+    STATE           reduce using rule 29 (vector -> FLOAT .)
+    TRANSP          reduce using rule 29 (vector -> FLOAT .)
+    MIXTURE         reduce using rule 29 (vector -> FLOAT .)
+    VARIANCE        reduce using rule 29 (vector -> FLOAT .)
+    FLOAT           shift and go to state 47
+
+    vector                         shift and go to state 56
+
+state 48
+
+    (25) tmat -> TRANSP INT vector .
+
+    MACRO_H         reduce using rule 25 (tmat -> TRANSP INT vector .)
+    MACRO_O         reduce using rule 25 (tmat -> TRANSP INT vector .)
+    MACRO_S         reduce using rule 25 (tmat -> TRANSP INT vector .)
+    MACRO_T         reduce using rule 25 (tmat -> TRANSP INT vector .)
+    MACRO_U         reduce using rule 25 (tmat -> TRANSP INT vector .)
+    MACRO_V         reduce using rule 25 (tmat -> TRANSP INT vector .)
+    $end            reduce using rule 25 (tmat -> TRANSP INT vector .)
+    ENDHMM          reduce using rule 25 (tmat -> TRANSP INT vector .)
+
+
+state 49
+
+    (26) mean -> MEAN INT vector .
+
+    MACRO_V         reduce using rule 26 (mean -> MEAN INT vector .)
+    VARIANCE        reduce using rule 26 (mean -> MEAN INT vector .)
+    MACRO_H         reduce using rule 26 (mean -> MEAN INT vector .)
+    MACRO_O         reduce using rule 26 (mean -> MEAN INT vector .)
+    MACRO_S         reduce using rule 26 (mean -> MEAN INT vector .)
+    MACRO_T         reduce using rule 26 (mean -> MEAN INT vector .)
+    MACRO_U         reduce using rule 26 (mean -> MEAN INT vector .)
+    $end            reduce using rule 26 (mean -> MEAN INT vector .)
+
+
+state 50
+
+    (30) filler -> OTHER_TAG filler1 filler1 filler1 . filler1 filler1 filler1 filler1
+    (31) filler -> OTHER_TAG filler1 filler1 filler1 . filler1 filler1 filler1
+    (32) filler -> OTHER_TAG filler1 filler1 filler1 . filler1 filler1
+    (33) filler -> OTHER_TAG filler1 filler1 filler1 . filler1
+    (34) filler -> OTHER_TAG filler1 filler1 filler1 .
+    (38) filler1 -> . INT
+    (39) filler1 -> . NAME
+    (40) filler1 -> . FLOAT
+    (41) filler1 -> . OTHER_TAG
+
+    MACRO_H         reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    MACRO_O         reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    MACRO_S         reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    MACRO_T         reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    MACRO_U         reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    MACRO_V         reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    $end            reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    STATE           reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    TRANSP          reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    MIXTURE         reduce using rule 34 (filler -> OTHER_TAG filler1 filler1 filler1 .)
+    INT             shift and go to state 24
+    NAME            shift and go to state 27
+    FLOAT           shift and go to state 25
+    OTHER_TAG       shift and go to state 28
+
+    filler1                        shift and go to state 57
+
+state 51
+
+    (9) hmmdef -> BEGINHMM NUMSTATES INT . hmmdef_states hmmdef_tmat ENDHMM
+    (10) hmmdef_states -> . STATE INT hmmdef_state hmmdef_states
+    (11) hmmdef_states -> . STATE INT hmmdef_state
+
+    STATE           shift and go to state 58
+
+    hmmdef_states                  shift and go to state 59
+
+state 52
+
+    (20) state -> state_mean state_var filler .
+
+    STATE           reduce using rule 20 (state -> state_mean state_var filler .)
+    MACRO_T         reduce using rule 20 (state -> state_mean state_var filler .)
+    TRANSP          reduce using rule 20 (state -> state_mean state_var filler .)
+    MACRO_H         reduce using rule 20 (state -> state_mean state_var filler .)
+    MACRO_O         reduce using rule 20 (state -> state_mean state_var filler .)
+    MACRO_S         reduce using rule 20 (state -> state_mean state_var filler .)
+    MACRO_U         reduce using rule 20 (state -> state_mean state_var filler .)
+    MACRO_V         reduce using rule 20 (state -> state_mean state_var filler .)
+    $end            reduce using rule 20 (state -> state_mean state_var filler .)
+
+
+state 53
+
+    (24) state_var -> MACRO_V NAME .
+
+    OTHER_TAG       reduce using rule 24 (state_var -> MACRO_V NAME .)
+    MIXTURE         reduce using rule 24 (state_var -> MACRO_V NAME .)
+    MACRO_H         reduce using rule 24 (state_var -> MACRO_V NAME .)
+    MACRO_O         reduce using rule 24 (state_var -> MACRO_V NAME .)
+    MACRO_S         reduce using rule 24 (state_var -> MACRO_V NAME .)
+    MACRO_T         reduce using rule 24 (state_var -> MACRO_V NAME .)
+    MACRO_U         reduce using rule 24 (state_var -> MACRO_V NAME .)
+    MACRO_V         reduce using rule 24 (state_var -> MACRO_V NAME .)
+    $end            reduce using rule 24 (state_var -> MACRO_V NAME .)
+    STATE           reduce using rule 24 (state_var -> MACRO_V NAME .)
+    TRANSP          reduce using rule 24 (state_var -> MACRO_V NAME .)
+
+
+state 54
+
+    (18) state_mixtures -> MIXTURE . INT FLOAT state_mean state_var filler state_mixtures
+    (19) state_mixtures -> MIXTURE . INT FLOAT state_mean state_var filler
+
+    INT             shift and go to state 60
+
+
+state 55
+
+    (17) state -> NUMMIXES INT state_mixtures .
+
+    STATE           reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+    MACRO_T         reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+    TRANSP          reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+    MACRO_H         reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+    MACRO_O         reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+    MACRO_S         reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+    MACRO_U         reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+    MACRO_V         reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+    $end            reduce using rule 17 (state -> NUMMIXES INT state_mixtures .)
+
+
+state 56
+
+    (28) vector -> FLOAT vector .
+
+    MACRO_H         reduce using rule 28 (vector -> FLOAT vector .)
+    MACRO_O         reduce using rule 28 (vector -> FLOAT vector .)
+    MACRO_S         reduce using rule 28 (vector -> FLOAT vector .)
+    MACRO_T         reduce using rule 28 (vector -> FLOAT vector .)
+    MACRO_U         reduce using rule 28 (vector -> FLOAT vector .)
+    MACRO_V         reduce using rule 28 (vector -> FLOAT vector .)
+    $end            reduce using rule 28 (vector -> FLOAT vector .)
+    ENDHMM          reduce using rule 28 (vector -> FLOAT vector .)
+    OTHER_TAG       reduce using rule 28 (vector -> FLOAT vector .)
+    STATE           reduce using rule 28 (vector -> FLOAT vector .)
+    TRANSP          reduce using rule 28 (vector -> FLOAT vector .)
+    MIXTURE         reduce using rule 28 (vector -> FLOAT vector .)
+    VARIANCE        reduce using rule 28 (vector -> FLOAT vector .)
+
+
+state 57
+
+    (30) filler -> OTHER_TAG filler1 filler1 filler1 filler1 . filler1 filler1 filler1
+    (31) filler -> OTHER_TAG filler1 filler1 filler1 filler1 . filler1 filler1
+    (32) filler -> OTHER_TAG filler1 filler1 filler1 filler1 . filler1
+    (33) filler -> OTHER_TAG filler1 filler1 filler1 filler1 .
+    (38) filler1 -> . INT
+    (39) filler1 -> . NAME
+    (40) filler1 -> . FLOAT
+    (41) filler1 -> . OTHER_TAG
+
+    MACRO_H         reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    MACRO_O         reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    MACRO_S         reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    MACRO_T         reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    MACRO_U         reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    MACRO_V         reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    $end            reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    STATE           reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    TRANSP          reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    MIXTURE         reduce using rule 33 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 .)
+    INT             shift and go to state 24
+    NAME            shift and go to state 27
+    FLOAT           shift and go to state 25
+    OTHER_TAG       shift and go to state 28
+
+    filler1                        shift and go to state 61
+
+state 58
+
+    (10) hmmdef_states -> STATE . INT hmmdef_state hmmdef_states
+    (11) hmmdef_states -> STATE . INT hmmdef_state
+
+    INT             shift and go to state 62
+
+
+state 59
+
+    (9) hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states . hmmdef_tmat ENDHMM
+    (14) hmmdef_tmat -> . tmat
+    (15) hmmdef_tmat -> . MACRO_T NAME
+    (25) tmat -> . TRANSP INT vector
+
+    MACRO_T         shift and go to state 63
+    TRANSP          shift and go to state 21
+
+    tmat                           shift and go to state 64
+    hmmdef_tmat                    shift and go to state 65
+
+state 60
+
+    (18) state_mixtures -> MIXTURE INT . FLOAT state_mean state_var filler state_mixtures
+    (19) state_mixtures -> MIXTURE INT . FLOAT state_mean state_var filler
+
+    FLOAT           shift and go to state 66
+
+
+state 61
+
+    (30) filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 . filler1 filler1
+    (31) filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 . filler1
+    (32) filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .
+    (38) filler1 -> . INT
+    (39) filler1 -> . NAME
+    (40) filler1 -> . FLOAT
+    (41) filler1 -> . OTHER_TAG
+
+    MACRO_H         reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_O         reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_S         reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_T         reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_U         reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_V         reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    $end            reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    STATE           reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    TRANSP          reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    MIXTURE         reduce using rule 32 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 .)
+    INT             shift and go to state 24
+    NAME            shift and go to state 27
+    FLOAT           shift and go to state 25
+    OTHER_TAG       shift and go to state 28
+
+    filler1                        shift and go to state 67
+
+state 62
+
+    (10) hmmdef_states -> STATE INT . hmmdef_state hmmdef_states
+    (11) hmmdef_states -> STATE INT . hmmdef_state
+    (12) hmmdef_state -> . state
+    (13) hmmdef_state -> . MACRO_S NAME
+    (17) state -> . NUMMIXES INT state_mixtures
+    (20) state -> . state_mean state_var filler
+    (21) state_mean -> . mean
+    (22) state_mean -> . MACRO_U NAME
+    (26) mean -> . MEAN INT vector
+
+    MACRO_S         shift and go to state 68
+    NUMMIXES        shift and go to state 33
+    MACRO_U         shift and go to state 31
+    MEAN            shift and go to state 23
+
+    state_mean                     shift and go to state 32
+    state                          shift and go to state 69
+    hmmdef_state                   shift and go to state 70
+    mean                           shift and go to state 35
+
+state 63
+
+    (15) hmmdef_tmat -> MACRO_T . NAME
+
+    NAME            shift and go to state 71
+
+
+state 64
+
+    (14) hmmdef_tmat -> tmat .
+
+    ENDHMM          reduce using rule 14 (hmmdef_tmat -> tmat .)
+
+
+state 65
+
+    (9) hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat . ENDHMM
+
+    ENDHMM          shift and go to state 72
+
+
+state 66
+
+    (18) state_mixtures -> MIXTURE INT FLOAT . state_mean state_var filler state_mixtures
+    (19) state_mixtures -> MIXTURE INT FLOAT . state_mean state_var filler
+    (21) state_mean -> . mean
+    (22) state_mean -> . MACRO_U NAME
+    (26) mean -> . MEAN INT vector
+
+    MACRO_U         shift and go to state 31
+    MEAN            shift and go to state 23
+
+    state_mean                     shift and go to state 73
+    mean                           shift and go to state 35
+
+state 67
+
+    (30) filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 . filler1
+    (31) filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .
+    (38) filler1 -> . INT
+    (39) filler1 -> . NAME
+    (40) filler1 -> . FLOAT
+    (41) filler1 -> . OTHER_TAG
+
+    MACRO_H         reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_O         reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_S         reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_T         reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_U         reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_V         reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    $end            reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    STATE           reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    TRANSP          reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MIXTURE         reduce using rule 31 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 .)
+    INT             shift and go to state 24
+    NAME            shift and go to state 27
+    FLOAT           shift and go to state 25
+    OTHER_TAG       shift and go to state 28
+
+    filler1                        shift and go to state 74
+
+state 68
+
+    (13) hmmdef_state -> MACRO_S . NAME
+
+    NAME            shift and go to state 75
+
+
+state 69
+
+    (12) hmmdef_state -> state .
+
+    STATE           reduce using rule 12 (hmmdef_state -> state .)
+    MACRO_T         reduce using rule 12 (hmmdef_state -> state .)
+    TRANSP          reduce using rule 12 (hmmdef_state -> state .)
+
+
+state 70
+
+    (10) hmmdef_states -> STATE INT hmmdef_state . hmmdef_states
+    (11) hmmdef_states -> STATE INT hmmdef_state .
+    (10) hmmdef_states -> . STATE INT hmmdef_state hmmdef_states
+    (11) hmmdef_states -> . STATE INT hmmdef_state
+
+    MACRO_T         reduce using rule 11 (hmmdef_states -> STATE INT hmmdef_state .)
+    TRANSP          reduce using rule 11 (hmmdef_states -> STATE INT hmmdef_state .)
+    STATE           shift and go to state 58
+
+    hmmdef_states                  shift and go to state 76
+
+state 71
+
+    (15) hmmdef_tmat -> MACRO_T NAME .
+
+    ENDHMM          reduce using rule 15 (hmmdef_tmat -> MACRO_T NAME .)
+
+
+state 72
+
+    (9) hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM .
+
+    MACRO_H         reduce using rule 9 (hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM .)
+    MACRO_O         reduce using rule 9 (hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM .)
+    MACRO_S         reduce using rule 9 (hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM .)
+    MACRO_T         reduce using rule 9 (hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM .)
+    MACRO_U         reduce using rule 9 (hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM .)
+    MACRO_V         reduce using rule 9 (hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM .)
+    $end            reduce using rule 9 (hmmdef -> BEGINHMM NUMSTATES INT hmmdef_states hmmdef_tmat ENDHMM .)
+
+
+state 73
+
+    (18) state_mixtures -> MIXTURE INT FLOAT state_mean . state_var filler state_mixtures
+    (19) state_mixtures -> MIXTURE INT FLOAT state_mean . state_var filler
+    (23) state_var -> . var
+    (24) state_var -> . MACRO_V NAME
+    (27) var -> . VARIANCE INT vector
+
+    MACRO_V         shift and go to state 43
+    VARIANCE        shift and go to state 19
+
+    state_var                      shift and go to state 77
+    var                            shift and go to state 44
+
+state 74
+
+    (30) filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .
+
+    MACRO_H         reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_O         reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_S         reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_T         reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_U         reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MACRO_V         reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    $end            reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    STATE           reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    TRANSP          reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+    MIXTURE         reduce using rule 30 (filler -> OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1 .)
+
+
+state 75
+
+    (13) hmmdef_state -> MACRO_S NAME .
+
+    STATE           reduce using rule 13 (hmmdef_state -> MACRO_S NAME .)
+    MACRO_T         reduce using rule 13 (hmmdef_state -> MACRO_S NAME .)
+    TRANSP          reduce using rule 13 (hmmdef_state -> MACRO_S NAME .)
+
+
+state 76
+
+    (10) hmmdef_states -> STATE INT hmmdef_state hmmdef_states .
+
+    MACRO_T         reduce using rule 10 (hmmdef_states -> STATE INT hmmdef_state hmmdef_states .)
+    TRANSP          reduce using rule 10 (hmmdef_states -> STATE INT hmmdef_state hmmdef_states .)
+
+
+state 77
+
+    (18) state_mixtures -> MIXTURE INT FLOAT state_mean state_var . filler state_mixtures
+    (19) state_mixtures -> MIXTURE INT FLOAT state_mean state_var . filler
+    (30) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1 filler1
+    (31) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1 filler1
+    (32) filler -> . OTHER_TAG filler1 filler1 filler1 filler1 filler1
+    (33) filler -> . OTHER_TAG filler1 filler1 filler1 filler1
+    (34) filler -> . OTHER_TAG filler1 filler1 filler1
+    (35) filler -> . OTHER_TAG filler1 filler1
+    (36) filler -> . OTHER_TAG filler1
+    (37) filler -> .
+
+    OTHER_TAG       shift and go to state 15
+    MIXTURE         reduce using rule 37 (filler -> .)
+    MACRO_H         reduce using rule 37 (filler -> .)
+    MACRO_O         reduce using rule 37 (filler -> .)
+    MACRO_S         reduce using rule 37 (filler -> .)
+    MACRO_T         reduce using rule 37 (filler -> .)
+    MACRO_U         reduce using rule 37 (filler -> .)
+    MACRO_V         reduce using rule 37 (filler -> .)
+    $end            reduce using rule 37 (filler -> .)
+    STATE           reduce using rule 37 (filler -> .)
+    TRANSP          reduce using rule 37 (filler -> .)
+
+    filler                         shift and go to state 78
+
+state 78
+
+    (18) state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler . state_mixtures
+    (19) state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .
+    (18) state_mixtures -> . MIXTURE INT FLOAT state_mean state_var filler state_mixtures
+    (19) state_mixtures -> . MIXTURE INT FLOAT state_mean state_var filler
+
+    MACRO_H         reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    MACRO_O         reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    MACRO_S         reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    MACRO_T         reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    MACRO_U         reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    MACRO_V         reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    $end            reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    STATE           reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    TRANSP          reduce using rule 19 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler .)
+    MIXTURE         shift and go to state 54
+
+    state_mixtures                 shift and go to state 79
+
+state 79
+
+    (18) state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .
+
+    MACRO_H         reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+    MACRO_O         reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+    MACRO_S         reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+    MACRO_T         reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+    MACRO_U         reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+    MACRO_V         reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+    $end            reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+    STATE           reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+    TRANSP          reduce using rule 18 (state_mixtures -> MIXTURE INT FLOAT state_mean state_var filler state_mixtures .)
+
