@@ -17,7 +17,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 # pathUtils = os.path.join(parentDir, 'utilsLyrics')
 # if pathUtils not in sys.path:
 #     sys.path.append(pathUtils)
-from utilsLyrics.Utilz import writeListToTextFile, tokenList2TabFile, readListOfListTextFile
+from utilsLyrics.Utilz import writeListToTextFile,  readListOfListTextFile
 
 
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')

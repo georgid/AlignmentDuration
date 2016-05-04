@@ -37,7 +37,7 @@ class ParametersAlgo(object):
     
     WITH_ORACLE_ONSETS = 0
     ### no onsets at all. 
-#     WITH_ORACLE_ONSETS = -1
+    WITH_ORACLE_ONSETS = -1
     
     # Sigma of onset smoothing function g: normal distribution
     ONSET_SIGMA = 0.075

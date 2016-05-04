@@ -59,7 +59,7 @@ from hmm.examples.main import loadSmallAudioFragment,\
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
     getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, \
-    readListTextFile, getMelodicStructFromName, tokenList2TabFile,  fetchFileFromURL
+    readListTextFile, getMelodicStructFromName, addTimeShift,  fetchFileFromURL
 
 from htkparser.htk_converter import HtkConverter
 ANNOTATION_EXT = '.TextGrid'
@@ -85,7 +85,7 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
         tokenLevelAlignedSuffix = determineSuffix(WITH_DURATIONS, ParametersAlgo.WITH_ORACLE_PHONEMES, ParametersAlgo.WITH_ORACLE_ONSETS, DETECTION_TOKEN_LEVEL)
     
     
-        totalDetectedTokenList = []
+        sectionsList = []
         
         totalCorrectDurations = 0
         totalDurations = 0
@@ -105,11 +105,11 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
     #             for sectin in currSectionLink.selectedSections:
     #                 print "result sections: {}".format(sectin)
                 
-                totalDetectedTokenList.extend(detectedTokenList)
+                sectionsList.append(detectedTokenList)
             # sectionLinks- list of objects of class sectionLink with the field selectedSections set after slignment
             sectionLinksDict = extendSectionLinksSelectedSections(sectionLinksDict, mr.sectionLinks)
             
-            return totalDetectedTokenList, sectionLinksDict        
+            return sectionsList, sectionLinksDict        
         
         else: # with Annotations
             
@@ -141,17 +141,17 @@ def alignRecording( symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFi
      
                 from AccuracyEvaluator import _evalAccuracy
                 evalLevel = tierAliases.words
-                correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
+#                 correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkResynthesizedNoExt + ANNOTATION_EXT, detectedTokenList, evalLevel, currSectionAnno.beginTs )
     
                 totalCorrectDurations += correctDuration
                 totalDurations += totalDuration
                 
                 
-                totalDetectedTokenList.extend(detectedTokenList)
+                sectionsList.append(detectedTokenList)
             
             accuracy = totalCorrectDurations / totalDurations
             logger.info("accuracy: {:.2f}".format(accuracy))     
-            return totalDetectedTokenList, sectionLinksDict
+            return sectionsList, sectionLinksDict
         
 
 def loadMakamRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI,  withAnnotations):
@@ -245,11 +245,14 @@ def  alignLyricsSection( lyrics, extractedPitchList,  withSynthesis, listNonVoca
                 fe.onsetDetector.parserNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
             
             detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, usePersistentFiles,  fromTsTextGrid, toTsTextGrid)
+            detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
+            
+            ##### write all decoded output persistently to files
+            phonemeAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
+#             writeListOfListToTextFile(detectedTokenList, 'startTs \t endTs \t phonemeOrSyllorWord \t beginNoteNumber \n', phonemeAlignedfileName)
             
             phiOptPath = {'phi': decoder.path.phiPathLikelihood}
             detectedPath = decoder.path.pathRaw
-            tokenList2TabFile(detectedTokenList, URIRecordingChunkResynthesizedNoExt, tokenLevelAlignedSuffix, currSectionLink.beginTs)
-            
             with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'w'  ) as f:
                 json.dump( phiOptPath, f)
            

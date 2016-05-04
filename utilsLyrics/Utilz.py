@@ -439,23 +439,22 @@ def renameSectionIndex2(URIrecording, newName):
 
 
 
-def tokenList2TabFile( listTsAndTokens,  baseNameAudioFile, whichSuffix, timeShift=0):
+def addTimeShift( listTsAndTokens,   timeShift=0):
     '''
     convenience method. 
     '''
     
-    # timeshift
-    for index in range(len(listTsAndTokens)):
-        listTsAndTokens[index][0] +=  timeShift
-        listTsAndTokens[index][1] +=  timeShift
-#         if (len(listTsAndTokens[index]) == 3): 
-#             del listTsAndTokens[index][1]
-         
-    phonemeAlignedfileName = baseNameAudioFile + whichSuffix
+    for word in listTsAndTokens:
     
-    writeListOfListToTextFile(listTsAndTokens, 'startTs \t endTs \t phonemeOrSyllorWord \t beginNoteNumber \n', phonemeAlignedfileName)
+        for index in range(len(word)):
+            word[index][0] +=  timeShift
+            word[index][1] +=  timeShift
+        #         if (len(listTsAndTokens[index]) == 3): 
+        #             del listTsAndTokens[index][1]
+                 
 #     logging.debug('phoneme level alignment written to file: ',  phonemeAlignedfileName)
-    return phonemeAlignedfileName
+    return listTsAndTokens
+
 
 def fetchFileFromURL(URL, outputFileURI):
         response = urllib2.urlopen(URL)

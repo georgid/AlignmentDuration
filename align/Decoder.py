@@ -18,14 +18,14 @@ from onsets.OnsetSmooting import OnsetSmoothingFunction
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 
 
-from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile
+from utilsLyrics.Utilz import writeListToTextFile
 
 
 import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= 0
+WITH_DURATIONS= 1
 
 
 
@@ -50,7 +50,7 @@ logger.setLevel(loggingLevel)
 
 # level into which to segments decoded result stateNetwork
 DETECTION_TOKEN_LEVEL= 'syllables'
-DETECTION_TOKEN_LEVEL= 'words'
+# DETECTION_TOKEN_LEVEL= 'words'
 
 # in backtracking allow to start this much from end back
 BACKTRACK_MARGIN_PERCENT= 0.2
@@ -125,7 +125,7 @@ class Decoder(object):
 
             
         print "\n"
-         # DEBUG
+#         DEBUG
 #         self.path.printDurations()
         
         return detectedWordList

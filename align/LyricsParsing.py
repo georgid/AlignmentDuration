@@ -11,7 +11,7 @@ from makam.Phoneme import Phoneme
 import os
 import logging
 from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid
-from ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 from onsets.OnsetDetector import frameNumberToTs
 
 
@@ -82,8 +82,10 @@ def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
         startNoteNumber = word_.syllables[0].noteNum
 
         currWord, totalDuration = func( word_, startNoteNumber, countFirstState, countLastState, path, totalDuration)
-
-        wordList.append( currWord)
+        
+        # TODO: SAZ words not needed.
+        
+        wordList.append( [currWord])
     return wordList
 
 
@@ -109,14 +111,14 @@ def expandlyrics2SyllableList (lyricsWithModels, path, totalDuration, func):
     @param path stands for path or statesNetwork
     '''
 
-    syllableList = []
-
+#     syllableList = []
+    wordList = []
 
        
     for word_ in lyricsWithModels.listWords:
         
+        currWordArray = []
         lastSyll = word_.syllables[-1]
-        
         for syllable_ in word_.syllables:
             
             countFirstState = syllable_.phonemes[0].numFirstState
@@ -127,12 +129,15 @@ def expandlyrics2SyllableList (lyricsWithModels, path, totalDuration, func):
                 countLastState = getCountLastState(lyricsWithModels, word_, lastSyll, lastPhoneme)
             
             currSyllAndTs, totalDuration = func( syllable_.text, syllable_.noteNum, countFirstState, countLastState, path, totalDuration)
-       
-            syllableList.append( currSyllAndTs)
+            
+            
+            currWordArray.append( currSyllAndTs)
         
+        if currWordArray[0][2] !=  '_SAZ_':
+            wordList.append(currWordArray)  
         
             
-    return syllableList
+    return wordList
 
 
     
@@ -262,14 +267,14 @@ def _findBeginEndIndices(lowLevelTokensList, lowerLevelTokenPointer, highLevelBe
 def stripPunctuationSigns(string_):
     isEndOfSentence = False
     if string_.endswith(u'\u3002') or string_.endswith(u'\uff0c') \
-             or string_.endswith('？') or string_.endswith('！') or string_.endswith('：') \
+             or string_.endswith('Ôºü') or string_.endswith('ÔºÅ') or string_.endswith('Ôºö') \
              or string_.endswith(':') or string_.endswith(',') : # syllable at end of line/section
                 string_  = string_.replace(u'\u3002', '') # comma 
                 string_  = string_.replace(',','')
                 string_  = string_.replace(u'\uff0c', '') # point
-                string_  = string_.replace('？', '')
-                string_  = string_.replace('！', '')
-                string_  = string_.replace('：', '')
+                string_  = string_.replace('Ôºü', '')
+                string_  = string_.replace('ÔºÅ', '')
+                string_  = string_.replace('Ôºö', '')
                 string_  = string_.replace(':', '')
                                 
                 isEndOfSentence = True
