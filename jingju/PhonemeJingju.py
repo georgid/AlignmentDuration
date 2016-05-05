@@ -116,4 +116,10 @@ class PhonemeJingju:
     
         return currTransMat  
     
+    
+    def isLastInSyll(self):
+        return self.lastInSyll
+    
+    def setIsLastInSyll(self, lastInSyll):
+        self.lastInSyll = lastInSyll
         
