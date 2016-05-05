@@ -57,6 +57,7 @@ class _SymbTrParserBase(object):
         
          
         for section in scoreSectionAnnos:
+                    print section
                     if hasattr(section, 'start_note'):
                         startNote = int(section['start_note'])
                     else:

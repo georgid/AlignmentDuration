@@ -5,15 +5,16 @@ Created on Dec 5, 2014
 '''
 import sys
 from MusicXmlParser import MusicXMLParser
-from ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 
 from doitOneChunkAlign import doitOneChunkAlign
 from lyricsParser import divideIntoSentencesFromAnnoWithSil
-from runitHTK import runitHTK
+#from runitHTK import runitHTK
 from matplotlib.pyplot import legend
 
 import matplotlib.pyplot as plt
-from utilsLyrics.Utilz import getMeanAndStDevError, tokenList2TabFile
+from utilsLyrics.Utilz import getMeanAndStDevError, addTimeShift,\
+    writeListOfListToTextFile
 import os
 from docutils.parsers.rst.directives import path
 
@@ -90,7 +91,11 @@ def runWithParameters(argv):
         tokenListAlignedAll.extend(tokenListAligned)
             
   
-    tokenAlignedfileName =  tokenList2TabFile(tokenListAlignedAll, URIrecordingNoExt, '.syllables_total_dev_' + str(ParametersAlgo.DEVIATION_IN_SEC))
+            
+            ##### write all decoded output persistently to files
+    phonemeAlignedfileName = URIrecordingNoExt + '.syllables_total_dev_' + str(ParametersAlgo.DEVIATION_IN_SEC)
+    writeListOfListToTextFile(tokenListAlignedAll, 'startTs \t endTs \t phonemeOrSyllorWord \t beginNoteNumber \n', phonemeAlignedfileName)
+    
 
     plotAccuracyList(accuracyListOracle, 'oracle', 'r')
     plotAccuracyList(accuracyList, 'DHMM', 'g')

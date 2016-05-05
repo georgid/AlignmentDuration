@@ -21,6 +21,7 @@ from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from align.ParametersAlgo import ParametersAlgo
 import logging
 from align.LyricsParsing import loadOraclePhonemes
+from jingju.ParsePhonemeAnnotation import loadPhonemesAnnoOneSyll
 
 
 # file parsing tools as external lib 
@@ -30,7 +31,6 @@ projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__
     
 from align.LyricsWithModels import LyricsWithModels
 from align.Decoder import Decoder
-from align.FeatureExtractor import loadMFCCs
 
 modelDIR = projDir + '/model/'
 HMM_LIST_URI = modelDIR + '/monophones0'
@@ -42,7 +42,7 @@ from htkparser.htk_converter import HtkConverter
 
 
 
-def loadSmallAudioFragment(lyrics, extractedPitchList,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, withSynthesis, sectionLink, htkParser):
+def loadSmallAudioFragment(lyrics, featureExtractor, extractedPitchList,  URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, withSynthesis, sectionLink, htkParser):
     '''
     test duration-explicit HMM with audio features from real recording and htk-loaded model
     asserts it works. no results provided 
@@ -51,7 +51,7 @@ def loadSmallAudioFragment(lyrics, extractedPitchList,  URIrecordingNoExt, URIRe
 
     lyricsWithModels = LyricsWithModels(lyrics, htkParser,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
      
-    featureVectors, URIRecordingChunk = loadMFCCs(URIrecordingNoExt, extractedPitchList,  URIRecordingChunkResynthesizedNoExt, withSynthesis, sectionLink) #     featureVectors = featureVectors[0:1000]
+    featureVectors, URIRecordingChunk = featureExtractor.loadMFCCs(URIrecordingNoExt, extractedPitchList,  URIRecordingChunkResynthesizedNoExt, withSynthesis, sectionLink) #     featureVectors = featureVectors[0:1000]
     
     # needed only with duration model
     lyricsWithModels.duration2numFrameDuration(featureVectors, URIrecordingNoExt)
@@ -77,6 +77,16 @@ def loadSmallAudioFragmentOracle(URIRecordingChunkResynthesizedNoExt, htkParser,
         
         return lyricsWithModelsORacle
 
+def loadSmallAudioFragmentOracleJingju(currSentence, lyricsTextGrid):
+    # get start and end phoneme indices from TextGrid
+    lyricsWithModelsORacle = []
+    for idx, syllableIdx in enumerate(range(currSentence.fromSyllableIdx, currSentence.toSyllableIdx+1)): # for each  syllable including silent syllables
+        # go through the phonemes. load all 
+        currSyllable = currSentence.listWordsFromTextGrid[idx].syllables[0]
+        phonemesAnno, syllableTxt = loadPhonemesAnnoOneSyll(lyricsTextGrid, syllableIdx, currSyllable)
+        lyricsWithModelsORacle.extend(phonemesAnno)
+    return lyricsWithModelsORacle     
+            
 
 def parsePhoenemeAnnoDursOracle(lyrics, phonemeListExtracted ):
     

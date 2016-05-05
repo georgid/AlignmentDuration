@@ -15,13 +15,16 @@ from makam.MakamRecording import MakamRecording, parseSectionLinks
 from align.ScoreSection import ScoreSection
 from makam.MakamScore import loadMakamScore2
 
-from align.LyricsAligner import alignRecording, extendSectionLinksSelectedSections,\
+from align.LyricsAligner import LyricsAligner, extendSectionLinksSelectedSections,\
     stereoToMono
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 
 
 WITH_SECTION_ANNOTATIONS = 1
+
+from align.ParametersAlgo import ParametersAlgo
+
         
 def testLyricsAlign():
     
@@ -63,8 +66,10 @@ def testLyricsAlign():
     
     audioFileURI = stereoToMono(audioFileURI)               
 
-        
-    totalDetectedTokenList, sectionLinksDict = alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, WITH_SECTION_ANNOTATIONS)
+
+    la = LyricsAligner(ParametersAlgo.PATH_TO_HCOPY)
+    
+    totalDetectedTokenList, sectionLinksDict = la.alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, WITH_SECTION_ANNOTATIONS)
       
     ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
     ret['alignedLyricsSyllables'] = totalDetectedTokenList

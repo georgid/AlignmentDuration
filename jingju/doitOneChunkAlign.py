@@ -9,6 +9,7 @@ from ParsePhonemeAnnotation import loadPhonemesAnnoOneSyll
 from SentenceJingju import SentenceJingju
 from lyricsParser import createSyllable
 from MusicXmlParser import mandarinToPinyin
+from align.LyricsAligner import LyricsAligner
 
 
 
@@ -17,7 +18,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 # pathUtils = os.path.join(parentDir, 'utilsLyrics')
 # if pathUtils not in sys.path:
 #     sys.path.append(pathUtils)
-from utilsLyrics.Utilz import writeListToTextFile, tokenList2TabFile, readListOfListTextFile
+from utilsLyrics.Utilz import writeListToTextFile,  readListOfListTextFile
 
 
 pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
@@ -41,13 +42,13 @@ from htkparser.htk_converter import HtkConverter
 
     
 from AccuracyEvaluator import _evalAccuracy
-from doitOneChunk import alignOneChunk
+# from align.doitOneChunk import alignOneChunk
 
 
 pathHMM = os.path.join(parentDir, 'HMMDuration')
 from hmm.examples.main  import   loadSmallAudioFragment
 # from hmm.examples.main  import loadSmallAudioFragmentOracle
-from ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 
 
 
@@ -95,7 +96,6 @@ def doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSe
         lyrics = musicXMLParser.getLyricsForSection(whichSentence) # indexing in python
     else: lyrics = currSentence   
         
-    withSynthesis = False
 
     ##### align
     usePersistentFiles = 'False'
@@ -121,8 +121,15 @@ def doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSe
     listNonVocalFragments = []
 #     if withVocalPrediction:
 #         listNonVocalFragments = getListNonVocalFragments(URIrecordingNoExt, fromTs, toTs)
+    extractedPitchList = None
     
-    detectedTokenList, detectedPath = alignOneChunk( lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha, usePersistentFiles, tokenLevelAlignedSuffix, currSentence.beginTs, currSentence.endTs, URIrecordingNoExt)
+    URIRecordingChunkResynthesizedNoExt = 'dummy'
+    htkParser = 'dummy'
+    currSectionAnno = 'dummy'
+#     detectedTokenList, detectedPath = alignOneChunk( lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha, usePersistentFiles, tokenLevelAlignedSuffix, currSentence.beginTs, currSentence.endTs, URIrecordingNoExt)
+    lyricsAligner = LyricsAligner(ParametersAlgo.PATH_TO_HCOPY)
+    detectedTokenList, detectedPath, maxPhiScore = lyricsAligner.alignLyricsSection( lyrics, extractedPitchList,  ParametersAlgo.POLYPHONIC, [],  usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser) 
+     
      
     correctDuration, totalDuration = _evalAccuracy(lyricsTextGrid, detectedTokenList, evalLevel, currSentence.fromSyllableIdx, currSentence.toSyllableIdx  )
     acc = correctDuration / totalDuration

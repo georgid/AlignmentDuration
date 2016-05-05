@@ -32,12 +32,15 @@ class ParametersAlgo(object):
     WITH_ORACLE_PHONEMES = -1
     WITH_ORACLE_PHONEMES = 0
 
+    PATH_TO_HCOPY= '/usr/local/bin/HCopy'
+    # ANDRES. On kora.s.upf.edu
+    # PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'      
     
-    POLYPHONIC = 1
+    POLYPHONIC = 0
     
     WITH_ORACLE_ONSETS = 0
     ### no onsets at all. 
-#     WITH_ORACLE_ONSETS = -1
+    WITH_ORACLE_ONSETS = -1
     
     # Sigma of onset smoothing function g: normal distribution
     ONSET_SIGMA = 0.075

@@ -6,7 +6,7 @@ Created on Dec 3, 2015
 import sys
 import os
 from runWithParams import runWithParameters
-from hmm import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 
 def runWithParametersAll(argv):
     

@@ -16,8 +16,8 @@ class Enumerate(object):
       setattr(self, name, number)
 
 # tierAliases = Enumerate("phonemeLevel wordLevel phraseLevel lyrics-syllables-pinyin sections")
-tierAliases = Enumerate("phonemes words phrases pinyin sections line details xsampadetails xsampadetails_with_sp dian dianDuration")
-tier_names = ["phonemes", "words", "phrases", "pinyin", "sections", "line", "details", "xsampadetails", "xsampadetails_with_sp" ,"dian", "dianDuration"];
+tierAliases = Enumerate("phonemes words phrases pinyin sections line details xsampadetails xsampadetails_with_sp dian dianDuration isNonKeySyllLong isLastSyllLong")
+tier_names = ["phonemes", "words", "phrases", "pinyin", "sections", "line", "details", "xsampadetails", "xsampadetails_with_sp" ,"dian", "dianDuration isNonKeySyllLong isLastSyllLong"];
 
 # tierAliases = Enumerate("phonemes words phrases pinyin sections line detailsgeorgi")
 # tier_names = ["phonemes", "words", "phrases", "pinyin", "sections", "line", "detailsgeorgi"];   
