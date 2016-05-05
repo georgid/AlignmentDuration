@@ -9,6 +9,7 @@ from align.Phonetizer import Phonetizer
 from align.Lyrics import Lyrics
 import numpy
 from align.Word import createWord
+import os
 
 
 class SentenceJingju(Lyrics):
@@ -32,8 +33,10 @@ class SentenceJingju(Lyrics):
             self.listWordsFromTextGrid.append(word)
         
         # TODO add syllable rest after each each read syllable
-            
-        Phonetizer.initLookupTable(True,  'XSAMPA2METUphonemeLookupTableSYNTH')
+        
+        currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )    
+        URIlookupTable  = os.path.join(currDir, 'XSAMPA2METUphonemeLookupTableSYNTH')
+        Phonetizer.initLookupTable(True, URIlookupTable )
 
         # load phonetic dict 
 #         Phonetizer.initPhoneticDict('syl2phn46.txt')

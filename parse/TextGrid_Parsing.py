@@ -17,7 +17,7 @@ class Enumerate(object):
 
 # tierAliases = Enumerate("phonemeLevel wordLevel phraseLevel lyrics-syllables-pinyin sections")
 tierAliases = Enumerate("phonemes words phrases pinyin sections line details xsampadetails xsampadetails_with_sp dian dianDuration isNonKeySyllLong isLastSyllLong")
-tier_names = ["phonemes", "words", "phrases", "pinyin", "sections", "line", "details", "xsampadetails", "xsampadetails_with_sp" ,"dian", "dianDuration isNonKeySyllLong isLastSyllLong"];
+tier_names = ["phonemes", "words", "phrases", "pinyin", "sections", "line", "details", "xsampadetails", "xsampadetails_with_sp" ,"dian", "dianDuration", "isNonKeySyllLong", "isLastSyllLong"];
 
 # tierAliases = Enumerate("phonemes words phrases pinyin sections line detailsgeorgi")
 # tier_names = ["phonemes", "words", "phrases", "pinyin", "sections", "line", "detailsgeorgi"];   
@@ -105,6 +105,8 @@ def TextGrid2WordList(textgrid_file, whichTier=2):
     isTierFound = 0
     for tier in tiers:
         tierName= tier.tier_name().replace('.','')
+        if int(whichTier) >= len(tier_names):
+            sys.exit("tiers are {} but requested tier {}".format(len(tier_names),int(whichTier) ))
         if tierName ==  tier_names[int(whichTier)]:	#iterating over tiers and selecting the one specified
 			isTierFound = 1
 			tier_details = tier.make_simple_transcript();		#this function parse the file nicely and return cool tuples
