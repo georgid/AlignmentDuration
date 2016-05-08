@@ -97,5 +97,12 @@ class Lyrics(object):
             lyricsStr += word_.__str__()
             lyricsStr += ' '
         return lyricsStr.rstrip().encode('utf-8','replace')
-        
+    
+    
+    def getLenNoRests(self):
+        lenWords = 0
+        for word_ in self.listWords:
+            if word_.syllables[0].text != 'REST':
+                lenWords += 1
+        return lenWords  
         

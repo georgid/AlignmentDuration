@@ -6,10 +6,10 @@ Created on Oct 13, 2014
 import sys
 import os
 from ParsePhonemeAnnotation import loadPhonemesAnnoOneSyll
-from SentenceJingju import SentenceJingju
+from LyricsJingju import LyricsJingju
 from lyricsParser import createSyllable
 from MusicXmlParser import mandarinToPinyin
-from align.LyricsAligner import LyricsAligner
+from align.LyricsAligner import LyricsAligner, createNameChunk
 
 
 
@@ -57,7 +57,7 @@ evalLevel = 3
 
 
 def loadLyrics(URIrecordingNoExt, currSentence):
-    
+    #### @deprecated
     withHTK = 0
     withSynthesis = 0
     lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(currSentence, withHTK, URIrecordingNoExt, bool(withSynthesis), currSentence.beginTs, currSentence.endTs)
@@ -66,7 +66,7 @@ def loadLyrics(URIrecordingNoExt, currSentence):
     lyricsWithModels.printWordsAndStates()
 
 
-def doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSentence, currSentence, withOracle, withDurations, withVocalPrediction):
+def doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSectionLink, withOracle, withDurations, withVocalPrediction):
     '''
     align one chunk only.
     @param musicXMLParser: parsed  score for whole recording
@@ -94,28 +94,27 @@ def doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSe
             
     if withDurations: # load from score instead
         lyrics = musicXMLParser.getLyricsForSection(whichSentence) # indexing in python
-    else: lyrics = currSentence   
+    else: lyrics = currSectionLink.section.lyrics   
         
 
     ##### align
-    usePersistentFiles = 'False'
     alpha = 0.97
     from hmm.Parameters import Parameters
     ONLY_MIDDLE_STATE = False
     params  = Parameters(alpha, ONLY_MIDDLE_STATE)
 
      
-    phonemesAnnoAll = 'dummy'
-     
-    if withOracle:
-         
-        # get start and end phoneme indices from TextGrid
-        phonemesAnnoAll = []
-        for idx, syllableIdx in enumerate(range(currSentence.fromSyllableIdx, currSentence.toSyllableIdx+1)): # for each  syllable including silent syllables
-            # go through the phonemes. load all 
-            currSyllable = currSentence.listWordsFromTextGrid[idx].syllables[0]
-            phonemesAnno, syllableTxt = loadPhonemesAnnoOneSyll(lyricsTextGrid, syllableIdx, currSyllable)
-            phonemesAnnoAll.extend(phonemesAnno)
+#     phonemesAnnoAll = 'dummy'
+#      
+#     if withOracle:
+#          
+#         # get start and end phoneme indices from TextGrid
+#         phonemesAnnoAll = []
+#         for idx, syllableIdx in enumerate(range(currSectionLink.fromSyllableIdx, currSectionLink.toSyllableIdx+1)): # for each  syllable including silent syllables
+#             # go through the phonemes. load all 
+#             currSyllable = currSectionLink.listWordsFromTextGrid[idx].syllables[0]
+#             phonemesAnno, syllableTxt = loadPhonemesAnnoOneSyll(currSec, syllableIdx, currSyllable)
+#             phonemesAnnoAll.extend(phonemesAnno)
          
 
     listNonVocalFragments = []
@@ -123,21 +122,26 @@ def doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSe
 #         listNonVocalFragments = getListNonVocalFragments(URIrecordingNoExt, fromTs, toTs)
     extractedPitchList = None
     
-    URIRecordingChunkResynthesizedNoExt = 'dummy'
-    htkParser = 'dummy'
-    currSectionAnno = 'dummy'
-#     detectedTokenList, detectedPath = alignOneChunk( lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha, usePersistentFiles, tokenLevelAlignedSuffix, currSentence.beginTs, currSentence.endTs, URIrecordingNoExt)
+#     detectedTokenList, detectedPath = alignOneChunk( lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha, usePersistentFiles, tokenLevelAlignedSuffix, currSectionLink.beginTs, currSectionLink.endTs, URIrecordingNoExt)
+
     lyricsAligner = LyricsAligner(ParametersAlgo.PATH_TO_HCOPY)
-    detectedTokenList, detectedPath, maxPhiScore = lyricsAligner.alignLyricsSection( lyrics, extractedPitchList,  ParametersAlgo.POLYPHONIC, [],  usePersistentFiles, tokenLevelAlignedSuffix, URIrecordingNoExt, URIRecordingChunkResynthesizedNoExt, currSectionAnno, htkParser) 
+    
+    URIRecordingChunkResynthesizedNoExt = createNameChunk(URIrecordingNoExt, currSectionLink.beginTs, currSectionLink.endTs)
+    detectedTokenList, detectedPath, maxPhiScore = lyricsAligner.alignLyricsSection( extractedPitchList,  ParametersAlgo.POLYPHONIC, [], tokenLevelAlignedSuffix,  URIRecordingChunkResynthesizedNoExt, currSectionLink) 
      
      
-    correctDuration, totalDuration = _evalAccuracy(lyricsTextGrid, detectedTokenList, evalLevel, currSentence.fromSyllableIdx, currSentence.toSyllableIdx  )
+    correctDuration, totalDuration = _evalAccuracy(currSectionLink.section.lyricsTextGrid, detectedTokenList, evalLevel, currSectionLink.fromSyllableIdx, currSectionLink.toSyllableIdx  )
     acc = correctDuration / totalDuration
     print "result is: " + str(acc)
     
-    return correctDuration, totalDuration, detectedTokenList, currSentence.beginTs
+    return correctDuration, totalDuration, detectedTokenList, currSectionLink.beginTs
+
+
+
 
 def doitOneChunkAlignWithCsv(URIrecordingNoExt, scoreFilename):
+    ##### @deprecated
+    #### @broken after refactoring
     withOracle = 0
     withDurations = 1
     withVocalPrediction= 0  
@@ -148,7 +152,7 @@ def doitOneChunkAlignWithCsv(URIrecordingNoExt, scoreFilename):
     
     
     banshiType = 'none'
-    sentence = SentenceJingju(currSectionSyllables,  0, 5, 0, len(currSectionSyllables), banshiType, withRules)
+    sentence = LyricsJingju(currSectionSyllables,  0, 5, 0, len(currSectionSyllables), banshiType, withRules)
 
     alpha = 0.97
     detectedTokenList, detectedPath = alignOneChunk( sentence, withSynthesis, withOracle, [], [], alpha, evalLevel, False, '.syllRong', 0, 5, URIrecordingNoExt)

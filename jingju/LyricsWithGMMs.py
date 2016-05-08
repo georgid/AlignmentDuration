@@ -5,15 +5,15 @@ Created on Nov 18, 2015
 '''
 
 
-from Lyrics import Lyrics
+from align.Lyrics import Lyrics
 import os
 import sys
 from PhonemeJingju import PhonemeJingju
-from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
 from sciKitGMM import SciKitGMM
 import logging
+from align.Constants import NUM_FRAMES_PERSECOND
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 HMMDurationPath = os.path.join(parentDir, 'HMMDuration')
 if not HMMDurationPath in sys.path:
@@ -22,10 +22,10 @@ if not HMMDurationPath in sys.path:
 from hmm.StateWithDur import StateWithDur
 
 from htkparser.htk_converter import HtkConverter
-from Decoder import logger
+from align.Decoder import logger
 
 from hmm.Parameters import MAX_SILENCE_DURATION
-from ParametersAlgo import ParametersAlgo
+from align.ParametersAlgo import ParametersAlgo
 
 # htkModelParser = os.path.join(parentDir, 'htk2s3')
 # sys.path.append(htkModelParser)
@@ -39,7 +39,7 @@ pathUtils = os.path.join(parentDir, 'utilsLyrics')
 sys.path.append(pathUtils )
 from utilsLyrics.Utilz import loadDictFromTabFile
 
-currDir = os.path.abspath( os.path.dirname(os.path.realpath(__file__)))
+currDir = os.path.abspath( os.path.join( os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ) )
 MODELS_SCRIPTS = currDir + '/models_jingju/'
 
 
@@ -82,7 +82,7 @@ class LyricsWithGMMs(Lyrics):
         self.duratioInFramesSet = False
     
         
-    def _loadModel(self, modelName, URIRecordingNoExt ):
+    def _loadGMMModel(self, modelName, URIRecordingNoExt ):
         ''' load model'''
         
 #         thisDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__) ) )
@@ -109,7 +109,7 @@ class LyricsWithGMMs(Lyrics):
         
         
 
-    def renamePhonemeNames(self, phonemeFromTranscript):
+    def _renamePhonemeNames(self, phonemeFromTranscript):
         '''
         workaround. In trained models these models are missing so replace them with approximately closest ones 
         '''
@@ -136,9 +136,9 @@ class LyricsWithGMMs(Lyrics):
             #link each phoneme from transcript to a model
             # FIXME: DO A MORE OPTIMAL WAY like ismember()
         for phonemeFromTranscript in    self.phonemesNetwork:
-                self.renamePhonemeNames(phonemeFromTranscript)
+                self._renamePhonemeNames(phonemeFromTranscript)
                 
-                model, modelName = self._loadModel(phonemeFromTranscript.ID, URIrecordingNoExt)
+                model, modelName = self._loadGMMModel(phonemeFromTranscript.ID, URIrecordingNoExt)
 #                 if model == None:
 
                 
@@ -297,7 +297,7 @@ class LyricsWithGMMs(Lyrics):
         for annoPhoneme in phoenemeAnnotaions:
             if annoPhoneme.ID == '':
                 annoPhoneme.ID ='sil'
-            self.renamePhonemeNames(annoPhoneme) 
+            self._renamePhonemeNames(annoPhoneme) 
             queueAnnotationTokens.put(annoPhoneme)
         # only first word
 #         self.listWords = [self.listWords[0]]
@@ -321,7 +321,7 @@ class LyricsWithGMMs(Lyrics):
                         sys.exit( " phoneme idx from annotation {} and  phoneme from lyrics  {} are  different".format( phonemeAnno.ID, phoneme_.ID ))
 
                     phoneme_.setBeginTs(float(phonemeAnno.beginTs))
-                    currDur = self.computeDurationInFrames( phonemeAnno)
+                    currDur = self._computeDurationInFrames( phonemeAnno)
                     phoneme_.durationInNumFrames = currDur
         
         
@@ -335,7 +335,7 @@ class LyricsWithGMMs(Lyrics):
         self.duratioInFramesSet = True
         
      
-    def computeDurationInFrames(self, phonemeAnno):
+    def _computeDurationInFrames(self, phonemeAnno):
         '''
         compute Duration from annotation token 
         '''

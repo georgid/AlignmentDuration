@@ -6,7 +6,7 @@ Created on Oct 13, 2014
 import os
 import numpy
 import sys
-from LyricsWithModels import LyricsWithModels
+from _LyricsWithModelsBase import _LyricsWithModelsBase
 from numpy.core.arrayprint import set_printoptions
 from Decoder import Decoder, WITH_DURATIONS, logger
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForToken, testT

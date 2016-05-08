@@ -15,7 +15,7 @@ from lyricsParser import stripPunctuationSigns, \
      createSyllable
 import sys
 import os.path
-from SentenceJingju import SentenceJingju
+from jingju.LyricsJingju import LyricsJingju
 
 # 64th of note
 MIN_DUR_UNIT = 64
@@ -201,7 +201,7 @@ class MusicXMLParser(object):
     def getLyricsForSection(self, whichSection):
         syllables = self.listSentences[whichSection]
         
-        currSentence = SentenceJingju(syllables,  -1, -1, -1, -1, 'noneBanshi', False)
+        currSentence = LyricsJingju(syllables,  'noneBanshi' )
 
         return currSentence
 

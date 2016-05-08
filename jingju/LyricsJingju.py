@@ -12,13 +12,13 @@ from align.Word import createWord
 import os
 
 
-class SentenceJingju(Lyrics):
+class LyricsJingju(Lyrics):
     '''
     classdocs
     '''
 
 
-    def __init__(self, listSyllables,  beginTs, endTs, fromSyllableIdx, toSyllableIdx, banshiType,  isLastSyllLong, isNonKeySyllLong):
+    def __init__(self, listSyllables,  banshiType):
         '''
         '''
         
@@ -48,13 +48,7 @@ class SentenceJingju(Lyrics):
         self.assignReferenceDurations()
         
         self.banshiType = banshiType
-        self.beginTs = beginTs
-        self.endTs = endTs
-        ### indices in TextGrid
-        self.fromSyllableIdx = fromSyllableIdx
-        self.toSyllableIdx = toSyllableIdx
-        self.isLastSyllLong = isLastSyllLong
-        self.isNonKeySyllLong = isNonKeySyllLong
+ 
         
     
     def assignReferenceDurations(self):

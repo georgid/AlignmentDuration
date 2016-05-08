@@ -19,11 +19,16 @@ class StateWithDur(State):
     '''
 
 
-    def __init__(self, mixtures, phoneme, idxInPhoneme, distribType='normal', deviationInSec=0.1):
+    def __init__(self, mixtures, phoneme, idxInPhoneme, distribType='normal', deviationInSec=0.1, gmm=None):
         '''
         Constructor
         '''
-        State.__init__(self, mixtures)
+        
+        if gmm == None: # htk-model type of state
+            State.__init__(self, mixtures)
+        else: # GMM xsampa model
+            self.mixtures = gmm
+        
         self.phoneme = phoneme
         self.idxInPhoneme  = idxInPhoneme
         
@@ -40,6 +45,7 @@ class StateWithDur(State):
             self.durationDistribution = DurationPdf(deviationInSec)
         else:
             self.durationDistribution = ExpDurationPdf()                                                
+  
   
     def setDurationInFrames(self, durationInFrames):
         '''

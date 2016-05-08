@@ -25,7 +25,7 @@ def runWithParametersAll(argv):
     
     parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
-    ParametersAlgo.MODELS_DIR = os.path.join(parentDir, 'models_jingju/' + numFolds + 'folds')
+    ParametersAlgo.MODELS_DIR = os.path.join(parentDir, 'models_jingju/' + numFolds + 'folds/')
     from utilsLyrics.Utilz import findFilesByExtension
     
     correctDurationHTK = 0

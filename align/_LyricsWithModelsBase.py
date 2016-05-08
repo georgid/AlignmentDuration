@@ -11,6 +11,9 @@ from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
 from ParametersAlgo import ParametersAlgo
+from jingju.sciKitGMM import SciKitGMM
+from utilsLyrics.Utilz import loadDictFromTabFile
+import logging
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
     
@@ -28,14 +31,17 @@ pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
 if pathEvaluation not in sys.path:
     sys.path.append(pathEvaluation)
 
-class LyricsWithModels(Lyrics):
+
+
+
+class _LyricsWithModelsBase(Lyrics):
     '''
     lyrics with each Phoneme having a link to a model of class type htkModel from htkModelParser
     No handling of durationInMinUnit information. For it see Decoder.Decoder.decodeAudio 
     '''
 
 
-    def __init__(self, lyrics, htkParser, deviationInSec, withPaddedSilence=True ):
+    def __init__(self,  lyrics, htkParserOrURIrecordingNoExt, deviationInSec,  withPaddedSilence=True ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
@@ -44,107 +50,24 @@ class LyricsWithModels(Lyrics):
         self.withPaddedSilence = withPaddedSilence
         
         Lyrics.__init__(self, lyrics.listWords)
-        self._linkToModels(htkParser)
         
+        self.deviationInSec = deviationInSec
         # list of class type StateWithDur
         self.statesNetwork = []
         
-        
-        self.deviationInSec = deviationInSec
-
         self.duratioInFramesSet = False
 
+        self._linkToModels(htkParserOrURIrecordingNoExt)
         
-    def _linkToModels(self, htkParser):
-        '''
-        load links to trained models. 
-        add  Phoneme('sp') with exponential distrib at beginning and end if withPaddedSilence 
-        '''
-       
-        if self.withPaddedSilence:    
-            tmpPhoneme =  Phoneme('sp');
-            tmpPhoneme.setIsLastInSyll(True)
-            self.phonemesNetwork.insert(0, tmpPhoneme)
-            self.phonemesNetwork.append(tmpPhoneme)
-       
-       
-    #####link each phoneme from transcript to a model
-            # FIXME: DO A MORE OPTIMAL WAY like ismember()
-        for phonemeFromTranscript in    self.phonemesNetwork:
-            for currHmmModel in htkParser.hmms:
-                if currHmmModel.name == phonemeFromTranscript.ID:
-                    
-                    phonemeFromTranscript.setHTKModel(currHmmModel) 
-            
         
 
-    def createStateWithDur(self, phoneme, currStateCount, idxState, state, distributionType):
-         
-
-        if distributionType == 'normal':
-            currStateWithDur = StateWithDur(state.mixtures, phoneme, idxState, distributionType, self.deviationInSec)
-            dur = float(phoneme.durationInNumFrames) / float(currStateCount)
-            if dur < 0:
-                sys.exit("duration for phoneme {}={}. please decrease fixed consonant duration or make sure audio fragment is not too short".format(dur, phoneme.ID))
-            currStateWithDur.setDurationInFrames(dur)
-        
-        elif distributionType == 'exponential':
-            currStateWithDur = StateWithDur(state.mixtures, phoneme, idxState, distributionType )
-            currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
-            
-        transMatrix = phoneme.getTransMatrix()
-        currStateWithDur.setWaitProb(transMatrix[idxState + 1, idxState + 1])
-            
-        
-        return currStateWithDur
-
-    def _phonemes2stateNetwork(self):
-        '''
-        expand self.phonemeNetwork to self.statesNetwork
-        assign phoneme a pointer <setNumFirstState> to its initial state in the state network (serves as link among the two)
-        each state gets 1/n-th of total num of states. 
-        '''
-         
-        
-        self.statesNetwork = []
-        stateCount = 0
-        
+    
+    
+    def _linkToModels(self, dummy):
+        raise NotImplementedError("_phonemes2stateNetwork must be implemented")
+    
 
         
-        for phnIdx, phoneme in enumerate(self.phonemesNetwork):
-            
-            
-            phonemeStates = phoneme.htkModel.states
-            
-            if ParametersAlgo.ONLY_MIDDLE_STATE:
-                if len( phoneme.htkModel.states) == 1:
-                    idxMiddleState = 0
-                elif len( phoneme.htkModel.states) == 3:             
-                    idxMiddleState = 1
-                else:
-                    sys.exit("not implemented. only 3 or 1 state per phoneme supported")
-                phonemeStates = [phoneme.htkModel.states[idxMiddleState]]
-            
-            phoneme.setNumFirstState(stateCount)
-            
-            if not hasattr(phoneme, 'htkModel'):
-                sys.exit("phoneme {} has no htkModel assigned".format(phoneme.ID))
-            
-            # update state counter
-            currStateCount = len(phonemeStates)
-            stateCount += currStateCount
-            
-            distributionType='normal'
-            # assign durationInMinUnit and name to each state
-            if (phnIdx == 0 or phnIdx == len(self.phonemesNetwork)-1 ) and self.withPaddedSilence:
-                distributionType='exponential'
-            
-            for idxState, (numStateFromHtk, state ) in enumerate(phonemeStates):
-                currStateWithDur = self.createStateWithDur(phoneme, currStateCount, idxState, state, distributionType)
-                self.statesNetwork.append(currStateWithDur)
-          
-      
-                 
     def _phonemes2stateNetworkWeights(self):
         '''
         expand to self.statesNetwork. 
@@ -258,17 +181,22 @@ class LyricsWithModels(Lyrics):
         
         for word_ in self.listWords:
             for syllable_ in word_.syllables:
-
+                
+                if syllable_.durationInMinUnit == 0: # workaround for unknown values. better: if whole sentence unknown use withRules. 
+                    logging.warning("syllable {} with duration = 0".format(syllable_))
+                
+                    syllable_.durationInMinUnit = 1
+                
                 numFramesInSyllable = round(float(syllable_.durationInMinUnit) * numFramesPerMinUnit)
                 if numFramesInSyllable == 0.0:
-                    sys.exit(" frames per syllable {} are 0.0. Check numFramesPerMinUnit={}".format(syllable_.text, numFramesPerMinUnit))
+                    sys.exit(" frames per syllable {} are 0.0. Check durationInMinUnit {} and numFramesPerMinUnit={}".format(syllable_.text, syllable_.durationInMinUnit,  numFramesPerMinUnit))
                     
                 # TODO: set here syllables from score
                 syllable_.setDurationInNumFrames(numFramesInSyllable)
         
         # consonant-handling policy
         self.calcPhonemeDurs()
-
+        
         self._phonemes2stateNetwork()
 #             self._phonemes2stateNetworkWeights()
         
@@ -318,8 +246,8 @@ class LyricsWithModels(Lyrics):
         for annoPhoneme in phoenemeAnnotaions:
             if annoPhoneme.ID == '':
                 annoPhoneme.ID ='sil'
-        # WORKAROUND: needed for phonemes with strange names in Jingju 
-#             self.renamePhonemeNames(annoPhoneme) 
+        # WORKAROUND: needed for phonemes with strange names in Jingju. Uncomment only if need this  code WITH_ORACLE=1
+#             self._renamePhonemeNames(annoPhoneme) 
             queueAnnotationTokens.put(annoPhoneme)
         # only first word
 #         self.listWords = [self.listWords[0]]
@@ -343,7 +271,7 @@ class LyricsWithModels(Lyrics):
                         sys.exit( " phoneme idx from annotation {} and  phoneme from lyrics  {} are  different".format( phonemeAnno.ID, phoneme_.ID ))
 
                     phoneme_.setBeginTs(float(phonemeAnno.beginTs))
-                    currDur = self.computeDurationInFrames( phonemeAnno)
+                    currDur = self._computeDurationInFrames( phonemeAnno)
                     phoneme_.durationInNumFrames = currDur
         
         
@@ -353,10 +281,48 @@ class LyricsWithModels(Lyrics):
         
         self.duratioInFramesSet = True    
         
+    
+    def _phonemes2stateNetwork(self):
+        raise NotImplementedError("_phonemes2stateNetwork must be implemented")
+
+    
+    
+    
+    
+    
+            
+            
+     
+     
+    def _createStateWithDur(self, phoneme, currStateCount, idxState, state, distributionType, gmm=None):
+        
+        if state ==None:
+            mixtures = None
+        else:   
+            mixtures = state.mixtures
+        
+        if distributionType == 'normal':
+            currStateWithDur = StateWithDur(mixtures, phoneme, idxState, distributionType, self.deviationInSec)
+            dur = float(phoneme.durationInNumFrames) / float(currStateCount)
+            if dur < 0:
+                sys.exit("duration for phoneme {}={}. please decrease fixed consonant duration or make sure audio fragment is not too short".format(dur, phoneme.ID))
+            currStateWithDur.setDurationInFrames(dur)
+        
+        elif distributionType == 'exponential':
+            currStateWithDur = StateWithDur(mixtures, phoneme, idxState, distributionType )
+            currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
+            
+        transMatrix = phoneme.getTransMatrix()
+        currStateWithDur.setWaitProb(transMatrix[idxState + 1, idxState + 1])
+            
+        
+        return currStateWithDur 
+    
+
         
         
      
-    def computeDurationInFrames(self, phonemeAnno):
+    def _computeDurationInFrames(self, phonemeAnno):
         '''
         compute Duration from annotation token 
         '''
@@ -438,6 +404,7 @@ class LyricsWithModels(Lyrics):
         
         for i, state_ in enumerate(self.statesNetwork):
                 print "{} : {}".format(i, state_.display())
+
 
 
 def getTempo(recordingMBID):

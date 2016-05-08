@@ -18,12 +18,17 @@ class SectionLink(object):
         self.melodicStructure = melodicStructure
         self.beginTs = beginTs
         self.endTs = endTs
+        # composition section. could be LyricsSection or ScoreSection
+        self.section = None
         
-        
-#         self.fromSyllableIdx = fromSyllableIdx
-#         self.toSyllableIdx = toSyllableIdx
+
 
 #   
+    def setSection(self, section):
+        '''
+        could be LyricsSection or ScoreSection
+        '''
+        self.section = section
         
       
     def setSelectedSections(self, sections):
@@ -32,6 +37,15 @@ class SectionLink(object):
         '''
         self.selectedSections = sections
         
+
+class SectionLinkJingju(SectionLink):
+    
+    def __init__(self,  beginTs, endTs, isLastSyllLong, isNonKeySyllLong):
+        
+        SectionLink.__init__(self, 'dummyMelStruct', beginTs, endTs)
+        self.isLastSyllLong = isLastSyllLong
+        self.isNonKeySyllLong = isNonKeySyllLong
+          
         
         
 class SectionAnno(SectionLink):
@@ -47,9 +61,9 @@ class SectionAnno(SectionLink):
     
     def matchToSection(self,  scoreSections):
         if self.lyricStructure == None:
-           sys.exit('cannot match link to scoreSection. No lyricStructure defined')
+           sys.exit('cannot match link to section. No lyricStructure defined')
         
         for scoreSection in scoreSections:
             if self.melodicStructure == scoreSection.melodicStructure and self.lyricStructure == scoreSection.lyricStructure:
-                self.scoreSection = scoreSection
+                self.setSection(scoreSection)
                 break  

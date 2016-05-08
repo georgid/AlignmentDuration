@@ -8,6 +8,7 @@ from utilsLyrics.Utilz import loadTextFile
 from align.SectionLink import SectionLink, SectionAnno
 import sys
 from align.Decoder import logger
+import os
 
 class MakamRecording:
     '''
@@ -15,10 +16,13 @@ class MakamRecording:
     '''
 
 
-    def __init__(self, makamScore, sectionLinksDict, withAnnotations):
+    def __init__(self, audioFileURI, makamScore, sectionLinksDict, withAnnotations):
         '''
         Constructor
         '''
+        
+        self.recordingNoExtURI = os.path.splitext(audioFileURI)[0]  
+
         self.makamScore = makamScore
         
         if not withAnnotations:

@@ -28,6 +28,8 @@ def runWithParameters(argv):
             print ("usage: {}   <URIRecording No Extension>  <deviation_INSeconds>".format(argv[0]) )
             sys.exit()
     
+    ParametersAlgo.FOR_JINGJU = 1
+    
     URIrecordingNoExt =  argv[1]
     b = os.path.basename(URIrecordingNoExt)
     lyricsTextGrid =  os.path.join(os.path.dirname(URIrecordingNoExt), os.pardir, os.pardir,b+'.TextGrid')
@@ -42,7 +44,7 @@ def runWithParameters(argv):
     
     # load total # different sentences + their rspective ts
 #         fromTss, toTss = loadSectionTimeStamps(sectionAnnoURI)
-    listSentences = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
+    listSectionLinks = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
     
     if float(argv[2]) == 0.0:
        sys.exit('DEVIATION_IN_SEC cannot be 0.0' ) 
@@ -69,23 +71,23 @@ def runWithParameters(argv):
 
     
     withVocalPrediction = 0
-#     for whichSentence, currSentence in  reversed(list(enumerate(listSentences))):
-    for whichSentence, currSentence in  enumerate(listSentences):
+#     for whichSentence, currSectionLink in  reversed(list(enumerate(listSectionLinks))):
+    for whichSentence, currSectionLink in  enumerate(listSectionLinks):
         
-        if currSentence.isLastSyllLong == '1':
+        if currSectionLink.isLastSyllLong == '1':
             pass
-        if currSentence.isNonKeySyllLong == '1':
+        if currSectionLink.isNonKeySyllLong == '1':
             pass
-#         currSentence.printSyllables()
+#         currSectionLink.printSyllables()
         
         withOracle = 1
-#         correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, URIrecordingNoExt, lyricsTextGrid, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSentence)
+#         correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, URIrecordingNoExt, lyricsTextGrid, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSectionLink)
 
         
             
         # calc local acc
         withOracle = 0
-        correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle,   URIrecordingNoExt, lyricsTextGrid, musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence)
+        correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle,   URIrecordingNoExt,  musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSectionLink)
         if tokenListAligned == None:
             continue
         tokenListAlignedAll.extend(tokenListAligned)
@@ -130,9 +132,9 @@ def calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctD
 
 
 
-def doit( withOracle,  URIrecordingNoExt, lyricsTextGrid, musicXMLParser, withDurations, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence):
+def doit( withOracle,  URIrecordingNoExt,  musicXMLParser, withDurations, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSentence):
    
-    currCorrectDuration, currTotalDuration, detectedTokenList, sentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt, lyricsTextGrid, musicXMLParser, whichSentence, currSentence, withOracle,  withDurations, withVocalPrediction) # calc local accuracy
+    currCorrectDuration, currTotalDuration, detectedTokenList, sentenceBeginTs = doitOneChunkAlign(URIrecordingNoExt,  musicXMLParser, whichSentence, currSentence, withOracle,  withDurations, withVocalPrediction) # calc local accuracy
     if detectedTokenList != None:
         currAcc, correctDuration, totalDuration = calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctDuration, totalDuration)
     accuracyList.append(currAcc)

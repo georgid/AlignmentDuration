@@ -10,6 +10,9 @@ from numpy.ma.core import  floor
 ######### PARAMS:
 class ParametersAlgo(object):
     
+    FOR_JINGJU = 0
+    FOR_MAKAM = 0
+    
     THRESHOLD_PEAKS = -70
 
     DEVIATION_IN_SEC = 0.1
@@ -20,7 +23,6 @@ class ParametersAlgo(object):
     WINDOW_SIZE = 0.025
     
     # in frames
-    CONSONANT_DURATION = NUMFRAMESPERSECOND * 0.1;
     
     ONLY_MIDDLE_STATE = 1
     
@@ -54,7 +56,14 @@ class ParametersAlgo(object):
     # in _ContinousHMM.b_map cut probabilities
     CUTOFF_BIN_OBS_PROBS = 30
     
+    # for jingju
+    CONSONANT_DURATION_IN_SEC = 0.3
+    # for makam
+#     CONSONANT_DURATION_IN_SEC = 0.1 
     
+    CONSONANT_DURATION = NUMFRAMESPERSECOND * CONSONANT_DURATION_IN_SEC;
+    
+    CONSONANT_DURATION_DEVIATION = 0.7
     
     #####
     LOGGING_LEVEL = logging.DEBUG

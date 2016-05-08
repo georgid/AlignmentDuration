@@ -28,6 +28,8 @@ from align.ParametersAlgo import ParametersAlgo
         
 def testLyricsAlign():
     
+    ParametersAlgo.FOR_MAKAM = 1
+    
     # test with section links
     symbtrtxtURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.txt')
     sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.sectionsMetadata.json' )
@@ -65,11 +67,10 @@ def testLyricsAlign():
     
     
     audioFileURI = stereoToMono(audioFileURI)               
-
-
-    la = LyricsAligner(ParametersAlgo.PATH_TO_HCOPY)
     
-    totalDetectedTokenList, sectionLinksDict = la.alignRecording(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, extractedPitchList, outputDir, WITH_SECTION_ANNOTATIONS)
+    la = LyricsAligner(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, WITH_SECTION_ANNOTATIONS, ParametersAlgo.PATH_TO_HCOPY)
+    
+    totalDetectedTokenList = la.alignRecording( extractedPitchList, outputDir)
       
     ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
     ret['alignedLyricsSyllables'] = totalDetectedTokenList
@@ -105,6 +106,9 @@ def testMakamRecording():
     
     with open(sectionAnnosSourceURI) as f:
         sectionLinksDict = json.load(f)
+    
+    recordingNoExtURI = os.path.splitext(audioFileURI)[0]  
+
     
     mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict )
     

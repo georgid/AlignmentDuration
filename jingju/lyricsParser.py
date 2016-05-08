@@ -17,7 +17,9 @@ from collections import deque
 
 from PhonetizerDict import createDictSyll2XSAMPA
 from IPython.core.tests.test_formatters import numpy
-from SentenceJingju import SentenceJingju
+from LyricsJingju import LyricsJingju
+from align.ScoreSection import LyricsSection
+from align.SectionLink import SectionLink, SectionLinkJingju
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -145,7 +147,7 @@ def divideIntoSentencesFromAnnoWithSil(annotationURI, withRules=1):
     
     syllablePointer = 0
     
-    listSentences = []
+    listSectionLinks = []
     
     for currSentence, isLastSyllLongFlag, isNonKeySyllLongFlag in zip(annotationLinesListNoPauses,isLastSyllLongFlags, isNonKeySyllLongFlags):
         
@@ -156,12 +158,19 @@ def divideIntoSentencesFromAnnoWithSil(annotationURI, withRules=1):
          _findBeginEndIndices(syllablesList, syllablePointer, currSentenceBeginTs, currSentenceEndTs, highLevel )
         
         banshiType = 'none'
-        currSentence = SentenceJingju(currSectionSyllables,  currSentenceBeginTs, currSentenceEndTs, fromSyllableIdx, toSyllableIdx, banshiType, isLastSyllLongFlag[2], isNonKeySyllLongFlag[2] )
-        listSentences.append(currSentence)
+        lyrics = LyricsJingju( currSectionSyllables, banshiType )
+        
+        currLyricsSection = LyricsSection(annotationURI, fromSyllableIdx, toSyllableIdx)
+        currLyricsSection.setLyrics(lyrics)
+        
+        currSectionLink = SectionLinkJingju( currSentenceBeginTs, currSentenceEndTs, isLastSyllLongFlag[2], isNonKeySyllLongFlag[2])
+        currSectionLink.setSection(currLyricsSection)
+        
+        listSectionLinks.append(currSectionLink)
     
     
      
-    return listSentences
+    return listSectionLinks
 
 
 
@@ -245,8 +254,8 @@ def serializeLyrics(lyrics, outputFileNoExt):
      
 if __name__ == '__main__':
     rootURI = '/Users/joro/Documents/Phd/UPF/arias/'
-    listSentences = divideIntoSentencesFromAnnoOld(rootURI + 'laosheng-erhuang_04.TextGrid')
-#     for section in listSentences:
+    listSectionLinks = divideIntoSentencesFromAnnoOld(rootURI + 'laosheng-erhuang_04.TextGrid')
+#     for section in listSectionLinks:
 #         print section[0],  section[1], section[2], section[3]
 #         for syll in section[4]:
 #             print syll.text
