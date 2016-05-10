@@ -91,6 +91,7 @@ def test_simple():
     means[1][1][1] = 0.5    
 
     gmmhmm = DurationGMHMM(n,m,d,A,means,covars,w,pi,init_type='user',verbose=True)
+    GMHMM
     
     obs = numpy.array([ [0.3,0.3], [0.1,0.1], [0.2,0.2]])
     
@@ -242,7 +243,7 @@ def test_decoding(pathToComposition, whichSection):
     lyrics = makamScore.getLyricsForSection(whichSection)
     
     
-    lyricsWithModels, observationFeatures, URIRecordingChunk = loadSmallAudioFragment(lyrics, 'dummyExtractedPitchList',   URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
+    lyricsWithModels, observationFeatures, URIRecordingChunk = loadSmallAudioFragment(lyrics, 'dummyExtractedPitchList',   URIrecordingNoExt,  fromTs=-1, toTs=-1)
     
     decoder = getDecoder(lyricsWithModels, URIRecordingChunk)
     
@@ -341,7 +342,7 @@ if __name__ == '__main__':
     htkParser = HtkConverter()
     htkParser.load(MODEL_URI, HMM_LIST_URI)
     
-    lyricsWithModels, observationFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, 'dummyExtractedPitchList',    URIrecordingNoExt, withSynthesis, fromTs=-1, toTs=-1)
+    lyricsWithModels, observationFeatures, URIrecordingChunk = loadSmallAudioFragment(lyrics, 'dummyExtractedPitchList',    URIrecordingNoExt,  fromTs=-1, toTs=-1)
 #     
 #     decode(lyricsWithModels, observationFeatures, URIrecordingNoExt)
 #   

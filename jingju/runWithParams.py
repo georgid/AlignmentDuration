@@ -7,8 +7,6 @@ import sys
 from MusicXmlParser import MusicXMLParser
 from align.ParametersAlgo import ParametersAlgo
 
-from doitOneChunkAlign import doitOneChunkAlign
-from lyricsParser import divideIntoSentencesFromAnnoWithSil
 #from runitHTK import runitHTK
 from matplotlib.pyplot import legend
 
@@ -17,6 +15,9 @@ from utilsLyrics.Utilz import getMeanAndStDevError, addTimeShift,\
     writeListOfListToTextFile
 import os
 from docutils.parsers.rst.directives import path
+from jingju.JingjuRecording import JingjuScore, JingjuRecording
+from align.LyricsAligner import LyricsAligner
+from jingju.lyricsParser import divideIntoSentencesFromAnnoWithSil
 
 
 
@@ -41,11 +42,7 @@ def runWithParameters(argv):
     accuracyListHTK = []
 #     correctDurationHTK, totalDurationHTK, accuracyListHTK = runitHTK(["dummy", URIrecordingNoExt ])       
     
-    
-    # load total # different sentences + their rspective ts
-#         fromTss, toTss = loadSectionTimeStamps(sectionAnnoURI)
-    listSectionLinks = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
-    
+       
     if float(argv[2]) == 0.0:
        sys.exit('DEVIATION_IN_SEC cannot be 0.0' ) 
     ParametersAlgo.DEVIATION_IN_SEC = float(argv[2])
@@ -56,8 +53,42 @@ def runWithParameters(argv):
     if withMusicalScores == 1:
         musicXmlURI = URIrecordingNoExt + '_score.xml'
         musicXMLParser = MusicXMLParser(musicXmlURI, lyricsTextGrid)
-    
 
+   
+   
+ # load total # different sentences + their rspective ts
+    listLyicsSections, annotationLinesListNoPauses = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
+    jingjuScore = JingjuScore(listLyicsSections)
+    
+    # 
+    jingjuRecording = JingjuRecording('dummymbRecordingID', URIrecordingNoExt + '.wav', jingjuScore, lyricsTextGrid, annotationLinesListNoPauses)
+    
+    # for Jingju section Annotations are given by TextGrid
+    WITH_SECTION_ANNOTATIONS = 1
+    lyricsAligner = LyricsAligner(jingjuRecording, WITH_SECTION_ANNOTATIONS, ParametersAlgo.PATH_TO_HCOPY)
+    
+    extractedPitchList = None
+    outputDir = 'test'
+    lyricsAligner.alignRecording( extractedPitchList, outputDir)
+    
+    sectionDetectedList  = []
+    for sectionLink in  lyricsAligner.recording.sectionAnnos:
+        if hasattr(sectionLink, 'detectedTokenList'):
+            sectionDetectedList.append(sectionLink.detectedTokenList)
+   
+    print sectionDetectedList
+   
+#     if detectedTokenList != None:
+#         currAcc, correctDuration, totalDuration = calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctDuration, totalDuration)
+#     accuracyList.append(currAcc)
+#      
+#      
+#     correctDuration, totalDuration = _evalAccuracy(currSectionLink.section.lyricsTextGrid, detectedTokenList, evalLevel, currSectionLink.fromSyllableIdx, currSectionLink.toSyllableIdx  )
+#     acc = correctDuration / totalDuration
+#     print "result is: " + str(acc)
+    
+    
+    
     
     correctDurationOracle = 0
     totalDurationOracle = 1
@@ -70,29 +101,11 @@ def runWithParameters(argv):
     tokenListAlignedAll = []
 
     
-    withVocalPrediction = 0
-#     for whichSentence, currSectionLink in  reversed(list(enumerate(listSectionLinks))):
-    for whichSentence, currSectionLink in  enumerate(listSectionLinks):
-        
-        if currSectionLink.isLastSyllLong == '1':
-            pass
-        if currSectionLink.isNonKeySyllLong == '1':
-            pass
-#         currSectionLink.printSyllables()
-        
-        withOracle = 1
+
 #         correctDurationOracle, totalDurationOracle, dummy, dummy = doit(withOracle, URIrecordingNoExt, lyricsTextGrid, musicXMLParser, withMusicalScores, correctDurationOracle, totalDurationOracle, accuracyListOracle, withVocalPrediction, whichSentence, currSectionLink)
 
         
             
-        # calc local acc
-        withOracle = 0
-        correctDuration,  totalDuration,  tokenListAligned, sentenceBeginTs  = doit(withOracle,   URIrecordingNoExt,  musicXMLParser, withMusicalScores, correctDuration, totalDuration, accuracyList, withVocalPrediction, whichSentence, currSectionLink)
-        if tokenListAligned == None:
-            continue
-        tokenListAlignedAll.extend(tokenListAligned)
-            
-  
             
             ##### write all decoded output persistently to files
     phonemeAlignedfileName = URIrecordingNoExt + '.syllables_total_dev_' + str(ParametersAlgo.DEVIATION_IN_SEC)
@@ -114,6 +127,8 @@ def runWithParameters(argv):
     
     
     return  correctDurationHTK, totalDurationHTK, correctDurationOracle, totalDurationOracle, correctDuration, totalDuration
+
+
 
 
 def calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctDuration, totalDuration):

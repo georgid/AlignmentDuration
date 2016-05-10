@@ -70,8 +70,8 @@ class LyricsWithModelsHTK(_LyricsWithModelsBase):
                 sys.exit("phoneme {} has no htkModel assigned".format(phoneme.ID))
             
             # update state counter
-            currStateCount = len(phonemeStates)
-            stateCount += currStateCount
+            numStatesInModel = len(phonemeStates)
+            stateCount += numStatesInModel
             
             
             distributionType='normal'
@@ -80,7 +80,7 @@ class LyricsWithModelsHTK(_LyricsWithModelsBase):
                 distributionType='exponential'
             
             for idxState, (numStateFromHtk, state ) in enumerate(phonemeStates):
-                currStateWithDur = self._createStateWithDur(phoneme, currStateCount, idxState, state, distributionType)
+                currStateWithDur = self._createStateWithDur(phoneme, numStatesInModel, idxState, state, distributionType, self.deviationInSec)
                 self.statesNetwork.append(currStateWithDur)
           
         

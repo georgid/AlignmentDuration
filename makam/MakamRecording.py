@@ -5,45 +5,64 @@ Created on Feb 9, 2016
 '''
 
 from utilsLyrics.Utilz import loadTextFile
-from align.SectionLink import SectionLink, SectionAnno
+from align.SectionLink import SectionLinkMakam, SectionAnno
 import sys
 from align.Decoder import logger
 import os
 
-class MakamRecording:
+
+
+class _RecordingBase():
+
+    def __init__(self, mbRecordingID, audioFileURI, score):
+        '''
+        Constructor
+        '''
+        
+        self.mbRecordingID = mbRecordingID
+        
+        self.recordingNoExtURI = os.path.splitext(audioFileURI)[0]  
+
+        self.score = score
+        
+        self.sectionAnnos = []
+
+        self.sectionLinks = []
+    
+    
+    def _loadsectionTimeStampsLinks(self, sectionAnnosDict):
+        raise NotImplementedError('_loadsectionTimeStamps links not impl')
+             
+
+class MakamRecording(_RecordingBase):
     '''
     classdocs
     '''
 
 
-    def __init__(self, audioFileURI, makamScore, sectionLinksDict, withAnnotations):
+    def __init__(self, mbRecordingID, audioFileURI, score, sectionLinksOrAnnoDict, withAnnotations):
         '''
         Constructor
         '''
-        
-        self.recordingNoExtURI = os.path.splitext(audioFileURI)[0]  
+        _RecordingBase.__init__(self, mbRecordingID, audioFileURI, score)
 
-        self.makamScore = makamScore
         
         if not withAnnotations:
-            sectionLinks = parseSectionLinks(sectionLinksDict)
-            self._loadsectionTimeStampsLinksNew(sectionLinks)
-        else: # sectionLinksDict is alias for sectionAnnosDict
-            self._loadsectionTimeStampsAnno(sectionLinksDict)
+            sectionLinks = parseSectionLinks(sectionLinksOrAnnoDict)
+            self._loadsectionTimeStampsLinks(sectionLinks)
+        else: # sectionLinksOrAnnoDict is alias for sectionAnnosDict
+            self._loadsectionTimeStampsAnno(sectionLinksOrAnnoDict)
         
     
-    def _loadsectionTimeStampsLinksNew(self, sectionLinksTxt):
+    def _loadsectionTimeStampsLinks(self, sectionLinksTxt):
 
     
-        self.sectionLinks = [] 
-        
-
         for sectionLink in sectionLinksTxt:
                         
                         melodicStruct = sectionLink['name']
                         beginTs, endTs = parseTimeSectionLinkTxt(sectionLink)
                         
-                        currSectionLink = SectionLink (melodicStruct, beginTs, endTs)
+                        currSectionLink = SectionLinkMakam (self.recordingNoExtURI, melodicStruct, beginTs, endTs)
                         
                         self.sectionLinks.append(currSectionLink )
                         
@@ -79,7 +98,6 @@ class MakamRecording:
                 sys.exit('annotation should have key section_annotations')
                 
             sectionAnnosTxt = sectionAnnosDict['section_annotations']
-            self.sectionAnnos = []
             for sectionAnnoTxt in sectionAnnosTxt:
                     if 'melodicStructure' not in sectionAnnoTxt or 'lyricStructure' not in sectionAnnoTxt:
                          logger.warning("skipping parsing secionAnno {} with no lyric/melodic struct defined ...".format(sectionAnnoTxt))
@@ -88,8 +106,8 @@ class MakamRecording:
                     beginTs, endTs = parseTimeSectionLinkTxt(sectionAnnoTxt)
                         
                         
-                    currSectionAnno = SectionAnno (melodicStruct, sectionAnnoTxt['lyricStructure'], beginTs, endTs )
-                    currSectionAnno.matchToSection(self.makamScore.symbTrParser.sections)
+                    currSectionAnno = SectionAnno (self.recordingNoExtURI, melodicStruct, sectionAnnoTxt['lyricStructure'], beginTs, endTs )
+                    currSectionAnno.matchToSection(self.score.symbTrParser.sections)
                     
                     
                     self.sectionAnnos.append(currSectionAnno )

@@ -13,6 +13,7 @@ class _Section():
     
     def setLyrics(self, lyrics):
         self.lyrics = lyrics
+        
 
 class ScoreSection(_Section):
 
@@ -42,6 +43,7 @@ class LyricsSection(_Section):
         
         _Section.__init__(self)
         
+        # text Grid of complete recording
         self.lyricsTextGrid = lyricsTextGrid
         self.fromSyllableIdx = fromSyllableIdx
         self.toSyllableIdx = toSyllableIdx

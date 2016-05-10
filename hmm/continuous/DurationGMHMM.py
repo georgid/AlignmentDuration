@@ -31,11 +31,11 @@ class DurationGMHMM(_DurationHMM):
 #         super(DurationGMHMM, self).__init__(n,m,d,A,means,covars,w,pi,min_std,init_type,precision,verbose) #@UndefinedVariable
 #         self._set_GMMs()
         
-    def __init__(self,statesNetwork, numMixtures, numDimensions):
+    def __init__(self,statesNetwork):
         '''
         See base class constructor for more information
         '''
-        super(DurationGMHMM,self).__init__(statesNetwork, numMixtures, numDimensions)
+        super(DurationGMHMM,self).__init__(statesNetwork)
         self._set_GMMs()
         
     def _set_GMMs(self):
@@ -63,7 +63,7 @@ class DurationGMHMM(_DurationHMM):
         uses sciKit learn's GMM class
         '''
 #         old_settings = numpy.seterr(under='warn')
-
+        shapeObs = observations.shape
         (logprob,responsibilities) = self.GMMs[j].score_samples(observations)
         return logprob  
         

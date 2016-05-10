@@ -8,7 +8,6 @@ import sys
 import logging
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDetected,\
     expandlyrics2SyllableList
-from Constants import NUM_DIMENSIONS, numMixtures
 from ParametersAlgo import ParametersAlgo
 from align.visualize import visualizeMatrix, visualizeBMap, visualizePath,\
     visualizeTransMatrix
@@ -96,8 +95,8 @@ class Decoder(object):
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
             # double check that features are in same dimension as model
-            if featureExtractor.featureVectors.shape[1] != NUM_DIMENSIONS:
-                sys.exit("dimension of feature vector should be {} but is {} ".format(NUM_DIMENSIONS, featureExtractor.featureVectors.shape[1]) )
+            if featureExtractor.featureVectors.shape[1] != self.hmmNetwork.d:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(self.hmmNetwork.d, featureExtractor.featureVectors.shape[1]) )
             
                 
         self.hmmNetwork.initDecodingParameters(featureExtractor, fromTsTextGrid, toTsTextGrid)
@@ -145,7 +144,7 @@ class Decoder(object):
         if  WITH_DURATIONS:
             from hmm.continuous.DurationGMHMM  import DurationGMHMM
             # note: no trans matrix because only forced Viterbi implemented 
-            self.hmmNetwork = DurationGMHMM(self.lyricsWithModels.statesNetwork, numMixtures, NUM_DIMENSIONS)
+            self.hmmNetwork = DurationGMHMM(self.lyricsWithModels.statesNetwork)
             self.hmmNetwork.setALPHA(ALPHA)
         
         else: # with no durations standard Viterbi
@@ -161,7 +160,7 @@ class Decoder(object):
             import matplotlib.pyplot as plt
             plt.show()
             from hmm.continuous.GMHMM  import GMHMM
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrices)
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
     
     
 

@@ -19,7 +19,6 @@ from PhonetizerDict import createDictSyll2XSAMPA
 from IPython.core.tests.test_formatters import numpy
 from LyricsJingju import LyricsJingju
 from align.ScoreSection import LyricsSection
-from align.SectionLink import SectionLink, SectionLinkJingju
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -124,7 +123,7 @@ def splitThePhoneme(doublePhoneme, firstPhoeneme, syllableIdx):
     return splitPhoneme1, splitPhoneme2
     
 
-def divideIntoSentencesFromAnnoWithSil(annotationURI, withRules=1):
+def divideIntoSentencesFromAnnoWithSil(annotationURI):
     '''
     infer section/line timestamps from annotation-textgrid, 
     parse divison into sentences from Tier 'lines' and load its syllables corresponding by timestamps 
@@ -137,19 +136,13 @@ def divideIntoSentencesFromAnnoWithSil(annotationURI, withRules=1):
     syllablesList, dummy =  readNonEmptyTokensTextGrid(annotationURI, lowLevel, 0, -1)
     
     
-    isNonKeySyllLevel = tierAliases.isNonKeySyllLong # read lines (sentences) tier
-    dummy, isNonKeySyllLongFlags =  readNonEmptyTokensTextGrid(annotationURI, isNonKeySyllLevel, 0, -1)
-    
-#     isLastSyllLevel = tierAliases.isLastSyllLong # read lines (sentences) tier
-#     dummy, isLastSyllLongFlags =  readNonEmptyTokensTextGrid(annotationURI, isLastSyllLevel, 0, -1)
-    # stub to avoid preparing isNonKeySyllLong  tier in praat 
-    isLastSyllLongFlags = [[0,0,0]] * len(isNonKeySyllLongFlags)
+
     
     syllablePointer = 0
     
-    listSectionLinks = []
+    lyricsSections = []
     
-    for currSentence, isLastSyllLongFlag, isNonKeySyllLongFlag in zip(annotationLinesListNoPauses,isLastSyllLongFlags, isNonKeySyllLongFlags):
+    for currSentence in annotationLinesListNoPauses:
         
         currSentenceBeginTs = currSentence[0]
         currSentenceEndTs = currSentence[1]
@@ -162,15 +155,12 @@ def divideIntoSentencesFromAnnoWithSil(annotationURI, withRules=1):
         
         currLyricsSection = LyricsSection(annotationURI, fromSyllableIdx, toSyllableIdx)
         currLyricsSection.setLyrics(lyrics)
-        
-        currSectionLink = SectionLinkJingju( currSentenceBeginTs, currSentenceEndTs, isLastSyllLongFlag[2], isNonKeySyllLongFlag[2])
-        currSectionLink.setSection(currLyricsSection)
-        
-        listSectionLinks.append(currSectionLink)
+        lyricsSections.append(currLyricsSection)
+      
     
     
      
-    return listSectionLinks
+    return lyricsSections, annotationLinesListNoPauses
 
 
 

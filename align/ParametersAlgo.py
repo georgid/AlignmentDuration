@@ -38,7 +38,7 @@ class ParametersAlgo(object):
     # ANDRES. On kora.s.upf.edu
     # PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'      
     
-    POLYPHONIC = 0
+    POLYPHONIC = 1
     
     WITH_ORACLE_ONSETS = 0
     ### no onsets at all. 

@@ -183,12 +183,12 @@ class LyricsWithGMMs(Lyrics):
                 else: # consonant
                     deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
                 
-                currStateWithDur = StateWithDur(None, phoneme.ID, idxMiddleState, 'normal' , deviation, gmm)
+                currStateWithDur = StateWithDur(gmm, phoneme.ID, idxMiddleState, 'normal' , deviation)
                 currStateWithDur.setDurationInFrames(phoneme.durationInNumFrames)
             
             else:
                     
-                currStateWithDur = StateWithDur(None, phoneme.ID, idxMiddleState, 'exponential' , deviation, gmm)
+                currStateWithDur = StateWithDur(gmm, phoneme.ID, idxMiddleState, 'exponential' , deviation)
                 currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
             
             self.statesNetwork.append(currStateWithDur)

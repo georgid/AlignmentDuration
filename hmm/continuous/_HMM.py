@@ -21,37 +21,47 @@ class _HMM(_ContinuousHMM):
     classical Viterbi
     '''
     
-    def __init__(self,statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrices):
+    def __init__(self, statesNetwork, transMatrices):
     
 #     def __init__(self,n,m,d=1,transMatrix=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
             '''
             See _ContinuousHMM constructor for more information
             '''
-            means, covars, weights, pi = self._constructHMMNetworkParameters(statesNetwork, numMixtures, NUM_DIMENSIONS)
+            numMixtures, numDimensions, means, covars, weights, pi = self._constructHMMNetworkParameters(statesNetwork)
              
             n = len(statesNetwork)
             min_std=0.01
             init_type='uniform'
             precision=numpy.double
             verbose = False 
-            _ContinuousHMM.__init__(self, n, numMixtures, NUM_DIMENSIONS, transMatrices, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
+            _ContinuousHMM.__init__(self, n, numMixtures, numDimensions, transMatrices, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
     
             self.statesNetwork = statesNetwork
             
 
       
-    def _constructHMMNetworkParameters(self,  statesSequence, numMixtures, NUM_DIMENSIONS):
+    def _constructHMMNetworkParameters(self,  statesSequence):
         '''
         tranform other htkModel params to  format of gyuz's hmm class
         NOTE: better design is to put it in Decoder because this way parameters are not-dependent on Lyrics (.e.g. no statesSequence as arg in the constructor)
         '''
         
+        if ParametersAlgo.FOR_MAKAM:
+            numMixtures = 9
+            numDimensions = 25
+            
+        elif ParametersAlgo.FOR_JINGJU:
+            
+            firstGmm_ = statesSequence[0].mixtures
+            numMixtures = firstGmm_.n_components
+            firstMeansVector = firstGmm_.means_[0]
+            numDimensions = firstMeansVector.shape[0]
        
         numStates = len(statesSequence)
-        means = numpy.empty((numStates, numMixtures, NUM_DIMENSIONS))
+        means = numpy.empty((numStates, numMixtures, numDimensions))
         
         # init covars
-        covars = [[ numpy.matrix(numpy.eye(NUM_DIMENSIONS,NUM_DIMENSIONS)) for j in xrange(numMixtures)] for i in xrange(numStates)]
+        covars = [[ numpy.matrix(numpy.eye(numDimensions,numDimensions)) for j in xrange(numMixtures)] for i in xrange(numStates)]
         
         weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
         
@@ -78,16 +88,32 @@ class _HMM(_ContinuousHMM):
         for i in range(len(statesSequence) ):
             state  = statesSequence[i] 
             
-            for (numMixture, weight, mixture) in state.mixtures:
-                
-                weights[i,numMixture-1] = weight
-                
-                means[i,numMixture-1,:] = mixture.mean.vector
-                
-                variance_ = mixture.var.vector
-                for k in  range(len( variance_) ):
-                    covars[i][numMixture-1][k,k] = variance_[k]
-        return means, covars, weights, pi    
+            if ParametersAlgo.FOR_MAKAM:
+                for (numMixture, weight, mixture) in state.mixtures:
+                    
+                    weights[i,numMixture-1] = weight
+                    
+                    means[i,numMixture-1,:] = mixture.mean.vector
+                    
+                    variance_ = mixture.var.vector
+                    for k in  range(len( variance_) ):
+                        covars[i][numMixture-1][k,k] = variance_[k]
+            
+            elif ParametersAlgo.FOR_JINGJU:
+                gmm_ = state.mixtures
+            
+                for numMixture in range(gmm_.n_components):
+                    weights[i,numMixture] = gmm_.weights_[numMixture]
+                    
+                    means[i,numMixture,:] = gmm_.means_[numMixture]
+                    
+                    variance_ = gmm_.covars_[numMixture]
+                    
+                    for k in  range(len( variance_) ):
+                        covars[i][numMixture][k,k] = variance_[k]
+                        
+                    
+        return numMixtures, numDimensions, means, covars, weights, pi    
         
         
         

@@ -15,7 +15,6 @@ from utilsLyrics.Utilz import loadDictFromTabFile
 
 currDir = os.path.abspath( os.path.join( os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ) )
 MODELS_SCRIPTS = currDir + '/models_jingju/'
-
 class LyricsWithModelsGMM(_LyricsWithModelsBase):
     '''
     classdocs
@@ -100,6 +99,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
         
         self.statesNetwork = []
         stateCount = 0
+
         
         for phoneme in self.phonemesNetwork:
             
@@ -114,22 +114,24 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
             idxMiddleState = 0
             
             
-            if phoneme.ID != 'REST':
+            
+            deviation = self.deviationInSec
+            if phoneme.ID != 'sp':
    
             
                 if not phoneme.isVowelJingju(): # consonant
-                    self.deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
+                    deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
             
-           
-                currStateWithDur = self._createStateWithDur(phoneme, 1, idxMiddleState, None, 'normal', gmm)
-                
-                currStateWithDur.setDurationInFrames(phoneme.durationInNumFrames)
+                distributionType =  'normal'
+                durInNumFrames = phoneme.durationInNumFrames
+         
             
             else:
+                distributionType =  'exponential'
+                durInNumFrames = phoneme.durationInNumFrames
                 
-                currStateWithDur = self._createStateWithDur(phoneme, 1, idxMiddleState, None, 'exponential', gmm)
-    
-                currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
+            currStateWithDur = self._createStateWithDur(phoneme, 1, idxMiddleState, None, distributionType, deviation, gmm)                
+            currStateWithDur.setDurationInFrames(durInNumFrames)
             
             self.statesNetwork.append(currStateWithDur)
         

@@ -42,13 +42,13 @@ class _DurationHMM(_HMM):
     Implements the decoding with duration probabilities, but should not be used directly.
     '''
     
-    def __init__(self,statesNetwork, numMixtures, NUM_DIMENSIONS):
+    def __init__(self,statesNetwork):
     
 #     def __init__(self,n,m,d=1,A=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
             '''
             See _ContinuousHMM constructor for more information
             '''
-            _HMM.__init__(self, statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrices=None)
+            _HMM.__init__(self, statesNetwork, transMatrices=None)
             
             self.setDurForStates(listDurations=[])
             

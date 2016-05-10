@@ -113,6 +113,7 @@ class LyricsJingju(Lyrics):
         
         return durations
     
+    
     def _findIndicesFirstAndSecondDou(self, lenSyllables, firstDouCount, secondDouCount):
         '''
         utility method. have to skip rests in counting syllables 

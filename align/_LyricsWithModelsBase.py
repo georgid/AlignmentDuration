@@ -294,16 +294,18 @@ class _LyricsWithModelsBase(Lyrics):
             
      
      
-    def _createStateWithDur(self, phoneme, currStateCount, idxState, state, distributionType, gmm=None):
+    def _createStateWithDur(self, phoneme, numStatesInModel, idxState, state, distributionType, deviationInSec, gmm=None):
         
         if state ==None:
-            mixtures = None
+            if gmm == None:
+                sys.exit('neither mixtures, nor gmm provided')
+            mixtures = gmm
         else:   
             mixtures = state.mixtures
         
         if distributionType == 'normal':
-            currStateWithDur = StateWithDur(mixtures, phoneme, idxState, distributionType, self.deviationInSec)
-            dur = float(phoneme.durationInNumFrames) / float(currStateCount)
+            currStateWithDur = StateWithDur(mixtures, phoneme, idxState, distributionType, deviationInSec)
+            dur = float(phoneme.durationInNumFrames) / float(numStatesInModel)
             if dur < 0:
                 sys.exit("duration for phoneme {}={}. please decrease fixed consonant duration or make sure audio fragment is not too short".format(dur, phoneme.ID))
             currStateWithDur.setDurationInFrames(dur)
@@ -312,9 +314,11 @@ class _LyricsWithModelsBase(Lyrics):
             currStateWithDur = StateWithDur(mixtures, phoneme, idxState, distributionType )
             currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
             
-        transMatrix = phoneme.getTransMatrix()
-        currStateWithDur.setWaitProb(transMatrix[idxState + 1, idxState + 1])
-            
+        if ParametersAlgo.FOR_MAKAM:
+            transMatrix = phoneme.getTransMatrix()
+            currStateWithDur.setWaitProb(transMatrix[idxState + 1, idxState + 1])
+        elif ParametersAlgo.FOR_JINGJU:
+            currStateWithDur.setWaitProb(0.8)
         
         return currStateWithDur 
     

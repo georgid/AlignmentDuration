@@ -56,14 +56,15 @@ ANNOTATION_EXT = '.TextGrid'
 evalLevel = 3 
 
 
-def loadLyrics(URIrecordingNoExt, currSentence):
-    #### @deprecated
-    withHTK = 0
-    withSynthesis = 0
-    lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(currSentence, withHTK, URIrecordingNoExt, bool(withSynthesis), currSentence.beginTs, currSentence.endTs)
-#     lyricsWithModels.printPhonemeNetwork()
-    #         lyricsWithModels.printPhonemeNetwork()
-    lyricsWithModels.printWordsAndStates()
+# def loadLyrics(URIrecordingNoExt, currSentence):
+#     #### @deprecated
+#     withHTK = 0
+#     withSynthesis = 0
+#     lyricsWithModels, obsFeatures, URIrecordingChunk = loadSmallAudioFragment(currSentence, withHTK, URIrecordingNoExt, bool(withSynthesis), currSentence.beginTs, currSentence.endTs)
+# #     lyricsWithModels.printPhonemeNetwork()
+#     #         lyricsWithModels.printPhonemeNetwork()
+#     lyricsWithModels.printWordsAndStates()
+
 
 
 def doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSectionLink, withOracle, withDurations, withVocalPrediction):
@@ -123,11 +124,16 @@ def doitOneChunkAlign(URIrecordingNoExt, musicXMLParser, whichSentence, currSect
     extractedPitchList = None
     
 #     detectedTokenList, detectedPath = alignOneChunk( lyrics, withSynthesis, withOracle, phonemesAnnoAll, listNonVocalFragments, alpha, usePersistentFiles, tokenLevelAlignedSuffix, currSectionLink.beginTs, currSectionLink.endTs, URIrecordingNoExt)
-
-    lyricsAligner = LyricsAligner(ParametersAlgo.PATH_TO_HCOPY)
     
-    URIRecordingChunkResynthesizedNoExt = createNameChunk(URIrecordingNoExt, currSectionLink.beginTs, currSectionLink.endTs)
-    detectedTokenList, detectedPath, maxPhiScore = lyricsAligner.alignLyricsSection( extractedPitchList,  ParametersAlgo.POLYPHONIC, [], tokenLevelAlignedSuffix,  URIRecordingChunkResynthesizedNoExt, currSectionLink) 
+    symbtrtxtURI = 'dummy'
+    sectionMetadataDict = 'dummy'
+    sectionLinksDict = 'dummy'
+    audioFileURI = URIrecordingNoExt + '.wav'
+    WITH_SECTION_ANNOTATIONS = 1
+    lyricsAligner = LyricsAligner(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, WITH_SECTION_ANNOTATIONS, ParametersAlgo.PATH_TO_HCOPY)
+
+    
+    detectedTokenList, detectedPath, maxPhiScore = lyricsAligner.alignLyricsSection( extractedPitchList,  [], tokenLevelAlignedSuffix,   currSectionLink) 
      
      
     correctDuration, totalDuration = _evalAccuracy(currSectionLink.section.lyricsTextGrid, detectedTokenList, evalLevel, currSectionLink.fromSyllableIdx, currSectionLink.toSyllableIdx  )
