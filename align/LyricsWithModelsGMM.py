@@ -129,7 +129,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
                 distributionType =  'exponential'
                 durInNumFrames = phoneme.durationInNumFrames
                 
-                
+
             currStateWithDur = self._createStateWithDur(phoneme, 1, idxMiddleState, None, distributionType, deviation, gmm)                
             currStateWithDur.setDurationInFrames(durInNumFrames)
             
