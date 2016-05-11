@@ -34,6 +34,7 @@ if pathHMMDuration not in sys.path:
 
 from parse.TextGrid_Parsing import readNonEmptyTokensTextGrid
 
+
 class MusicXMLParser(object):
     '''
     infer duration of lyrics from score. 

@@ -47,7 +47,6 @@ if pathEvaluation not in sys.path:
 
     
 from hmm.Parameters import Parameters
-from hmm.examples.main  import loadSmallAudioFragment
 from hmm.examples.tests import test_oracle
 
 from WordLevelEvaluator import _evalAlignmentError, evalAlignmentError, tierAliases, determineSuffix

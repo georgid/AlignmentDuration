@@ -42,13 +42,13 @@ class _DurationHMM(_HMM):
     Implements the decoding with duration probabilities, but should not be used directly.
     '''
     
-    def __init__(self,statesNetwork, numMixtures, NUM_DIMENSIONS):
+    def __init__(self,statesNetwork):
     
 #     def __init__(self,n,m,d=1,A=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
             '''
             See _ContinuousHMM constructor for more information
             '''
-            _HMM.__init__(self, statesNetwork, numMixtures, NUM_DIMENSIONS, transMatrices=None)
+            _HMM.__init__(self, statesNetwork, transMatrices=None)
             
             self.setDurForStates(listDurations=[])
             
@@ -86,6 +86,7 @@ class _DurationHMM(_HMM):
         self.R_MAX = 0
         for  stateWithDur_ in self.statesNetwork:
             if stateWithDur_.getMaxRefDur() > self.R_MAX:
+                self.StateWithR_MAX = stateWithDur_
                 self.R_MAX  = stateWithDur_.getMaxRefDur()
         self.R_MAX = int(self.R_MAX)
         self.logger.info("R_MAX={}".format(self.R_MAX))
@@ -151,9 +152,23 @@ class _DurationHMM(_HMM):
         self.chi.fill(-1)
         
         # init. t< R_MAX
-        if (self.R_MAX >= lenObservations):
-            sys.exit("MAX_Dur {} of a state is more than total number of observations {}. Unable to decode".format(self.R_MAX, lenObservations))
+        self.assureSaneMaxRefDurs(lenObservations)
+       
         self._initBeginingPhis(lenObservations)
+    
+    
+    def assureSaneMaxRefDurs(self, lenObservations):
+        
+        if (self.R_MAX >= lenObservations):
+            self.logger.debug("MAX_Dur {} of a state is more than total number of observations {}. rreducing max ref duration of some states".format(self.R_MAX, lenObservations))
+            
+            # check all states as some might be over lenObservations
+            for stateWithDur in self.statesNetwork:
+                if stateWithDur.getMaxRefDur() >= lenObservations:
+                    #   reduce max ref dur for some states to len observation
+                    stateWithDur.maxRefDur = max(lenObservations, stateWithDur.getMinRefDur())
+        
+        self.R_MAX  = int( self.StateWithR_MAX.getMaxRefDur() )
     
     
     def _calcCurrStatePhi(self,  t, currState):

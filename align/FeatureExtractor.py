@@ -14,6 +14,7 @@ import essentia.standard
 import math
 import json
 from onsets.OnsetDetector import OnsetDetector
+from align.ParametersAlgo import ParametersAlgo
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
 import tempfile
@@ -31,8 +32,10 @@ import utilsLyrics.UtilzNumpy
 
 
 
-currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
-PATH_TO_CONFIG_FILES= currDir + '/input_files/'
+projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ))
+PATH_TO_CONFIG_FILES= projDir + '/model/input_files/'
+
+
 
 parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
 
@@ -56,7 +59,7 @@ class FeatureExtractor(object):
          
    
    
-    def loadMFCCs(self, URI_recording_noExt, extractedPitchList, URIRecordingChunkResynthesizedNoExt,  withSynthesis, sectionLink): 
+    def loadMFCCs(self, URI_recording_noExt, extractedPitchList,    sectionLink): 
         '''
         for now lead extracted with HTK, read in matlab and seriqlized to txt file
         '''
@@ -65,12 +68,12 @@ class FeatureExtractor(object):
     
         URI_recording = URI_recording_noExt + '.wav'
         
-        URIRecordingChunkResynthesized = URIRecordingChunkResynthesizedNoExt + '.wav'
+        URIRecordingChunkResynthesized = sectionLink.URIRecordingChunk + '.wav'
         
         logging.info("working on sectionLink: {}".format(URIRecordingChunkResynthesized))
         
         # resynthesize audio chunk:
-        if withSynthesis: 
+        if ParametersAlgo.POLYPHONIC: 
             if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
                 logging.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
                 
@@ -93,13 +96,14 @@ class FeatureExtractor(object):
         logging.debug("reading MFCCs from {} ...".format(URImfcFile))
         HTKFeat_reader =  htkmfc.open(URImfcFile, 'rb')
         mfccsFeatrues = HTKFeat_reader.getall()
-        mfccs = mfccsFeatrues[:,0:12]
-    
-        mfccDeltas = mfccsFeatrues[:,13:] 
-        mfccsFeatrues = np.hstack((mfccs, mfccDeltas))
+        
+        if ParametersAlgo.FOR_MAKAM:
+            mfccs = mfccsFeatrues[:,0:12]
+            mfccDeltas = mfccsFeatrues[:,13:] 
+            mfccsFeatrues = np.hstack((mfccs, mfccDeltas))
         
         
-        return mfccsFeatrues, URIRecordingChunkResynthesized
+        return mfccsFeatrues
     
             
     def _extractMFCCs( self, URIRecordingChunk):
@@ -108,7 +112,12 @@ class FeatureExtractor(object):
     #         dir_  = tempfile.mkdtemp()
             mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
             
-            HCopyCommand = [self.path_to_hcopy, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FILES + 'wav_config_singing', URIRecordingChunk, mfcFileName]
+            if ParametersAlgo.FOR_JINGJU:
+                PATH_TO_CONFIG_FEATURES = projDir + '/model/input_files/wav_config_singing_yile'
+            elif ParametersAlgo.FOR_MAKAM:
+                PATH_TO_CONFIG_FEATURES = projDir + '/model/input_files/wav_config_singing'
+            
+            HCopyCommand = [self.path_to_hcopy, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FEATURES, URIRecordingChunk, mfcFileName]
     
     #         if not os.path.isfile(mfcFileName):
             logging.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )

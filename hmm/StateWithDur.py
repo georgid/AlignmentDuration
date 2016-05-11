@@ -8,8 +8,14 @@ import sys
 from hmm.continuous.DurationPdf import DurationPdf
 from hmm.continuous.ExpDurationPdf import ExpDurationPdf
 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 
+pathHtkParser = os.path.join(parentDir, 'htkParser')
+if pathHtkParser not in sys.path:
+    sys.path.append(pathHtkParser)
+    
 from htkparser.htk_models import State
+import sklearn.mixture.gmm
 
 class StateWithDur(State):
     '''
@@ -19,15 +25,15 @@ class StateWithDur(State):
     '''
 
 
-    def __init__(self, mixtures, phoneme, idxInPhoneme, distribType='normal', deviationInSec=0.1, gmm=None):
+    def __init__(self, mixtures, phoneme, idxInPhoneme, distribType='normal', deviationInSec=0.1):
         '''
         Constructor
         '''
         
-        if gmm == None: # htk-model type of state
-            State.__init__(self, mixtures)
+        if type(mixtures) is sklearn.mixture.gmm.GMM: # htk-model type of state
+            self.mixtures = mixtures
         else: # GMM xsampa model
-            self.mixtures = gmm
+            State.__init__(self, mixtures)
         
         self.phoneme = phoneme
         self.idxInPhoneme  = idxInPhoneme
@@ -75,6 +81,20 @@ class StateWithDur(State):
             a= int(self.durationDistribution.getMaxRefDur())
 #         print "durationInFrames {}".format(self.durationInFrames) 
         return a
+    
+    def setMaxRefDur(self):
+        
+        try:
+            self.durationInFrames
+        except AttributeError: 
+            sys.exit('self.durationInFrames in frames not set. Use setDurationInFrames() first')
+                
+            
+        if self.distributionType == 'normal':
+            self.maxRefDur = int(self.durationDistribution.getMaxRefDur(self.durationInFrames))
+        else:  # exponential
+            self.maxRefDur = int(self.durationDistribution.getMaxRefDur())
+        
             
     def getMinRefDur(self):
         if self.distributionType == 'normal':

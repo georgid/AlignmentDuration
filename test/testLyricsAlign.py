@@ -16,7 +16,7 @@ from align.ScoreSection import ScoreSection
 from makam.MakamScore import loadMakamScore2
 
 from align.LyricsAligner import LyricsAligner, extendSectionLinksSelectedSections,\
-    stereoToMono
+    stereoToMono, loadMakamRecording
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 
@@ -36,6 +36,7 @@ def testLyricsAlign():
     sectionLinksSourceURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.sectionLinks.json' )
     sectionAnnosSourceURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/727cff89-392f-4d15-926d-63b2697d7f3f.json')
     audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.wav')
+    musicbrainzid = '727cff89-392f-4d15-926d-63b2697d7f3f'
     
     # test with section anno and acapella
 #     symbtrtxtURI = os.path.join( currDir,'../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.txt')
@@ -68,12 +69,25 @@ def testLyricsAlign():
     
     audioFileURI = stereoToMono(audioFileURI)               
     
-    la = LyricsAligner(symbtrtxtURI, sectionMetadataDict, sectionLinksDict, audioFileURI, WITH_SECTION_ANNOTATIONS, ParametersAlgo.PATH_TO_HCOPY)
+                    
+    recording = loadMakamRecording(musicbrainzid, audioFileURI, symbtrtxtURI, sectionMetadataDict, sectionLinksDict,  WITH_SECTION_ANNOTATIONS)
+    la = LyricsAligner(recording, WITH_SECTION_ANNOTATIONS, ParametersAlgo.PATH_TO_HCOPY)
     
-    totalDetectedTokenList = la.alignRecording( extractedPitchList, outputDir)
+    la.alignRecording( extractedPitchList, outputDir)
+    
+    #### results
+    sectionDetectedList = []
+    if WITH_SECTION_ANNOTATIONS:
+        sectionLinks = la.recording.sectionAnnos
+    else:
+        sectionLinks = la.recording.sectionLinks
+    
+    for sectionLink in sectionLinks:
+        if hasattr(sectionLink, 'detectedTokenList'):
+            sectionDetectedList.append(sectionLink.detectedTokenList)
       
     ret = {'alignedLyricsSyllables':{}, 'sectionlinks':{} }
-    ret['alignedLyricsSyllables'] = totalDetectedTokenList
+    ret['alignedLyricsSyllables'] = sectionDetectedList
     ret['sectionlinks'] = sectionLinksDict
     print ret
 
