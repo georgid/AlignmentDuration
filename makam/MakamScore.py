@@ -13,7 +13,6 @@ Created on Mar 3, 2014
 import os
 import sys
 from SymbTrParser2 import SymbTrParser2
-from align.SectionLink import SectionAnno
 from makam.PhonetizerMakam import Phonetizer
 
 # trick to make terminal NOT assume ascii

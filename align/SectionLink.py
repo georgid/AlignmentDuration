@@ -116,7 +116,7 @@ class SectionLinkMakam(_SectionLinkBase):
               
         
         
-class SectionAnno(SectionLinkMakam):
+class SectionAnnoMakam(SectionLinkMakam):
     '''
     unlike a like that has only match to melodicStrcuture, sectionAnno has link to exactSetion through tuple (melodicStructure, lyricsStucture)
     SO it can be matched unambigously to a particular ScoreSection

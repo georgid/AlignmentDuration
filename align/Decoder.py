@@ -24,7 +24,7 @@ import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= 1
+WITH_DURATIONS= 0
 
 
 

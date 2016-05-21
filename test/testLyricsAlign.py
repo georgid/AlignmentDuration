@@ -20,6 +20,7 @@ from align.LyricsAligner import LyricsAligner, extendSectionLinksSelectedSection
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 
+from compmusic.extractors.makam.lyricsalign import fetchNoteOnsetFile
 
 WITH_SECTION_ANNOTATIONS = 1
 
@@ -39,11 +40,11 @@ def testLyricsAlign():
     musicbrainzid = '727cff89-392f-4d15-926d-63b2697d7f3f'
     
     # test with section anno and acapella
-#     symbtrtxtURI = os.path.join( currDir,'../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.txt')
-#     sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.sectionsMetadata.json' )
-#     sectionAnnosSourceURI = os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/567b6a3c-0f08-42f8-b844-e9affdc9d215.json' )
-#     audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/02_Kimseye.wav')
-#     
+    symbtrtxtURI = os.path.join( currDir,'../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.txt')
+    sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.sectionsMetadata.json' )
+    sectionAnnosSourceURI = os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/567b6a3c-0f08-42f8-b844-e9affdc9d215.json' )
+    audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/02_Kimseye.wav')
+    musicbrainzid = '567b6a3c-0f08-42f8-b844-e9affdc9d215'
     
     with open(sectionLinksSourceURI) as f:
             sectionLinksDict = json.load(f)
@@ -52,7 +53,7 @@ def testLyricsAlign():
 
 
     outputDir =  os.path.join( currDir, '../example/output/' )
-    
+    noteOnsetAnnotationDir =  '/Users/joro/Downloads/ISTANBULSymbTr2/'
     
     
     ###  for Juanjos pitch
@@ -69,8 +70,11 @@ def testLyricsAlign():
     
     audioFileURI = stereoToMono(audioFileURI)               
     
-                    
     recording = loadMakamRecording(musicbrainzid, audioFileURI, symbtrtxtURI, sectionMetadataDict, sectionLinksDict,  WITH_SECTION_ANNOTATIONS)
+    
+    if ParametersAlgo.WITH_ORACLE_ONSETS:
+        fetchNoteOnsetFile(musicbrainzid,  noteOnsetAnnotationDir )
+                    
     la = LyricsAligner(recording, WITH_SECTION_ANNOTATIONS, ParametersAlgo.PATH_TO_HCOPY)
     
     la.alignRecording( extractedPitchList, outputDir)

@@ -13,6 +13,7 @@ from ParametersAlgo import ParametersAlgo
 import logging
 from makam.Phoneme import Phoneme
 from jingju.PhonemeJingju import PhonemeJingju
+from align.Decoder import WITH_DURATIONS
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
     
@@ -100,18 +101,21 @@ class _LyricsWithModelsBase(Lyrics):
             stateCount += phoneme.getNumStates()
             
             
-            distributionType='normal'
             deviation = self.deviationInSec
             
             if not phoneme.isVowel(): # consonant
                     deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
             
-            ### for Makam, lyrics are read from score and sp is considered a consonant with short deviation. 
-            ### only first and last phonemes (which are sp) will get padded silence 
-            if (phnIdx == 0 or phnIdx == len(self.phonemesNetwork)-1 ) and self.withPaddedSilence:
-                distributionType='exponential'
-            
-            if ParametersAlgo.FOR_JINGJU and phoneme.ID == 'sp':
+            if WITH_DURATIONS:
+                distributionType='normal'
+                ### for Makam, lyrics are read from score and sp is considered a consonant with short deviation. 
+                ### only first and last phonemes (which are sp) will get padded silence 
+                if (phnIdx == 0 or phnIdx == len(self.phonemesNetwork)-1 ) and self.withPaddedSilence:
+                    distributionType='exponential'
+                
+                if ParametersAlgo.FOR_JINGJU and phoneme.ID == 'sp':
+                    distributionType='exponential'
+            else:
                 distributionType='exponential'
             
             for idxState in range(phoneme.getNumStates()):
@@ -346,7 +350,10 @@ class _LyricsWithModelsBase(Lyrics):
     def _createStateWithDur(self, phoneme,  idxState, distributionType, deviationInSec):
         
         ''' 
-        assign durationInMinUnit and name to each state
+        assign durationInMinUnit and name to each state.
+        
+        NOTE: StateWithDur is not needed when WITH_DURATION = 0, could be replaced by State object for simplicity of code, 
+        but StateWithDur with wait prob is superset of State, so it serves the goal
         '''
         
         if distributionType == 'normal':

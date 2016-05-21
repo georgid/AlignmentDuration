@@ -30,8 +30,6 @@ class StateWithDur(State):
         '''
         Constructor
         '''
-        
-        
         if phoneme.isModelTypeHTK: # htk model
             state = phoneme.model.states[idxInPhoneme][1]
             State.__init__(self, state.mixtures)

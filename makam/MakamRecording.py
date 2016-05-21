@@ -4,8 +4,7 @@ Created on Feb 9, 2016
 @author: joro
 '''
 
-from utilsLyrics.Utilz import loadTextFile
-from align.SectionLink import SectionLinkMakam, SectionAnno
+from align.SectionLink import SectionLinkMakam, SectionAnnoMakam
 import sys
 from align.Decoder import logger
 import os
@@ -106,7 +105,7 @@ class MakamRecording(_RecordingBase):
                     beginTs, endTs = parseTimeSectionLinkTxt(sectionAnnoTxt)
                         
                         
-                    currSectionAnno = SectionAnno (self.recordingNoExtURI, melodicStruct, sectionAnnoTxt['lyricStructure'], beginTs, endTs )
+                    currSectionAnno = SectionAnnoMakam (self.recordingNoExtURI, melodicStruct, sectionAnnoTxt['lyricStructure'], beginTs, endTs )
                     currSectionAnno.matchToSection(self.score.symbTrParser.sections)
                     
                     

@@ -62,7 +62,7 @@ from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
 from htkparser.htk_converter import HtkConverter
 ANNOTATION_EXT = '.TextGrid'
  
-        
+  
 
 
 class LyricsAligner():
@@ -102,7 +102,7 @@ class LyricsAligner():
 #                     if currSectionLink.melodicStructure.startswith('ARANAGME'):
 #                         print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
 #                         continue            
-                    if not hasattr(currSectionLink, 'section'):
+                    if not hasattr(currSectionLink, 'section') or currSectionLink.section == None:
                         print("skipping sectionAnno {} not matched to any score section ...".format(currSectionLink))
                         continue   
                     
@@ -154,7 +154,6 @@ class LyricsAligner():
         accuracy = totalCorrectDurations / totalDurations
         logger.info("accuracy: {:.2f}".format(accuracy))                
 
-
     def alignSectionLinkProbableSections(self,  extractedPitchList,    currSectionLink):
         '''
         runs alignment on given audio multiple times with a list of probable sections with their corresponding lyrics
@@ -202,7 +201,7 @@ class LyricsAligner():
                 if  ParametersAlgo.WITH_ORACLE_PHONEMES:
                     currSectionLink.loadSmallAudioFragmentOracle(self.model)
                     # featureVectors is alias for LyricsWithModelsOracle
-                    fe.featureVectors = self.lyricsWithModels 
+                    fe.featureVectors = currSectionLink.lyricsWithModels 
                     
                     if ParametersAlgo.FOR_MAKAM:
                         # for kimseye etmem
@@ -215,10 +214,11 @@ class LyricsAligner():
                          
                     fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)
                 
-                
-                currSectionLink.lyricsWithModels.printWordsAndStates()
+    #             currSectionLink.lyricsWithModels.printWordsAndStates()
                 alpha = 0.97
                 decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
+            #  TODO: DEBUG: do not load models
+            # decoder = Decoder(lyrics, withModels=False, numStates=86)
             #################### decode
                 
 
@@ -324,9 +324,7 @@ def getSectionLinkBybeginTs(sectionLinks, queryBeginTs):
     for sectionLink in sectionLinks:
         if str(sectionLink.beginTs) ==  queryBeginTs:
             return sectionLink
-
-
-                              
+                                 
    
 
 

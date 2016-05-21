@@ -58,22 +58,22 @@ class _SymbTrParserBase(object):
          
         for section in scoreSectionAnnos:
                     print section
-                    if hasattr(section, 'start_note'):
+                    if  'start_note' in section:
                         startNote = int(section['start_note'])
                     else:
                         startNote = int(section['startNote'])
                     
-                    if hasattr(section, 'end_note'):
+                    if 'end_note' in section:
                         endNote = int(section['end_note'])
                     else:
                         endNote = int(section['endNote']) 
                     
-                    if hasattr(section, 'lyrics_structure'):
-                        lyrStruct = section['lyrics_structure']
+                    if 'lyric_structure' in section:
+                        lyrStruct = section['lyric_structure']
                     else:
                         lyrStruct = section['lyricStructure']
                         
-                    if hasattr(section, 'melodic_structure'):
+                    if 'melodic_structure' in section:
                         melStruct = section['melodic_structure']
                     else:
                         melStruct = section['melodicStructure']
@@ -113,7 +113,7 @@ class _SymbTrParserBase(object):
                 scoreSectionAnnos = scoreAnno['sections']
                 
                 for section in scoreSectionAnnos:
-                    sectionNew = Section(section['name'],  int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure']) 
+                    sectionNew = ScoreSection(section['name'],  int(section['startNote']), int(section['endNote']), section['melodicStructure'], section['lyricStructure']) 
                     
                     self.sections.append(sectionNew)
     
