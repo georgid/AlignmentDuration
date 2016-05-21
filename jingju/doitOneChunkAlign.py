@@ -45,7 +45,7 @@ from AccuracyEvaluator import _evalAccuracy
 # from align.doitOneChunk import alignOneChunk
 
 
-pathHMM = os.path.join(parentDir, 'HMMDuration')
+pathHTKParser = os.path.join(parentDir, 'HMMDuration')
 from hmm.examples.main  import   loadSmallAudioFragment
 # from hmm.examples.main  import loadSmallAudioFragmentOracle
 from align.ParametersAlgo import ParametersAlgo

@@ -106,11 +106,11 @@ def splitThePhoneme(doublePhoneme, firstPhoeneme, syllableIdx):
     from ParametersAlgo import ParametersAlgo
     
     splitPhoneme1.setBeginTs(doublePhoneme.beginTs)
-    if not splitPhoneme1.isVowelJingju(): # first is consonant
-        if not splitPhoneme2.isVowelJingju():
+    if not splitPhoneme1.isVowel(): # first is consonant
+        if not splitPhoneme2.isVowel():
             print "in syllable {}: two consecutive consonants {} and {} in annotation. Not implemented ".format(syllableIdx, splitPhoneme1, splitPhoneme2)
         durationPhoneme1 = ParametersAlgo.CONSONANT_DURATION_IN_SEC
-    elif not splitPhoneme2.isVowelJingju(): # second is consonant
+    elif not splitPhoneme2.isVowel(): # second is consonant
         durationPhoneme1 = max(doublePhoneme.endTs - doublePhoneme.beginTs - ParametersAlgo.CONSONANT_DURATION_IN_SEC, (doublePhoneme.endTs - doublePhoneme.beginTs) / 2 )
     else: # both vowels
         durationPhoneme1 = (doublePhoneme.endTs-doublePhoneme.beginTs) /2

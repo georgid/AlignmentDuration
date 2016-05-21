@@ -6,14 +6,13 @@ Created on Oct 27, 2014
 from Lyrics import Lyrics
 import os
 import sys
-from makam.Phoneme import Phoneme
 from Constants import NUM_FRAMES_PERSECOND
 import Queue
 import math
 from ParametersAlgo import ParametersAlgo
-from jingju.sciKitGMM import SciKitGMM
-from utilsLyrics.Utilz import loadDictFromTabFile
 import logging
+from makam.Phoneme import Phoneme
+from jingju.PhonemeJingju import PhonemeJingju
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
     
@@ -63,54 +62,107 @@ class _LyricsWithModelsBase(Lyrics):
 
     
     
-    def _linkToModels(self, dummy):
-        raise NotImplementedError("_phonemes2stateNetwork must be implemented")
+    def _addPaddedSilencePhonemes(self):
+        
+        
+        if ParametersAlgo.FOR_MAKAM:
+            phonemeSp =  Phoneme('sp');
+        elif ParametersAlgo.FOR_JINGJU:
+            phonemeSp =  PhonemeJingju('sp');
+        
+        if self.withPaddedSilence:    
+            
+            phonemeSp.setIsLastInSyll(True)
+            self.phonemesNetwork.insert(0, phonemeSp)
+            self.phonemesNetwork.append(phonemeSp)
+       
     
 
-        
-    def _phonemes2stateNetworkWeights(self):
+
+    def _phonemes2stateNetwork(self):
         '''
-        expand to self.statesNetwork. 
-        each state gets a durational proportional to  the weighting probs.
-       @deprecated: 
+        expand self.phonemeNetwork to self.statesNetwork
+        assign phoneme a pointer <setNumFirstState> to its initial state in the state network (serves as link among the two)
+        each state gets 1/n-th of total num of states. 
         '''
+         
         
         self.statesNetwork = []
         stateCount = 0
         
-        for phoneme in self.phonemesNetwork:
+
+        
+        for phnIdx, phoneme in enumerate(self.phonemesNetwork):
             
+        
+            # set number of first state
             phoneme.setNumFirstState(stateCount)
-            # update
-            currStateCount = len(phoneme.htkModel.states)
-            stateCount += currStateCount
+            stateCount += phoneme.getNumStates()
             
             
-            currTransMatrix = phoneme.getTransMatrix()
-            currTransMatrix = currTransMatrix[1:-1,1:-1]
+            distributionType='normal'
+            deviation = self.deviationInSec
             
-            # sanity check
-            if not currStateCount ==  currTransMatrix.shape[0]:
-                sys.exit("Error on reading htk model: transMatrix for phoneme {} has not same num states as states ", phoneme.ID)
+            if not phoneme.isVowel(): # consonant
+                    deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
             
-            waitProbs = []
-            for currState in range(currStateCount):
-                currWaitProb =  currTransMatrix[currState, currState]
-                waitProbs.append(currWaitProb)
+            ### for Makam, lyrics are read from score and sp is considered a consonant with short deviation. 
+            ### only first and last phonemes (which are sp) will get padded silence 
+            if (phnIdx == 0 or phnIdx == len(self.phonemesNetwork)-1 ) and self.withPaddedSilence:
+                distributionType='exponential'
             
-            statesList = phoneme.htkModel.states
-            # assign durations
-            for idxState, (numStateFromHtk, state ) in enumerate( phoneme.htkModel.states):
-                 currStateWithDur = StateWithDur(state.mixtures, phoneme, idxState)
-                 
-                 # normalize to sum to one
-                 weigthState = float(waitProbs[idxState]) / float(sum(waitProbs))
-                 dur = float(phoneme.durationInFrames) * float(weigthState)
-                 
-                 currStateWithDur.setDurationInFrames( dur )
-                 self.statesNetwork.append(currStateWithDur)
+            if ParametersAlgo.FOR_JINGJU and phoneme.ID == 'sp':
+                distributionType='exponential'
+            
+            for idxState in range(phoneme.getNumStates()):
+
+                currStateWithDur = self._createStateWithDur(phoneme,  idxState, distributionType, deviation)
+                self.statesNetwork.append(currStateWithDur)
         
         
+#    def _phonemes2stateNetworkWeights(self):
+#         '''
+#         expand to self.statesNetwork. 
+#         each state gets a durational proportional to  the weighting probs.
+#        @deprecated: 
+#         '''
+#         
+#         self.statesNetwork = []
+#         stateCount = 0
+#         
+#         for phoneme in self.phonemesNetwork:
+#             
+#             phoneme.setNumFirstState(stateCount)
+#             # update
+#             currStateCount = len(phoneme.htkModel.states)
+#             stateCount += currStateCount
+#             
+#             
+#             currTransMatrix = phoneme.getTransMatrix()
+#             currTransMatrix = currTransMatrix[1:-1,1:-1]
+#             
+#             # sanity check
+#             if not currStateCount ==  currTransMatrix.shape[0]:
+#                 sys.exit("Error on reading htk model: transMatrix for phoneme {} has not same num states as states ", phoneme.ID)
+#             
+#             waitProbs = []
+#             for currState in range(currStateCount):
+#                 currWaitProb =  currTransMatrix[currState, currState]
+#                 waitProbs.append(currWaitProb)
+#             
+#             statesList = phoneme.htkModel.states
+#             # assign durations
+#             for idxState, (numStateFromHtk, state ) in enumerate( phoneme.htkModel.states):
+#                  currStateWithDur = StateWithDur(state.mixtures, phoneme, idxState)
+#                  
+#                  # normalize to sum to one
+#                  weigthState = float(waitProbs[idxState]) / float(sum(waitProbs))
+#                  dur = float(phoneme.durationInFrames) * float(weigthState)
+#                  
+#                  currStateWithDur.setDurationInFrames( dur )
+#                  self.statesNetwork.append(currStateWithDur)
+#         
+#         
 
                 
     
@@ -282,9 +334,6 @@ class _LyricsWithModelsBase(Lyrics):
         self.duratioInFramesSet = True    
         
     
-    def _phonemes2stateNetwork(self):
-        raise NotImplementedError("_phonemes2stateNetwork must be implemented")
-
     
     
     
@@ -294,31 +343,32 @@ class _LyricsWithModelsBase(Lyrics):
             
      
      
-    def _createStateWithDur(self, phoneme, numStatesInModel, idxState, state, distributionType, deviationInSec, gmm=None):
+    def _createStateWithDur(self, phoneme,  idxState, distributionType, deviationInSec):
         
-        if state ==None:
-            if gmm == None:
-                sys.exit('neither mixtures, nor gmm provided')
-            mixtures = gmm
-        else:   
-            mixtures = state.mixtures
+        ''' 
+        assign durationInMinUnit and name to each state
+        '''
         
         if distributionType == 'normal':
-            currStateWithDur = StateWithDur(mixtures, phoneme, idxState, distributionType, deviationInSec)
-            dur = float(phoneme.durationInNumFrames) / float(numStatesInModel)
+            currStateWithDur = StateWithDur( phoneme, idxState, distributionType, deviationInSec)
+            dur = float(phoneme.durationInNumFrames) / float( phoneme.getNumStates() ) 
             if dur < 0:
                 sys.exit("duration for phoneme {}={}. please decrease fixed consonant duration or make sure audio fragment is not too short".format(dur, phoneme.ID))
             currStateWithDur.setDurationInFrames(dur)
         
         elif distributionType == 'exponential':
-            currStateWithDur = StateWithDur(mixtures, phoneme, idxState, distributionType )
+            currStateWithDur = StateWithDur( phoneme, idxState, distributionType )
             currStateWithDur.setDurationInFrames( MAX_SILENCE_DURATION  * NUM_FRAMES_PERSECOND)
             
-        if ParametersAlgo.FOR_MAKAM:
-            transMatrix = phoneme.getTransMatrix()
-            currStateWithDur.setWaitProb(transMatrix[idxState + 1, idxState + 1])
-        elif ParametersAlgo.FOR_JINGJU:
-            currStateWithDur.setWaitProb(0.8)
+            
+            ############# set wait prob
+            if phoneme.isModelTypeHTK:
+                transMatrix = phoneme.getTransMatrix()
+                waitProb = transMatrix[idxState + 1, idxState + 1]
+            else:
+                waitProb = ParametersAlgo.GLOBAL_WAIT_PROB
+            currStateWithDur.setWaitProb(waitProb)
+        
         
         return currStateWithDur 
     

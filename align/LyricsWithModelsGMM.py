@@ -26,6 +26,9 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
             '''
             load  trained models and link phoneme list to them    
             '''
+            
+             
+            _LyricsWithModelsBase._addPaddedSilencePhonemes(self) 
                  
                 #link each phoneme from transcript to a model
                 # FIXME: DO A MORE OPTIMAL WAY like ismember()
@@ -37,8 +40,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
     
                     
                     sciKitGMM = SciKitGMM(model, modelName)
-                    phonemeFromTranscript.setGMM(sciKitGMM)
-                    phonemeFromTranscript.setNumStates(1)
+                    phonemeFromTranscript.setModel(sciKitGMM)
                     
     
     
@@ -91,47 +93,38 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
     
     
     
-    def _phonemes2stateNetwork(self):
-        '''
-        expand to self.statesNetwork . TAKE ONLY middle state for now
-        '''
-        
-        self.statesNetwork = []
-        stateCount = 0
-
-        
-        for phoneme in self.phonemesNetwork:
-            
-            phoneme.setNumFirstState(stateCount)
-            
-            
-             # update state counter
-            if not hasattr(phoneme, 'sciKitGMM'):
-                sys.exit("phoneme {} has no gmm assigned".format(phoneme.ID))
-            stateCount += 1
-            gmm = phoneme.sciKitGMM.gmm   
-            idxMiddleState = 0
-            
-            
-            
-            deviation = self.deviationInSec
-            if phoneme.ID != 'sp':
-   
-            
-                if not phoneme.isVowelJingju(): # consonant
-                    deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
-            
-                distributionType =  'normal'
-                durInNumFrames = phoneme.durationInNumFrames
-         
-            
-            else:
-                distributionType =  'exponential'
-                durInNumFrames = phoneme.durationInNumFrames
-                
-
-            currStateWithDur = self._createStateWithDur(phoneme, 1, idxMiddleState, None, distributionType, deviation, gmm)                
-            currStateWithDur.setDurationInFrames(durInNumFrames)
-            
-            self.statesNetwork.append(currStateWithDur)
+#     def _phonemes2stateNetwork(self):
+#         '''
+#         expand to self.statesNetwork . TAKE ONLY middle state for now
+#         '''
+#         
+#         self.statesNetwork = []
+#         stateCount = 0
+# 
+#         
+#         for phoneme in self.phonemesNetwork:
+#             
+#             phoneme.setNumFirstState(stateCount)
+#             
+#     
+#             
+#             
+#             
+#             deviation = self.deviationInSec
+#             if phoneme.ID != 'sp':
+#    
+#             
+#                 if not phoneme.isVowel(): # consonant
+#                     deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
+#             
+#                 distributionType =  'normal'
+#          
+#             
+#             else:
+#                 distributionType =  'exponential'
+#                 
+# 
+#             currStateWithDur = self._createStateWithDur(phoneme,  idxMiddleState, None, distributionType, deviation, gmm)                
+#             
+#             self.statesNetwork.append(currStateWithDur)
         

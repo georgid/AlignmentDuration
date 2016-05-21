@@ -29,9 +29,9 @@ WITH_DURATIONS= 1
 
 
 if not WITH_DURATIONS:
-    pathHMM = os.path.join(parentDir, 'HMM')
-    if pathHMM not in sys.path:    
-        sys.path.append(pathHMM)
+    pathHTKParser = os.path.join(parentDir, 'HMM')
+    if pathHTKParser not in sys.path:    
+        sys.path.append(pathHTKParser)
 
 
 
@@ -188,10 +188,10 @@ class Decoder(object):
                         
                         
                         if  nextState.phoneme.ID == 'sp':
-                            forwProb1 = 1 - stateWithDur.waitProb / 2.0
-                            forwProb2 = 1 - stateWithDur.waitProb / 2.0
+                            forwProb1 = 1 - stateWithDur.getWaitProb() / 2.0
+                            forwProb2 = 1 - stateWithDur.getWaitProb() / 2.0
                         else: # no note onset and no sp: use transition trained from model
-                            forwProb1 = 1 - stateWithDur.waitProb 
+                            forwProb1 = 1 - stateWithDur.getWaitProb() 
                             forwProb2 = 0
                    
                     while (forwProb1 + forwProb2 >= 1): # waitProb = 1-forw-forw2
@@ -209,14 +209,14 @@ class Decoder(object):
                         forwProb1, forwProb2 = self.defineForwardTransProbs(lyricsWithModels.statesNetwork, idxCurrState, onsetDist)
                 else:
                                        
-                    forwProb1 = 1 - stateWithDur.waitProb
+                    forwProb1 = 1 - stateWithDur.getWaitProb()
                 
                 transMAtrix[idxCurrState, idxCurrState] = 1 - forwProb1
                 transMAtrix[idxCurrState, idxCurrState+1] = forwProb1
             
             else: #  SPECIAL CASE: at very last state
                 
-                transMAtrix[idxCurrState, idxCurrState] = stateWithDur.waitProb # waitProb
+                transMAtrix[idxCurrState, idxCurrState] = stateWithDur.getWaitProb() # waitProb
             
 
         
@@ -322,7 +322,7 @@ class Decoder(object):
             sys.exit("align.Decoder.defineWaitProb  implemented only for 1-state phonemes ")
         
     #     if idxState == len(statesNetwork)-1: # ignore onset at last phonemes
-    #         return currStateWithDur.waitProb
+    #         return currStateWithDur.getWaitProb()
         
         currPhoneme = currStateWithDur.phoneme
         nextPhoneme = nextStateWithDur.phoneme
@@ -351,7 +351,7 @@ class Decoder(object):
         currPhoneme = currStateWithDur.phoneme
         followingPhoneme = followingStateWithDur.phoneme
         q = 1.5
-        forwProb = 1 - currStateWithDur.waitProb
+        forwProb = 1 - currStateWithDur.getWaitProb()
         onsetWeight = self.onsetSmoothingFunction.calcOnsetWeight(onsetDist)
         
         if currPhoneme.isLastInSyll(): # inter-syllable

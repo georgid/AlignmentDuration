@@ -6,12 +6,11 @@ Created on Dec 17, 2014
 import sys
 import numpy
 
-class ExpDurationPdf(object):
+class ExponentialPdf(object):
     
     def __init__(self):
         self.MAX_ALLOWED_DURATION_RATIO = 2
         # wait at same state prob TODO: read from model
-        self.pWait = 0.9
     
     def setWaitProb(self, waitProb, durationInFrames):
         self.waitProb = waitProb
@@ -19,11 +18,16 @@ class ExpDurationPdf(object):
         
         # TODO: create here wait prob. 
         
+    def getWaitProb(self):
+        return self.waitProb
     
     def getMinRefDur(self):
         return 1
     
     def getMaxRefDur(self):
+        '''
+        max ref duration is same as assigned duration in frames
+        '''
         return  self.durationInFrames
             
     def getWaitLogLik(self, d):
@@ -45,14 +49,14 @@ class ExpDurationPdf(object):
         else:
 #             if refScoreDur > self.lookupTableLogLiks.shape[0]:
 #                 sys.exit("current score duration {} is bigger than max in list of lookup score durations {}".format( refScoreDur, self.lookupTableLogLiks.shape[0]))
-            lik = (1-self.pWait) * pow(self.pWait, d-1) 
+            lik = (1-self.waitProb) * pow(self.waitProb, d-1) 
             old_settings = numpy.seterr( under='raise')
             out =  numpy.log(lik)
             return out
     
     
 if __name__ == '__main__':
-    durPdf = ExpDurationPdf(0.9)
+    durPdf = ExponentialPdf(0.9)
     
     for i in range(1, 100):
         print durPdf.getWaitLogLik(i)

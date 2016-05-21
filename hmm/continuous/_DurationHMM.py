@@ -13,7 +13,6 @@ from numpy.core.numeric import Infinity
 from _ContinuousHMM import _ContinuousHMM
 from hmm.continuous.DurationPdf  import DurationPdf, NUMFRAMESPERSEC
 
-from hmm.continuous.ExpDurationPdf import ExpDurationPdf
 
 import essentia.standard
 import logging
@@ -69,6 +68,7 @@ class _DurationHMM(_HMM):
         '''
         if listDurations == []:
             for  stateWithDur_ in self.statesNetwork:
+                stateWithDur_.setMaxRefDur()
                 listDurations.append(stateWithDur_.getDurationInFrames())
                 
         # sanity check  
@@ -77,7 +77,7 @@ class _DurationHMM(_HMM):
 
         self.durationMap =  numpy.array(listDurations, dtype=int)
         # DEBUG: 
-        writeListToTextFile(self.durationMap, None , PATH_LOGS + '/durationMap') 
+#         writeListToTextFile(self.durationMap, None , PATH_LOGS + '/durationMap') 
 
 #         STUB
 #         self.durationMap =  numpy.arange(1,self.n+1)
@@ -128,10 +128,10 @@ class _DurationHMM(_HMM):
                 self.chi[t][currState] = maxDurIndex
         
         
-        numpy.savetxt(PATH_LOGS + '/phi', self.phi)
-           
-        numpy.savetxt(PATH_LOGS + '/chi', self.chi)
-        numpy.savetxt(PATH_LOGS + '/psi', self.psi)
+#         numpy.savetxt(PATH_LOGS + '/phi', self.phi)
+#            
+#         numpy.savetxt(PATH_LOGS + '/chi', self.chi)
+#         numpy.savetxt(PATH_LOGS + '/psi', self.psi)
 
         # return for backtracking
         return  self.chi, self.psi
@@ -160,17 +160,16 @@ class _DurationHMM(_HMM):
     def assureSaneMaxRefDurs(self, lenObservations):
         
         if (self.R_MAX >= lenObservations):
-            self.logger.debug("MAX_Dur {} of a state is more than total number of observations {}. rreducing max ref duration of some states".format(self.R_MAX, lenObservations))
+            self.logger.debug("MAX_Dur {} of a state is more than total number of observations {}. reducing max ref duration of some states".format(self.R_MAX, lenObservations))
             
             # check all states as some might be over lenObservations
             for stateWithDur in self.statesNetwork:
                 if stateWithDur.getMaxRefDur() >= lenObservations:
                     #   reduce max ref dur for some states to len observation
-                    stateWithDur.maxRefDur = max(lenObservations, stateWithDur.getMinRefDur())
+                    stateWithDur.maxRefDur = max(lenObservations, stateWithDur.getMinRefDur() ) 
         
         self.R_MAX  = int( self.StateWithR_MAX.getMaxRefDur() )
-    
-    
+        
     def _calcCurrStatePhi(self,  t, currState):
         '''
         calc. quantities in recursion  equation
@@ -384,27 +383,27 @@ class _DurationHMM(_HMM):
             # phi star makes sence only from second state 
             for t in  range(1,int(self.R_MAX)):
                 
-#                 phiStar, fromState, maxDurIndex = self._calcCurrStatePhi(t, currState)
-                phiStar, fromState, maxDurIndex = self.computePhiStar(t, currState)
+#                 currPhiStar, fromState, maxDurIndex = self._calcCurrStatePhi(t, currState)
+                currPhiStar, fromState, maxDurIndex = self.computePhiStar(t, currState)
 
                 currKappa = self.kappas[t,currState]
                 
                
-#                 if phiStar == -Infinity and currKappa == -Infinity and currState != 1 and currState != 2 and currState != 3:  # sanity check
+#                 if currPhiStar == -Infinity and currKappa == -Infinity and currState != 1 and currState != 2 and currState != 3:  # sanity check
 #                     # kappas are -inf for t > currState.maxRefDur. phis is -inf only at state=1, becuase currState-1 is initialized with kappas, which can be -inf 
-#                     self.logger.warning("both phiStar and kappa are infinity for time {} and state {}".format( t, currState))
+#                     self.logger.warning("both currPhiStar and kappa are infinity for time {} and state {}".format( t, currState))
 #                     sys.exit()
                     
                 # take bigger : eq:deltaStarOrKappa
-                if  phiStar >= currKappa:
-                    self.phi[t,currState] = phiStar
+                if  currPhiStar >= currKappa:
+                    self.phi[t,currState] = currPhiStar
                     self.psi[t,currState] = fromState 
                     self.chi[t,currState] = maxDurIndex
 #                     self.debug.info("time = {} currState = {}".format(t, currState) )  
                 else: # kappa is bigger
                     
                     maxRefDur = self.statesNetwork[currState].getMaxRefDur()
-                    self.logger.debug( " kappa {} more than phi {} at time {} and state {}\n maxRefDur is {}".format(currKappa, phiStar, t, currState, maxRefDur))                        
+                    self.logger.debug( " kappa {} more than phi {} at time {} and state {}\n maxRefDur is {}".format(currKappa, currPhiStar, t, currState, maxRefDur))                        
                     
                     if t > maxRefDur:  # sanity check
                         self.logger.warning(" non-real kappa at time {} and state {}".format( t, currState))
@@ -415,7 +414,7 @@ class _DurationHMM(_HMM):
                     self.chi[t,currState] = t
                     
         
-        writeListOfListToTextFile(self.phi, None , PATH_LOGS + '/phi_init_1') 
+#         writeListOfListToTextFile(self.phi, None , PATH_LOGS + '/phi_init_1') 
     
 
         
@@ -424,7 +423,7 @@ class _DurationHMM(_HMM):
         kappas[t][s] - starting and staying at time t in same currState s.
         WITH LogLik 
         '''
-        if lenObservations <= self.R_MAX:
+        if lenObservations < self.R_MAX:
             sys.exit("observations are only {}, R_max = {}. not able to run initialization. Increase size of observations".format(lenObservations,self.R_MAX)) 
         
         print 'init kappas...'
@@ -448,5 +447,5 @@ class _DurationHMM(_HMM):
                 
                 
                 
-        writeListOfListToTextFile(self.kappas, None , PATH_LOGS + '/kappas') 
+#         writeListOfListToTextFile(self.kappas, None , PATH_LOGS + '/kappas') 
        

@@ -13,6 +13,8 @@ class ParametersAlgo(object):
     FOR_JINGJU = 0
     FOR_MAKAM = 0
     
+    GLOBAL_WAIT_PROB = 0.8
+    
     THRESHOLD_PEAKS = -70
 
     DEVIATION_IN_SEC = 0.1
@@ -28,6 +30,7 @@ class ParametersAlgo(object):
     
     WITH_SHORT_PAUSES = 1
     
+    # padded a short pause state at beginning and end of sequence
     WITH_PADDED_SILENCE = 1
     
     # no feature vectors at all. all observ, probs. set to 1
@@ -38,9 +41,9 @@ class ParametersAlgo(object):
     # ANDRES. On kora.s.upf.edu
     # PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'      
     
-    POLYPHONIC = 1
+    POLYPHONIC = 0
     
-    WITH_ORACLE_ONSETS = 0
+    WITH_ORACLE_ONSETS = 1
     ### no onsets at all. 
     WITH_ORACLE_ONSETS = -1
     

@@ -6,16 +6,17 @@ Created on Nov 10, 2014
 import os
 import sys
 from hmm.continuous.DurationPdf import DurationPdf
-from hmm.continuous.ExpDurationPdf import ExpDurationPdf
+from hmm.continuous.ExponentialPdf import ExponentialPdf
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 
-pathHtkParser = os.path.join(parentDir, 'htkParser')
+pathHtkParser = os.path.join(parentDir, 'htkModelParser')
 if pathHtkParser not in sys.path:
     sys.path.append(pathHtkParser)
     
 from htkparser.htk_models import State
-import sklearn.mixture.gmm
+from htkparser.htk_models import Hmm
+
 
 class StateWithDur(State):
     '''
@@ -25,17 +26,20 @@ class StateWithDur(State):
     '''
 
 
-    def __init__(self, mixtures, phoneme, idxInPhoneme, distribType='normal', deviationInSec=0.1):
+    def __init__(self,  phoneme, idxInPhoneme, distribType='normal', deviationInSec=0.1):
         '''
         Constructor
         '''
         
-        if type(mixtures) is sklearn.mixture.gmm.GMM: # htk-model type of state
-            self.mixtures = mixtures
-        else: # GMM xsampa model
-            State.__init__(self, mixtures)
         
-        self.phoneme = phoneme
+        if phoneme.isModelTypeHTK: # htk model
+            state = phoneme.model.states[idxInPhoneme][1]
+            State.__init__(self, state.mixtures)
+        else: # scikit gmm type of state
+            self.mixtures = phoneme.model.gmm
+
+        
+        self.phoneme= phoneme
         self.idxInPhoneme  = idxInPhoneme
         
         try:
@@ -50,8 +54,7 @@ class StateWithDur(State):
         if distribType == 'normal':
             self.durationDistribution = DurationPdf(deviationInSec)
         else:
-            self.durationDistribution = ExpDurationPdf()                                                
-  
+            self.durationDistribution = ExponentialPdf()                                                
   
     def setDurationInFrames(self, durationInFrames):
         '''
@@ -70,18 +73,16 @@ class StateWithDur(State):
         '''
         for exp distrib
         '''   
-        self.waitProb = waitProb
+        
         if self.distributionType == 'exponential':
             self.durationDistribution.setWaitProb(waitProb, self.durationInFrames)
- 
-    def getMaxRefDur(self):
-        if self.distributionType == 'normal':
-            a= int(self.durationDistribution.getMaxRefDur(self.durationInFrames))
         else:
-            a= int(self.durationDistribution.getMaxRefDur())
-#         print "durationInFrames {}".format(self.durationInFrames) 
-        return a
-    
+            sys.exit(" in setWaitProb(). waitProb. defined only for states with prob of type exponential")
+     
+     
+    def getWaitProb(self):
+        return self.durationDistribution.getWaitProb()
+            
     def setMaxRefDur(self):
         
         try:
@@ -93,8 +94,12 @@ class StateWithDur(State):
         if self.distributionType == 'normal':
             self.maxRefDur = int(self.durationDistribution.getMaxRefDur(self.durationInFrames))
         else:  # exponential
-            self.maxRefDur = int(self.durationDistribution.getMaxRefDur())
-        
+            self.maxRefDur = int(self.durationDistribution.getMaxRefDur())        
+            
+    def getMaxRefDur(self):
+
+        return self.maxRefDur
+      
             
     def getMinRefDur(self):
         if self.distributionType == 'normal':
@@ -103,6 +108,6 @@ class StateWithDur(State):
             return int(self.durationDistribution.getMinRefDur())
     
     def __str__(self):
-        return self.phoneme.ID + "_"  + str(self.idxInPhoneme)
+        return self.phonemeName + "_"  + str(self.idxInPhoneme)
         
         
