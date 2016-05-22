@@ -107,5 +107,7 @@ class StateWithDur(State):
     
     def __str__(self):
         return self.phonemeName + "_"  + str(self.idxInPhoneme)
-        
+     
+    def __repr__(self):
+        return self.phonemeName + "_"  + str(self.idxInPhoneme)    
         
