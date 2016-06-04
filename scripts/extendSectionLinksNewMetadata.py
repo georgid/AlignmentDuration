@@ -19,7 +19,7 @@ if pathUtils not in sys.path:
 
 import compmusic    
 from compmusic import dunya
-from compmusic.extractors.makam.lyricsalignNoteOnsets import recMBIDs
+from compmusic.extractors.makam.lyricsalign import recMBIDs, get_section_metadata_dict
 
 from utilsLyrics.Utilz import  findFileByExtensions
 '''
@@ -55,18 +55,20 @@ def extendNewMetadata(musicbrainzid, workmbid,  inpuRecordingDir):
     uses old makamScore and makamRecording (and SymbTrParser old ) because we need the matchSections and its neater to use it form the constructor of MakamRecording
     '''
     
-    
- 
-    ############## 1. get score section Metadata new labels 
     symbtrtxtURI, symbTrCompositionName  = constructSymbTrTxtURI(URI_datasetSymbTr1_sectionMeta2, workmbid)
+    
+    #############  0. modify indices   
+    raw_input("modify indices to correpond to symbTr v.2 with but same sections as in old section metadata. \n name new file {}/{}.sections.json ".format(URI_datasetSymbTr1_sectionMeta2, symbTrCompositionName) )
+    
+    ############## 1. create score section Metadata new labels form old annotation with symbTr v.1
     
     compositionPath = URI_datasetSymbTr1_sectionMeta2 + symbTrCompositionName + '/'
     makamScore_sectionMeta2 = loadMakamScore(compositionPath)
-    segment_note_bound_idx  = generateNoteBoundaryIndices(makamScore_sectionMeta2)
-    sectionsMetadataNewLabels, sectionsMetadataNewLabelsDict = getSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_note_bound_idx)
+    segment_note_bound_idx_for_symbTr2  = generateListStartEndNoteNumbers(makamScore_sectionMeta2)
+    sectionsMetadataNewLabels, sectionsMetadataNewLabelsDict = generateSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_note_bound_idx_for_symbTr2)   
+
     
-    
-    #############  2. load old section annotaion and add new labels
+    #############  2. load old section annotation 
     #load old score section metadata with meyan etc. names and section annotation in json 
     compositionPath = URI_datasetSymbTr1 + symbTrCompositionName + '/'
     oldMetadataMakamScore = loadMakamScore(compositionPath)
@@ -74,14 +76,14 @@ def extendNewMetadata(musicbrainzid, workmbid,  inpuRecordingDir):
     if len(sectionsMetadataNewLabels) != len(oldMetadataMakamScore.sectionToLyricsMap):
         sys.exit("for composition {} text score sections are {} and sectionsMetadata with new labels are {}".format(compositionPath, len(oldMetadataMakamScore.sectionToLyricsMap), len(sectionsMetadataNewLabels)))
         
-    ###### match score sections to audio annotations (in constructor of makam recording)
+    ######### 3.   match old score sections to audio annotations (in constructor of makam recording)
     pathToAudioFile = 'blah'
     pathToRecording, pathToSectionAnnotations = getURISectionAnnotation(inpuRecordingDir, compositionPath) 
     makamRecording = MakamRecordingOld(oldMetadataMakamScore, pathToAudioFile, pathToSectionAnnotations)
 #     print makamRecording.sectionIndices
         
     
-        ########   load  section annos from source
+        ######## ### 4.  load  section annos,  add new labels 
     sectionAnnosSourceURI = pathSectionAnnosSourceJNMR + musicbrainzid + '.json'
     if not os.path.isfile(sectionAnnosSourceURI):
         print 'no section annotaion in JNMR dataset. all fields in final json except for field section_annotaitons will be empty'
@@ -132,7 +134,7 @@ def replaceSectionsWIthNewLabesJNMR(scoreSectionsNewLables, sectionAnnosSourceUR
  
  
 
-def getSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_note_bound_idx):
+def generateSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_note_bound_idx):
     ###### 2. load score sections metadata new C1,C2 etc.
     
 #     sectionMetadataAllDict = dunya.docserver.get_document_as_json(workmbid, "metadata", "metadata", 1, version="0.1") #     print sectionMetadataAllDict
@@ -149,19 +151,19 @@ def getSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_n
     sectionMetadataAllDict, isDataValid = extractor.extract(symbtrtxtURI, segment_note_bound_idx=segment_note_bound_idx)
 
     
-#     if workmbid == 'c6e43ac6-4a18-42ab-bcc4-46e29360051e':
-#         
-#         symbTrMetadataURL = 'https://raw.githubusercontent.com/sertansenturk/turkish_makam_corpus_stats/master/data/SymbTrData/' + symbTrCompositionName + '.json'
-#         import tempfile
-#         tmpDir = tempfile.mkdtemp()
-#         fetchFileFromURL(symbTrMetadataURL, tmpDir + '/tmp.json') 
-#         with open(tmpDir + '/tmp.json') as f:
-#              sectionMetadataAllDict = json.load(f)
     
-    # TODO: replace with sections         
-    sectionsMetadataNewNamesDict = sectionMetadataAllDict['segmentations']
+    ##### use sertans scoreMetadata directly
+#     sectionMetadataAllDict = get_section_metadata_dict(workmbid, 'dummy', '/Users/joro/Downloads/', 0)
+    
+    if  'segmentations' in sectionMetadataAllDict: # use segmentations instead of sections, if no segmentations, use sections 
+         scoreSectionAnnos = sectionMetadataAllDict['segmentations'] # if with_section_annotations, it is called segmentations because of symbtrdataextractor
+    elif 'sections' in sectionMetadataAllDict:
+        scoreSectionAnnos = sectionMetadataAllDict['sections']
+    else:
+        sys.exit("cannot find neither key sections nor segmentations in score metadata" )    
+    
     sectionsMetadataNewLabels = []
-    for section in sectionsMetadataNewNamesDict:
+    for section in scoreSectionAnnos:
 #                     print section
         sectionNew = ScoreSection(section['name'], int(section['start_note']), int(section['end_note']), section['melodic_structure'], section['lyric_structure'])
         sectionsMetadataNewLabels.append(sectionNew)
@@ -169,7 +171,7 @@ def getSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_n
     return sectionsMetadataNewLabels, sectionMetadataAllDict
    
   
-def generateNoteBoundaryIndices(makamScore_sectionMeta2):
+def generateListStartEndNoteNumbers(makamScore_sectionMeta2):
     segment_note_bound_idx  = []
     for e in makamScore_sectionMeta2.sectionToLyricsMap:
         segment_note_bound_idx.append( e[1] )
@@ -248,7 +250,7 @@ if __name__ == '__main__':
     for musicbrainzid in recMBIDs:
         rec_data = dunya.makam.get_recording(musicbrainzid )
         workmbid = rec_data['works'][0]['mbid']
-        recordingDir = recMBIDs[musicbrainzid]
+        recordingDir = recMBIDs[musicbrainzid][0]
         sectionsMetadataNewLabelsDict, sectionAnnosDict = extendNewMetadata(musicbrainzid, workmbid, recordingDir )
         write_results_as_json(sectionsMetadataNewLabelsDict, workmbid, sectionAnnosDict, musicbrainzid, pathSectionAnnosDestination) 
         raw_input("press for next piece...")

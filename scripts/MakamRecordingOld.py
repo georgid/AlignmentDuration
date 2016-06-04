@@ -12,7 +12,6 @@ from genericpath import isfile
 import sys
 from utilsLyrics.Utilz import loadTextFile, matchSections
 import json
-from align.SectionLink import SectionLink
 # from align.LyricsAligner import loadsectionTimeStampsLinksNew
 
 pathToSox = "/usr/local/bin/sox"

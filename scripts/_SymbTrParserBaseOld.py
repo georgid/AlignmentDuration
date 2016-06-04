@@ -74,13 +74,34 @@ class _SymbTrParserBaseOld(object):
             elif ext == '.json':
                 
                 b = open (URISectionFIle)
-                scoreAnno = json.load(b)
+                sectionMetadata = json.load(b)
                 b.close()
-                scoreSectionAnnos = scoreAnno['sections']
                 
+                if  'segmentations' in sectionMetadata: # use segmentations instead of sections, if no segmentations, use sections 
+                    scoreSectionAnnos = sectionMetadata['segmentations'] # if with_section_annotations, it is called segmentations because of symbtrdataextractor
+                elif 'sections' in sectionMetadata:
+                    scoreSectionAnnos = sectionMetadata['sections']
+                else:
+                    sys.exit("cannot find neither key sections nor segmentations in score metadata" )
+         
+         
+                scoreSectionAnnos = sectionMetadata['sections']
+
                 for section in scoreSectionAnnos:
-                    tmpTriplet = section['name'],  int(section['startNote']), int(section['endNote'])
-                    self.sectionboundaries.append(tmpTriplet)
+                            print section
+                            if  'start_note' in section:
+                                startNote = int(section['start_note'])
+                            else:
+                                startNote = int(section['startNote'])
+                            
+                            if 'end_note' in section:
+                                endNote = int(section['end_note'])
+                            else:
+                                endNote = int(section['endNote']) 
+                        
+                
+                            tmpTriplet = (section['name'],  startNote, endNote)
+                            self.sectionboundaries.append(tmpTriplet)
     
     def syllables2Lyrics(self):
         '''

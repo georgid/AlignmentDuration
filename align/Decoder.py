@@ -77,7 +77,7 @@ class Decoder(object):
         
         self.onsetSmoothingFunction = OnsetSmoothingFunction(ParametersAlgo.ONSET_SIGMA_IN_FRAMES)
         self._constructHmmNetwork(numStates, float(ALPHA), withModels)
-        self.hmmNetwork.logger.setLevel(loggingLevel)
+        self.hmmNetwork.logger.setLevel(ParametersAlgo.LOGGING_LEVEL)
         
         # Path class object
         self.path = None
@@ -365,7 +365,7 @@ class Decoder(object):
                 elif not currPhoneme.isVowelOrLiquid() and followingPhoneme.isVowel(): # rule 4:
                     return forwProb + onsetWeight * q
                 elif currPhoneme.isVowel() and followingPhoneme.isVowel():
-                    logging.warning("two consecutive vowels {} and {} in a syllable. not implemented! ".format(currPhoneme.ID, followingPhoneme.ID))
+                    logging.warning("two consecutive vowels {} and {} in a syllable. not implemented! Make sure ONLY_MIDDLE_STATE is set true. 3-state models not implemented".format(currPhoneme.ID, followingPhoneme.ID))
                     return forwProb
         
         #  onset has no contribution in other cases    

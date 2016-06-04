@@ -50,11 +50,12 @@ class _SymbTrParserBase(object):
    ##################################################################################
     
     def _loadSectionBoundaries(self, sectionMetadata):
-        if hasattr(sectionMetadata, 'segmentations'):
-            scoreSectionAnnos = sectionMetadata['segmentations'] # if with_section_annotations, it is called segmentations because of symbtrdataextractor
-        else:
+        if  'segmentations' in sectionMetadata: # use segmentations instead of sections, if no segmentations, use sections 
+             scoreSectionAnnos = sectionMetadata['segmentations'] # if with_section_annotations, it is called segmentations because of symbtrdataextractor
+        elif 'sections' in sectionMetadata:
             scoreSectionAnnos = sectionMetadata['sections']
-        
+        else:
+            sys.exit("cannot find neither key sections nor segmentations in score metadata" )
          
         for section in scoreSectionAnnos:
                     print section

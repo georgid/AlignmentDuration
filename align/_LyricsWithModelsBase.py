@@ -95,10 +95,11 @@ class _LyricsWithModelsBase(Lyrics):
         
         for phnIdx, phoneme in enumerate(self.phonemesNetwork):
             
-        
+            
             # set number of first state
             phoneme.setNumFirstState(stateCount)
-            stateCount += phoneme.getNumStates()
+            
+      
             
             
             deviation = self.deviationInSec
@@ -117,11 +118,17 @@ class _LyricsWithModelsBase(Lyrics):
                     distributionType='exponential'
             else:
                 distributionType='exponential'
+                
             
-            for idxState in range(phoneme.getNumStates()):
-
+            stateIndices = range( phoneme.getNumStates())
+            if ParametersAlgo.ONLY_MIDDLE_STATE and phoneme.getNumStates() == 3: # take only middle state. 1 is middle in 0,1,2
+                stateIndices = [1]
+                    
+            for idxState in stateIndices :
+          
                 currStateWithDur = self._createStateWithDur(phoneme,  idxState, distributionType, deviation)
                 self.statesNetwork.append(currStateWithDur)
+                stateCount += 1
         
         
 #    def _phonemes2stateNetworkWeights(self):

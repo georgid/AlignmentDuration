@@ -45,6 +45,7 @@ class MakamRecording(_RecordingBase):
         '''
         _RecordingBase.__init__(self, mbRecordingID, audioFileURI, score)
 
+        self.sectionLinksOrAnnoDict = sectionLinksOrAnnoDict
         
         if not withAnnotations:
             sectionLinks = parseSectionLinks(sectionLinksOrAnnoDict)
@@ -106,7 +107,8 @@ class MakamRecording(_RecordingBase):
                         
                         
                     currSectionAnno = SectionAnnoMakam (self.recordingNoExtURI, melodicStruct, sectionAnnoTxt['lyricStructure'], beginTs, endTs )
-                    currSectionAnno.matchToSection(self.score.symbTrParser.sections)
+                    sections = self.score.symbTrParser.sections
+                    currSectionAnno.matchToSection(sections)
                     
                     
                     self.sectionAnnos.append(currSectionAnno )

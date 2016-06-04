@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import textgrid as tgp
 import sys, os
-from onsets.OnsetDetector import writeCsv
+# from onsets.OnsetDetector import writeCsv
 
 
 sys.path.append(os.path.realpath('../Batch_Processing/'))
@@ -138,7 +138,7 @@ def testreadNonEmptyTokensTextGrid():
     phonemesAnnoList, phonemesAnnoListNoPauses = readNonEmptyTokensTextGrid(lyricsTextGrid, lowLevel, 0, -1, initialOffset)
     for phoneme in phonemesAnnoListNoPauses:
             phoneme[3] = 1
-    writeCsv(os.path.splitext(lyricsTextGrid)[0] + '.csv' , phonemesAnnoListNoPauses)
+#     writeCsv(os.path.splitext(lyricsTextGrid)[0] + '.csv' , phonemesAnnoListNoPauses)
 
 if __name__ == '__main__':
     testreadNonEmptyTokensTextGrid()
