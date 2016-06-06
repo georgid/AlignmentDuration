@@ -117,8 +117,8 @@ class LyricsAligner():
                         if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
                             print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
                             continue 
-#                         detectedTokenList, detectedPath, maxPhiScore = self.alignLyricsSection(  extractedPitchList,   [],  self.tokenLevelAlignedSuffix,   currSectionLink)
-                        self.extractNoteOnsetsAndEval(currSectionLink)
+                        detectedTokenList, detectedPath, maxPhiScore = self.alignLyricsSection(  extractedPitchList,   [],  self.tokenLevelAlignedSuffix,   currSectionLink)
+#                         self.extractNoteOnsetsAndEval(currSectionLink)
       
                      
                     else:  # section links
@@ -194,7 +194,6 @@ class LyricsAligner():
                     only extract note onsets and eval note onset extraction
                     '''
                     URIrecOnsets = self.recording.recordingNoExtURI + '.alignedNotes.txt'
-                    URIrecOnsets = '/Users/joro/Documents/Phd/UPF/turkish_makam_audio_score_alignment_dataset/data/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/567b6a3c-0f08-42f8-b844-e9affdc9d215/alignedNotes.txt'
                     fe = FeatureExtractor(self.path_to_hcopy, currSectionLink) 
                     
                     gr_truth_URI = fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)

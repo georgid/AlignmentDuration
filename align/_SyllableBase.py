@@ -25,7 +25,7 @@ class _SyllableBase():
 
             self.hasShortPauseAtEnd = False
             
-        def setHasShortPauseAtEnd (self,hasShortPauseAtEnd): 
+        def setHasShortPauseAtEnd (self, hasShortPauseAtEnd): 
             '''
             set if this is last syllable in word
             '''

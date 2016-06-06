@@ -32,7 +32,8 @@ class JingjuRecording(_RecordingBase):
         
     #     isLastSyllLevel = tierAliases.isLastSyllLong # read lines (sentences) tier
     #     dummy, isLastSyllLongFlags =  readNonEmptyTokensTextGrid(annotationURI, isLastSyllLevel, 0, -1)
-        # stub to avoid preparing isNonKeySyllLong  tier in praat 
+        
+        # instead stub to avoid preparing isNonKeySyllLong  tier in praat 
         isLastSyllLongFlags = [[0,0,0]] * len(isNonKeySyllLongFlags)
         
         
