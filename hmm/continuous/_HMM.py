@@ -11,8 +11,6 @@ from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from align.ParametersAlgo import ParametersAlgo
 from align.Decoder import visualizeMatrix
 from scipy.constants.constants import psi
-from align import Decoder
-from docutils.nodes import math
 from onsets.OnsetDetector import getDistFromOnset, tsToFrameNumber
 
 

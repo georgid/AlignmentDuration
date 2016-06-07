@@ -11,7 +11,7 @@ from align._LyricsWithModelsBase import _LyricsWithModelsBase
 from jingju.sciKitGMM import SciKitGMM
 import os
 from utilsLyrics.Utilz import loadDictFromTabFile
-
+import traceback
 
 currDir = os.path.abspath( os.path.join( os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ) )
 MODELS_SCRIPTS = currDir + '/models_jingju/'
@@ -63,9 +63,11 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
         modelsURI =  os.path.join( ParametersAlgo.MODELS_DIR + fold + '/GMM/',  str(modelName) + '.pkl' )
         import pickle
         try:
+            print modelsURI
             model = pickle.load(file(modelsURI))
-        except BaseException:
-            sys.exit("no model with URI {}. Make sure the correct fold is given".format(modelsURI))
+        except Exception:
+            traceback.print_exc()
+            sys.exit("problem loading model {}. Make sure the correct fold is given".format(modelsURI))
             model = None
         return model, modelName
     
