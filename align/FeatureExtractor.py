@@ -119,10 +119,11 @@ class FeatureExtractor(object):
             
             HCopyCommand = [self.path_to_hcopy, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FEATURES, URIRecordingChunk, mfcFileName]
     
-    #         if not os.path.isfile(mfcFileName):
-            logging.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
-            pipe= subprocess.Popen(HCopyCommand)
-            pipe.wait()
+            if not os.path.isfile(mfcFileName):
+                logging.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
+                pipe= subprocess.Popen(HCopyCommand)
+                pipe.wait()
+            
             return mfcFileName
         
     

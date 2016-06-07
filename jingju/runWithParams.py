@@ -14,7 +14,6 @@ import matplotlib.pyplot as plt
 from utilsLyrics.Utilz import getMeanAndStDevError, addTimeShift,\
     writeListOfListToTextFile
 import os
-from docutils.parsers.rst.directives import path
 from jingju.JingjuRecording import JingjuScore, JingjuRecording
 from align.LyricsAligner import LyricsAligner
 from jingju.lyricsParser import divideIntoSentencesFromAnnoWithSil
@@ -30,6 +29,7 @@ def runWithParameters(argv):
             sys.exit()
     
     ParametersAlgo.FOR_JINGJU = 1
+    ParametersAlgo.WITH_ORACLE_ONSETS = -1
     
     URIrecordingNoExt =  argv[1]
     b = os.path.basename(URIrecordingNoExt)

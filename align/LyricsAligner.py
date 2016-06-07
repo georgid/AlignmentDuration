@@ -32,17 +32,7 @@ from ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 
-pathPycomp = os.path.join(parentDir, 'pycompmusic')
-if pathPycomp not in sys.path:
-    sys.path.append(pathPycomp)
 
-
-
-
-
-import compmusic.extractors
-from compmusic import dunya
-from compmusic.dunya import makam
 
 import essentia.standard
 
@@ -347,48 +337,9 @@ def getSectionLinkBybeginTs(sectionLinks, queryBeginTs):
    
 
 
-
-def downloadSymbTr(workMBID, outputDirURI, hasSecondVerse):
-    
-    symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
-    symbTrCompositionName = symbtr['name']
-    
-    if workMBID == '30cdf1c2-8dc3-4612-9513-a5d7f523a889': # because of problem in work
-        symbTrCompositionName = 'ussak--sarki--aksak--bu_aksam--tatyos_efendi'
-    
-    URL = 'https://raw.githubusercontent.com/MTG/SymbTr/master/txt/' + symbTrCompositionName + '.txt'
-    outputFileURI = os.path.join(outputDirURI, symbTrCompositionName + '.txt')
-
-    if hasSecondVerse: 
-        raw_input("composition has a second verse not in github. copy symbTr manually to {}.\n  when done press a key ".format(outputFileURI))
-    else:
-        fetchFileFromURL(URL, outputFileURI)
-        print "downloaded symbtr file  {}".format(outputFileURI)  
-
-    return outputFileURI
     
     
     
-def download_wav(musicbrainzid, outputDir):
-        '''
-        download wav for MB recording id from makam collection
-        '''
-        mp3FileURI = dunya.makam.download_mp3(musicbrainzid, outputDir)
-    ###### mp3 to Wav: way 1
-    #         newName = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.mp3')
-    #         os.rename(mp3FileURI, newName )
-    #         mp3ToWav = Mp3ToWav()
-    #         wavFileURI = mp3ToWav.run('dummyMBID', newName)
-        
-        ###### mp3 to Wav: way 2
-        wavFileURI = os.path.splitext(mp3FileURI)[0] + '.wav'
-        if os.path.isfile(wavFileURI):
-            return wavFileURI
-            
-        pipe = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', mp3FileURI, wavFileURI])
-        pipe.wait()
-    
-        return wavFileURI
 
 
 

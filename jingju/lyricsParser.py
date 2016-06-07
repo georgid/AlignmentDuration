@@ -16,7 +16,6 @@ from collections import deque
 
 
 from PhonetizerDict import createDictSyll2XSAMPA
-from IPython.core.tests.test_formatters import numpy
 from LyricsJingju import LyricsJingju
 from align.ScoreSection import LyricsSection
 logger = logging.getLogger(__name__)

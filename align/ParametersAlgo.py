@@ -4,7 +4,6 @@ Created on May 28, 2015
 @author: joro
 '''
 import logging
-from docutils.nodes import math
 from numpy.ma.core import  floor
 
 ######### PARAMS:
@@ -45,7 +44,7 @@ class ParametersAlgo(object):
     
     WITH_ORACLE_ONSETS = 1
     ### no onsets at all. 
-    WITH_ORACLE_ONSETS = -1
+#     WITH_ORACLE_ONSETS = -1
     
     # Sigma of onset smoothing function g: normal distribution
     ONSET_SIGMA = 0.075

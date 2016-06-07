@@ -20,7 +20,6 @@ from align.LyricsAligner import LyricsAligner, extendSectionLinksSelectedSection
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 
-from compmusic.extractors.makam.lyricsalign import fetchNoteOnsetFile
 
 WITH_SECTION_ANNOTATIONS = 1
 
@@ -72,8 +71,7 @@ def testLyricsAlign():
     
     recording = loadMakamRecording(musicbrainzid, audioFileURI, symbtrtxtURI, sectionMetadataDict, sectionLinksDict,  WITH_SECTION_ANNOTATIONS)
     
-    if ParametersAlgo.WITH_ORACLE_ONSETS:
-        fetchNoteOnsetFile(musicbrainzid,  noteOnsetAnnotationDir )
+
                     
     la = LyricsAligner(recording, WITH_SECTION_ANNOTATIONS, ParametersAlgo.PATH_TO_HCOPY)
     
