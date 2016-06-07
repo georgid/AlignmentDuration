@@ -61,6 +61,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
         path, fold = os.path.split(path) # which Fold
 #         fold = 'fold1'
         modelsURI =  os.path.join( ParametersAlgo.MODELS_DIR + fold + '/GMM/',  str(modelName) + '.pkl' )
+        print "models DIR: " + modelsURI
         import pickle
         try:
             model = pickle.load(file(modelsURI))
