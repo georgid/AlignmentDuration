@@ -29,6 +29,7 @@ def runWithParameters(argv):
             sys.exit()
     
     ParametersAlgo.FOR_JINGJU = 1
+    ParametersAlgo.WITH_ORACLE_ONSETS = -1
     
     URIrecordingNoExt =  argv[1]
     b = os.path.basename(URIrecordingNoExt)

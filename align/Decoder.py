@@ -148,7 +148,8 @@ class Decoder(object):
             self.hmmNetwork.setALPHA(ALPHA)
         
         else: # with no durations standard Viterbi
-        
+            if ParametersAlgo.FOR_JINGJU:
+                sys.exit("trying to run viterbi with no duration modeling for Jingju. Not implemented.")
             # construct means, covars, and all the rest params
             #########    
             transMatrices = list()
