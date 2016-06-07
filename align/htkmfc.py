@@ -66,6 +66,7 @@ class HTKFeat_read(object):
     def open(self, filename):
         self.filename = filename
         self.fh = file(filename, "rb")
+        print self.fh
         self.readheader()
 
     def readheader(self):

@@ -4,7 +4,6 @@ Created on May 28, 2015
 @author: joro
 '''
 import logging
-from docutils.nodes import math
 from numpy.ma.core import  floor
 
 ######### PARAMS:

@@ -15,17 +15,22 @@ You should have received a copy of the GNU General Public License along with thi
 
 
 BUILD INSTRUCTIONS: 
-git clone -b IntegratedPycompMusic https://github.com/georgid/AlignmentDuration.git
+
+git clone https://github.com/georgid/AlignmentDuration.git
+sudo apt-get install python-dev python-setuptools python-numpy
+sudo pip install -r requirements
 python setup.py install
 
 
 * htkModelParser
 git clone https://github.com/georgid/htkModelParser.git
+sudo pip install -r requirements
 python setup.py install
 
 
 * sci-kit-learn (branch with fixed underflow issues)
 git clone https://github.com/georgid/scikit-learn 
+sudo apt-get install python-scipy
 python setup.py install
 
 * utilsLyrics
