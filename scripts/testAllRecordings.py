@@ -1,6 +1,6 @@
 '''
 Created on Jan 27, 2016
-
+@deprecated: 
 @author: joro
 '''
 import sys
@@ -11,8 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import compmusic
 from compmusic import dunya
-from align.LyricsAligner import alignRecording, constructSymbTrTxtURI,\
-    downloadSymbTr
+from align.LyricsAligner import alignRecording, constructSymbTrTxtURI
 from align.MakamScore import printMakamScore
 dunya.set_token('69ed3d824c4c41f59f0bc853f696a7dd80707779')
 

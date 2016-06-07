@@ -52,10 +52,10 @@ from ParametersAlgo import ParametersAlgo
   
 
 class FeatureExtractor(object):
-    def __init__(self, path_to_hcopy):
+    def __init__(self, path_to_hcopy, sectionLink):
         self.path_to_hcopy = path_to_hcopy
         self.featureVectors = []
-        self.onsetDetector = OnsetDetector()
+        self.onsetDetector = OnsetDetector(sectionLink)
          
    
    
@@ -123,7 +123,8 @@ class FeatureExtractor(object):
                 logging.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
                 pipe= subprocess.Popen(HCopyCommand)
                 pipe.wait()
-                return mfcFileName
+            
+            return mfcFileName
         
     
     def _extractPredominantPitch(self, URI_recording_noExt):

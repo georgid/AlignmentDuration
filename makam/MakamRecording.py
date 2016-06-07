@@ -27,6 +27,8 @@ class _RecordingBase():
         self.sectionAnnos = []
 
         self.sectionLinks = []
+        
+        self.sectionLinksOrAnnoDict = {}
     
     
     def _loadsectionTimeStampsLinks(self, sectionAnnosDict):
@@ -44,8 +46,13 @@ class MakamRecording(_RecordingBase):
         Constructor
         '''
         _RecordingBase.__init__(self, mbRecordingID, audioFileURI, score)
-
         
+        '''
+        the dict as it is stored for later usage
+        '''
+        self.sectionLinksOrAnnoDict = sectionLinksOrAnnoDict
+        
+        # expand dict to objects
         if not withAnnotations:
             sectionLinks = parseSectionLinks(sectionLinksOrAnnoDict)
             self._loadsectionTimeStampsLinks(sectionLinks)
@@ -106,7 +113,8 @@ class MakamRecording(_RecordingBase):
                         
                         
                     currSectionAnno = SectionAnnoMakam (self.recordingNoExtURI, melodicStruct, sectionAnnoTxt['lyricStructure'], beginTs, endTs )
-                    currSectionAnno.matchToSection(self.score.symbTrParser.sections)
+                    sections = self.score.symbTrParser.sections
+                    currSectionAnno.matchToSection(sections)
                     
                     
                     self.sectionAnnos.append(currSectionAnno )

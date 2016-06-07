@@ -32,17 +32,7 @@ from ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 
-pathHtkParser = os.path.join(parentDir, 'pycompmusic')
-if pathHtkParser not in sys.path:
-    sys.path.append(pathHtkParser)
 
-
-
-
-
-import compmusic.extractors
-from compmusic import dunya
-from compmusic.dunya import makam
 
 import essentia.standard
 
@@ -88,7 +78,9 @@ class LyricsAligner():
 
 
     def alignRecording(self, extractedPitchList, outputDir ):
-    
+            '''
+            each section link has 
+            '''
             # parameters 
             if self.WITH_SECTION_ANNOTATIONS: 
                 sectionLinks = self.recording.sectionAnnos
@@ -96,12 +88,13 @@ class LyricsAligner():
                 sectionLinks = self.recording.sectionLinks
 
                 
-                
+            detectedSectionList = []    
             for  currSectionLink in sectionLinks :
                     
-#                     if currSectionLink.melodicStructure.startswith('ARANAGME'):
-#                         print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
-#                         continue            
+                    detectedTokenList = []
+#                     if sectionLink.melodicStructure.startswith('ARANAGME'):
+#                         print("skipping sectionLink {} with no lyrics ...".format(sectionLink.melodicStructure))
+#                         continue                
                     if not hasattr(currSectionLink, 'section') or currSectionLink.section == None:
                         print("skipping sectionAnno {} not matched to any score section ...".format(currSectionLink))
                         continue   
@@ -114,13 +107,17 @@ class LyricsAligner():
                         if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
                             print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
                             continue 
-                        currSectionLink.detectedTokenList, detectedPath, maxPhiScore = self.alignLyricsSection(  extractedPitchList,   [],  self.tokenLevelAlignedSuffix,   currSectionLink)
-                    
+                        detectedTokenList, detectedPath, maxPhiScore = self.alignLyricsSection(  extractedPitchList,   [],  self.tokenLevelAlignedSuffix,   currSectionLink)
+#                         self.extractNoteOnsetsAndEval(currSectionLink)
       
                      
                     else:  # section links
-                        currSectionLink.detectedTokenList = self.alignSectionLinkProbableSections( extractedPitchList, currSectionLink)
-                        
+                        detectedTokenList = self.alignSectionLinkProbableSections( extractedPitchList, currSectionLink)
+                    
+                    currSectionLink.detectedTokenList = detectedTokenList 
+                    detectedSectionList.append(currSectionLink.detectedTokenList)
+        
+            return detectedSectionList, self.recording.sectionLinksOrAnnoDict          
                      
              
     def evalAccuracy(self):
@@ -154,6 +151,7 @@ class LyricsAligner():
         accuracy = totalCorrectDurations / totalDurations
         logger.info("accuracy: {:.2f}".format(accuracy))                
 
+
     def alignSectionLinkProbableSections(self,  extractedPitchList,    currSectionLink):
         '''
         runs alignment on given audio multiple times with a list of probable sections with their corresponding lyrics
@@ -181,6 +179,17 @@ class LyricsAligner():
          
          
                
+    def extractNoteOnsetsAndEval(self, currSectionLink):
+                    '''
+                    only extract note onsets and eval note onset extraction
+                    '''
+                    URIrecOnsets = self.recording.recordingNoExtURI + '.alignedNotes.txt'
+                    fe = FeatureExtractor(self.path_to_hcopy, currSectionLink) 
+                    
+                    gr_truth_URI = fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
+                    extractedOnsetsURI =  fe.onsetDetector.extractNoteOnsets(currSectionLink.URIRecordingChunk + '.wav')
+                    
+                    print "evaluateTranscriptions( '"  + gr_truth_URI  + "','"  + extractedOnsetsURI + "')"
 
 
 
@@ -192,7 +201,7 @@ class LyricsAligner():
         #     read from file result
             URIRecordingChunkResynthesizedNoExt = currSectionLink.URIRecordingChunk
             detectedAlignedfileName = currSectionLink.URIRecordingChunk + tokenLevelAlignedSuffix
-            fe = FeatureExtractor(self.path_to_hcopy) 
+            fe = FeatureExtractor(self.path_to_hcopy, currSectionLink) 
             
             if not os.path.isfile(detectedAlignedfileName):
                 
@@ -214,11 +223,10 @@ class LyricsAligner():
                          
                     fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)
                 
-    #             currSectionLink.lyricsWithModels.printWordsAndStates()
+    #             sectionLink.lyricsWithModels.printWordsAndStates()
                 alpha = 0.97
                 decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
-            #  TODO: DEBUG: do not load models
-            # decoder = Decoder(lyrics, withModels=False, numStates=86)
+
             #################### decode
                 
 
@@ -226,17 +234,15 @@ class LyricsAligner():
                 if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
                     URIrecOnsets = self.recording.recordingNoExtURI + '.alignedNotes.txt'
     
-                    fe.onsetDetector.parserNoteOnsetsGrTruth(URIrecOnsets, currSectionLink.beginTs, currSectionLink.endTs)
-                    
-    #                 #### EXPERIMENT: use phone annotations instead:
-    #                 onsetTimestamps = getOnsetsFromPhonemeAnnos(URIRecordingChunkResynthesizedNoExt)
+                    gr_truth_URI = fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
                     
                 elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
                     
-                    fe.onsetDetector.parserNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
+                    extractedOnsetsURI =  fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
                 
                 detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
                 detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
+                
                 
                 ##### write all decoded output persistently to files
                 tokenAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
@@ -285,6 +291,9 @@ def loadMakamRecording(mbRecordingID, audioFileURI, symbtrtxtURI, sectionMetadat
     '''
     
     makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataDict)
+    makamScore.printSectionsAndLyrics()
+    raw_input("make sure lyrics are correct in sections. if not correct change URL to get file from in  get_section_metadata_dict... then press key")
+
     mr = MakamRecording(mbRecordingID, audioFileURI, makamScore, sectionLinksDict, withAnnotations)
     
     return mr  
@@ -328,40 +337,9 @@ def getSectionLinkBybeginTs(sectionLinks, queryBeginTs):
    
 
 
-
-def downloadSymbTr(workMBID, outputDirURI):
-    
-    symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
-    symbTrCompositionName = symbtr['name']
-    
-    URL = 'https://raw.githubusercontent.com/MTG/SymbTr/master/txt/' + symbTrCompositionName + '.txt'
-    outputFileURI = os.path.join(outputDirURI, symbTrCompositionName + '.txt')
-    fetchFileFromURL(URL, outputFileURI)
-   
-    return outputFileURI
     
     
     
-def download_wav(musicbrainzid, outputDir):
-        '''
-        download wav for MB recording id from makam collection
-        '''
-        mp3FileURI = dunya.makam.download_mp3(musicbrainzid, outputDir)
-    ###### mp3 to Wav: way 1
-    #         newName = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.mp3')
-    #         os.rename(mp3FileURI, newName )
-    #         mp3ToWav = Mp3ToWav()
-    #         wavFileURI = mp3ToWav.run('dummyMBID', newName)
-        
-        ###### mp3 to Wav: way 2
-        wavFileURI = os.path.splitext(mp3FileURI)[0] + '.wav'
-        if os.path.isfile(wavFileURI):
-            return wavFileURI
-            
-        pipe = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', mp3FileURI, wavFileURI])
-        pipe.wait()
-    
-        return wavFileURI
 
 
 

@@ -164,7 +164,9 @@ def loadMakamScore(pathToComposition):
     '''
     same as loadLyrics, but return MakamScoreOld, so that all lyrics can be shown if needed
     '''
-    Phonetizer.initLookupTable(False,  'grapheme2METUphonemeLookupTable')
+    
+    lookupTableURI= os.path.join(os.path.dirname(os.path.realpath(__file__)) , 'grapheme2METUphonemeLookupTable')
+    Phonetizer.initLookupTable(False,  lookupTableURI)
     
     os.chdir(pathToComposition)
 

@@ -457,6 +457,8 @@ def addTimeShift( listTsAndTokens,   timeShift=0):
 
 
 def fetchFileFromURL(URL, outputFileURI):
+        print "fetching file from URL {}...".format(URL)
+
         response = urllib2.urlopen(URL)
         a = response.read()
         with open(outputFileURI,'w') as f:

@@ -43,7 +43,7 @@ class Syllable(_SyllableBase):
             self.phonemes = []
             
             # instrument
-            if self.text == '_SAZ_':
+            if self.text == '_SAZ_' or '_SAZ_' in self.text:
                 # TODO: replace with other model instead of silence
                 self.phonemes.append(Phoneme('sil'))
                 # TODO: does sp at end of sp make sence? 
