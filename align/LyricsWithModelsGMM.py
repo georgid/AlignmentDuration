@@ -65,8 +65,9 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
         import pickle
         try:
             model = pickle.load(file(modelsURI))
-        except BaseException:
-            sys.exit("no model with URI {}. Make sure the correct fold is given".format(modelsURI))
+        except Exception:
+            traceback.print_exc()
+            sys.exit("problem loading model {}. Make sure the correct fold is given".format(modelsURI))
             model = None
         return model, modelName
     

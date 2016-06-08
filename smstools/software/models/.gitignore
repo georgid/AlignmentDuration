@@ -1,0 +1,11 @@
+/__init__.pyc
+/dftModel.pyc
+/harmonicModel.pyc
+/hprModel.pyc
+/hpsModel.pyc
+/sineModel.pyc
+/sprModel.pyc
+/spsModel.pyc
+/stft.pyc
+/stochasticModel.pyc
+/utilFunctions.pyc
