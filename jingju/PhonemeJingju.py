@@ -7,8 +7,6 @@ import sys
 import numpy
 from utilsLyrics.Utilz import loadTextFile
 from align._PhonemeBase import _PhonemeBase
-import os
-from align.ParametersAlgo import ParametersAlgo
 
 class PhonemeJingju(_PhonemeBase):
    
@@ -24,10 +22,8 @@ class PhonemeJingju(_PhonemeBase):
 
     
     def isVowel(self):
-        URI_model_noFolds  = os.path.join(ParametersAlgo.MODELS_DIR, os.pardir)
-        vowelListURI = URI_model_noFolds + '/hmmlistVowels'
+        vowelListURI = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/models/hmmlistVowels'
         
-#         raw_input('{}'.format(vowelListURI))
 
         vowels = loadTextFile(vowelListURI)
         

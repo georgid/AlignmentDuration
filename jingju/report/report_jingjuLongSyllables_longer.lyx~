@@ -129,6 +129,22 @@ maketitle
  
 \end_layout
 
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+sloppy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
@@ -150,13 +166,13 @@ LONG: Lyrics are one of the most important aspects of vocal music.
 
  
 \color black
-The task of lyrics synchronisation (a.k.a.
- lyrics-to-audio alignment) has as an aim to find in an automatic way a
- match between two musical respresentations of a composition: the singing
- voice and the corresponding lyrics.
- Tracking lyrics may be used to automatically outline the structure of an
- audio recording (inferred from lyric), which can be beneficial for musicologist
-s or singing students.
+The task of lyrics synchronisation (also known as lyrics-to-audio alignment)
+ has as an aim to find in an automatic way a match between two respresentations
+ of a musical composition: the singing voice and the corresponding lyrics.
+ Lyrics-to-audio alignment may be used in various applications: for example
+ to automatically match structural sections from lyrics (verse, chorus)
+ to the recording of a particularsinger.
+ This can be beneficial for musicologists or singing students.
 
 \color inherit
  
@@ -176,7 +192,8 @@ REF
 \color inherit
 : ANGUERA.
  However, Compared to speech, singing voice has some substantially different
- characteristics: harmonics, pitch range, pronunciation, vibrato, etc.
+ characteristics including harmonics, pitch range, pronunciation, vibrato,
+ etc.
  In particular, unlike speech, for singing voice, durations of vocals have
  on average somewhat higher variation 
 \begin_inset CommandInset citation
@@ -195,9 +212,9 @@ y longer compared to other syllables.
 \end_layout
 
 \begin_layout Standard
-Further, a confinement of current work on modeling lyrics is imposed by
- the necessity of a large speech corpus, on which phoneme models are typically
- trained 
+Further, current approaches on modeling lyrics are confined by the necessity
+ of a large speech corpus, on which phoneme models are typically trained
+ 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "fujihara2012lyrics,Mesaros96automaticalignment"
@@ -236,7 +253,6 @@ In this study
 \color black
 we propose how to automatically align singing voice to lyrics by a probabilistic
  approach, which models explicitly phoneme durations.
- Phoneme models are trained directly on annotated singing voice.
  
 \color inherit
 We show that incorporating some prior expectation of syllable durations,
@@ -244,7 +260,10 @@ We show that incorporating some prior expectation of syllable durations,
  The approach is tested on material from Jingju opera (also known as Beijing
  or Peking opera), which is characterized by its particularly long syllable
  durations.
- 
+
+\color black
+ Phoneme models are trained directly on a small corpus of annotated singing
+ voice.
 \end_layout
 
 \begin_layout Section
@@ -332,10 +351,11 @@ Related work
 \begin_layout Standard
 
 \color black
-Current Lyrics-to-audio alignment is mostly
+Current lyrics-to-audio alignment is mostly
 \color inherit
- based on an speech-adopted approach: phonetic recognizer that models phonemes
- with hidden Markov models (HMMs) 
+ based on an approaches, adopted from text-to-speech alignment.
+ Usually a phonetic recognizer is build, whereby for each phoneme a hidden
+ Markov model (HMM) is trained 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "fujihara2012lyrics,Mesaros96automaticalignment"
@@ -348,11 +368,11 @@ key "fujihara2012lyrics,Mesaros96automaticalignment"
 Describe Fujihara.
  
 \color inherit
-HMMs have been originally developed to model speech phonemes for applications
- like text-to-speech alignment.
- HMMs have the drawback that in general they are not capable to represent
- well vowels with long and highly-variable durations, because the waiting
- time in a state in traditional HMMs cannot be unlimitedly long 
+HMMs, being originally applied to model spoken phonemes,  have the drawback
+ that in general they are not capable to represent well vowels with long
+ and highly-variable durations.
+ This is because the waiting time in a state in traditional HMMs cannot
+ be unlimitedly long 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "rabiner1989tutorial"
@@ -360,12 +380,11 @@ key "rabiner1989tutorial"
 \end_inset
 
 .
- Duration can be modeled by 
+ Durations can be modeled instead by 
 \color black
-a duration-explicit hidden Markov model
+a duration-explicit hidden Markov model (DHMM)
 \color inherit
- (a.k.a.
- hidden semi-Markov models).
+ (also known as hidden semi-Markov models).
  In DHMMs the underlying process is allowed to be a semi-Markov chain with
  variable duration of each state 
 \begin_inset CommandInset citation
@@ -375,8 +394,10 @@ key "yu2010hidden"
 \end_inset
 
 .
- DHMMs have been shown to be successful for modeling chord durations in
- automatic chord recognition 
+ DHMMs have been shown to be successful for modeling other problems from
+ the domain of music information retrieval: They have been, for example
+ successful in representing chord durations in automatic chord recognition
+ 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "chen2012chord"
@@ -549,7 +570,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename praat_annotation_sentence_refDurs.eps
+	filename praat_annotation_sentence_refDurs.png
 	width 84page%
 
 \end_inset
@@ -2608,7 +2629,11 @@ Acknowledgements
 \end_layout
 
 \begin_layout Standard
-This work is partly supported by the European Research Council under the
+
+\color red
+Weng Lei
+\color inherit
+ This work is partly supported by the European Research Council under the
  European Union’s Seventh Framework Program, as part of the CompMusic project
  (ERC grant agreement 267583) and partly by the AGAUR research grant.
 \end_layout
