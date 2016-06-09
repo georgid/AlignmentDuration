@@ -69,15 +69,15 @@ def runWithParameters(argv):
     
     extractedPitchList = None
     outputDir = 'test'
-    lyricsAligner.alignRecording( extractedPitchList, outputDir)
+    totalDetectedTokenList, sectionLinksDict = lyricsAligner.alignRecording( extractedPitchList, outputDir)
     
-    sectionDetectedList  = []
-    for sectionLink in  lyricsAligner.recording.sectionAnnos:
-        if hasattr(sectionLink, 'detectedTokenList'):
-            sectionDetectedList.append(sectionLink.detectedTokenList)
-   
-    print sectionDetectedList
-   
+    
+    ret = {}
+
+    ret['alignedLyricsSyllables']=totalDetectedTokenList
+    ret['sectionlinks'] = sectionLinksDict
+    print ret 
+    
 #     if detectedTokenList != None:
 #         currAcc, correctDuration, totalDuration = calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctDuration, totalDuration)
 #     accuracyList.append(currAcc)
@@ -86,8 +86,8 @@ def runWithParameters(argv):
 #     correctDuration, totalDuration = _evalAccuracy(currSectionLink.section.lyricsTextGrid, detectedTokenList, evalLevel, currSectionLink.fromSyllableIdx, currSectionLink.toSyllableIdx  )
 #     acc = correctDuration / totalDuration
 #     print "result is: " + str(acc)
-    
-    
+     
+    lyricsAligner.evalAccuracy()
     
     
     correctDurationOracle = 0

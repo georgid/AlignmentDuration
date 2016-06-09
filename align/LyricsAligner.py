@@ -125,7 +125,7 @@ class LyricsAligner():
         pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
         if pathEvaluation not in sys.path:
                     sys.path.append(pathEvaluation)
-        from AccuracyEvaluator import _evalAccuracy
+#         from AccuracyEvaluator import _evalAccuracy
                         
         totalCorrectDurations = 0
         totalDurations = 0    
@@ -141,9 +141,15 @@ class LyricsAligner():
                         totalDuration = 1
                         
                
-                        evalLevel = tierAliases.words
+                        evalLevel = tierAliases.pinyin
                         URIRecordingChunkTextGrid = currSectionLink.URIRecordingChunk + ANNOTATION_EXT
-                        correctDuration, totalDuration = _evalAccuracy(URIRecordingChunkTextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.beginTs )
+                        if ParametersAlgo.FOR_JINGJU:
+                            audioName = os.path.basename(self.recording.recordingNoExtURI)
+                            path_TextGrid =  os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(self.recording.recordingNoExtURI) ), os.path.pardir, os.path.pardir)) 
+
+                            URI_TextGrid = os.path.join(path_TextGrid, audioName + ANNOTATION_EXT)
+                            
+#                             correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.section.fromSyllableIdx, currSectionLink.section.toSyllableIdx  )
             
                         totalCorrectDurations += correctDuration
                         totalDurations += totalDuration

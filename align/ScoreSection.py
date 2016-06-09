@@ -38,6 +38,9 @@ class ScoreSection(_Section):
 
 
 class LyricsSection(_Section):
+    '''
+    used in Jingju
+    '''
     
     def __init__(self, lyricsTextGrid,  fromSyllableIdx, toSyllableIdx  ):
         

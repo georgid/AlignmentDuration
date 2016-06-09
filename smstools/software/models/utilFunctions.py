@@ -3,19 +3,27 @@ from scipy.signal import resample, blackmanharris, triang
 from scipy.fftpack import fft, ifft, fftshift
 import math, copy, sys, os
 from scipy.io.wavfile import write, read
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), './utilFunctions_C/'))
+import traceback
+
+utilsPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'utilFunctions_C/')
+print utilsPath
+
+sys.path.append(utilsPath)
+print sys.path
+
 try:
 	import utilFunctions_C as UF_C
 except ImportError:
-	print "\n"
-	print "-------------------------------------------------------------------------------"
-	print "Warning:"
-	print "Cython modules for some of the core functions were not imported."
-	print "Please refer to the README file for the instructions to compile the cython modules"
-	print "Exiting the code!!"
-	print "-------------------------------------------------------------------------------"
-	print "\n"
-	sys.exit(0)
+    traceback.print_exc()
+    print "\n"
+    print "-------------------------------------------------------------------------------"
+    print "Warning:"
+    print "Cython modules for some of the core functions were not imported."
+    print "Please refer to the README file for the instructions to compile the cython modules"
+    print "Exiting the code!!"
+    print "-------------------------------------------------------------------------------"
+    print "\n"
+    sys.exit(0)
 
 def isPower2(num):
 	"""

@@ -22,7 +22,16 @@ class JingjuRecording(_RecordingBase):
         _RecordingBase.__init__(self, mbRecordingID, audioFileURI, score)
         
         self._loadsectionTimeStampsLinks(annotationURI, annotaionLinesListNoPauses)
-        
+        self.sectionLinksOrAnnoDict = {}
+
+        # list sections as dicts
+        sectionAnnosMelStructList = []
+        for i, sectionAnno in enumerate(self.sectionAnnos):
+            currSectionMelStruct = {}
+            currSectionMelStruct['melodicStructure']= 'line_' + str(i+1)
+            currSectionMelStruct['time']= [sectionAnno.beginTs,sectionAnno.endTs]
+            sectionAnnosMelStructList.append(currSectionMelStruct)
+        self.sectionLinksOrAnnoDict['section_annotations'] = sectionAnnosMelStructList
         
     def _loadsectionTimeStampsLinks(self, annotationURI, annotaionLinesListNoPauses):
 
