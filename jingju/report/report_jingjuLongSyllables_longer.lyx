@@ -17,7 +17,7 @@
 % requires the newapa Bibtex style
 
 \usepackage{fma2016}
-
+\setcitestyle{round}
 
 % Title.
 % ------
@@ -145,13 +145,43 @@ sloppy
 
 \end_layout
 
+\begin_layout Abstract
+In this study we propose how to modify a standard approach for text-to-speech
+ alignment to apply in the case of alignment of lyrics and singing voice.
+
+\color black
+ We model phoneme durations by means of a duration-explicit hidden Markov
+ model (DHMM) phonetic recognizer based on MFCCs
+\color inherit
+.
+ The phoneme durations are empirically set in a probabilistic way, based
+ on prior knowledge about the lyrics structure and metric principles, specific
+ for the Jingju opera music tradition.
+ 
+\color black
+Phoneme models are GMMs trained directly on a small corpus of annotated
+ singing voice.
+
+\color inherit
+ The alignment is evaluated on a cappella material from Jingju opera, which
+ is characterized by its particularly long syllable durations.
+
+\color black
+ 
+\color inherit
+Results show that the incorporation of music-specific knowledge results
+ in a very high alignment accuracy, outperforming significantly a baseline
+ HMM-based approach.
+ 
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
 
 \begin_layout Standard
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -166,13 +196,14 @@ LONG: Lyrics are one of the most important aspects of vocal music.
 
  
 \color black
-The task of lyrics synchronisation (also known as lyrics-to-audio alignment)
- has as an aim to find in an automatic way a match between two respresentations
+The task of lyrics synchronization (also known as lyrics-to-audio alignment)
+ has as an aim to find in an automatic way a match between two representations
  of a musical composition: the singing voice and the corresponding lyrics.
  Lyrics-to-audio alignment may be used in various applications: for example
  to automatically match structural sections from lyrics (verse, chorus)
- to the recording of a particularsinger.
- This can be beneficial for musicologists or singing students.
+ to a recording of a particular singer.
+ This facilitates navigation and can thus be beneficial for musicologists
+ or singing students.
 
 \color inherit
  
@@ -187,11 +218,14 @@ The problem of lyrics-to-audio alignment has inherent relation to text-to-speech
 \color inherit
 Text-to-speech alignment has been a research field for more than 20 years
  and thus yielded established successful ways for modeling phonemes 
-\color red
-REF
-\color inherit
-: ANGUERA.
- However, Compared to speech, singing voice has some substantially different
+\begin_inset CommandInset citation
+LatexCommand citep
+key "anguera2014audio"
+
+\end_inset
+
+.
+ However, compared to speech, singing voice has some substantially different
  characteristics including harmonics, pitch range, pronunciation, vibrato,
  etc.
  In particular, unlike speech, for singing voice, durations of vocals have
@@ -205,27 +239,28 @@ key "kruspekeyword"
 .
  This suggests that applying an approach from speech recognition out of
  the box might not lead to satisfactory results.
- Traditional music poses an additional challenge: as a way to express an
- emphasis, singers might prolong particular syllables to a duration substantiall
-y longer compared to other syllables.
+ Traditional music, characterized by frequent local tempo changes, poses
+ an additional challenge: Singers might prolong substantially certain syllables,
+ as a way to emphasize them or as an expressive singing element.
  
 \end_layout
 
 \begin_layout Standard
-Further, current approaches on modeling lyrics are confined by the necessity
+Furthermore, current approaches on modeling lyrics are confined by the necessity
  of a large speech corpus, on which phoneme models are typically trained
  
 \begin_inset CommandInset citation
 LatexCommand citep
-key "fujihara2012lyrics,Mesaros96automaticalignment"
+key "fujihara2012lyrics"
 
 \end_inset
 
 .
- Such corpora might not be present for every language or not freely available.
+ Such corpora might not be present for every language or not freely available,
+ as is the case for Mandarin.
  
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
  LONG: This is necessary because of the lack of a big enough annotated training
@@ -250,21 +285,11 @@ key "hansen2012recognition"
 \end_layout
 
 \begin_layout Standard
-In this study 
-\color black
-we propose how to automatically align singing voice to lyrics by a probabilistic
- approach, which models explicitly phoneme durations.
- 
-\color inherit
-We show that incorporating some prior expectation of syllable durations,
- based on musical principles, brings improvement over a baseline method.
- The approach is tested on material from Jingju opera (also known as Beijing
- or Peking opera), which is characterized by its particularly long syllable
- durations.
-
-\color black
- Phoneme models are trained directly on a small corpus of annotated singing
- voice.
+In this paper we propose a lyrics-to-audio alignment method, which relies
+ on some of the specificities of lyrics structure of Jingju opera as an
+ additional cue to an appoach adopted from speech alignment.
+ One of the goals of the study is to show that enhancing computational tasks
+ with music-specific knowledge might improve accuracy.
 \end_layout
 
 \begin_layout Section
@@ -272,8 +297,9 @@ Background on Jingju opera music principles
 \end_layout
 
 \begin_layout Standard
-Lyrics in Jingju opera come from poetry and are thus commonly structured
- into couplets: each couplet has two lyrics lines.
+Lyrics in Jingju opera (also known as Beijing or Peking opera) come from
+ poetry and are thus commonly structured into couplets: each couplet has
+ two lyrics lines.
  A line is usually divided into 3 syllable groups: a group is called 
 \emph on
 dou
@@ -318,11 +344,13 @@ key syllable.
 \end_layout
 
 \begin_layout Standard
-Each aria can be arranged into one or more metrical pattern (
+In addition to that, each aria from Jingju opera can be arranged into one
+ or more metrical pattern (called 
 \emph on
 banshi
 \emph default
 ): it indicates the mood of singing and is correlated to meter and tempo
+ 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "wichmann1991listening"
@@ -336,13 +364,12 @@ key "wichmann1991listening"
 \color black
 Usually an aria starts with a slow 
 \emph on
-banshi
+banshi,
 \emph default
  which gradually changes a couple of times to a faster one, to express more
  intense mood.
-
-\color red
- 
+ The language of Jingju is standard Mandarin with some slight dialect.
+  
 \end_layout
 
 \begin_layout Section
@@ -354,28 +381,43 @@ Related work
 \color black
 Current lyrics-to-audio alignment is mostly
 \color inherit
- based on an approaches, adopted from text-to-speech alignment.
- Usually a phonetic recognizer is build, whereby for each phoneme a hidden
- Markov model (HMM) is trained 
+ based on an approaches, adopted from text-to-speech alignment 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "fujihara2012lyrics,Mesaros96automaticalignment"
+key "Mesaros96automaticalignment,fujihara2011lyricsynchronizer"
+
+\end_inset
+
+: A phonetic recognizer is built from speech corpus, whereby a hidden Markov
+ model (HMM) is trained for each phoneme.
+ The acoustics of phonemes are described by mel frequency cepstral coefficients
+ (MFCCs).
+ In an example of such an approach, polyphonic Japanese and English pop
+ music is aligned 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "fujihara2011lyricsynchronizer"
 
 \end_inset
 
 .
+ The authors propose to adapt the speech phoneme models to the specific
+ acoustics of singing voice by means of Maximum Likelihood Linear Regression.
+ This is necessary because of the lack of a big enough singing voice corpus
+ for training.
+ Further, an automatic segregation of the vocal line is performed, in order
+ to reduce the spectral content from background instruments.
  
-\color red
-Describe Fujihara.
- 
-\color inherit
+\end_layout
+
+\begin_layout Standard
 HMMs, being originally applied to model spoken phonemes,  have the drawback
- that in general they are not capable to represent well vowels with long
- and highly-variable durations.
+ that, in general, are not capable to represent well vowels with long and
+ highly-variable durations.
  This is because the waiting time in a state in traditional HMMs cannot
  be unlimitedly long 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citep
 key "rabiner1989tutorial"
 
 \end_inset
@@ -385,34 +427,57 @@ key "rabiner1989tutorial"
 \color black
 a duration-explicit hidden Markov model (DHMM)
 \color inherit
- (also known as hidden semi-Markov models).
+ (also known as hidden semi-Markov model).
  In DHMMs the underlying process is allowed to be a semi-Markov chain with
  variable duration of each state 
 \begin_inset CommandInset citation
-LatexCommand cite
+LatexCommand citep
 key "yu2010hidden"
 
 \end_inset
 
 .
- DHMMs have been shown to be successful for modeling other problems from
- the domain of music information retrieval: They have been, for example
- successful in representing chord durations in automatic chord recognition
- 
+ DHMMs have been applied to detect keywords from a cappella English pop
+ songs 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citep
+key "kruspe2015keyword"
+
+\end_inset
+
+.
+ The author showed that accuracy of detection increases if the duration
+ of each phoneme is learned from a singing dataset.
+ In addition, DHMMs have been shown to be successful for modeling other
+ problems from the domain of music information retrieval: They have been,
+ for example successful in representing chord durations in automatic chord
+ recognition 
+\begin_inset CommandInset citation
+LatexCommand citep
 key "chen2012chord"
 
 \end_inset
 
 .
- 
-\color red
-HERE Kruspe durations.
-\color inherit
+\end_layout
 
+\begin_layout Standard
+To our knowledge, very few studies of lyrics-to-audio alignment have been
+ conducted on songs with Chinese language 
+\color black
+
+\begin_inset CommandInset citation
+LatexCommand citep
+key "wong2007automatic"
+
+\end_inset
+
+.
+
+\color inherit
+ 
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -426,30 +491,6 @@ Very few works have trained models directly from singing voice:
 add from YILE: Anna Kruspe, Hansen, 
 \color inherit
 ADD Kruspe: songified.
-\end_layout
-
-\begin_layout Plain Layout
-Not a lot of work on non-western or traditional music: 
-\color black
-With a few exceptions 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "wong2007automatic"
-
-\end_inset
-
-, to-date computational research on lyrics-to-audio alignment has been focused
- mainly on western popular music
-\color inherit
- 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "fujihara2012lyrics"
-
-\end_inset
-
-.
- 
 \end_layout
 
 \end_inset
@@ -514,26 +555,21 @@ ntoSectionsFromAnno
 \end_layout
 
 \begin_layout Standard
-Then each lyrics line is expanded to a sequence of phoneme models
-\color black
-.
-
-\color inherit
- Each phoneme model yields an observation probability for singing audio,
- based on its mel frequency cepstral coefficients (MFCC), whereby reference
- syllable durations guide the alignment process.
+Then each lyrics line is expanded to a sequence of phoneme models, whereby
+ reference syllable durations guide the alignment process.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
+\align left
 \begin_inset Graphics
-	filename systemOverview.svg
-	width 110col%
+	filename systemOverview.eps
+	width 95col%
 
 \end_inset
 
@@ -573,8 +609,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename praat_annotation_sentence_refDurs.png
-	width 84page%
+	filename praat_annotation_sentence_refDurs.eps
+	width 81page%
 
 \end_inset
 
@@ -642,13 +678,13 @@ Rule-based duration modeling
 \end_layout
 
 \begin_layout Standard
-The idea of the DHMM is that the actual duration of a phoneme can be seen
- as being generated by a statistical distribution with mean centered at
- an expected reference duration.
- The reference durations can be assigned using any prior knowledge as, for
- example, structure of lyrics segments 
+The idea of the duration modeling is that the actual duration of a phoneme
+ can be seen as being generated by a statistical distribution with highest
+ probability at an expected reference duration.
+ The reference durations can be assigned using any prior knowledge like
+ for example structure of lyrics segments, as has been done by 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citet
 key "wang2004lyrically"
 
 \end_inset
@@ -674,7 +710,8 @@ a
 \emph on
 dou
 \emph default
- is assigned longer reference duration, while the rest get equal durations.
+ is assigned longer reference duration according to empirically found ratios,
+ while the rest get equal durations.
 \begin_inset Note Comment
 status collapsed
 
@@ -693,7 +730,7 @@ key syllable
 banshi
 \emph default
  is prolonged additionally.
- Thus we lenghtened additionally the reference syllable duration of these
+ Thus we lengthened additionally the reference syllable duration of these
  last 
 \emph on
 key syllables.
@@ -712,7 +749,7 @@ reference "example"
 dou
 \emph default
  groups the 3rd, 6th and last syllable are expected to be prolonged.
- Note that this expectation does not hold for the 3rd syllable.
+ Note that for the example this expectation does not hold for the 3rd syllable.
 \end_layout
 
 \begin_layout Standard
@@ -741,39 +778,59 @@ LONG: Another complication are the dphtongs and triphtong syllables in the
 
 \end_inset
 
- 
-\color red
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
-\color red
-TODO:
-\color inherit
- describe how it works...
-\end_layout
-
+A syllable has a middle part (nucleus) being a simple vowel, a diphthong,
+ or triphthong.
+ An initial part (a consonant) or a final part (a group of consonants) is
+ optional.
+ We assign consonants a fixed reference duration 
+\begin_inset Formula $R_{c}=0.3$
 \end_inset
 
-
-\color inherit
+ seconds, while the rest of the syllable is distributed equally among vowels.
  
 \begin_inset Note Comment
 status open
 
 \begin_layout Plain Layout
-IMPL: jingju.SyllableJingju.SyllableJingju.calcPhonemeDurations
+consonant duration is fixed.
+ ParametersAlgo.CONSONANT_DURATION.
+ see IMPL: jingju.SyllableJingju.SyllableJingju.calcPhonemeDurations
 \end_layout
 
 \end_inset
 
 
 \color black
-The reference durations are linearly scaled to a reference number of frames
- according to automatically detected tempo.
- 
+The reference durations 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+ are linearly scaled to a reference number of frames according to the ratio
+ between the number of phonemes in a lyrics line and the duration of its
+ corresponding audio segment.
+\end_layout
+
+\begin_layout Subsection
+Phoneme models
+\end_layout
+
+\begin_layout Standard
+For each phoneme a GMM is trained on annotated a cappella singing.
+ The first 13 
+\color black
+MFCCs
+\color inherit
+ and their ∆ and ∆∆ are extracted from 25ms audio frames with the hop size
+ of 10ms.
+ The extracted features are then fit into a phoneme GMM with 40 components:
+ a number of components usually proved as sufficient in speech recognition.
+ A model for silent pause 
+\emph on
+sp
+\emph default
+ is added at the end of each syllable, which is optional on decoding.
+ This allows to accommodate the frequent for Jingju regions of pauses after
+ some syllables.
 \end_layout
 
 \begin_layout Subsection
@@ -807,6 +864,28 @@ sp at end of syllables are not optional.
 \end_layout
 
 \begin_layout Standard
+The syllables for a line are expanded to a sequence of phonemes based on
+ grapheme-to-phoneme rules 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+We built a pinyin-to-X-Sampa mapping available at https://github.com/georgid/Alig
+nmentDuration/blob/noteOnsets/jingju/syl2ph.txt
+\end_layout
+
+\end_inset
+
+.
+ Then the trained GMMs are concatenated into a phonemes network, represented
+ by a HMM, where each GMM is a state.
+ The HMM is aligned to the MFCC features, extracted from the aria, being
+ aligned.
+ The most likely state sequence is found by means of a forced alignment
+ with Viterbi decoding.
+\end_layout
+
+\begin_layout Standard
 
 \color black
 We have adopted the idea of 
@@ -816,28 +895,206 @@ key "chen2012chord"
 
 \end_inset
 
- not to represent durations by explicitly additional counter states, but
- instead to modify the Viterbi forced alignment stage: 
+ not to represent durations by an additional counter state in the HMM, but
+ instead to modify the Viterbi decoding stage
+\color inherit
+.
+ Let us define
+\end_layout
+
+\begin_layout Description
+\begin_inset Formula $\delta_{t}(i):$
+\end_inset
+
+ probability for the path with highest probability ending in state 
+\emph on
+i
+\emph default
+ at time 
+\emph on
+t
+\emph default
+ (comply with the notation of 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "III. B"
+key "rabiner1989tutorial"
+
+\end_inset
+
+)) 
+\end_layout
+
+\begin_layout Standard
+Now maximization is carried over the most likely duration for each state,
+ instead of over different states:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\delta_{t}(i)=\max_{d}\{\delta_{t-d}(i-1)\thinspace P_{i}(d)\thinspace[B_{t}(i,d)]\}\label{eq:decoding}
+\end{equation}
+
+\end_inset
+
+
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
-
-\color black
-LONG: Thus our model reduces to a standard hidden Markov model (HMM).
- In what follows we describe how in the Viterbi decoding stage we maximizes
- over durations.
+Alpha=0.97, maybe it should be tested with diff alpha
 \end_layout
 
 \end_inset
 
-The duration of a phoneme is modeled as a normal distribution, centered
- at 
+
+\end_layout
+
+\begin_layout Standard
+where 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $B_{t}(i,d)$
+\end_inset
+
+ is the observation probability of staying 
+\begin_inset Formula $d$
+\end_inset
+
+ frames in state 
+\begin_inset Formula $i$
+\end_inset
+
+ until frame 
+\begin_inset Formula $t$
+\end_inset
+
+.
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color black
+The duration 
+\begin_inset Formula $d$
+\end_inset
+
+ of a phoneme is modeled as a normal distribution 
+\begin_inset Formula ${\cal N}\sim(R_{i};\sigma)$
+\end_inset
+
+, with a peak at 
 \begin_inset Formula $R_{i}$
 \end_inset
 
 .
- More details can be found in 
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+Thus, we chose to restrict the domain of 
+\begin_inset Formula $d$
+\end_inset
+
+ to 
+\begin_inset Formula $(\max\{R_{i}-\sigma,1\},R_{i}+\sigma)$
+\end_inset
+
+.
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+Note that in forced alignment the source state could be only the previous
+ state 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $i-1$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+.
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color black
+More details on the inference with DHMM can be found in our previous work
+ 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Dzhambazov"
@@ -845,21 +1102,26 @@ key "Dzhambazov"
 \end_inset
 
 .
- We opted for a global standard deviation 
-\begin_inset Formula $d_{c}$
+ In comparison to our previous work, we opted for dividing the global standard
+ deviation 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ into 
+\begin_inset Formula $\sigma_{c}$
 \end_inset
 
  for consonants and 
-\begin_inset Formula $d_{v}$
+\begin_inset Formula $\sigma_{v}$
 \end_inset
 
  for vowels.
  Proper values for 
-\begin_inset Formula $d_{c}$
+\begin_inset Formula $\sigma_{c}$
 \end_inset
 
  and 
-\begin_inset Formula $d_{v}$
+\begin_inset Formula $\sigma_{v}$
 \end_inset
 
  assure that a phoneme sung longer or shorter than the expected 
@@ -867,36 +1129,34 @@ key "Dzhambazov"
 \end_inset
 
  can be adequately handled.
+ Another modification we did is that 
+\begin_inset Formula $sp$
+\end_inset
+
+ models are assigned an exponential distribution, because the duration of
+ inter-syllable silences cannot be predicted.
  
-\end_layout
+\begin_inset Note Comment
+status open
 
-\begin_layout Subsection
-Phoneme models
-\end_layout
+\begin_layout Plain Layout
 
-\begin_layout Standard
-
-\color red
-What are HMMs (forced alignment, no transition prob, a model is a phoneme
- model, 
-\end_layout
-
-\begin_layout Standard
-The first 13 
 \color black
-MFCCs
-\color inherit
- and their ∆ and ∆∆ are extracted from 25ms audio frames with the hop size
- of 10ms from the a cappella singing.
- The extracted features are then fed to fit a GMM with 40 components for
- each phoneme
+IMPL: distribution type set in align._LyricsWithModelsBase._LyricsWithModelsBase._p
+honemes2stateNetwork.
+ maximum constant duration in ParametersAlgo.GLOBAL_WAIT_PROB.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
 Dataset
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Dataset"
+name "sec:Dataset"
 
 \end_inset
 
@@ -904,11 +1164,23 @@ name "sub:Dataset"
 \end_layout
 
 \begin_layout Standard
-The dataset consists of excerpts from 15 arias with a cappella female voice.
- For a given aria are present two versions: a recording with voice plus
+The dataset has been especially compiled for this study and consists of
+ excerpts from 15 arias of two female singers, chosen from a 
+\emph on
+CompMusic 
+\emph default
+corpus of Jingju arias 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "repetto2014creating"
+
+\end_inset
+
+.
+ For a given aria were present two versions: a recording with voice plus
  accompaniment and an accompaniment-only one.
- Thus a cappella singing is generated by subtracting the instrumental accompanim
-ent from the complete version
+ Thus a cappella singing was generated by subtracting the instrumental accompani
+ment from the complete version
 \begin_inset Foot
 status open
 
@@ -923,7 +1195,7 @@ The resulting monophonic singing is as clean as if it were a cappella, having
  Table 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "dataset"
+reference "dataset_stats"
 
 \end_inset
 
@@ -934,12 +1206,13 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="6" columns="3">
 <features rotate="0" booktabs="true" tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top" width="0pt">
-<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="20col%">
 <row>
 <cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
@@ -974,7 +1247,9 @@ dataset
 \begin_inset Text
 
 \begin_layout Plain Layout
-duration
+
+\series bold
+duration (minutes)
 \end_layout
 
 \end_inset
@@ -983,7 +1258,7 @@ duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-67 minutes
+67
 \end_layout
 
 \end_inset
@@ -992,7 +1267,7 @@ duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+27
 \end_layout
 
 \end_inset
@@ -1014,7 +1289,7 @@ duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+9.2
 \end_layout
 
 \end_inset
@@ -1023,7 +1298,7 @@ duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+9.9
 \end_layout
 
 \end_inset
@@ -1054,7 +1329,7 @@ duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+10.3
 \end_layout
 
 \end_inset
@@ -1067,7 +1342,7 @@ duration
 \begin_layout Plain Layout
 
 \series bold
-line duration
+line duration (seconds)
 \end_layout
 
 \end_inset
@@ -1076,7 +1351,7 @@ line duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-18.3 sec
+18.3 
 \end_layout
 
 \end_inset
@@ -1085,7 +1360,7 @@ line duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+23.4
 \end_layout
 
 \end_inset
@@ -1098,7 +1373,7 @@ line duration
 \begin_layout Plain Layout
 
 \series bold
-syllable duration
+syllable duration (seconds)
 \end_layout
 
 \end_inset
@@ -1107,7 +1382,7 @@ syllable duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+2.4
 \end_layout
 
 \end_inset
@@ -1116,7 +1391,7 @@ syllable duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+3.1
 \end_layout
 
 \end_inset
@@ -1141,7 +1416,7 @@ Line and syllable averages about the dataset
 
 \begin_inset CommandInset label
 LatexCommand label
-name "dataset"
+name "dataset_stats"
 
 \end_inset
 
@@ -1156,8 +1431,8 @@ name "dataset"
 \begin_layout Standard
 Each aria is annotated on the phoneme level by native Chinese speakers and
  a Jingju opera musicologist.
- The phoneme set has 29 phonemes and is derived from Chinese Pinyin, and
- represented using the X-Sampa standard
+ The phoneme set has 29 phonemes and is derived from Chinese pinyin, and
+ represented using the X-sampa standard
 \begin_inset Foot
 status open
 
@@ -1185,7 +1460,7 @@ key syllables
 key syllable
 \emph default
  is not prolonged and discarded the rest.
- We considered a syllable as being prolonged if it is longer than 10% of
+ We considered a syllable as being prolonged if it is longer than 130% of
  the average syllable duration for the current line.
  
 \begin_inset Note Comment
@@ -1206,9 +1481,8 @@ Experiments
 \end_layout
 
 \begin_layout Standard
-Alignment is evaluated in terms of alignment accuracy as the percentage
- of duration of correctly aligned regions from total audio duration (see
- 
+Alignment accuracy is evaluated as the percentage of duration of correctly
+ aligned syllables from total audio duration (see 
 \begin_inset CommandInset citation
 LatexCommand cite
 after "figure 9"
@@ -1217,15 +1491,17 @@ key "fujihara2011lyricsynchronizer"
 \end_inset
 
  for an example).
- In the context of this work a value of 100 means perfect matching of all
- Mandarin syllable boundaries from the evaluated audio
+ Accuracy is measured for each manually segmented line and accumulated on
+ total for all the recordings
 \begin_inset Foot
 status open
 
 \begin_layout Plain Layout
 To encourage reproducibility of this research an efficient open-source implement
 ation together with documentation is available at https://github.com/georgid/Alig
-nmentDuration/tree/noteOnsets/jingju
+nmentDuration/tree/noteOnsets/jingju.
+ Further, a script for building the models is available at https://github.com/eli
+trout/lyrics/blob/master/code/htk/buildModelHTKSave.py
 \end_layout
 
 \end_inset
@@ -1242,20 +1518,21 @@ To define a glass ceiling accuracy, alignment was performed considering
  phoneme annotations as an oracle for acoustic features.
  Looking at phoneme annotations, we set the probability of a phoneme to
  1 during its time interval and 0 otherwise.
- We found that the median accuracy per line of lyrics is close to 100%,
- which means that the model is generally capable of handling the highly-varying
- vocal durations of Jingju singing.
+ We found that the accuracy per line of lyrics is close to 100%, which means
+ that the model is generally capable of handling the highly-varying vocal
+ durations of Jingju singing.
  Most optimal results were obtained with 
-\begin_inset Formula $d_{c}$
+\begin_inset Formula $\sigma_{c}$
 \end_inset
 
- = 0.7; 
-\begin_inset Formula $d_{v}$
+ = 0.7 seconds; 
+\begin_inset Formula $\sigma_{v}$
 \end_inset
 
- = 3.0 
+ = 2.0 seconds, which are used in experiment 2.
+ 
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
 done by setting parameter withOracle in doitOneChunkAlign.doitOneChunkAlign
@@ -1272,7 +1549,7 @@ For each state for a phoneme, for the frames of its duration assign 1 in
 
 
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 2.0 is much better than 0.1.
@@ -1364,8 +1641,7 @@ Experiment 2: comparison with baseline
 \end_layout
 
 \begin_layout Standard
-As a baseline we employed a standard HMM with Viterbi decoding with the
- 
+As a baseline we employ a standard Viterbi decoding, run with the 
 \emph on
 htk
 \emph default
@@ -1377,8 +1653,8 @@ key "young1993htk"
 \end_inset
 
 .
- For both HMM and DHMM, to assure good generalization of results, evaluation
- is done by cross validation on 3 folds with approximately equal number
+ For both baseline and DHMM, to assure good generalization of results, evaluatio
+n is done by cross validation on 3 folds with approximately equal number
  of syllables:
 \color green
  
@@ -1401,14 +1677,7 @@ TODO
 \end_inset
 
 We have further evaluated on the 'canonical' selected subset of lyrics lines,
- introduced in Section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Dataset"
-
-\end_inset
-
-.
+ introduced in Section 5.
  Table 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1416,11 +1685,25 @@ reference "results"
 
 \end_inset
 
- shows that the proposed duration model outperforms the baseline alignment,
- especially in the case of selected sentences.
+ shows that the proposed duration model outperforms significantly the baseline
+ alignment.
+ The improved accuracy for 'canonical' lyric lines can be attributed to
+ the increased degree, to which prior duration expectations are met.
  
 \color red
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color red
 TODO: in which cases is it outperforming
+\end_layout
+
+\end_inset
+
+
 \begin_inset Note Comment
 status open
 
@@ -1438,35 +1721,33 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-
-\color red
-In this work...
- 
-\color inherit
-Looking at oracle, one can conclude that reaching closer to it can be achieved
- in the future by designing features which capture phoneme identities in
- a more robust way.
- 
-\color red
-Future work - polyphonic material.
-\end_layout
-
-\begin_layout Standard
+In this work we evaluated the behavior of a HMM-based phonetic recognizer
+ for lyrics-to-audio alignment in two settings: with and without utilizing
+ lyrics duration information.
+ Using probabilistic duration-explicit modeling of phonemes for the former
+ setting outperformed the latter on recordings of a cappella Jingju opera.
+ It has incorporated prior expectations of syllable durations, based on
+ knowledge specific for this music genre.
+ In particular, the proposed DHMM aligns remarkably well a selected set
+ of lyrics lines, which comply more precisely with these music-specific
+ principles.
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="4">
-<features rotate="0" tabularvalignment="middle">
+<features rotate="0" booktabs="true" tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
+<column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top">
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1475,7 +1756,7 @@ status open
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1484,7 +1765,7 @@ baseline
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1493,7 +1774,7 @@ DHMM
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1516,16 +1797,18 @@ oracle
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 overall
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1541,12 +1824,12 @@ overall
 \uwave off
 \noun off
 \color none
-56.56
+56.6
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1562,7 +1845,7 @@ overall
 \uwave off
 \noun off
 \color none
-68.9
+89.9
 \begin_inset Note Note
 status open
 
@@ -1579,7 +1862,7 @@ status open
 \uwave off
 \noun off
 \color none
-48.81
+95.81
 \end_layout
 
 \end_inset
@@ -1589,7 +1872,7 @@ status open
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1605,41 +1888,43 @@ status open
 \uwave off
 \noun off
 \color none
-94
+98.5
 \end_layout
 
 \end_inset
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 'canonical'
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-75.2
+57.2
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-82.3
+96.3
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1655,7 +1940,7 @@ status open
 \uwave off
 \noun off
 \color none
-98
+99.5
 \end_layout
 
 \end_inset
@@ -1722,7 +2007,7 @@ baseline is with htk.
 
 
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
 LONG: In Figure 
@@ -2633,10 +2918,17 @@ Acknowledgements
 
 \begin_layout Standard
 
+\color black
+We are thankful to Wanglei from 
+\emph on
+Doreso
+\emph default
+ for providing a dictionary of pinyin syllables.
+
 \color red
-Weng Lei
+ 
 \color inherit
- This work is partly supported by the European Research Council under the
+This work is partly supported by the European Research Council under the
  European Union’s Seventh Framework Program, as part of the CompMusic project
  (ERC grant agreement 267583) and partly by the AGAUR research grant.
 \end_layout
@@ -2644,7 +2936,7 @@ Weng Lei
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefLyrics2Audio,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRef_saerch_by_lyrics,JingjuAlignment"
+bibfiles "JingjuAlignment,/Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/ISMIR_noteOnsets/JabRefOnsetDetectionFullReferences"
 options "plainnat"
 
 \end_inset
