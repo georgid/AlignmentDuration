@@ -1,0 +1,650 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 329.88589569160996 
+tiers? <exists> 
+size = 3 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "banshi" 
+        xmin = 0 
+        xmax = 329.88589569160996 
+        intervals: size = 9 
+        intervals [1]:
+            xmin = 0 
+            xmax = 38.07766058542974 
+            text = "" 
+        intervals [2]:
+            xmin = 38.07766058542974 
+            xmax = 72.48938323235353 
+            text = "fan'erhuang sanban" 
+        intervals [3]:
+            xmin = 72.48938323235353 
+            xmax = 75.12275630405252 
+            text = "" 
+        intervals [4]:
+            xmin = 75.12275630405252 
+            xmax = 119.82273929048364 
+            text = "huilong" 
+        intervals [5]:
+            xmin = 119.82273929048364 
+            xmax = 131.148646735753 
+            text = "" 
+        intervals [6]:
+            xmin = 131.148646735753 
+            xmax = 277.97261234374525 
+            text = "fan'erhuang yuanban" 
+        intervals [7]:
+            xmin = 277.97261234374525 
+            xmax = 291.20673839044025 
+            text = "" 
+        intervals [8]:
+            xmin = 291.20673839044025 
+            xmax = 314.048164054722 
+            text = "fan'erhuang sanban" 
+        intervals [9]:
+            xmin = 314.048164054722 
+            xmax = 329.88589569160996 
+            text = "" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "line" 
+        xmin = 0 
+        xmax = 329.88589569160996 
+        intervals: size = 17 
+        intervals [1]:
+            xmin = 0 
+            xmax = 38.07766058542974 
+            text = "" 
+        intervals [2]:
+            xmin = 38.07766058542974 
+            xmax = 72.48938323235353 
+            text = " 碧云天黄花地西风紧" 
+        intervals [3]:
+            xmin = 72.48938323235353 
+            xmax = 75.12275630405252 
+            text = "" 
+        intervals [4]:
+            xmin = 75.12275630405252 
+            xmax = 94.42704816358753 
+            text = "北雁南翔问晓来谁染得霜林绛" 
+        intervals [5]:
+            xmin = 94.42704816358753 
+            xmax = 119.82273929048364 
+            text = "总是离人泪千行" 
+        intervals [6]:
+            xmin = 119.82273929048364 
+            xmax = 131.148646735753 
+            text = "" 
+        intervals [7]:
+            xmin = 131.148646735753 
+            xmax = 155.23816484922423 
+            text = "成就迟分别早叫人惆怅" 
+        intervals [8]:
+            xmin = 155.23816484922423 
+            xmax = 156.0132278509428 
+            text = "" 
+        intervals [9]:
+            xmin = 156.0132278509428 
+            xmax = 173.18013174478554 
+            text = "系不住骏马儿空有这柳丝长" 
+        intervals [10]:
+            xmin = 173.18013174478554 
+            xmax = 173.83662167534567 
+            text = "" 
+        intervals [11]:
+            xmin = 173.83662167534567 
+            xmax = 220.81383825769655 
+            text = "七星车快与我把马儿赶上" 
+        intervals [12]:
+            xmin = 220.81383825769655 
+            xmax = 221.41700882413016 
+            text = "" 
+        intervals [13]:
+            xmin = 221.41700882413016 
+            xmax = 242.23906374622206 
+            text = "那疏林也与我挂住了斜阳" 
+        intervals [14]:
+            xmin = 242.23906374622206 
+            xmax = 277.97261234374525 
+            text = "好叫我与张郎把知心话讲" 
+        intervals [15]:
+            xmin = 277.97261234374525 
+            xmax = 291.20673839044025 
+            text = "" 
+        intervals [16]:
+            xmin = 291.20673839044025 
+            xmax = 314.048164054722 
+            text = "远望那十里亭痛断人肠" 
+        intervals [17]:
+            xmin = 314.048164054722 
+            xmax = 329.88589569160996 
+            text = "" 
+    item [3]:
+        class = "IntervalTier" 
+        name = "pinyin" 
+        xmin = 0 
+        xmax = 329.88589569160996 
+        intervals: size = 130 
+        intervals [1]:
+            xmin = 0 
+            xmax = 38.07766058542974 
+            text = "" 
+        intervals [2]:
+            xmin = 38.07766058542974 
+            xmax = 39.1983341471684 
+            text = "bi" 
+        intervals [3]:
+            xmin = 39.1983341471684 
+            xmax = 40.76581230736039 
+            text = "yun" 
+        intervals [4]:
+            xmin = 40.76581230736039 
+            xmax = 43.69869320228233 
+            text = "tian" 
+        intervals [5]:
+            xmin = 43.69869320228233 
+            xmax = 47.36741162702326 
+            text = "" 
+        intervals [6]:
+            xmin = 47.36741162702326 
+            xmax = 49.41347790863647 
+            text = "huang" 
+        intervals [7]:
+            xmin = 49.41347790863647 
+            xmax = 49.757854504153755 
+            text = "" 
+        intervals [8]:
+            xmin = 49.757854504153755 
+            xmax = 53.27492484143336 
+            text = "hua" 
+        intervals [9]:
+            xmin = 53.27492484143336 
+            xmax = 56.029762845473655 
+            text = "di" 
+        intervals [10]:
+            xmin = 56.029762845473655 
+            xmax = 58.42888180098159 
+            text = "" 
+        intervals [11]:
+            xmin = 58.42888180098159 
+            xmax = 59.51049957203658 
+            text = "xi" 
+        intervals [12]:
+            xmin = 59.51049957203658 
+            xmax = 64.66445669652776 
+            text = "feng" 
+        intervals [13]:
+            xmin = 64.66445669652776 
+            xmax = 72.48938323235353 
+            text = "jin" 
+        intervals [14]:
+            xmin = 72.48938323235353 
+            xmax = 75.12275630405252 
+            text = "" 
+        intervals [15]:
+            xmin = 75.12275630405252 
+            xmax = 76.9322165812304 
+            text = "bei" 
+        intervals [16]:
+            xmin = 76.9322165812304 
+            xmax = 81.31689475625467 
+            text = "yan" 
+        intervals [17]:
+            xmin = 81.31689475625467 
+            xmax = 81.51355253281012 
+            text = "" 
+        intervals [18]:
+            xmin = 81.51355253281012 
+            xmax = 82.90913842266008 
+            text = "nan" 
+        intervals [19]:
+            xmin = 82.90913842266008 
+            xmax = 83.55847554539825 
+            text = "xiang" 
+        intervals [20]:
+            xmin = 83.55847554539825 
+            xmax = 84.40142390358088 
+            text = "" 
+        intervals [21]:
+            xmin = 84.40142390358088 
+            xmax = 85.09713930604053 
+            text = "wen" 
+        intervals [22]:
+            xmin = 85.09713930604053 
+            xmax = 85.90401459514305 
+            text = "xiao" 
+        intervals [23]:
+            xmin = 85.90401459514305 
+            xmax = 87.30375524003776 
+            text = "lai" 
+        intervals [24]:
+            xmin = 87.30375524003776 
+            xmax = 87.74055696094644 
+            text = "shui" 
+        intervals [25]:
+            xmin = 87.74055696094644 
+            xmax = 88.84241891488213 
+            text = "ran" 
+        intervals [26]:
+            xmin = 88.84241891488213 
+            xmax = 89.45552845355502 
+            text = "de" 
+        intervals [27]:
+            xmin = 89.45552845355502 
+            xmax = 90.13389186420274 
+            text = "" 
+        intervals [28]:
+            xmin = 90.13389186420274 
+            xmax = 90.97547146681505 
+            text = "shuang" 
+        intervals [29]:
+            xmin = 90.97547146681505 
+            xmax = 91.68401786763985 
+            text = "lin" 
+        intervals [30]:
+            xmin = 91.68401786763985 
+            xmax = 94.42704816358753 
+            text = "jiang" 
+        intervals [31]:
+            xmin = 94.42704816358753 
+            xmax = 94.80704782709506 
+            text = "zong" 
+        intervals [32]:
+            xmin = 94.80704782709506 
+            xmax = 95.07383889044064 
+            text = "" 
+        intervals [33]:
+            xmin = 95.07383889044064 
+            xmax = 95.83180642260128 
+            text = "shi" 
+        intervals [34]:
+            xmin = 95.83180642260128 
+            xmax = 96.52852803172583 
+            text = "li" 
+        intervals [35]:
+            xmin = 96.52852803172583 
+            xmax = 97.22550632804736 
+            text = "ren" 
+        intervals [36]:
+            xmin = 97.22550632804736 
+            xmax = 100.2827445113223 
+            text = "lei" 
+        intervals [37]:
+            xmin = 100.2827445113223 
+            xmax = 101.50607156254226 
+            text = "" 
+        intervals [38]:
+            xmin = 101.50607156254226 
+            xmax = 102.32036020110333 
+            text = "qian" 
+        intervals [39]:
+            xmin = 102.32036020110333 
+            xmax = 119.82273929048364 
+            text = "hang" 
+        intervals [40]:
+            xmin = 119.82273929048364 
+            xmax = 131.148646735753 
+            text = "" 
+        intervals [41]:
+            xmin = 131.148646735753 
+            xmax = 131.86586921495524 
+            text = "cheng" 
+        intervals [42]:
+            xmin = 131.86586921495524 
+            xmax = 132.497960042647 
+            text = "jiu" 
+        intervals [43]:
+            xmin = 132.497960042647 
+            xmax = 135.75890278364795 
+            text = "chi" 
+        intervals [44]:
+            xmin = 135.75890278364795 
+            xmax = 138.52530905713445 
+            text = "" 
+        intervals [45]:
+            xmin = 138.52530905713445 
+            xmax = 139.98741154787817 
+            text = "fen" 
+        intervals [46]:
+            xmin = 139.98741154787817 
+            xmax = 141.24255088648206 
+            text = "bie" 
+        intervals [47]:
+            xmin = 141.24255088648206 
+            xmax = 148.2287898458214 
+            text = "zao" 
+        intervals [48]:
+            xmin = 148.2287898458214 
+            xmax = 148.83033127999101 
+            text = "" 
+        intervals [49]:
+            xmin = 148.83033127999101 
+            xmax = 150.1449404383181 
+            text = "jiao" 
+        intervals [50]:
+            xmin = 150.1449404383181 
+            xmax = 151.0848489292081 
+            text = "ren" 
+        intervals [51]:
+            xmin = 151.0848489292081 
+            xmax = 152.4659745234861 
+            text = "" 
+        intervals [52]:
+            xmin = 152.4659745234861 
+            xmax = 153.7182218359642 
+            text = "chou" 
+        intervals [53]:
+            xmin = 153.7182218359642 
+            xmax = 155.23816484922423 
+            text = "chang" 
+        intervals [54]:
+            xmin = 155.23816484922423 
+            xmax = 156.0132278509428 
+            text = "" 
+        intervals [55]:
+            xmin = 156.0132278509428 
+            xmax = 156.4470317698151 
+            text = "xi" 
+        intervals [56]:
+            xmin = 156.4470317698151 
+            xmax = 157.34229713989896 
+            text = "bu" 
+        intervals [57]:
+            xmin = 157.34229713989896 
+            xmax = 157.90624223443297 
+            text = "zhu" 
+        intervals [58]:
+            xmin = 157.90624223443297 
+            xmax = 158.46729530284117 
+            text = "" 
+        intervals [59]:
+            xmin = 158.46729530284117 
+            xmax = 158.86061085595207 
+            text = "jun" 
+        intervals [60]:
+            xmin = 158.86061085595207 
+            xmax = 159.4695654746373 
+            text = "ma" 
+        intervals [61]:
+            xmin = 159.4695654746373 
+            xmax = 160.05664677817785 
+            text = "er" 
+        intervals [62]:
+            xmin = 160.05664677817785 
+            xmax = 160.36030952138847 
+            text = "" 
+        intervals [63]:
+            xmin = 160.36030952138847 
+            xmax = 161.04571971320672 
+            text = "kong" 
+        intervals [64]:
+            xmin = 161.04571971320672 
+            xmax = 161.63443031395417 
+            text = "you" 
+        intervals [65]:
+            xmin = 161.63443031395417 
+            xmax = 162.22729566974635 
+            text = "zhe" 
+        intervals [66]:
+            xmin = 162.22729566974635 
+            xmax = 162.8577573651741 
+            text = "liu" 
+        intervals [67]:
+            xmin = 162.8577573651741 
+            xmax = 163.36675396331765 
+            text = "" 
+        intervals [68]:
+            xmin = 163.36675396331765 
+            xmax = 169.9510012911686 
+            text = "si" 
+        intervals [69]:
+            xmin = 169.9510012911686 
+            xmax = 173.18013174478554 
+            text = "chang" 
+        intervals [70]:
+            xmin = 173.18013174478554 
+            xmax = 173.83662167534567 
+            text = "" 
+        intervals [71]:
+            xmin = 173.83662167534567 
+            xmax = 174.63645018327767 
+            text = "qi" 
+        intervals [72]:
+            xmin = 174.63645018327767 
+            xmax = 175.0904982850307 
+            text = "" 
+        intervals [73]:
+            xmin = 175.0904982850307 
+            xmax = 176.17211605608568 
+            text = "xing" 
+        intervals [74]:
+            xmin = 176.17211605608568 
+            xmax = 176.543924532454 
+            text = "" 
+        intervals [75]:
+            xmin = 176.543924532454 
+            xmax = 192.01447198430503 
+            text = "che" 
+        intervals [76]:
+            xmin = 192.01447198430503 
+            xmax = 194.0578717263376 
+            text = "" 
+        intervals [77]:
+            xmin = 194.0578717263376 
+            xmax = 194.6738732911363 
+            text = "kuai" 
+        intervals [78]:
+            xmin = 194.6738732911363 
+            xmax = 195.29855093431243 
+            text = "yu" 
+        intervals [79]:
+            xmin = 195.29855093431243 
+            xmax = 195.5906455730198 
+            text = "wo" 
+        intervals [80]:
+            xmin = 195.5906455730198 
+            xmax = 195.87695615947553 
+            text = "ba" 
+        intervals [81]:
+            xmin = 195.87695615947553 
+            xmax = 196.89079460071787 
+            text = "ma" 
+        intervals [82]:
+            xmin = 196.89079460071787 
+            xmax = 198.55370962306176 
+            text = "er" 
+        intervals [83]:
+            xmin = 198.55370962306176 
+            xmax = 199.76420584085952 
+            text = "" 
+        intervals [84]:
+            xmin = 199.76420584085952 
+            xmax = 200.27898649125467 
+            text = "gan" 
+        intervals [85]:
+            xmin = 200.27898649125467 
+            xmax = 220.81383825769655 
+            text = "shang" 
+        intervals [86]:
+            xmin = 220.81383825769655 
+            xmax = 221.41700882413016 
+            text = "" 
+        intervals [87]:
+            xmin = 221.41700882413016 
+            xmax = 224.5738386246017 
+            text = "na" 
+        intervals [88]:
+            xmin = 224.5738386246017 
+            xmax = 225.0770511704936 
+            text = "" 
+        intervals [89]:
+            xmin = 225.0770511704936 
+            xmax = 226.38009222431748 
+            text = "shu" 
+        intervals [90]:
+            xmin = 226.38009222431748 
+            xmax = 227.48195417825318 
+            text = "lin" 
+        intervals [91]:
+            xmin = 227.48195417825318 
+            xmax = 228.7445067013727 
+            text = "" 
+        intervals [92]:
+            xmin = 228.7445067013727 
+            xmax = 229.9389134913345 
+            text = "ye" 
+        intervals [93]:
+            xmin = 229.9389134913345 
+            xmax = 231.0862581010265 
+            text = "yu" 
+        intervals [94]:
+            xmin = 231.0862581010265 
+            xmax = 234.98507588691373 
+            text = "wo" 
+        intervals [95]:
+            xmin = 234.98507588691373 
+            xmax = 235.71675849674506 
+            text = "" 
+        intervals [96]:
+            xmin = 235.71675849674506 
+            xmax = 236.8504327380647 
+            text = "gua" 
+        intervals [97]:
+            xmin = 236.8504327380647 
+            xmax = 237.3726267379184 
+            text = "zhu" 
+        intervals [98]:
+            xmin = 237.3726267379184 
+            xmax = 237.896083466691 
+            text = "liao" 
+        intervals [99]:
+            xmin = 237.896083466691 
+            xmax = 238.93721287198457 
+            text = "" 
+        intervals [100]:
+            xmin = 238.93721287198457 
+            xmax = 239.77053616369452 
+            text = "xie" 
+        intervals [101]:
+            xmin = 239.77053616369452 
+            xmax = 239.98165407087905 
+            text = "" 
+        intervals [102]:
+            xmin = 239.98165407087905 
+            xmax = 242.23906374622206 
+            text = "yang" 
+        intervals [103]:
+            xmin = 242.23906374622206 
+            xmax = 242.58032282906828 
+            text = "hao" 
+        intervals [104]:
+            xmin = 242.58032282906828 
+            xmax = 243.41901040555476 
+            text = "jiao" 
+        intervals [105]:
+            xmin = 243.41901040555476 
+            xmax = 244.1928106783544 
+            text = "wo" 
+        intervals [106]:
+            xmin = 244.1928106783544 
+            xmax = 245.09801485573465 
+            text = "" 
+        intervals [107]:
+            xmin = 245.09801485573465 
+            xmax = 245.57809119262 
+            text = "yu" 
+        intervals [108]:
+            xmin = 245.57809119262 
+            xmax = 246.10920514657997 
+            text = "zhang" 
+        intervals [109]:
+            xmin = 246.10920514657997 
+            xmax = 246.47751131774862 
+            text = "lang" 
+        intervals [110]:
+            xmin = 246.47751131774862 
+            xmax = 246.7175494861913 
+            text = "ba" 
+        intervals [111]:
+            xmin = 246.7175494861913 
+            xmax = 247.30626008693872 
+            text = "zhi" 
+        intervals [112]:
+            xmin = 247.30626008693872 
+            xmax = 247.78055237157244 
+            text = "" 
+        intervals [113]:
+            xmin = 247.78055237157244 
+            xmax = 249.4682329001298 
+            text = "xin" 
+        intervals [114]:
+            xmin = 249.4682329001298 
+            xmax = 250.44284570452962 
+            text = "" 
+        intervals [115]:
+            xmin = 250.44284570452962 
+            xmax = 251.69961434034045 
+            text = "hua" 
+        intervals [116]:
+            xmin = 251.69961434034045 
+            xmax = 277.97261234374525 
+            text = "jiang" 
+        intervals [117]:
+            xmin = 277.97261234374525 
+            xmax = 291.20673839044025 
+            text = "" 
+        intervals [118]:
+            xmin = 291.20673839044025 
+            xmax = 292.3143843966276 
+            text = "yuan" 
+        intervals [119]:
+            xmin = 292.3143843966276 
+            xmax = 293.14439589473665 
+            text = "wang" 
+        intervals [120]:
+            xmin = 293.14439589473665 
+            xmax = 293.97892865947927 
+            text = "na" 
+        intervals [121]:
+            xmin = 293.97892865947927 
+            xmax = 294.2218588540478 
+            text = "" 
+        intervals [122]:
+            xmin = 294.2218588540478 
+            xmax = 294.71350329543645 
+            text = "shi" 
+        intervals [123]:
+            xmin = 294.71350329543645 
+            xmax = 295.93845964386327 
+            text = "li" 
+        intervals [124]:
+            xmin = 295.93845964386327 
+            xmax = 299.5753657812203 
+            text = "ting" 
+        intervals [125]:
+            xmin = 299.5753657812203 
+            xmax = 302.1595744087804 
+            text = "" 
+        intervals [126]:
+            xmin = 302.1595744087804 
+            xmax = 303.0040460375185 
+            text = "tong" 
+        intervals [127]:
+            xmin = 303.0040460375185 
+            xmax = 304.1335655237934 
+            text = "duan" 
+        intervals [128]:
+            xmin = 304.1335655237934 
+            xmax = 305.7865415738981 
+            text = "ren" 
+        intervals [129]:
+            xmin = 305.7865415738981 
+            xmax = 314.048164054722 
+            text = "chang" 
+        intervals [130]:
+            xmin = 314.048164054722 
+            xmax = 329.88589569160996 
+            text = "" 

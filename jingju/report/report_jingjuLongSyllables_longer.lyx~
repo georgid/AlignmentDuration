@@ -156,14 +156,14 @@ In this study we propose how to modify a standard approach for text-to-speech
 .
  The phoneme durations are empirically set in a probabilistic way, based
  on prior knowledge about the lyrics structure and metric principles, specific
- for the Jingju opera music tradition.
+ for the Beijing opera music tradition.
  
 \color black
 Phoneme models are GMMs trained directly on a small corpus of annotated
  singing voice.
 
 \color inherit
- The alignment is evaluated on a cappella material from Jingju opera, which
+ The alignment is evaluated on a cappella material from Beijing opera, which
  is characterized by its particularly long syllable durations.
 
 \color black
@@ -286,18 +286,18 @@ key "hansen2012recognition"
 
 \begin_layout Standard
 In this paper we propose a lyrics-to-audio alignment method, which relies
- on some of the specificities of lyrics structure of Jingju opera as an
+ on some of the specificities of lyrics structure of Beijing opera as an
  additional cue to an appoach adopted from speech alignment.
  One of the goals of the study is to show that enhancing computational tasks
  with music-specific knowledge might improve accuracy.
 \end_layout
 
 \begin_layout Section
-Background on Jingju opera music principles
+Background on Jingju music principles
 \end_layout
 
 \begin_layout Standard
-Lyrics in Jingju opera (also known as Beijing or Peking opera) come from
+Lyrics in Jingju (also known as Beijing opera or Peking opera) come from
  poetry and are thus commonly structured into couplets: each couplet has
  two lyrics lines.
  A line is usually divided into 3 syllable groups: a group is called 
@@ -344,8 +344,8 @@ key syllable.
 \end_layout
 
 \begin_layout Standard
-In addition to that, each aria from Jingju opera can be arranged into one
- or more metrical pattern (called 
+In addition to that, each aria from Jingju can be arranged into one or more
+ metrical pattern (called 
 \emph on
 banshi
 \emph default
@@ -463,7 +463,8 @@ key "chen2012chord"
 
 \begin_layout Standard
 To our knowledge, very few studies of lyrics-to-audio alignment have been
- conducted on songs with Chinese language 
+ conducted on songs with Chinese language, as an example on Cantonese Chinese
+ 
 \color black
 
 \begin_inset CommandInset citation
@@ -532,10 +533,10 @@ reference "approach overview"
 \end_inset
 
 .
- First an audio recording is manually divided into audio segments corresponding
- to lyrics lines as indicated in the lyrics script of the aria, whereby
- instrumental-only sections are discarded.
- All further steps are performed on each audio segment.
+ First an audio recording of an aria is manually divided into audio segments
+ corresponding to lyrics lines as indicated in the lyrics script of the
+ aria, whereby instrumental-only sections are discarded.
+ All further steps are performed on each line segment of audio.
  If we had used automatic segmentation instead, potential erroneous lyrics
  and features could have biased the comparison of a baseline system and
  DHMM.
@@ -555,15 +556,18 @@ ntoSectionsFromAnno
 \end_layout
 
 \begin_layout Standard
-Then each lyrics line is expanded to a sequence of phoneme models, whereby
- reference syllable durations guide the alignment process.
+Then each lyrics line is expanded to a sequence of phonemes, whereby reference
+ syllable durations guide the alignment process.
+ The main contribution of this work is twofold: 1) the application of music-spec
+ific rules for the creation of reference durations and 2) training phonemes
+ on singing voice.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align left
@@ -580,10 +584,8 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Approach Overview.
- Leftmost column represents audio preprocessing steps, while the middle
- column shows how reference durations are derived based on music-specific
- knowledge
+Approach Overview: The middle column shows how reference durations are derived
+ based on music-specific knowledge.
 \end_layout
 
 \end_inset
@@ -610,7 +612,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename praat_annotation_sentence_refDurs.eps
-	width 81page%
+	width 90page%
 
 \end_inset
 
@@ -649,9 +651,6 @@ name "example"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Note Note
 status open
 
@@ -1258,7 +1257,7 @@ duration (minutes)
 \begin_inset Text
 
 \begin_layout Plain Layout
-67 minutes
+67
 \end_layout
 
 \end_inset
@@ -1267,7 +1266,7 @@ duration (minutes)
 \begin_inset Text
 
 \begin_layout Plain Layout
-27 minutes
+27
 \end_layout
 
 \end_inset
@@ -1430,7 +1429,7 @@ name "dataset_stats"
 
 \begin_layout Standard
 Each aria is annotated on the phoneme level by native Chinese speakers and
- a Jingju opera musicologist.
+ a Jingju musicologist.
  The phoneme set has 29 phonemes and is derived from Chinese pinyin, and
  represented using the X-sampa standard
 \begin_inset Foot
@@ -1500,8 +1499,6 @@ status open
 To encourage reproducibility of this research an efficient open-source implement
 ation together with documentation is available at https://github.com/georgid/Alig
 nmentDuration/tree/noteOnsets/jingju.
- Further, a script for building the models is available at https://github.com/eli
-trout/lyrics/blob/master/code/htk/buildModelHTKSave.py
 \end_layout
 
 \end_inset
@@ -1647,7 +1644,7 @@ htk
 \emph default
  toolkit 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citep
 key "young1993htk"
 
 \end_inset
@@ -1725,7 +1722,7 @@ In this work we evaluated the behavior of a HMM-based phonetic recognizer
  for lyrics-to-audio alignment in two settings: with and without utilizing
  lyrics duration information.
  Using probabilistic duration-explicit modeling of phonemes for the former
- setting outperformed the latter on recordings of a cappella Jingju opera.
+ setting outperformed the latter on recordings of a cappella Beijing opera.
  It has incorporated prior expectations of syllable durations, based on
  knowledge specific for this music genre.
  In particular, the proposed DHMM aligns remarkably well a selected set

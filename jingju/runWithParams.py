@@ -40,7 +40,7 @@ def runWithParameters(argv):
     correctDurationHTK = 0
     totalDurationHTK = 1
     accuracyListHTK = []
-#     correctDurationHTK, totalDurationHTK, accuracyListHTK = runitHTK(["dummy", URIrecordingNoExt ])       
+    correctDurationHTK, totalDurationHTK, accuracyListHTK = runitHTK(["dummy", URIrecordingNoExt ])       
     
        
     if float(argv[2]) == 0.0:

@@ -26,6 +26,7 @@ def createDictSyll2XSAMPA():
         ##### load pinyin syllables
         currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
         
+        # use only list of pinyin syllables, does not use their phonemes (they are in MandarinIPA)
         pinyinSyllDict = readLookupTable(os.path.join(currDir, 'syl2phn46.txt'))
 
         ###### load mappings for consonants, vowels, specials

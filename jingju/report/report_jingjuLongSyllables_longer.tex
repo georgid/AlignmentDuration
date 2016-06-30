@@ -73,9 +73,9 @@ voice.\textcolor{black}{{} We model phoneme durations by means of a
 duration-explicit hidden Markov model (DHMM) phonetic recognizer based
 on MFCCs}. The phoneme durations are empirically set in a probabilistic
 way, based on prior knowledge about the lyrics structure and metric
-principles, specific for the Jingju opera music tradition. \textcolor{black}{Phoneme
+principles, specific for the Beijing opera music tradition. \textcolor{black}{Phoneme
 models are GMMs trained directly on a small corpus of annotated singing
-voice.} The alignment is evaluated on a cappella material from Jingju
+voice.} The alignment is evaluated on a cappella material from Beijing
 opera, which is characterized by its particularly long syllable durations.\textcolor{black}{{}
 }Results show that the incorporation of music-specific knowledge results
 in a very high alignment accuracy, outperforming significantly a baseline
@@ -126,15 +126,15 @@ Recent work has shown that training on singing voice instead might
 be a viable alternative \citep{hansen2012recognition}. 
 
 In this paper we propose a lyrics-to-audio alignment method, which
-relies on some of the specificities of lyrics structure of Jingju
+relies on some of the specificities of lyrics structure of Beijing
 opera as an additional cue to an appoach adopted from speech alignment.
 One of the goals of the study is to show that enhancing computational
 tasks with music-specific knowledge might improve accuracy.
 
 
-\section{Background on Jingju opera music principles}
+\section{Background on Jingju music principles}
 
-Lyrics in Jingju opera (also known as Beijing or Peking opera) come
+Lyrics in Jingju (also known as Beijing opera or Peking opera) come
 from poetry and are thus commonly structured into couplets: each couplet
 has two lyrics lines. A line is usually divided into 3 syllable groups:
 a group is called \emph{dou} and consists of 2 to 4 written characters
@@ -144,9 +144,9 @@ an actor has the option to sustain the vocal of the dou\textquoteright s
 final syllable. In this work we will refer to the final syllable of
 a \emph{dou }as \emph{key syllable.}
 
-In addition to that, each aria from Jingju opera can be arranged into
-one or more metrical pattern (called \emph{banshi}): it indicates
-the mood of singing and is correlated to meter and tempo \citep{wichmann1991listening}.\textcolor{red}{{}
+In addition to that, each aria from Jingju can be arranged into one
+or more metrical pattern (called \emph{banshi}): it indicates the
+mood of singing and is correlated to meter and tempo \citep{wichmann1991listening}.\textcolor{red}{{}
 }\textcolor{black}{Usually an aria starts with a slow }\textcolor{black}{\emph{banshi,}}\textcolor{black}{{}
 which gradually changes a couple of times to a faster one, to express
 more intense mood. The language of Jingju is standard Mandarin with
@@ -185,7 +185,8 @@ have been, for example successful in representing chord durations
 in automatic chord recognition \citep{chen2012chord}.
 
 To our knowledge, very few studies of lyrics-to-audio alignment have
-been conducted on songs with Chinese language \textcolor{black}{\citep{wong2007automatic}.}
+been conducted on songs with Chinese language, as an example on Cantonese
+Chinese \textcolor{black}{\citep{wong2007automatic}.} %
 \begin{comment}
 \textcolor{black}{LONG RELATED WORK: }
 
@@ -200,41 +201,41 @@ from YILE: Anna Kruspe, Hansen, }ADD Kruspe: songified.
 \textcolor{black}{To model phoneme durations, we rely on a DHMM}\footnote{\textcolor{black}{For brevity in the rest of the paper the proposed
 alignment scheme will be referred to as DHMM.} }\textcolor{black}{.} A general overview of the proposed approach is
 presented in Figure \ref{approach overview}. First an audio recording
-is manually divided into audio segments corresponding to lyrics lines
-as indicated in the lyrics script of the aria, whereby instrumental-only
-sections are discarded. All further steps are performed on each audio
-segment. If we had used automatic segmentation instead, potential
-erroneous lyrics and features could have biased the comparison of
-a baseline system and DHMM. As we focus on evaluating the effect of
-DHMM, manual segmentation is preferred. %
+of an aria is manually divided into audio segments corresponding to
+lyrics lines as indicated in the lyrics script of the aria, whereby
+instrumental-only sections are discarded. All further steps are performed
+on each line segment of audio. If we had used automatic segmentation
+instead, potential erroneous lyrics and features could have biased
+the comparison of a baseline system and DHMM. As we focus on evaluating
+the effect of DHMM, manual segmentation is preferred. %
 \begin{comment}
 Lyrics are read from TextGrid annotation layer 'lines' IMPL: lyricsParser.divideIntoSectionsFromAnno
 \end{comment}
 
 
-Then each lyrics line is expanded to a sequence of phoneme models,
-whereby reference syllable durations guide the alignment process.
+Then each lyrics line is expanded to a sequence of phonemes, whereby
+reference syllable durations guide the alignment process. The main
+contribution of this work is twofold: 1) the application of music-specific
+rules for the creation of reference durations and 2) training phonemes
+on singing voice.
 
 \begin{figure}
 \begin{raggedright}
 \includegraphics[width=0.95\columnwidth]{systemOverview}
 \par\end{raggedright}
 
-\protect\caption{Approach Overview. Leftmost column represents audio preprocessing
-steps, while the middle column shows how reference durations are derived
-based on music-specific knowledge}
+\protect\caption{Approach Overview: The middle column shows how reference durations
+are derived based on music-specific knowledge.}
 \label{approach overview}
 \end{figure}
 \begin{figure*}[!t]
-\includegraphics[width=0.81\paperwidth]{praat_annotation_sentence_refDurs}
+\includegraphics[width=0.9\paperwidth]{praat_annotation_sentence_refDurs}
 
 \protect\caption{An example of 10-syllable line, being last in a \emph{banshi} (before
 the \emph{banshi} changes). Actual syllable durations are in pinyin,
 whereas reference durations are in orange parallelograms (below).}
 \label{example}
 \end{figure*}
-
-
 
 
 
@@ -393,9 +394,8 @@ and syllables.
 
 
 Each aria is annotated on the phoneme level by native Chinese speakers
-and a Jingju opera musicologist. The phoneme set has 29 phonemes and
-is derived from Chinese pinyin, and represented using the X-sampa
-standard\footnote{Annotations are made available at http://compmusic.upf.edu/node/286}.
+and a Jingju musicologist. The phoneme set has 29 phonemes and is
+derived from Chinese pinyin, and represented using the X-sampa standard\footnote{Annotations are made available at http://compmusic.upf.edu/node/286}.
 To assure enough training data for each model, certain phonemes are
 grouped into phonetic classes, based on their perceptual similarity. 
 
@@ -418,8 +418,7 @@ Alignment accuracy is evaluated as the percentage of duration of correctly
 aligned syllables from total audio duration (see \citet[figure 9]{fujihara2011lyricsynchronizer}
 for an example). Accuracy is measured for each manually segmented
 line and accumulated on total for all the recordings\footnote{To encourage reproducibility of this research an efficient open-source
-implementation together with documentation is available at https://github.com/georgid/AlignmentDuration/tree/noteOnsets/jingju.
-Further, a script for building the models is available at https://github.com/elitrout/lyrics/blob/master/code/htk/buildModelHTKSave.py}.
+implementation together with documentation is available at https://github.com/georgid/AlignmentDuration/tree/noteOnsets/jingju.}.
 
 
 \subsection{Experiment 1: oracle durations}
@@ -468,7 +467,7 @@ o -> copy O
 \subsection{Experiment 2: comparison with baseline}
 
 As a baseline we employ a standard Viterbi decoding, run with the
-\emph{htk} toolkit \citet{young1993htk}. For both baseline and DHMM,
+\emph{htk} toolkit \citep{young1993htk}. For both baseline and DHMM,
 to assure good generalization of results, evaluation is done by cross
 validation on 3 folds with approximately equal number of syllables:\textcolor{green}{{}
 }\textcolor{black}{Phoneme models are trained on 10 of the arias using
@@ -492,7 +491,7 @@ In this work we evaluated the behavior of a HMM-based phonetic recognizer
 for lyrics-to-audio alignment in two settings: with and without utilizing
 lyrics duration information. Using probabilistic duration-explicit
 modeling of phonemes for the former setting outperformed the latter
-on recordings of a cappella Jingju opera. It has incorporated prior
+on recordings of a cappella Beijing opera. It has incorporated prior
 expectations of syllable durations, based on knowledge specific for
 this music genre. In particular, the proposed DHMM aligns remarkably
 well a selected set of lyrics lines, which comply more precisely with

@@ -140,12 +140,14 @@ class SyllableJingju(_SyllableBase):
 
                 if not finalPhoneme.isVowel():                 # final is consonant
                     finalPhoneme.durationInNumFrames = consonant_duration
+                    # assign middle
                     for currPhoneme in self.phonemes[1:-1]:
                         currPhoneme.durationInNumFrames = (self.durationInNumFrames - 2 * consonant_duration) / len(self.phonemes[1:-1])
                         
                 else:   # final is vowel
                     dur = (self.durationInNumFrames - float(consonant_duration) ) / len(self.phonemes[1:])
                     ceilDur = int(ceil(dur))
+                    # assign middle
                     for currPhoneme in self.phonemes[1:-1]:
                         currPhoneme.durationInNumFrames = ceilDur
                     finalPhoneme.durationInNumFrames = self.durationInNumFrames - (len(self.phonemes[1:-1]) * ceilDur)
@@ -153,9 +155,11 @@ class SyllableJingju(_SyllableBase):
             else: # initial is vowel
                 if not finalPhoneme.isVowel(): 
                     finalPhoneme.durationInNumFrames = consonant_duration
+                    # assign middle
                     for currPhoneme in self.phonemes[:-1]:
                         currPhoneme.durationInNumFrames = (self.durationInNumFrames -   consonant_duration) / len(self.phonemes[:-1])
                 else:   # final is vowel
+                    # assign middle
                     for currPhoneme in self.phonemes:
                         currPhoneme.durationInNumFrames = self.durationInNumFrames / len(self.phonemes) 
      
