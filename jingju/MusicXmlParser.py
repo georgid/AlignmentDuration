@@ -6,7 +6,6 @@ Created on Jun 14, 2015
 '''
 from music21 import *
 from SyllableJingju import SyllableJingju
-from cjklib.reading import ReadingFactory
 from cjklib.characterlookup import CharacterLookup
 
 import logging

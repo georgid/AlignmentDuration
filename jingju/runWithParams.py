@@ -4,7 +4,7 @@ Created on Dec 5, 2014
 @author: joro
 '''
 import sys
-from MusicXmlParser import MusicXMLParser
+
 from align.ParametersAlgo import ParametersAlgo
 
 #from runitHTK import runitHTK
@@ -52,6 +52,7 @@ def runWithParameters(argv):
     withMusicalScores = 0
 
     if withMusicalScores == 1:
+        from MusicXmlParser import MusicXMLParser
         musicXmlURI = URIrecordingNoExt + '_score.xml'
         musicXMLParser = MusicXMLParser(musicXmlURI, lyricsTextGrid)
 
