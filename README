@@ -1,4 +1,4 @@
-Copyright © 2015,2016  Music Technology Group - Universitat Pompeu Fabra
+Copyright ï¿½ 2015,2016  Music Technology Group - Universitat Pompeu Fabra
 
 NAME: AlignmentDuration
 
@@ -33,9 +33,7 @@ git clone https://github.com/georgid/scikit-learn
 sudo apt-get install python-scipy
 python setup.py install
 
-* utilsLyrics
-git clone https://github.com/georgid/utilsLyrics.git
-python setup.py install
+
 
 
 -----

@@ -22,7 +22,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
 
 
     
-    def _linkToModels(self, URIrecordingNoExt):
+    def _linkToModels(self, fold):
             '''
             load  trained models and link phoneme list to them    
             '''
@@ -35,7 +35,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
             for phonemeFromTranscript in    self.phonemesNetwork:
                     self._renamePhonemeNames(phonemeFromTranscript)
                     
-                    model, modelName = self._loadGMMModel(phonemeFromTranscript.ID, URIrecordingNoExt)
+                    model, modelName = self._loadGMMModel(phonemeFromTranscript.ID, fold)
     #                 if model == None:
     
                     
@@ -44,7 +44,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
                     
     
     
-    def _loadGMMModel(self, modelName, URIRecordingNoExt ):
+    def _loadGMMModel(self, modelName, fold ):
         ''' load model'''
         
 #         thisDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__) ) )
@@ -57,9 +57,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
         if modelName in modelName2FileNameDict:
             modelName = modelName2FileNameDict[modelName]
         
-        path, fileName = os.path.split(URIRecordingNoExt)
-        path, fold = os.path.split(path) # which Fold
-#         fold = 'fold1'
+       
         modelsURI =  os.path.join( ParametersAlgo.MODELS_DIR + fold + '/GMM/',  str(modelName) + '.pkl' )
         import pickle
         try:

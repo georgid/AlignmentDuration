@@ -41,7 +41,7 @@ class _LyricsWithModelsBase(Lyrics):
     '''
 
 
-    def __init__(self,  lyrics, htkParserOrURIrecordingNoExt, deviationInSec,  withPaddedSilence=True ):
+    def __init__(self,  lyrics, htkParserOrFold, deviationInSec,  withPaddedSilence=True ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
@@ -57,7 +57,7 @@ class _LyricsWithModelsBase(Lyrics):
         
         self.duratioInFramesSet = False
 
-        self._linkToModels(htkParserOrURIrecordingNoExt)
+        self._linkToModels(htkParserOrFold)
         
         
 

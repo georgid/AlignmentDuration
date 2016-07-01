@@ -22,7 +22,7 @@ import harmonicModel as HM
 # 	minSineDur=0.1, nH=100, minf0=130, maxf0=300, f0et=7, harmDevSlope=0.01):
 
 # increasing the threshold means discarding more  peaks and selecting less 	
-def extractHarmSpec( inputFile, f0FreqsRaw, fromTs, toTs, t=-70, window='blackman',  M=2047, N=2048 , 
+def extractHarmSpec( inputFile, f0FreqsRaw, fromTs=-1, toTs=-1, t=-70, window='blackman',  M=2047, N=2048 , 
 	minSineDur=0.0, nH=30, harmDevSlope=0.02):
 	"""
 	Analysis and synthesis using the harmonic model
@@ -110,6 +110,7 @@ def resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIOutputFile):
 	
 	# write the sound resulting from harmonic analysis
 	UF.wavwrite(y, fs, URIOutputFile)
+	print 'written file ' + URIOutputFile
 	
 	return y
 	
@@ -166,11 +167,10 @@ if __name__ == "__main__":
 	fromTs = 0
 	toTs = 858
 		
-# 	inputFile = '../sounds/vignesh.wav'
-# 	melodiaInput = '../sounds/vignesh.melodia'
-# 	fromTs = 0
-# 	toTs = 2
-	
+	inputFile = '../sounds/vignesh.wav'
+	melodiaInput = '../sounds/vignesh.melodia'
+	fromTs = 0
+	toTs = 2
 
 	# exatract spectrum
 	hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(inputFile, melodiaInput, fromTs, toTs)

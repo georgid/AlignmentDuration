@@ -33,7 +33,6 @@ import utilsLyrics.UtilzNumpy
 
 
 projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ))
-PATH_TO_CONFIG_FILES= projDir + '/model/input_files/'
 
 
 

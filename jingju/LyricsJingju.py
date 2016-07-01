@@ -10,7 +10,8 @@ from align.Lyrics import Lyrics
 import numpy
 from align.Word import createWord
 import os
-
+import logging
+import sys
 
 class LyricsJingju(Lyrics):
     '''
@@ -18,7 +19,7 @@ class LyricsJingju(Lyrics):
     '''
 
 
-    def __init__(self, listSyllables,  banshiType):
+    def __init__(self, listSyllables,  banshiType, refSyllableDurations=None):
         '''
         '''
         
@@ -45,27 +46,34 @@ class LyricsJingju(Lyrics):
         
         Lyrics.__init__(self, listWords)
         
-        self.assignReferenceDurations()
+        self.assignReferenceDurations(refSyllableDurations)
         
         self.banshiType = banshiType
  
         
     
-    def assignReferenceDurations(self):
+    def assignReferenceDurations(self, refSyllableDurations):
     
         ####### set durations according rules
     
+        if refSyllableDurations == None:
+            logging.info('no reference syllable durations given for line with words {} \n Using hard-coded ref. durs '.format(self.listWords) )
+            durations = self._computeReferenceDurations()
+        elif len(self.listWords) != 10:
+                logging.info('no reference durations for lines <10 or >10 syllables. \n Using hard-coded ref. durs '.format(self.listWords) )
+
+                durations = self._computeReferenceDurations()
+        else:
+            if len(refSyllableDurations) != len(self.listWords):
+                sys.exit('given ref durations are {}, but syllables in sentence are {}'.format( len(refSyllableDurations), len(self.listWords) ) )
+            durations = refSyllableDurations
         
-        durations = self._computeReferenceDurations()
-        
+        ##### set them
         for idx, word in enumerate(self.listWords):
                 word.syllables[0].setDurationInMinUnit(durations[idx])
                 
                 
                 
-
-
-
 
     def _computeReferenceDurations(self):
         '''
@@ -101,7 +109,7 @@ class LyricsJingju(Lyrics):
         arr = numpy.array(durations)
         lenSyllablesDiffThan0 = len(numpy.where(arr != 0)[0])
         
-    # the rest of sylable durations are equal
+    # the rest of sylable durations are equal -> assigned durRest
         totalAssignedDurations = sum(durations)
         durRest = 0
         if lenSyllables - lenSyllablesDiffThan0:

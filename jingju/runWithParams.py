@@ -17,6 +17,7 @@ import os
 from jingju.JingjuRecording import JingjuScore, JingjuRecording
 from align.LyricsAligner import LyricsAligner
 from jingju.lyricsParser import divideIntoSentencesFromAnnoWithSil
+import numpy
 
 
 
@@ -55,9 +56,16 @@ def runWithParameters(argv):
         musicXMLParser = MusicXMLParser(musicXmlURI, lyricsTextGrid)
 
    
+   # parse syllRefDurations 
+    path, fileName = os.path.split(URIrecordingNoExt + '.wav')
+    path, which_fold = os.path.split(path) # which Fold
+    path, blah = os.path.split(path)
+    path, blah = os.path.split(path)
+
+    syllRefDurations = numpy.loadtxt( os.path.join(path + '/stats/' + which_fold, 'syllRefDurations') )
    
  # load total # different sentences + their rspective ts
-    listLyicsSections, annotationLinesListNoPauses = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
+    listLyicsSections, annotationLinesListNoPauses = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid, syllRefDurations) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
     jingjuScore = JingjuScore(listLyicsSections)
     
     # 
@@ -74,9 +82,9 @@ def runWithParameters(argv):
     
     ret = {}
 
-    ret['alignedLyricsSyllables']=totalDetectedTokenList
+    ret['alignedLyricsSyllables'] = totalDetectedTokenList
     ret['sectionlinks'] = sectionLinksDict
-    print ret 
+#     print ret 
     
 #     if detectedTokenList != None:
 #         currAcc, correctDuration, totalDuration = calcAccuracy(whichSentence, currCorrectDuration, currTotalDuration, correctDuration, totalDuration)

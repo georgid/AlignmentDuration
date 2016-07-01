@@ -36,7 +36,7 @@ from parse.TextGrid_Parsing import tierAliases
 def runitHTK(argv):
     
     if len(argv) != 2:
-            print ("Tool to get alignment accuracy of of one jingju aria with htk ")
+            print ("Tool to get alignment accuracy of one jingju aria with htk ")
             print ("usage: {}   <URIRecording No Extension> ".format(argv[0]) )
             sys.exit()
 
@@ -97,33 +97,7 @@ def runitHTK(argv):
     return correctDuration, totalDuration, accuracyList
     
 
-def alignWithHTK(URIRecordingChunkNoExt, dict_, mlf):
-#     
-#     pipe = subprocess.Popen([PATH_TO_HVITE, '-l', "'*'", '-A', '-D', '-T', '1', '-b', 'sil', '-C', PATH_TO_CONFIG_FILES + 'config_singing', '-a', \
-#                                  '-H', self.pathToHtkModel, '-H',  DUMMY_HMM_URI , '-H',  MODEL_NOISE_URI , '-i', '/tmp/phoneme-level.output', '-m', \
-#                                  '-w', wordNetwURI, '-y', 'lab', dictName, PATH_TO_HMMLIST, mfcFileName], stdout=self.currLogHandle)
-    
-    logName = '/tmp/log_all'
-    currLogHandle = open(logName, 'w')
-    currLogHandle.flush()
-    decodedWordlevelMLF = URIRecordingChunkNoExt + '.out.mlf'    
-        
-    PATH_TO_HVITE = '/Users/joro/Documents/Fhg/htk3.4.BUILT/bin/HVite'
-    PATH_TO_CONFIG_FILES = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/models/'
-    
-    path, fileName = os.path.split(URIRecordingChunkNoExt)
-    path, fold = os.path.split(path) # which Fold
-    
-    PATH_HTK_MODELS = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation//lyrics2audio/models/hmmdefs_' + fold 
-    PATH_TO_HMMLIST = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/models/hmmlist'
-       
-    command = [PATH_TO_HVITE, '-a', '-m', '-I', mlf, '-C', PATH_TO_CONFIG_FILES + 'config',  \
-                                 '-H', PATH_HTK_MODELS,  '-i', decodedWordlevelMLF,  \
-                                  dict_, PATH_TO_HMMLIST, URIRecordingChunkNoExt + '.wav']   
-    pipe = subprocess.Popen(command, stdout = currLogHandle)
-        
-    pipe.wait()      
-    return decodedWordlevelMLF
+
     
     
 if __name__ == '__main__':

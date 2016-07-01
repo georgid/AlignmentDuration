@@ -40,9 +40,9 @@ class _SectionLinkBase():
         self.selectedSections = sections
     
     
-    def loadSmallAudioFragment( self, featureExtractor, extractedPitchList,  URIrecordingNoExt,    model):
+    def loadSmallAudioFragment( self, featureExtractor, extractedPitchList,  URIrecordingNoExt,    htkParserOrFold):
         '''
-        test duration-explicit HMM with audio features from real recording and htk-loaded model
+        test duration-explicit HMM with audio features from real recording and htk-loaded htkParserOrFold
         asserts it works. no results provided 
         '''
         
@@ -50,9 +50,9 @@ class _SectionLinkBase():
     
         
         if ParametersAlgo.FOR_JINGJU:
-            self.lyricsWithModels = LyricsWithModelsGMM( self.section.lyrics, model,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
+            self.lyricsWithModels = LyricsWithModelsGMM( self.section.lyrics, htkParserOrFold,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
         elif ParametersAlgo.FOR_MAKAM:
-            self.lyricsWithModels = LyricsWithModelsHTK( self.section.lyrics, model,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
+            self.lyricsWithModels = LyricsWithModelsHTK( self.section.lyrics, htkParserOrFold,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
         else:
             sys.exit('neither JINGJU nor MAKAM.')
     
@@ -61,7 +61,7 @@ class _SectionLinkBase():
             return None, None, None
         
         
-        # needed only with duration model
+        # needed only with duration htkParserOrFold
         self.lyricsWithModels.duration2numFrameDuration(featureVectors, URIrecordingNoExt)
     #     lyricsWithModels.printPhonemeNetwork()
 

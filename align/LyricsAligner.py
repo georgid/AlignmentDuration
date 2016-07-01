@@ -71,7 +71,7 @@ class LyricsAligner():
         
         elif ParametersAlgo.FOR_JINGJU:
             #### read model done in LyricsWithModels depending 
-            self.model = self.recording.recordingNoExtURI
+            self.model = self.recording.which_fold
         else: 
             sys.exit('neither JINGJU nor MAKAM.')
 
@@ -125,7 +125,7 @@ class LyricsAligner():
         pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
         if pathEvaluation not in sys.path:
                     sys.path.append(pathEvaluation)
-#         from AccuracyEvaluator import _evalAccuracy
+        from align_eval.AccuracyEvaluator import _evalAccuracy
                         
         totalCorrectDurations = 0
         totalDurations = 0    
@@ -149,7 +149,7 @@ class LyricsAligner():
 
                             URI_TextGrid = os.path.join(path_TextGrid, audioName + ANNOTATION_EXT)
                             
-#                             correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.section.fromSyllableIdx, currSectionLink.section.toSyllableIdx  )
+                            correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.section.fromSyllableIdx, currSectionLink.section.toSyllableIdx  )
             
                         totalCorrectDurations += correctDuration
                         totalDurations += totalDuration
@@ -236,7 +236,7 @@ class LyricsAligner():
             #################### decode
                 
 
-                ##### note onsets
+                ##### note onsets ############################
                 if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
                     URIrecOnsets = self.recording.recordingNoExtURI + '.alignedNotes.txt'
     
@@ -245,7 +245,9 @@ class LyricsAligner():
                 elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
                     
                     extractedOnsetsURI =  fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
+                ###############################################
                 
+
                 detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
                 detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
                 
@@ -361,11 +363,14 @@ def stereoToMono(wavFileURI):
 def determineSuffix(withDuration, withOracle, withOracleOnsets, decodedTokenLevel):
     tokenAlignedSuffix = '.'
     tokenAlignedSuffix += decodedTokenLevel
-    if withDuration: tokenAlignedSuffix += 'Duration'
-    if withOracle == 1: tokenAlignedSuffix += 'OraclePhonemes'
-    elif withOracle == -1: tokenAlignedSuffix += 'NoPhonemes'
-    if withOracleOnsets == 1: tokenAlignedSuffix += 'OracleOnsets'
-    elif withOracleOnsets == 0: tokenAlignedSuffix += 'Onsets'
+    if ParametersAlgo.DECODE_WITH_HTK:
+        tokenAlignedSuffix += '_htk_'
+    else:
+        if withDuration: tokenAlignedSuffix += 'Duration'
+        if withOracle == 1: tokenAlignedSuffix += 'OraclePhonemes'
+        elif withOracle == -1: tokenAlignedSuffix += 'NoPhonemes'
+        if withOracleOnsets == 1: tokenAlignedSuffix += 'OracleOnsets'
+        elif withOracleOnsets == 0: tokenAlignedSuffix += 'Onsets'
     
     tokenAlignedSuffix += 'Aligned' 
     return tokenAlignedSuffix

@@ -4,6 +4,7 @@ Created on Oct 27, 2014
 @author: joro
 '''
 import sys
+import os
 
 
 class Lyrics(object):
@@ -108,4 +109,36 @@ class Lyrics(object):
             if word_.syllables[0].text != 'REST':
                 lenWords += 1
         return lenWords  
+       
         
+    def printDict(self, pathToOutputFile, isMLFfile):
+        '''
+        used in htk 
+        print mlf file and dit file with same function 
+        '''
+        
+        
+        outputFileHandle = open(pathToOutputFile, 'w')
+        
+        if isMLFfile:
+            outputFileHandle.write  ("#!MLF!#\n")
+            pathToOutputFileBase = os.path.basename(pathToOutputFile)
+            
+            nameAndExt = os.path.splitext(pathToOutputFileBase)
+            outputFileHandle.write  ("\"*/")
+            outputFileHandle.write  (nameAndExt[0])
+            outputFileHandle.write  (".lab\"")
+        
+    
+    
+    
+        for word_ in self.listWords:
+                for syllable_    in word_.syllables:
+                    outputFileHandle.write("\n" + syllable_.text + "\t ")
+                    
+                    # add phonemes on right side as well 
+                    if not isMLFfile:
+                        for phoneme_ in syllable_.phonemes:
+                            outputFileHandle.write( phoneme_.model.modelName + " ")               
+        outputFileHandle.close()
+        print " written file "  + pathToOutputFile

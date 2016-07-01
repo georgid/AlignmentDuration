@@ -5,12 +5,15 @@ Created on May 28, 2015
 '''
 import logging
 from numpy.ma.core import  floor
+import os
 
 ######### PARAMS:
 class ParametersAlgo(object):
     
     FOR_JINGJU = 0
     FOR_MAKAM = 0
+    
+    DECODE_WITH_HTK = 0
     
     GLOBAL_WAIT_PROB = 0.8
     
@@ -37,8 +40,12 @@ class ParametersAlgo(object):
     WITH_ORACLE_PHONEMES = 0
 
     PATH_TO_HCOPY= '/usr/local/bin/HCopy'
+    PATH_TO_HVITE = '/usr/local/bin/HVite'
     # ANDRES. On kora.s.upf.edu
-    # PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'      
+    # PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'  
+    
+    projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ))
+    PATH_TO_CONFIG_FILES= projDir + '/model/input_files/'    
     
     POLYPHONIC = 0
     

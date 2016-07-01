@@ -62,20 +62,7 @@ def runWithParametersAll(argv):
 #                     '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/fold1/xixiangji_biyuntian.TextGrid',
 #                     '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/fold1/zhuangyuanmei_tianbofu.TextGrid'
 #                     ]    
-    for URiREcording in URiREcordings:
-            URiREcording = os.path.splitext(URiREcording)[0] 
-            print "working on " + URiREcording
-            
-            a, b, c, d, e, f = runWithParameters( ["dummy", URiREcording,  argv[1]] )
-            
-            correctDurationHTK += a 
-            totalDurationHTK += b
-            
-            correctDurationOracle += c
-            totalDurationOracle += d
-            
-            correctDuration += e
-            totalDuration += f
+
             
                 
     # end of loop

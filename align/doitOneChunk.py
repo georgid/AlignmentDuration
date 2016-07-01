@@ -182,7 +182,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, sectionLink, pathToCompositi
         alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         detectedTokenList = outputHTKPhoneAlignedURI
         
-        correctDuration, totalDuration = evalAccuracy(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
+#         correctDuration, totalDuration = evalAccuracy(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         
      
     return alignmentErrors,  correctDuration, totalDuration, correctDurationScoreDev, maxPhiScore

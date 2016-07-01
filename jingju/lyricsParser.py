@@ -122,7 +122,7 @@ def splitThePhoneme(doublePhoneme, firstPhoeneme, syllableIdx):
     return splitPhoneme1, splitPhoneme2
     
 
-def divideIntoSentencesFromAnnoWithSil(annotationURI):
+def divideIntoSentencesFromAnnoWithSil(annotationURI, syllRefDurations):
     '''
     infer section/line timestamps from annotation-textgrid, 
     parse divison into sentences from Tier 'lines' and load its syllables corresponding by timestamps 
@@ -150,7 +150,7 @@ def divideIntoSentencesFromAnnoWithSil(annotationURI):
          _findBeginEndIndices(syllablesList, syllablePointer, currSentenceBeginTs, currSentenceEndTs, highLevel )
         
         banshiType = 'none'
-        lyrics = LyricsJingju( currSectionSyllables, banshiType )
+        lyrics = LyricsJingju( currSectionSyllables, banshiType, syllRefDurations )
         
         currLyricsSection = LyricsSection(annotationURI, fromSyllableIdx, toSyllableIdx)
         currLyricsSection.setLyrics(lyrics)

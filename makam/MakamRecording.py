@@ -21,7 +21,10 @@ class _RecordingBase():
         self.mbRecordingID = mbRecordingID
         
         self.recordingNoExtURI = os.path.splitext(audioFileURI)[0]  
-
+        
+        path, fileName = os.path.split(audioFileURI)
+        path, self.which_fold = os.path.split(path) # which Fold
+        
         self.score = score
         
         self.sectionAnnos = []
