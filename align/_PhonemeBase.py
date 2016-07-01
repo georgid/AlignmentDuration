@@ -63,25 +63,25 @@ class _PhonemeBase(object):
         elif isinstance(model, SciKitGMM):
             self.isModelTypeHTK = 0 
         else:
-            sys.exit("model for phoneme {} is neither htk nor sciKitGMM ".format(self.ID) )
+            sys.exit("models_makam for phoneme {} is neither htk nor sciKitGMM ".format(self.ID) )
 
         
         
     
     def getTransMatrix(self):
         '''
-        read the trans matrix from model. 
+        read the trans matrix from models_makam. 
         3x3 or 1x1 matrix for emitting states only.
         as numpy array
         '''
         
         try: self.model
         except AttributeError:
-                sys.exit("  phoneme {} has no model assigned ".format(self.ID) )
+                sys.exit("  phoneme {} has no models_makam assigned ".format(self.ID) )
         
         
         if not self.isModelTypeHTK:
-                    sys.exit("trans matrix defined only for htk model" )
+                    sys.exit("trans matrix defined only for htk models_makam" )
 
         vector_ = self.model.tmat.vector
         currTransMat = numpy.reshape(vector_ ,(len(vector_ )**0.5, len(vector_ )**0.5))
@@ -91,13 +91,13 @@ class _PhonemeBase(object):
     
     def getNumStates(self):
         '''
-        based on assigned htk model
+        based on assigned htk models_makam
         '''
         
 
         try: self.model
         except AttributeError:
-            sys.exit("cannot get numstates. phoneme {} has no htk or gmm model assigned ".format(self.ID))
+            sys.exit("cannot get numstates. phoneme {} has no htk or gmm models_makam assigned ".format(self.ID))
             
         if self.isModelTypeHTK:
             if (self.model.tmat.numStates - 2) != len(self.model.states):

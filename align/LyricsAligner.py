@@ -38,7 +38,7 @@ import essentia.standard
 
 projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir )) 
 
-modelDIR = projDir + '/model/'
+modelDIR = projDir + '/models_makam/'
 HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
@@ -70,7 +70,7 @@ class LyricsAligner():
             self.model.load(MODEL_URI, HMM_LIST_URI)
         
         elif ParametersAlgo.FOR_JINGJU:
-            #### read model done in LyricsWithModels depending 
+            #### read models_makam done in LyricsWithModels depending 
             self.model = self.recording.which_fold
         else: 
             sys.exit('neither JINGJU nor MAKAM.')

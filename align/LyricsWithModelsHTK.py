@@ -20,7 +20,7 @@ class LyricsWithModelsHTK(_LyricsWithModelsBase):
         
         _LyricsWithModelsBase._addPaddedSilencePhonemes(self)   
         
-        #####link each phoneme from transcript to a model
+        #####link each phoneme from transcript to a models_makam
             # FIXME: DO A MORE OPTIMAL WAY like ismember()
         for phonemeFromTranscript in    self.phonemesNetwork:
             for currHmmModel in htkParser.hmms:

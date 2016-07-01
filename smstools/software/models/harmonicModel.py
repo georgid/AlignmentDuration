@@ -102,7 +102,7 @@ def harmonicDetection(pfreq, pmag, pphase, f0, nH, hfreqp, fs, harmDevSlope=0.01
 
 def harmonicModel(x, fs, w, N, t, nH, minf0, maxf0, f0et):
 	"""
-	Analysis/synthesis of a sound using the sinusoidal harmonic model
+	Analysis/synthesis of a sound using the sinusoidal harmonic models_makam
 	x: input sound, fs: sampling rate, w: analysis window, 
 	N: FFT size (minimum 512), t: threshold in negative dB, 
 	nH: maximum number of harmonics, minf0: minimum f0 frequency in Hz, 
@@ -162,7 +162,7 @@ def harmonicModel(x, fs, w, N, t, nH, minf0, maxf0, f0et):
 
 def harmonicModelAnal(x, fs, w, N, H, t, nH, minf0, maxf0, f0et, harmDevSlope=0.01, minSineDur=.02):
 	"""
-	Analysis of a sound using the sinusoidal harmonic model
+	Analysis of a sound using the sinusoidal harmonic models_makam
 	x: input sound; fs: sampling rate, w: analysis window; N: FFT size (minimum 512); t: threshold in negative dB, 
 	nH: maximum number of harmonics;  minf0: minimum f0 frequency in Hz, 
 	maxf0: maximim f0 frequency in Hz; f0et: error threshold in the f0 detection (ex: 5),
@@ -214,7 +214,7 @@ def harmonicModelAnal(x, fs, w, N, H, t, nH, minf0, maxf0, f0et, harmDevSlope=0.
 
 def harmonicModelAnal_2(x, fs, w, N,  hopSizeMelodia, pinFirst, pend,  t, nH, f0Series, harmDevSlope=0.01, minSineDur=.02):
 	"""
-	Analysis of a sound using the sinusoidal harmonic model
+	Analysis of a sound using the sinusoidal harmonic models_makam
 	x: input sound; fs: sampling rate, w: analysis window; N: FFT size (minimum 512); t: threshold in negative dB, 
 	nH: maximum number of harmonics;  minf0: minimum f0 frequency in Hz, 
 	maxf0: maximim f0 frequency in Hz; f0et: error threshold in the f0 detection (ex: 5),

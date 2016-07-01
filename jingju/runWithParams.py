@@ -18,15 +18,16 @@ from jingju.JingjuRecording import JingjuScore, JingjuRecording
 from align.LyricsAligner import LyricsAligner
 from jingju.lyricsParser import divideIntoSentencesFromAnnoWithSil
 import numpy
+import logging
 
 
 
 
 def runWithParameters(argv):
     
-    if len(argv) != 3:
+    if len(argv) != 4:
             print ("Tool to get alignment accuracy of one jingju aria with different parameters ")
-            print ("usage: {}   <URIRecording No Extension>  <deviation_INSeconds>".format(argv[0]) )
+            print ("usage: {}   <URIRecording No Extension>  <deviation_INSeconds> <withRefSyllDurations>".format(argv[0]) )
             sys.exit()
     
     ParametersAlgo.FOR_JINGJU = 1
@@ -55,18 +56,24 @@ def runWithParameters(argv):
         from MusicXmlParser import MusicXMLParser
         musicXmlURI = URIrecordingNoExt + '_score.xml'
         musicXMLParser = MusicXMLParser(musicXmlURI, lyricsTextGrid)
+    
+    withRefSyllDurations = int(argv[3])
+    syllRefDurations = None
 
-   
-   # parse syllRefDurations 
-    path, fileName = os.path.split(URIrecordingNoExt + '.wav')
-    path, which_fold = os.path.split(path) # which Fold
-    path, blah = os.path.split(path)
-    path, blah = os.path.split(path)
-
-    syllRefDurations = numpy.loadtxt( os.path.join(path + '/stats/' + which_fold, 'syllRefDurations') )
-   
+    if withRefSyllDurations:
+        
+        # parse syllRefDurations 
+        path, fileName = os.path.split(URIrecordingNoExt + '.wav')
+        path, which_fold = os.path.split(path) # which Fold
+        path, blah = os.path.split(path)
+        path, blah = os.path.split(path)
+        syllRefDurations_URI =  os.path.join(path + '/stats/' + which_fold, 'syllRefDurations')
+        if not os.path.isfile(syllRefDurations_URI):
+            sys.exit("you specified withRedSyllDur=1. Then add file {} ".format( syllRefDurations_URI))
+        syllRefDurations = numpy.loadtxt( syllRefDurations_URI )
  # load total # different sentences + their rspective ts
     listLyicsSections, annotationLinesListNoPauses = divideIntoSentencesFromAnnoWithSil(lyricsTextGrid, syllRefDurations) #uses TextGrid annotation to derive structure. TODO: instead of annotation, uses score
+    
     jingjuScore = JingjuScore(listLyicsSections)
     
     # 

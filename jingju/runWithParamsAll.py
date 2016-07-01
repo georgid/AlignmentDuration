@@ -10,9 +10,9 @@ from align.ParametersAlgo import ParametersAlgo
 
 def runWithParametersAll(argv):
     
-    if len(argv) != 5:
+    if len(argv) != 6:
             print ("Tool to get alignment accuracy of of one jingju aria with different parameters ")
-            print ("usage: {}    <deviation_INSeconds> <withVocalPrediciton> <pathToData> <numFolds>".format(argv[0]) )
+            print ("usage: {}    <deviation_INSeconds> <withVocalPrediciton> <pathToData> <numFolds> <withRefSyllDurations=0/1>".format(argv[0]) )
             sys.exit()
 
     pathAudio = '/Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat/'
@@ -27,6 +27,9 @@ def runWithParametersAll(argv):
 
     ParametersAlgo.MODELS_DIR = os.path.join(parentDir, 'models_jingju/' + numFolds + 'folds/')
     from utilsLyrics.Utilz import findFilesByExtension
+    
+    withRefSyllDurations = argv[5]
+    
     
     correctDurationHTK = 0
     totalDurationHTK = 0
@@ -47,7 +50,7 @@ def runWithParametersAll(argv):
             URiREcording = os.path.splitext(URiREcording)[0] 
             print "working on " + URiREcording
              
-            a, b, c, d, e, f = runWithParameters( ["dummy", URiREcording,  argv[1]] )
+            a, b, c, d, e, f = runWithParameters( ["dummy", URiREcording,  argv[1], withRefSyllDurations] )
              
             correctDurationHTK += a 
             totalDurationHTK += b

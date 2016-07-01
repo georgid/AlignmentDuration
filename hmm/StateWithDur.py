@@ -30,7 +30,7 @@ class StateWithDur(State):
         '''
         Constructor
         '''
-        if phoneme.isModelTypeHTK: # htk model
+        if phoneme.isModelTypeHTK: # htk models_makam
             state = phoneme.model.states[idxInPhoneme][1]
             State.__init__(self, state.mixtures)
         else: # scikit gmm type of state

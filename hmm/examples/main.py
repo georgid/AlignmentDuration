@@ -33,7 +33,7 @@ projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__
     
 from align.Decoder import Decoder
 
-modelDIR = projDir + '/model/'
+modelDIR = projDir + '/models_makam/'
 HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 

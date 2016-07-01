@@ -12,7 +12,7 @@ import stochasticModel as STM
 
 def spsModelAnal(x, fs, w, N, H, t, minSineDur, maxnSines, freqDevOffset, freqDevSlope, stocf):
 	"""
-	Analysis of a sound using the sinusoidal plus stochastic model
+	Analysis of a sound using the sinusoidal plus stochastic models_makam
 	x: input sound, fs: sampling rate, w: analysis window; N: FFT size, t: threshold in negative dB, 
 	minSineDur: minimum duration of sinusoidal tracks
 	maxnSines: maximum number of parallel sinusoids
@@ -26,12 +26,12 @@ def spsModelAnal(x, fs, w, N, H, t, minSineDur, maxnSines, freqDevOffset, freqDe
 	tfreq, tmag, tphase = SM.sineModelAnal(x, fs, w, N, H, t, maxnSines, minSineDur, freqDevOffset, freqDevSlope)
 	Ns = 512
 	xr = UF.sineSubtraction(x, Ns, H, tfreq, tmag, tphase, fs)    	# subtract sinusoids from original sound
-	stocEnv = STM.stochasticModelAnal(xr, H, H*2, stocf)            # compute stochastic model of residual
+	stocEnv = STM.stochasticModelAnal(xr, H, H*2, stocf)            # compute stochastic models_makam of residual
 	return tfreq, tmag, tphase, stocEnv
 
 def spsModelSynth(tfreq, tmag, tphase, stocEnv, N, H, fs):
 	"""
-	Synthesis of a sound using the sinusoidal plus stochastic model
+	Synthesis of a sound using the sinusoidal plus stochastic models_makam
 	tfreq, tmag, tphase: sinusoidal frequencies, amplitudes and phases; stocEnv: stochastic envelope
 	N: synthesis FFT size; H: hop size, fs: sampling rate 
 	returns y: output sound, ys: sinusoidal component, yst: stochastic component
@@ -45,7 +45,7 @@ def spsModelSynth(tfreq, tmag, tphase, stocEnv, N, H, fs):
 	
 def spsModel(x, fs, w, N, t, stocf):
 	"""
-	Analysis/synthesis of a sound using the sinusoidal plus stochastic model
+	Analysis/synthesis of a sound using the sinusoidal plus stochastic models_makam
 	x: input sound, fs: sampling rate, w: analysis window, 
 	N: FFT size (minimum 512), t: threshold in negative dB, 
 	stocf: decimation factor of mag spectrum for stochastic analysis

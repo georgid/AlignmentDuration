@@ -28,7 +28,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
     getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile, getMelodicStructFromName, tokenList2TabFile
 
-# parser of htk-build speech model
+# parser of htk-build speech models_makam
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
 from htkparser.htk_converter import HtkConverter
@@ -58,7 +58,7 @@ from parse.TextGrid_Parsing import TextGrid2WordList
 numpy.set_printoptions(threshold='nan')
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
-modelDIR = currDir + '/model/'
+modelDIR = currDir + '/models_makam/'
 HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 

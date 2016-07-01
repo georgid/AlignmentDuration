@@ -26,7 +26,7 @@ if not pathJingjuAlignment in sys.path:
 from align.MakamScore import  loadMakamScore2
 
 
-# parser of htk-build speech model
+# parser of htk-build speech models_makam
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
 from htkparser.htk_converter import HtkConverter
@@ -142,7 +142,7 @@ def test_discrete():
 
 def makeTestDurationHMM():
     '''
-    generate some random model. 
+    generate some random models_makam. 
     '''
     n = 5
     d = 2
@@ -172,7 +172,7 @@ def makeTestDurationHMM():
 
 def testRand_DurationHMM():
     '''
-    test with audio features from real recording, but some random model, not trained model 
+    test with audio features from real recording, but some random models_makam, not trained models_makam 
     TODO: this might not work. rewrite
     '''
     durGMMhmm,d = makeTestDurationHMM()

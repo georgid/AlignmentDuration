@@ -41,11 +41,13 @@ class ParametersAlgo(object):
 
     PATH_TO_HCOPY= '/usr/local/bin/HCopy'
     PATH_TO_HVITE = '/usr/local/bin/HVite'
-    # ANDRES. On kora.s.upf.edu
-    # PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'  
+    # ANDRES. on server 
+    PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
+    # On kora.s.upf.edu
+    PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
     
     projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ))
-    PATH_TO_CONFIG_FILES= projDir + '/model/input_files/'    
+    PATH_TO_CONFIG_FILES= projDir + '/models_makam/input_files/'    
     
     POLYPHONIC = 0
     

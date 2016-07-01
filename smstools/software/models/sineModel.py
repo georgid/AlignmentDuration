@@ -96,7 +96,7 @@ def cleaningSineTracks(tfreq, minTrackLength=3):
 
 def sineModel(x, fs, w, N, t):
 	"""
-	Analysis/synthesis of a sound using the sinusoidal model, without sine tracking
+	Analysis/synthesis of a sound using the sinusoidal models_makam, without sine tracking
 	x: input array sound, w: analysis window, N: size of complex spectrum, t: threshold in negative dB 
 	returns y: output array sound
 	"""
@@ -137,7 +137,7 @@ def sineModel(x, fs, w, N, t):
 
 def sineModelAnal(x, fs, w, N, H, t, maxnSines = 100, minSineDur=.01, freqDevOffset=20, freqDevSlope=0.01):
 	"""
-	Analysis of a sound using the sinusoidal model with sine tracking
+	Analysis of a sound using the sinusoidal models_makam with sine tracking
 	x: input array sound, w: analysis window, N: size of complex spectrum, H: hop-size, t: threshold in negative dB
 	maxnSines: maximum number of sines per frame, minSineDur: minimum duration of sines in seconds
 	freqDevOffset: minimum frequency deviation at 0Hz, freqDevSlope: slope increase of minimum frequency deviation
@@ -188,7 +188,7 @@ def sineModelAnal(x, fs, w, N, H, t, maxnSines = 100, minSineDur=.01, freqDevOff
 
 def sineModelSynth(tfreq, tmag, tphase, N, H, fs):
 	"""
-	Synthesis of a sound using the sinusoidal model
+	Synthesis of a sound using the sinusoidal models_makam
 	tfreq,tmag,tphase: frequencies, magnitudes and phases of sinusoids
 	N: synthesis FFT size, H: hop size, fs: sampling rate
 	returns y: output array sound

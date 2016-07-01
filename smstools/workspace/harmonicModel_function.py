@@ -25,7 +25,7 @@ import harmonicModel as HM
 def extractHarmSpec( inputFile, f0FreqsRaw, fromTs=-1, toTs=-1, t=-70, window='blackman',  M=2047, N=2048 , 
 	minSineDur=0.0, nH=30, harmDevSlope=0.02):
 	"""
-	Analysis and synthesis using the harmonic model
+	Analysis and synthesis using the harmonic models_makam
 	inputFile: input sound file (monophonic with sampling rate of 44100)
 	window: analysis window type (rectangular, hanning, hamming, blackman, blackmanharris)	
 	M: analysis window size; N: fft size (power of two, bigger or equal than M)

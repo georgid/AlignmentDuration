@@ -32,7 +32,7 @@ if pathHMMDuration not in sys.path:
     sys.path.append(pathHMMDuration)
 
 
-# parser of htk-build speech model
+# parser of htk-build speech models_makam
 # pathModelParser = os.path.join(parentDir, 'htkModelParser')
 # sys.path.append(pathHtkModelParser)
 from htkparser.htk_converter import HtkConverter

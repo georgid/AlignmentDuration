@@ -98,7 +98,7 @@ class Decoder(object):
             if  WITH_DURATIONS:
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
-            # double check that features are in same dimension as model
+            # double check that features are in same dimension as models_makam
             if featureExtractor.featureVectors.shape[1] != self.hmmNetwork.d:
                 sys.exit("dimension of feature vector should be {} but is {} ".format(self.hmmNetwork.d, featureExtractor.featureVectors.shape[1]) )
             
@@ -212,7 +212,7 @@ class Decoder(object):
                         if  nextState.phoneme.ID == 'sp':
                             forwProb1 = 1 - stateWithDur.getWaitProb() / 2.0
                             forwProb2 = 1 - stateWithDur.getWaitProb() / 2.0
-                        else: # no note onset and no sp: use transition trained from model
+                        else: # no note onset and no sp: use transition trained from models_makam
                             forwProb1 = 1 - stateWithDur.getWaitProb() 
                             forwProb2 = 0
                    

@@ -13,7 +13,7 @@ import utilFunctions as UF
 
 def hpsModelAnal(x, fs, w, N, H, t, nH, minf0, maxf0, f0et, harmDevSlope, minSineDur, Ns, stocf):
 	"""
-	Analysis of a sound using the harmonic plus stochastic model
+	Analysis of a sound using the harmonic plus stochastic models_makam
 	x: input sound, fs: sampling rate, w: analysis window; N: FFT size, t: threshold in negative dB, 
 	nH: maximum number of harmonics, minf0: minimum f0 frequency in Hz, 
 	maxf0: maximim f0 frequency in Hz; f0et: error threshold in the f0 detection (ex: 5),
@@ -31,7 +31,7 @@ def hpsModelAnal(x, fs, w, N, H, t, nH, minf0, maxf0, f0et, harmDevSlope, minSin
 
 def hpsModelSynth(hfreq, hmag, hphase, stocEnv, N, H, fs):
 	"""
-	Synthesis of a sound using the harmonic plus stochastic model
+	Synthesis of a sound using the harmonic plus stochastic models_makam
 	hfreq, hmag: harmonic frequencies and amplitudes; stocEnv: stochastic envelope
 	Ns: synthesis FFT size; H: hop size, fs: sampling rate 
 	returns y: output sound, yh: harmonic component, yst: stochastic component
@@ -45,7 +45,7 @@ def hpsModelSynth(hfreq, hmag, hphase, stocEnv, N, H, fs):
 
 def hpsModel(x, fs, w, N, t, nH, minf0, maxf0, f0et, stocf):
 	"""
-	Analysis/synthesis of a sound using the harmonic plus stochastic model, one frame at a time, no harmonic tracking
+	Analysis/synthesis of a sound using the harmonic plus stochastic models_makam, one frame at a time, no harmonic tracking
 	x: input sound; fs: sampling rate, w: analysis window; N: FFT size (minimum 512), t: threshold in negative dB, 
 	nH: maximum number of harmonics, minf0: minimum f0 frequency in Hz; maxf0: maximim f0 frequency in Hz, 
 	f0et: error threshold in the f0 detection (ex: 5); stocf: decimation factor of mag spectrum for stochastic analysis

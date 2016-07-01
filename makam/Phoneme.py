@@ -17,7 +17,7 @@ class Phoneme(_PhonemeBase):
 #     def getStates(self):
 #         try: self.htkModel
 #         except NameError:
-#             sys.exit(" phoneme {} has no model assigned ", self.ID)
+#             sys.exit(" phoneme {} has no models_makam assigned ", self.ID)
 #         
 #         return self.htkModel.states
         

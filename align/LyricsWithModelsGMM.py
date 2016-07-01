@@ -30,13 +30,13 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
              
             _LyricsWithModelsBase._addPaddedSilencePhonemes(self) 
                  
-                #link each phoneme from transcript to a model
+                #link each phoneme from transcript to a models_makam
                 # FIXME: DO A MORE OPTIMAL WAY like ismember()
             for phonemeFromTranscript in    self.phonemesNetwork:
                     self._renamePhonemeNames(phonemeFromTranscript)
                     
                     model, modelName = self._loadGMMModel(phonemeFromTranscript.ID, fold)
-    #                 if model == None:
+    #                 if models_makam == None:
     
                     
                     sciKitGMM = SciKitGMM(model, modelName)
@@ -45,7 +45,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
     
     
     def _loadGMMModel(self, modelName, fold ):
-        ''' load model'''
+        ''' load models_makam'''
         
 #         thisDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__) ) )
         
@@ -53,7 +53,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
         dictURI =  os.path.join(MODELS_SCRIPTS, 'modelName2FileNameDict') 
         modelName2FileNameDict = loadDictFromTabFile(dictURI)
         
-        # table convert model names
+        # table convert models_makam names
         if modelName in modelName2FileNameDict:
             modelName = modelName2FileNameDict[modelName]
         
@@ -64,7 +64,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
             model = pickle.load(file(modelsURI))
         except Exception:
             traceback.print_exc()
-            sys.exit("problem loading model {}. Make sure the correct fold is given".format(modelsURI))
+            sys.exit("problem loading models_makam {}. Make sure the correct fold is given".format(modelsURI))
             model = None
         return model, modelName
     

@@ -10,7 +10,7 @@ class ExponentialPdf(object):
     
     def __init__(self):
         self.MAX_ALLOWED_DURATION_RATIO = 2
-        # wait at same state prob TODO: read from model
+        # wait at same state prob TODO: read from models_makam
     
     def setWaitProb(self, waitProb, durationInFrames):
         self.waitProb = waitProb

@@ -9,7 +9,9 @@ from align.LyricsWithModelsGMM import LyricsWithModelsGMM
 from align.LyricsWithModelsHTK import LyricsWithModelsHTK
 import logging
 from align.LyricsParsing import loadOraclePhonemes
-
+import tempfile
+import os
+audioTmpDir = tempfile.mkdtemp()
 
 class _SectionLinkBase():
 
@@ -18,7 +20,8 @@ class _SectionLinkBase():
         '''
         Constructor
         '''
-        self.URIRecordingChunk = URIWholeRecording + "_" + "{}".format(beginTs) + '_' + "{}".format(endTs)
+        basename = os.path.basename(URIWholeRecording)
+        self.URIRecordingChunk = os.path.join(audioTmpDir, basename + "_" + "{}".format(beginTs) + '_' + "{}".format(endTs))
 
         self.beginTs = beginTs
         self.endTs = endTs
@@ -94,7 +97,7 @@ class SectionLinkMakam(_SectionLinkBase):
 
         
         # lyricsWithModelsORacle used only as helper to get its stateNetwork with durs, but not functionally - e.g. their models are not used
-        withPaddedSilence = False # dont model silence at end and beginnning. this away we dont need to do annotatation of sp at end and beginning 
+        withPaddedSilence = False # dont models_makam silence at end and beginnning. this away we dont need to do annotatation of sp at end and beginning 
         self.lyricsWithModels = LyricsWithModelsHTK(self.section.lyrics,  htkParser,  ParametersAlgo.DEVIATION_IN_SEC, withPaddedSilence)
         
         

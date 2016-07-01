@@ -49,7 +49,7 @@ setup(name='lyrics-align',
       url='',
       # packages=['align', 'align.model' ,'hmm', 'hmm.continuous',  'test']
     packages=find_packages(),
-    package_data={'align': ['model/hmmdefs9gmm9iter']},
+    package_data={'align': ['models_makam/hmmdefs9gmm9iter']},
     include_package_data=True,
     install_requires=generalDependencies,
     

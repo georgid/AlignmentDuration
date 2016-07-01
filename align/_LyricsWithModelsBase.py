@@ -36,7 +36,7 @@ if pathEvaluation not in sys.path:
 
 class _LyricsWithModelsBase(Lyrics):
     '''
-    lyrics with each Phoneme having a link to a model of class type htkModel from htkModelParser
+    lyrics with each Phoneme having a link to a models_makam of class type htkModel from htkModelParser
     No handling of durationInMinUnit information. For it see Decoder.Decoder.decodeAudio 
     '''
 
@@ -154,7 +154,7 @@ class _LyricsWithModelsBase(Lyrics):
 #             
 #             # sanity check
 #             if not currStateCount ==  currTransMatrix.shape[0]:
-#                 sys.exit("Error on reading htk model: transMatrix for phoneme {} has not same num states as states ", phoneme.ID)
+#                 sys.exit("Error on reading htk models_makam: transMatrix for phoneme {} has not same num states as states ", phoneme.ID)
 #             
 #             waitProbs = []
 #             for currState in range(currStateCount):

@@ -60,7 +60,7 @@ class SyllableJingju(_SyllableBase):
 
             #  notes for instrument
             if self.text == 'REST' or self.text == '':
-                # TODO: replace with other model instead of silence
+                # TODO: replace with other models_makam instead of silence
                 silPhoneme = PhonemeJingju('sil')
 #                 silPhoneme.durationInNumFrames = 100
                 self.phonemes.append(silPhoneme)
