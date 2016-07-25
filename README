@@ -18,7 +18,8 @@ BUILD INSTRUCTIONS:
 
 git clone https://github.com/georgid/AlignmentDuration.git
 sudo apt-get install python-dev python-setuptools python-numpy
-sudo pip install -r requirements
+
+pip install -r requirements
 python setup.py install
 
 
@@ -45,13 +46,16 @@ https://github.com/MTG/HMM.git
 
 
 -------------------------------------------------------
+USAGE (jingju):
+python AlignmentDuration/jingju/runWithParamsAll.py 2 0   /JingjuSingingAnnotation-master/lyrics2audio/results/3folds/ 3 0
 
 
-USAGE :
+USAGE (makam):
 pycompmusic/compmusic/extractors/makam/lyricsalign.py
 
 to test without pycommusic: 
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/test/testLyricsAlign.py
+
 
 
 all from here is DEPRACATED: 
