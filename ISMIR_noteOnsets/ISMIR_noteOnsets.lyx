@@ -555,7 +555,7 @@ ly sections are discarded.
 placement h
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -833,6 +833,11 @@ a_{ij}+g(t,t')q, & R2\thinspace\mbox{or\thinspace}R4
 status open
 
 \begin_layout Plain Layout
+There are N different transition matrices precomputed for each value of
+ g(t,t')
+\end_layout
+
+\begin_layout Plain Layout
 IMPL: implemented as ONSET_SIGMA_IN_FRAMES different matrices each defined
  in align.Decoder.Decoder._constructTransMatrix and used in decoding in hmm.continuo
 us._HMM._HMM.viterbi_fast_forced()
@@ -990,7 +995,7 @@ Let
 \begin_inset Formula $L$
 \end_inset
 
- denote a vowel, liquid (LL, M, NN) or the semivowel Y.
+ denote a liquid (LL, M, NN) or the semivowel Y.
  Rules 
 \begin_inset Formula $R1$
 \end_inset
@@ -1012,8 +1017,8 @@ Let
 \begin_inset Formula 
 \begin{equation}
 \begin{array}{c}
-\thinspace\thinspace R1:\quad i=V\quad j=\neg L\\
-R2:\quad i=C\quad j=L\thinspace\thinspace\ 
+\thinspace\thinspace R1:\quad i=V\quad j=C\backslash L\\
+R2:\quad i=C\backslash L\quad j=VL\thinspace\thinspace\ 
 \end{array}
 \end{equation}
 
@@ -1029,7 +1034,7 @@ For example, for rule
 
  if a syllable ends in a consonant, a note onset imposes with high probability
  that a transition to the following syllable is done, provided that it starts
- with a vowel.
+ with a vowel or liquid.
  Same rule applies if it starts with a liquid, according to the observation
  that
 \emph on
@@ -1044,24 +1049,15 @@ key "sundberg2006kth"
 \end_inset
 
 .
- Rules 
-\begin_inset Formula $R3$
-\end_inset
-
- and 
-\begin_inset Formula $R4$
-\end_inset
-
- are for intra-syllabic phoneme patterns:
+ Rule R2 is valid also for intra-syllabic phoneme patterns, together with
+ rule R3:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
 \begin{array}{c}
-R3:\quad i=V\quad j=C\\
-\thinspace\thinspace R4:\quad i=\neg L\quad j=V
-\end{array}
+R3:\quad i=V\quad j=C\end{array}
 \end{equation}
 
 \end_inset
@@ -1070,8 +1066,7 @@ R3:\quad i=V\quad j=C\\
 \end_layout
 
 \begin_layout Standard
-Essentially, if the current phoneme is vocal and the next is non-voiced
- (e.g.
+Essentially, if the current phoneme is vocal and the next is unvoiced (e.g.
  
 \begin_inset Formula $R1$
 \end_inset
@@ -1090,8 +1085,8 @@ reference "eq:transition model"
 
 ) discourages transition no next phoneme and encourages transition in the
  opposite cases.
- An example of 
-\begin_inset Formula $R4$
+ An example of the intra-syllable 
+\begin_inset Formula $R2$
 \end_inset
 
  can be seen for the syllable KK-AA in Figure 
@@ -1101,8 +1096,9 @@ reference "example_annotaion"
 
 \end_inset
 
- where the note onset triggers the change to the vowel AA, opposed, for
- example, to onset at Y for the syllable Y-E-T.
+ where the note onset triggers the change to the vowel AA.
+ Unlike that, an onset for example, to the syllable Y to onset at Y for
+ the syllable Y-E-T.
  
 \begin_inset Float figure
 placement h
@@ -1174,8 +1170,7 @@ sp
 status open
 
 \begin_layout Plain Layout
-IMPL: forw probs based on rules are implemented in align.Decoder.defineForwardTran
-sProbs.
+IMPL: forw probs based on rules are implemented in align.Decoder.
  
 \end_layout
 
@@ -1554,6 +1549,16 @@ Creating the annotation is a time-consuming task, but we plan to annotate
 
 \end_inset
 
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+these are: seen in table...
+\end_layout
+
+\end_inset
+
 .
  On annotation special care is taken to place the note onset on the time
  instant, at which the pitch becomes steady.
@@ -1572,6 +1577,17 @@ status open
 
 \begin_layout Plain Layout
 Onset annotations are available at http://compmusic.upf.edu/node/233
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+local annotation in /Users/joro/Documents/Phd/UPF/turkish_makam_audio_score_alig
+nment_dataset
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1628,7 +1644,8 @@ IMPL: compmusic.extractors.makam.lyricsalign.doitAllRecs
 \end_layout
 
 \begin_layout Plain Layout
-WITH_DURATIONS=0, DETECTION_TOKEN_LEVEL = words
+WITH_DURATIONS=0, Decoder.DETECTION_TOKEN_LEVEL = words, WITH_SECTION_ANNOTATIONS
+=1
 \end_layout
 
 \begin_layout Plain Layout
@@ -2423,6 +2440,16 @@ reference "per-recording alignment"
  It can be observed that VTHMM performs consistently better than the baseline
  HMM (with some exceptions of where accuracy is close).
  
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: ParametersAlgo.WITH_ORACLE_ONSETS =0
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section

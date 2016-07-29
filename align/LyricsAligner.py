@@ -1,3 +1,4 @@
+from Carbon import Snd
 
 # Copyright 2015,2016 Music Technology Group - Universitat Pompeu Fabra
 #
@@ -31,6 +32,7 @@ from align.Decoder import logger, DETECTION_TOKEN_LEVEL, WITH_DURATIONS, Decoder
 from ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
+from scipy.io import wavfile
 
 
 
@@ -81,15 +83,23 @@ class LyricsAligner():
             '''
             each section link has 
             '''
-            # parameters 
+            ##### parameters 
             if self.WITH_SECTION_ANNOTATIONS: 
                 sectionLinks = self.recording.sectionAnnos
             else:
                 sectionLinks = self.recording.sectionLinks
+            
+            #### get duration        
+            sampFreq, snd = wavfile.read( self.recording.recordingNoExtURI + '.wav' )
+            duration = snd.shape[0] / sampFreq
 
                 
             detectedSectionList = []    
             for  currSectionLink in sectionLinks :
+                    
+                    
+                    if duration < currSectionLink.endTs:
+                        break
                     
                     detectedTokenList = []
 #                     if sectionLink.melodicStructure.startswith('ARANAGME'):
@@ -107,12 +117,14 @@ class LyricsAligner():
                         if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
                             print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
                             continue 
+#                         currSectionLink.lyricsWithModels.printSyllables()
                         detectedTokenList, detectedPath, maxPhiScore = self.alignLyricsSection(  extractedPitchList,   [],  self.tokenLevelAlignedSuffix,   currSectionLink)
 #                         self.extractNoteOnsetsAndEval(currSectionLink)
       
                      
                     else:  # section links
                         detectedTokenList = self.alignSectionLinkProbableSections( extractedPitchList, currSectionLink)
+                    
                     
                     currSectionLink.detectedTokenList = detectedTokenList 
                     detectedSectionList.append(currSectionLink.detectedTokenList)
@@ -125,7 +137,7 @@ class LyricsAligner():
         pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
         if pathEvaluation not in sys.path:
                     sys.path.append(pathEvaluation)
-#         from AccuracyEvaluator import _evalAccuracy
+        from AccuracyEvaluator import _evalAccuracy
                         
         totalCorrectDurations = 0
         totalDurations = 0    
@@ -140,17 +152,23 @@ class LyricsAligner():
                         correctDuration = 0
                         totalDuration = 1
                         
+                        if not hasattr(currSectionLink, 'detectedTokenList'):
+                            continue
+                        
                
-                        evalLevel = tierAliases.pinyin
-                        URIRecordingChunkTextGrid = currSectionLink.URIRecordingChunk + ANNOTATION_EXT
-                        if ParametersAlgo.FOR_JINGJU:
-                            audioName = os.path.basename(self.recording.recordingNoExtURI)
-                            path_TextGrid =  os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(self.recording.recordingNoExtURI) ), os.path.pardir, os.path.pardir)) 
+                        audioName = os.path.basename(self.recording.recordingNoExtURI)
+                        path_TextGrid =  os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(self.recording.recordingNoExtURI) ), os.path.pardir, os.path.pardir)) 
 
+                        if ParametersAlgo.FOR_JINGJU:
+                            evalLevel = tierAliases.pinyin
                             URI_TextGrid = os.path.join(path_TextGrid, audioName + ANNOTATION_EXT)
-                            
-#                             correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.section.fromSyllableIdx, currSectionLink.section.toSyllableIdx  )
-            
+                            correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.section.fromSyllableIdx, currSectionLink.section.toSyllableIdx  )
+                        
+                        elif ParametersAlgo.FOR_MAKAM:
+                            evalLevel = tierAliases.phrases
+                            URI_TextGrid = currSectionLink.URIRecordingChunk + ANNOTATION_EXT
+                            correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel)  
+                        
                         totalCorrectDurations += correctDuration
                         totalDurations += totalDuration
             
@@ -189,7 +207,7 @@ class LyricsAligner():
                     '''
                     only extract note onsets and eval note onset extraction
                     '''
-                    URIrecOnsets = self.recording.recordingNoExtURI + '.alignedNotes.txt'
+                    URIrecOnsets = self.recording.recordingNoExtURI + ParametersAlgo.ANNOTATION_ONSETS_EXT
                     fe = FeatureExtractor(self.path_to_hcopy, currSectionLink) 
                     
                     gr_truth_URI = fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
@@ -214,6 +232,8 @@ class LyricsAligner():
                 fromTsTextGrid = -1; toTsTextGrid = -1
                 
                 if  ParametersAlgo.WITH_ORACLE_PHONEMES:
+                    raw_input('implemented only for Kimseye...! Continue only if working with Kimseye' )
+                    
                     currSectionLink.loadSmallAudioFragmentOracle(self.model)
                     # featureVectors is alias for LyricsWithModelsOracle
                     fe.featureVectors = currSectionLink.lyricsWithModels 
@@ -229,7 +249,8 @@ class LyricsAligner():
                          
                     fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)
                 
-    #             sectionLink.lyricsWithModels.printWordsAndStates()
+#                 sectionLink.lyricsWithModels.printWordsAndStates()
+                
                 alpha = 0.97
                 decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
 
@@ -238,7 +259,7 @@ class LyricsAligner():
 
                 ##### note onsets
                 if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
-                    URIrecOnsets = self.recording.recordingNoExtURI + '.alignedNotes.txt'
+                    URIrecOnsets = os.path.join(os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_ONSETS_EXT)
     
                     gr_truth_URI = fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
                     
@@ -247,7 +268,8 @@ class LyricsAligner():
                     extractedOnsetsURI =  fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
                 
                 detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
-                detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
+                if ParametersAlgo.FOR_JINGJU:
+                    detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
                 
                 
                 ##### write all decoded output persistently to files
@@ -298,7 +320,7 @@ def loadMakamRecording(mbRecordingID, audioFileURI, symbtrtxtURI, sectionMetadat
     
     makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataDict)
     makamScore.printSectionsAndLyrics()
-    raw_input("make sure lyrics are correct in sections. if not correct change URL to get file from in  get_section_metadata_dict... then press key")
+#     raw_input("make sure lyrics are correct in sections. if not correct change URL to get file from in  get_section_metadata_dict... then press key")
 
     mr = MakamRecording(mbRecordingID, audioFileURI, makamScore, sectionLinksDict, withAnnotations)
     

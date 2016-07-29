@@ -81,7 +81,7 @@ def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
 
         startNoteNumber = word_.syllables[0].noteNum
 
-        currWord, totalDuration = func( word_, startNoteNumber, countFirstState, countLastState, path, totalDuration)
+        currWord, totalDuration = func( word_.text, startNoteNumber, countFirstState, countLastState, path, totalDuration)
         
         # TODO: SAZ words not needed.
         

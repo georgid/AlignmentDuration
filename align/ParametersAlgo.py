@@ -27,13 +27,13 @@ class ParametersAlgo(object):
     
     ONLY_MIDDLE_STATE = 1
     
-    WITH_SHORT_PAUSES = 1
+    WITH_SHORT_PAUSES = 0
     
     # padded a short pause state at beginning and end of sequence
     WITH_PADDED_SILENCE = 1
     
     # no feature vectors at all. all observ, probs. set to 1
-    WITH_ORACLE_PHONEMES = -1
+#     WITH_ORACLE_PHONEMES = -1
     WITH_ORACLE_PHONEMES = 0
 
     PATH_TO_HCOPY= '/usr/local/bin/HCopy'
@@ -68,5 +68,7 @@ class ParametersAlgo(object):
     CONSONANT_DURATION_DEVIATION = 0.7
     
     #####
-    LOGGING_LEVEL = logging.INFO
+    LOGGING_LEVEL = logging.DEBUG
     VISUALIZE = 0
+    
+    ANNOTATION_ONSETS_EXT = 'annotationOnsets.txt'

@@ -139,7 +139,8 @@ class _HMM(_ContinuousHMM):
         
         
         self.noteOnsets = featureExtractor.onsetDetector.onsetTsToOnsetFrames( lenFeatures)
-            
+        for i in  self.noteOnsets:
+            print i    
         self.phi = numpy.empty((lenFeatures,self.n),dtype=self.precision)
         self.phi.fill(-Infinity)
     
@@ -163,24 +164,33 @@ class _HMM(_ContinuousHMM):
             currLogPi = numpy.log(self.pi[j])
             self.phi[0][j] = currLogPi + self.B_map[j][0]
         
-        # viterbi loop    
         lenObs = numpy.shape(self.B_map)[1]
-        for t in xrange(1,lenObs):
+        tmpOnsetProbArray = numpy.zeros((self.n - 1, lenObs)) 
+        
+        # viterbi loop    
+#         for t in xrange(1,lenObs):
+        for t in xrange(582,1070):
             self.logger.debug("at time {} out of {}".format(t, lenObs ))
+            
+            if ParametersAlgo.WITH_ORACLE_ONSETS == -1:
+                    whichMatrix = -1 # last matrix with no onset
+            else:
+                    # distance of how many frames from closest onset
+                    onsetDist = getDistFromOnset( self.noteOnsets, t)
+                    whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
+                    self.logger.debug( "which Matrix: " + str(whichMatrix) )
+                    
             for j in xrange(self.n):
                         fromState = j-2
                         # if beginning state, no prev. state
                         if j == 0 or j==1:
                             fromState = 0
-                        if ParametersAlgo.WITH_ORACLE_ONSETS == -1:
-                           whichMatrix = -1 # last matrix with no onset
-                        else:
-                            # distance of how many frames from closest onset
-                            onsetDist = getDistFromOnset( self.noteOnsets, t)
-                            whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
+
                             
                         sliceA = self.transMatrices[whichMatrix][fromState:j+1,j]
-                             
+                        if j > 0:
+                            a = self.transMatrices[whichMatrix][j-1,j]
+                            tmpOnsetProbArray[j-1, t] = a # because of indexing
 
 #                         if j <= t:
 #                             print 'at time {} and state {} a_j-1,j and a_j,j = {}'.format(t, j, sliceA)
@@ -196,16 +206,19 @@ class _HMM(_ContinuousHMM):
 #                         if j <= t:
 #                             print self.phi[t][j]
 #                             print '\n'
+                        
 
-            ##### visualize each selected chunk
+#             visualizeMatrix(tmpOnsetProbArray, 'titleName')
+            ##### visualize each selected chunk of psi
             tmpArray = numpy.zeros((1,self.psi.shape[1]))
             tmpArray[0,:] = self.psi[t,:]
-#             visualizeMatrix(tmpArray)
+#             visualizeMatrix(tmpArray, 'title')
 #             visualizeMatrix(self.phi, 'phi at time {}'.format(t))
                     
 #         numpy.savetxt(PATH_LOGS + '/phi', self.phi)
 #         numpy.savetxt( PATH_LOGS + '/psi', self.psi)
         
+        visualizeMatrix(tmpOnsetProbArray, 'title')
         return self.psi 
    
     

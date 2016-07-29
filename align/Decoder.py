@@ -24,7 +24,7 @@ import numpy
 
 # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
 # if false, use transition probabilities from htkModels
-WITH_DURATIONS= 1
+WITH_DURATIONS= 0
 
 
 
@@ -48,8 +48,8 @@ logger.setLevel(loggingLevel)
 # other logger set in _Continuous
 
 # level into which to segments decoded result stateNetwork
-DETECTION_TOKEN_LEVEL= 'syllables'
-# DETECTION_TOKEN_LEVEL= 'words'
+# DETECTION_TOKEN_LEVEL= 'syllables'
+DETECTION_TOKEN_LEVEL= 'words'
 
 # in backtracking allow to start this much from end back
 BACKTRACK_MARGIN_PERCENT= 0.2
@@ -173,6 +173,7 @@ class Decoder(object):
         # just for initialization totalNumPhonemes
         totalNumStates = len(lyricsWithModels.statesNetwork)
         transMAtrix = numpy.zeros((totalNumStates, totalNumStates), dtype=numpy.double)
+#         transMAtrix.fill(0.1)
         
         for idxCurrState in range(len(lyricsWithModels.statesNetwork)):
              
@@ -357,13 +358,13 @@ class Decoder(object):
         
         if currPhoneme.isLastInSyll(): # inter-syllable
                 if currPhoneme.isVowel() and not followingPhoneme.isVowelOrLiquid(): # rule 1
-                    return max(forwProb - onsetWeight * q, 0)
-                elif not currPhoneme.isVowel() and followingPhoneme.isVowelOrLiquid(): # rule 2
+                    return max(forwProb - onsetWeight * q, 0.1) # 0.1 instead of 0 becasue log(0) will give -inf
+                elif not currPhoneme.isVowelOrLiquid() and followingPhoneme.isVowelOrLiquid(): # rule 2
                     return forwProb + onsetWeight * q 
         else: # not last in syllable, intra-syllable
                 if currPhoneme.isVowel() and not followingPhoneme.isVowel(): # rule 3
-                    return max(forwProb - onsetWeight * q, 0)
-                elif not currPhoneme.isVowelOrLiquid() and followingPhoneme.isVowel(): # rule 4:
+                    return max(forwProb - onsetWeight * q, 0.1)
+                elif not currPhoneme.isVowelOrLiquid() and followingPhoneme.isVowelOrLiquid(): # rule 4
                     return forwProb + onsetWeight * q
                 elif currPhoneme.isVowel() and followingPhoneme.isVowel():
                     logging.warning("two consecutive vowels {} and {} in a syllable. not implemented! Make sure ONLY_MIDDLE_STATE is set true. 3-state models not implemented".format(currPhoneme.ID, followingPhoneme.ID))

@@ -62,7 +62,7 @@ def visualizeMatrix(psi,  titleName):
         figManager.full_screen_toggle()
 #         plt.tight_layout()
         
-#         plt.show() 
+        plt.show() 
         return ax1 
 
 def visualizeTransMatrix(matrix, titleName, phonemesNetwork):
@@ -73,7 +73,7 @@ def visualizeTransMatrix(matrix, titleName, phonemesNetwork):
     from numpy.core.numeric import arange
     plt.xticks(arange(len(listPhonemeNames)) , listPhonemeNames )
     plt.yticks(arange(len(listPhonemeNames)) , listPhonemeNames )
-        
+    plt.show()
 
 def visualizePath( ax, path, B_map):
     ''' print path on top of existing plot
