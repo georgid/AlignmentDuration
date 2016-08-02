@@ -50,8 +50,7 @@ class ParametersAlgo(object):
 
     PATH_TO_HCOPY= '/usr/local/bin/HCopy'
     PATH_TO_HVITE = '/usr/local/bin/HVite'
-    # ANDRES. on server 
-#     PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
+
     # On kora.s.upf.edu
 #     PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
     

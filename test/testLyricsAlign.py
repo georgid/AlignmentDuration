@@ -6,6 +6,7 @@ Created on Jan 13, 2016
 import os
 import sys
 import json
+import urllib2
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
@@ -30,17 +31,26 @@ def testLyricsAlign():
     
     ParametersAlgo.FOR_MAKAM = 1
     
-    # test with section links=. POLYPHONIC
+    # test with section links 
     symbtrtxtURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.txt')
     sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci.sectionsMetadata.json' )
     sectionLinksSourceURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.sectionLinks.json' )
     sectionAnnosSourceURI = os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/727cff89-392f-4d15-926d-63b2697d7f3f.json')
     audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--aksak--gel_guzelim--faiz_kapanci/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya/18_Munir_Nurettin_Selcuk_-_Gel_Guzelim_Camlicaya.wav')
+    
+#     # test of audio working 
+#     URL = 'http://dunya.compmusic.upf.edu/document/by-id/727cff89-392f-4d15-926d-63b2697d7f3f/wav?v=0.5&subtype=wave'
+#     fetchFileFromURL(URL, audioFileURI)
+    
+    
+    
     musicbrainzid = '727cff89-392f-4d15-926d-63b2697d7f3f'
     ParametersAlgo.POLYPHONIC = 1
     ParametersAlgo.WITH_ORACLE_ONSETS = -1
     ParametersAlgo.WITH_ORACLE_PHONEMES = 0
     
+    # On kora.s.upf.edu
+    ParametersAlgo.PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
     
     # test with section anno and acapella
 #     symbtrtxtURI = os.path.join( currDir,'../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.txt')
@@ -139,6 +149,17 @@ def testMakamRecording():
 #     decoder = Decoder(lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
 
 
+
+def fetchFileFromURL(URL, outputFileURI):
+        print "fetching file from URL {} ...  ".format(URL) 
+        try:
+            response = urllib2.urlopen(URL)
+            a = response.read()
+        except Exception:
+            "...maybe URL has changed"
+        
+        with open(outputFileURI,'w') as f:
+            f.write(a)
 
 if __name__ == '__main__':
     testLyricsAlign()
