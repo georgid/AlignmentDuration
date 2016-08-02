@@ -158,7 +158,7 @@ class Decoder(object):
         #######
         
         
-        if  WITH_DURATIONS:
+        if  ParametersAlgo.WITH_DURATIONS:
             from hmm.continuous.DurationGMHMM  import DurationGMHMM
             # note: no trans matrix because only forced Viterbi implemented 
             self.hmmNetwork = DurationGMHMM(self.lyricsWithModels.statesNetwork)

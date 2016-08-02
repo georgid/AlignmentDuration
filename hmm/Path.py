@@ -42,8 +42,8 @@ class Path(object):
                 '''
                 finalTime = finalTime - 1
                 logger.debug('backtracking from final time {}'.format(finalTime))
-                    self.pathRaw = self._backtrackForcedDur(chiBackPointers, psiBackPointer, finalTime)
                 if ParametersAlgo.WITH_DURATIONS:
+                    self.pathRaw = self._backtrackForcedDur(chiBackPointers, psiBackPointer, finalTime)
                 else:
                     self.pathRaw = self._backtrack(hmm, finalTime)
                     
