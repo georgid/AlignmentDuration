@@ -555,11 +555,11 @@ ly sections are discarded.
 placement h
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename ../../AlignmentDurationOld/ISMIR_noteOnsets/systemOverview_acapella.svg
+	filename systemOverview_acapella.svg
 	width 115col%
 
 \end_inset

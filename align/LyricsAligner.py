@@ -27,7 +27,7 @@ import sys
 import json
 import subprocess
 from makam.MakamRecording import parseSectionLinks, MakamRecording
-from align.Decoder import logger, DETECTION_TOKEN_LEVEL, WITH_DURATIONS, Decoder
+from align.Decoder import logger,  Decoder
 from ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
@@ -61,7 +61,7 @@ class LyricsAligner():
         self.recording = recording
         self.WITH_SECTION_ANNOTATIONS = WITH_SECTION_ANNOTATIONS
         self.path_to_hcopy = path_to_hcopy
-        self.tokenLevelAlignedSuffix = determineSuffix(WITH_DURATIONS, ParametersAlgo.WITH_ORACLE_PHONEMES, ParametersAlgo.WITH_ORACLE_ONSETS, DETECTION_TOKEN_LEVEL)
+        self.tokenLevelAlignedSuffix = determineSuffix(ParametersAlgo.WITH_DURATIONS, ParametersAlgo.WITH_ORACLE_PHONEMES, ParametersAlgo.WITH_ORACLE_ONSETS, ParametersAlgo.DETECTION_TOKEN_LEVEL)
         
         if ParametersAlgo.FOR_MAKAM:
             

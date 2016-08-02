@@ -23,13 +23,11 @@ from utilsLyrics.Utilz import writeListToTextFile
 
 import numpy
 
-# use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
-# if false, use transition probabilities from htkModels
-WITH_DURATIONS= 1
 
 
 
-if not WITH_DURATIONS:
+
+if not ParametersAlgo.WITH_DURATIONS:
     pathHTKParser = os.path.join(parentDir, 'HMM')
     if pathHTKParser not in sys.path:    
         sys.path.append(pathHTKParser)
@@ -49,9 +47,7 @@ logger.setLevel(loggingLevel)
 
 # other logger set in _Continuous
 
-# level into which to segments decoded result stateNetwork
-DETECTION_TOKEN_LEVEL= 'syllables'
-# DETECTION_TOKEN_LEVEL= 'words'
+
 
 # in backtracking allow to start this much from end back
 BACKTRACK_MARGIN_PERCENT= 0.2
@@ -95,7 +91,7 @@ class Decoder(object):
         
         if not ParametersAlgo.WITH_ORACLE_PHONEMES:
             self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
-            if  WITH_DURATIONS:
+            if  ParametersAlgo.WITH_DURATIONS:
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
             # double check that features are in same dimension as models_makam
@@ -106,7 +102,7 @@ class Decoder(object):
         self.hmmNetwork.initDecodingParameters(featureExtractor, fromTsTextGrid, toTsTextGrid)
 
         # standard viterbi forced alignment
-        if not WITH_DURATIONS:
+        if not ParametersAlgo.WITH_DURATIONS:
             
             psiBackPointer = self.hmmNetwork.viterbi_fast_forced()
             chiBackPointer = None
@@ -277,7 +273,7 @@ class Decoder(object):
         numStates = len(self.lyricsWithModels.statesNetwork)
         numdecodedStates = len(self.path.indicesStateStarts)
         
-        if WITH_DURATIONS:
+        if ParametersAlgo.WITH_DURATIONS:
             if numStates != numdecodedStates:
                 logging.warn("detected path has {} states, but stateNetwork transcript has {} states \n \
                 WORKAROUND: adding missing states at beginning of path. This should not happen often ".format( numdecodedStates, numStates ) )
@@ -321,7 +317,7 @@ class Decoder(object):
         
         writeListToTextFile(self.path.pathRaw, None , outputURI)
         
-        detectedTokenList = self.path2ResultWordList(self.path, DETECTION_TOKEN_LEVEL)
+        detectedTokenList = self.path2ResultWordList(self.path, ParametersAlgo.DETECTION_TOKEN_LEVEL)
         
         # DEBUG info
     #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)

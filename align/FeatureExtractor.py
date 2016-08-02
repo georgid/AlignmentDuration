@@ -41,14 +41,6 @@ from ParametersAlgo import ParametersAlgo
 
 
 
-    
-
-
-
-
-
-  
-
 class FeatureExtractor(object):
     def __init__(self, path_to_hcopy, sectionLink):
         self.path_to_hcopy = path_to_hcopy

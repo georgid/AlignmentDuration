@@ -8,7 +8,7 @@ import numpy
 import sys
 from _LyricsWithModelsBase import _LyricsWithModelsBase
 from numpy.core.arrayprint import set_printoptions
-from Decoder import Decoder, WITH_DURATIONS, logger
+from Decoder import Decoder, logger
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForToken, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer

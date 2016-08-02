@@ -13,7 +13,6 @@ from ParametersAlgo import ParametersAlgo
 import logging
 from makam.Phoneme import Phoneme
 from jingju.PhonemeJingju import PhonemeJingju
-from align.Decoder import WITH_DURATIONS
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
     
@@ -107,7 +106,7 @@ class _LyricsWithModelsBase(Lyrics):
             if not phoneme.isVowel(): # consonant
                     deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
             
-            if WITH_DURATIONS:
+            if ParametersAlgo.WITH_DURATIONS:
                 distributionType='normal'
                 ### for Makam, lyrics are read from score and sp is considered a consonant with short deviation. 
                 ### only first and last phonemes (which are sp) will get padded silence 

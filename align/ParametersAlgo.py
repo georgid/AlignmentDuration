@@ -13,6 +13,15 @@ class ParametersAlgo(object):
     FOR_JINGJU = 0
     FOR_MAKAM = 0
     
+    # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
+    # if false, use transition probabilities from htkModels
+    WITH_DURATIONS= 1
+    
+    # level into which to segments decoded result stateNetwork
+    DETECTION_TOKEN_LEVEL= 'syllables'
+    # DETECTION_TOKEN_LEVEL= 'words'
+    
+    
     DECODE_WITH_HTK = 0
     
     GLOBAL_WAIT_PROB = 0.8
@@ -42,16 +51,16 @@ class ParametersAlgo(object):
     PATH_TO_HCOPY= '/usr/local/bin/HCopy'
     PATH_TO_HVITE = '/usr/local/bin/HVite'
     # ANDRES. on server 
-    PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
+#     PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
     # On kora.s.upf.edu
-    PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
+#     PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
     
     projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ))
     PATH_TO_CONFIG_FILES= projDir + '/models_makam/input_files/'    
     
-    POLYPHONIC = 0
+    POLYPHONIC = 1
     
-    WITH_ORACLE_ONSETS = 1
+    WITH_ORACLE_ONSETS = -1
     ### no onsets at all. 
 #     WITH_ORACLE_ONSETS = -1
     
