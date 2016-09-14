@@ -32,10 +32,10 @@ from utilsLyrics.Utilz import  findFileByExtensions
 pathSectionAnnosSourceJNMR = '/Users/joro/Downloads/turkish_makam_section_dataset-2014_jnmr/audio_metadata/'
 
 
-URI_datasetSymbTr1 = '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/'
+URI_datasetSymbTr1 = '/Users/joro/Documents/Phd/UPF/turkish-for_makam-lyrics-2-audio-test-data-synthesis/'
 
 # manually modified note numbers in section.tsv file and with symbTr 2.0 .txt 
-URI_datasetSymbTr1_sectionMeta2 = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis-symbTr2/'
+URI_datasetSymbTr1_sectionMeta2 = '/Users/joro/Downloads/turkish-for_makam-lyrics-2-audio-test-data-synthesis-symbTr2/'
 
 
 dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
@@ -76,7 +76,7 @@ def extendNewMetadata(musicbrainzid, workmbid,  inpuRecordingDir):
     if len(sectionsMetadataNewLabels) != len(oldMetadataMakamScore.sectionToLyricsMap):
         sys.exit("for composition {} text score sections are {} and sectionsMetadata with new labels are {}".format(compositionPath, len(oldMetadataMakamScore.sectionToLyricsMap), len(sectionsMetadataNewLabels)))
         
-    ######### 3.   match old score sections to audio annotations (in constructor of makam recording)
+    ######### 3.   match old score sections to audio annotations (in constructor of for_makam recording)
     pathToAudioFile = 'blah'
     pathToRecording, pathToSectionAnnotations = getURISectionAnnotation(inpuRecordingDir, compositionPath) 
     makamRecording = MakamRecordingOld(oldMetadataMakamScore, pathToAudioFile, pathToSectionAnnotations)

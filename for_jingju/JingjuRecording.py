@@ -3,9 +3,9 @@ Created on May 9, 2016
 
 @author: joro
 '''
-from makam.MakamRecording import _RecordingBase
+from for_makam.MakamRecording import _RecordingBase
 from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid
-from jingju.SectionLinkJingju import SectionLinkJingju
+from for_jingju.SectionLinkJingju import SectionLinkJingju
 
 
 

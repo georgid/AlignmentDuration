@@ -11,7 +11,7 @@ from align.ParametersAlgo import ParametersAlgo
 def runWithParametersAll(argv):
     
     if len(argv) != 6:
-            print ("Tool to get alignment accuracy of of one jingju aria with different parameters ")
+            print ("Tool to get alignment accuracy of of one for_jingju aria with different parameters ")
             print ("usage: {}    <deviation_INSeconds> <withVocalPrediciton> <pathToData> <numFolds> <withRefSyllDurations=0/1>".format(argv[0]) )
             sys.exit()
 
@@ -77,4 +77,4 @@ def runWithParametersAll(argv):
 if __name__ == '__main__':
     runWithParametersAll(sys.argv)
     
-#     python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/jingju/runWithParamsAll.py  2 0  /Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/3folds/ 3
+#     python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/for_jingju/runWithParamsAll.py  2 0  /Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/3folds/ 3

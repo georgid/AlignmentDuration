@@ -7,7 +7,7 @@ from Phoneme import Phoneme
 import sys
 from align.Decoder import logger
 from align._SyllableBase import _SyllableBase
-from makam.PhonetizerMakam import grapheme2Phoneme
+from for_makam.PhonetizerMakam import grapheme2Phoneme
 from align.Phonetizer import Phonetizer
 
 #     64 for 64th note

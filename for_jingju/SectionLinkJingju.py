@@ -4,7 +4,7 @@ Created on May 9, 2016
 @author: joro
 '''
 from align.SectionLink import _SectionLinkBase
-from jingju.ParsePhonemeAnnotation import loadPhonemesAnnoOneSyll
+from for_jingju.ParsePhonemeAnnotation import loadPhonemesAnnoOneSyll
 
 class SectionLinkJingju(_SectionLinkBase):
     

@@ -36,7 +36,7 @@ from parse.TextGrid_Parsing import tierAliases
 def runitHTK(argv):
     
     if len(argv) != 2:
-            print ("Tool to get alignment accuracy of one jingju aria with htk ")
+            print ("Tool to get alignment accuracy of one for_jingju aria with htk ")
             print ("usage: {}   <URIRecording No Extension> ".format(argv[0]) )
             sys.exit()
 

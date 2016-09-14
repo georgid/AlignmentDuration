@@ -21,7 +21,7 @@ from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from align.ParametersAlgo import ParametersAlgo
 import logging
 from align.LyricsParsing import loadOraclePhonemes
-from jingju.ParsePhonemeAnnotation import loadPhonemesAnnoOneSyll
+from for_jingju.ParsePhonemeAnnotation import loadPhonemesAnnoOneSyll
 from align.LyricsWithModelsHTK import LyricsWithModelsHTK
 from align.LyricsWithModelsGMM import LyricsWithModelsGMM
 

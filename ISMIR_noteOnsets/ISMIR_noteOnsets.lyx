@@ -1,7 +1,9 @@
-#LyX 2.1 created this file. For more info see http://www.lyx.org/
-\lyxformat 474
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
 \begin_document
 \begin_header
+\save_transient_properties true
+\origin unavailable
 \textclass article
 \begin_preamble
 % -----------------------------------------------
@@ -72,16 +74,16 @@
 \language_package none
 \inputencoding auto
 \fontencoding default
-\font_roman default
-\font_sans default
-\font_typewriter default
-\font_math auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
-\font_sf_scale 100
-\font_tt_scale 100
+\font_sf_scale 100 100
+\font_tt_scale 100 100
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -208,7 +210,7 @@ Increase recall even if more false positives.
 \end_layout
 
 \begin_layout Plain Layout
------------------
+—————–
 \end_layout
 
 \begin_layout Plain Layout
@@ -595,7 +597,7 @@ name "overview"
 Vocal pitch extraction
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Vocal-pitch-extraction"
+name "subsec:Vocal-pitch-extraction"
 
 \end_inset
 
@@ -646,7 +648,7 @@ it does not do voicing...
 Note segmentation
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Note-segmentation"
+name "subsec:Note-segmentation"
 
 \end_inset
 
@@ -822,7 +824,7 @@ key "johnson2005capacity"
 \begin{equation}
 a_{ij}(t)=\begin{cases}
 a_{ij}-g(t,t')q, & R1\text{\mbox{\thinspace{or}\thinspace}}R3\\
-a_{ij}+g(t,t')q, & R2\thinspace\mbox{or\thinspace}R4
+a_{ij}+g(t,t')q, & R2
 \end{cases}\label{eq:transition model}
 \end{equation}
 
@@ -1443,7 +1445,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="3">
-<features rotate="0" booktabs="true" tabularvalignment="middle">
+<features booktabs="true" tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top">
@@ -1766,7 +1768,7 @@ As a baseline we conduct alignment of the test dataset with unaffected phoneme
  in Section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Note-segmentation"
+reference "subsec:Note-segmentation"
 
 \end_inset
 
@@ -1845,7 +1847,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="5" columns="7">
-<features rotate="0" booktabs="true" tabularvalignment="middle">
+<features booktabs="true" tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -2526,7 +2528,7 @@ key "Serra89asystem"
 : Based on the extracted predominant pitch (see Section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Vocal-pitch-extraction"
+reference "subsec:Vocal-pitch-extraction"
 
 \end_inset
 
@@ -2633,7 +2635,7 @@ status open
 \align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="4">
-<features rotate="0" booktabs="true" tabularvalignment="middle">
+<features booktabs="true" tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">

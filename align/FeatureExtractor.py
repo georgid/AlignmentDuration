@@ -141,7 +141,7 @@ class FeatureExtractor(object):
         
         ####### json serialized array format
     
-    #     from compmusic.extractors.makam import pitch
+    #     from compmusic.extractors.for_makam import pitch
     #     extractor = pitch.PitchExtractMakam()
     #     results = extractor.run(URI_recording_noExt + '.wav')
     #     extractedPitchList = results['pitch']

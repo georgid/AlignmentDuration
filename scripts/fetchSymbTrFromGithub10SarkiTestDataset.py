@@ -38,13 +38,13 @@ def doit():
         
         for compositionName in compositionNames:
             webSiteSymbTr = 'https://raw.githubusercontent.com/MTG/SymbTr/master/txt/' + compositionName + '.txt'
-            fileURISymbTr = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis/' + compositionName + '/' + compositionName + '.txt'
+            fileURISymbTr = '/Users/joro/Downloads/turkish-for_makam-lyrics-2-audio-test-data-synthesis/' + compositionName + '/' + compositionName + '.txt'
     
             print webSiteSymbTr
             
             webSiteSectionsMetadata = 'https://raw.githubusercontent.com/sertansenturk/turkish_makam_corpus_stats/master/data/SymbTrData/' + compositionName + '.json' 
             print webSiteSectionsMetadata
-            fileURISectionsMetadata = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis/' + compositionName + '/' + compositionName + '.sectionsMetadata.json'
+            fileURISectionsMetadata = '/Users/joro/Downloads/turkish-for_makam-lyrics-2-audio-test-data-synthesis/' + compositionName + '/' + compositionName + '.sectionsMetadata.json'
     
             
             try:

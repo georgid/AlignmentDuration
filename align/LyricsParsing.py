@@ -7,7 +7,7 @@ Utility class: logic for parsing statesNetwork, phoeneNetwork
 '''
 import sys
 from Constants import NUM_FRAMES_PERSECOND, NUMSTATES_SIL, NUMSTATES_PHONEME
-from makam.Phoneme import Phoneme
+from for_makam.Phoneme import Phoneme
 import os
 import logging
 from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid

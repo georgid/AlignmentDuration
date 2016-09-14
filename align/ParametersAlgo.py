@@ -75,9 +75,9 @@ class ParametersAlgo(object):
     # in _ContinousHMM.b_map cut probabilities
     CUTOFF_BIN_OBS_PROBS = 30
     
-    # for jingju
+    # for for_jingju
     CONSONANT_DURATION_IN_SEC = 0.3
-    # for makam
+    # for for_makam
 #     CONSONANT_DURATION_IN_SEC = 0.1 
     
     CONSONANT_DURATION = NUMFRAMESPERSECOND * CONSONANT_DURATION_IN_SEC;

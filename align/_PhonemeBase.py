@@ -5,7 +5,7 @@ Created on May 20, 2016
 '''
 import sys
 import os
-from jingju.sciKitGMM import SciKitGMM
+from for_jingju.sciKitGMM import SciKitGMM
 import numpy
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 

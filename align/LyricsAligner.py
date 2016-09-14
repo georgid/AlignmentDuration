@@ -26,7 +26,7 @@ import os
 import sys
 import json
 import subprocess
-from makam.MakamRecording import parseSectionLinks, MakamRecording
+from for_makam.MakamRecording import parseSectionLinks, MakamRecording
 from align.Decoder import logger,  Decoder
 from ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
@@ -42,7 +42,7 @@ modelDIR = projDir + '/models_makam/'
 HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
-from makam.MakamScore import  loadMakamScore2
+from for_makam.MakamScore import  loadMakamScore2
 
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\

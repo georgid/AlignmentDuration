@@ -14,7 +14,7 @@ from lyricsParser import stripPunctuationSigns, \
      createSyllable
 import sys
 import os.path
-from jingju.LyricsJingju import LyricsJingju
+from for_jingju.LyricsJingju import LyricsJingju
 
 # 64th of note
 MIN_DUR_UNIT = 64

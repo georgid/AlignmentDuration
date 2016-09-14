@@ -30,7 +30,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class SyllableJingju(_SyllableBase):
-        ''' syllables class for each chinse/jingju phoneme (using phonemeSet mandarin from Weng Lei)
+        ''' syllables class for each chinse/for_jingju phoneme (using phonemeSet mandarin from Weng Lei)
         BUT not meant to be used alone, instead Syllable is a part of a Word class
         '''
         def __init__(self, text, noteNum):

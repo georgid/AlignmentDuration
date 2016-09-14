@@ -13,7 +13,7 @@ Created on Mar 3, 2014
 import os
 import sys
 from SymbTrParser2 import SymbTrParser2
-from makam.PhonetizerMakam import Phonetizer
+from for_makam.PhonetizerMakam import Phonetizer
 
 # trick to make terminal NOT assume ascii
 reload(sys).setdefaultencoding("utf-8")
@@ -29,7 +29,7 @@ import codecs
 # COMPOSITION_NAME = 'muhayyerkurdi--sarki--duyek--ruzgar_soyluyor--sekip_ayhan_ozisik'
 # COMPOSITION_NAME = 'huseyni--sarki--turkaksagi--hicran_oku--sevki_bey'
 # 
-# PATH_TEST_DATASET='/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/'
+# PATH_TEST_DATASET='/Users/joro/Documents/Phd/UPF/turkish-for_makam-lyrics-2-audio-test-data/'
 # PATH_TEST_DATASET = '/Volumes/IZOTOPE/sertan_sarki/'
 
 class MakamScore():

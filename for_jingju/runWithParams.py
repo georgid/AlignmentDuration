@@ -14,9 +14,9 @@ import matplotlib.pyplot as plt
 from utilsLyrics.Utilz import getMeanAndStDevError, addTimeShift,\
     writeListOfListToTextFile
 import os
-from jingju.JingjuRecording import JingjuScore, JingjuRecording
+from for_jingju.JingjuRecording import JingjuScore, JingjuRecording
 from align.LyricsAligner import LyricsAligner
-from jingju.lyricsParser import divideIntoSentencesFromAnnoWithSil
+from for_jingju.lyricsParser import divideIntoSentencesFromAnnoWithSil
 import numpy
 import logging
 
@@ -26,7 +26,7 @@ import logging
 def runWithParameters(argv):
     
     if len(argv) != 4:
-            print ("Tool to get alignment accuracy of one jingju aria with different parameters ")
+            print ("Tool to get alignment accuracy of one for_jingju aria with different parameters ")
             print ("usage: {}   <URIRecording No Extension>  <deviation_INSeconds> <withRefSyllDurations>".format(argv[0]) )
             sys.exit()
     

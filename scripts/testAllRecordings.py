@@ -25,7 +25,7 @@ def doitAllRecordings():
                  
      
      
-     URI_dataset = '/Users/joro/Downloads/turkish-makam-lyrics-2-audio-test-data-synthesis/'
+     URI_dataset = '/Users/joro/Downloads/turkish-for_makam-lyrics-2-audio-test-data-synthesis/'
      
      
      for recMBID,  recordingDir in zip(recMBIDs,  recordingDirs ):
@@ -71,7 +71,7 @@ def doitAllRecordings():
 
 def downloadSectionLink(recMBID, recordingDir, compositionPath, sectionLinkFilename):
     firstTwoDigits = recMBID[:2]
-    sectionLinkKoraURI = '/incoming/Turkey-makam/derived/' + firstTwoDigits + '/' + recMBID + '/scorealign/0.2/' + sectionLinkFilename
+    sectionLinkKoraURI = '/incoming/Turkey-for_makam/derived/' + firstTwoDigits + '/' + recMBID + '/scorealign/0.2/' + sectionLinkFilename
     serverPath = 'georgid@kora.s.upf.edu:' + sectionLinkKoraURI
     destination = compositionPath + recordingDir + '/'
     command = 'scp'
@@ -81,7 +81,7 @@ def downloadSectionLink(recMBID, recordingDir, compositionPath, sectionLinkFilen
 
 def downloadPitch(recMBID, recordingDir, compositionPath, fileName):
     firstTwoDigits = recMBID[:2]
-    extractedPitchListFileKora = '/incoming/Turkey-makam/derived/' + firstTwoDigits + '/' + recMBID + '/initialmakampitch/0.6/' + fileName
+    extractedPitchListFileKora = '/incoming/Turkey-for_makam/derived/' + firstTwoDigits + '/' + recMBID + '/initialmakampitch/0.6/' + fileName
         
     serverPath = 'georgid@kora.s.upf.edu:' + extractedPitchListFileKora
     destination = compositionPath + recordingDir + '/'

@@ -8,7 +8,7 @@ from align.ParametersAlgo import ParametersAlgo
 from hmm.Parameters import MAX_SILENCE_DURATION
 from align.Constants import NUM_FRAMES_PERSECOND
 from align._LyricsWithModelsBase import _LyricsWithModelsBase
-from jingju.sciKitGMM import SciKitGMM
+from for_jingju.sciKitGMM import SciKitGMM
 import os
 from utilsLyrics.Utilz import loadDictFromTabFile
 

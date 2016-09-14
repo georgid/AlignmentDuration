@@ -11,8 +11,8 @@ import Queue
 import math
 from ParametersAlgo import ParametersAlgo
 import logging
-from makam.Phoneme import Phoneme
-from jingju.PhonemeJingju import PhonemeJingju
+from for_makam.Phoneme import Phoneme
+from for_jingju.PhonemeJingju import PhonemeJingju
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
     

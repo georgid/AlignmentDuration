@@ -12,9 +12,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 
-from makam.MakamRecording import MakamRecording, parseSectionLinks
+from for_makam.MakamRecording import MakamRecording, parseSectionLinks
 from align.ScoreSection import ScoreSection
-from makam.MakamScore import loadMakamScore2
+from for_makam.MakamScore import loadMakamScore2
 
 from align.LyricsAligner import LyricsAligner, extendSectionLinksSelectedSections,\
     stereoToMono, loadMakamRecording
@@ -50,7 +50,7 @@ def testLyricsAlign():
     ParametersAlgo.WITH_ORACLE_PHONEMES = 0
     
     # On kora.s.upf.edu
-    ParametersAlgo.PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
+#     ParametersAlgo.PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
     
     # test with section anno and acapella
 #     symbtrtxtURI = os.path.join( currDir,'../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.txt')
