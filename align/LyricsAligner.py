@@ -300,7 +300,7 @@ def loadMakamRecording(mbRecordingID, audioFileURI, symbtrtxtURI, sectionMetadat
     
     makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataDict)
     makamScore.printSectionsAndLyrics()
-    raw_input("make sure lyrics are correct in sections. if not correct change URL to get file from in  get_section_metadata_dict... then press key")
+#     raw_input("make sure lyrics are correct in sections. if not correct change URL to get file from in  get_section_metadata_dict... then press key")
 
     mr = MakamRecording(mbRecordingID, audioFileURI, makamScore, sectionLinksDict, withAnnotations)
     
