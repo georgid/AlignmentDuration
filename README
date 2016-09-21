@@ -38,8 +38,11 @@ python setup.py install
 
 
 -----
-* Evaluation (optional if model evaluation step needed, see Doit.py )
+* Evaluation (optional if model evaluation step needed, see Doit.py ) 
+<put in parent direcoty of AlignmentDuration>
+cd ..
 git clone https://github.com/georgid/AlignmentEvaluation.git
+
 
 * HMM (optional if approach with no-duration modeling needed)
 https://github.com/MTG/HMM.git
@@ -57,6 +60,7 @@ to test without pycommusic:
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/test/testLyricsAlign.py
 
 
+------------------------------------------
 
 all from here is DEPRACATED: 
 EXAMPLE: doitOneChunk()
