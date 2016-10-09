@@ -561,7 +561,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename systemOverview_acapella.svg
+	filename systemOverview.svg
 	width 115col%
 
 \end_inset
@@ -1626,7 +1626,7 @@ Experiments
 status open
 
 \begin_layout Plain Layout
-IMPL: compmusic.extractors.makam.lyricsalign.doitAllRecs 
+IMPL: compmusic.extractors.makam.lyricsalign_local.doitAllRecs 
 \end_layout
 
 \begin_layout Plain Layout
@@ -2423,7 +2423,25 @@ reference "per-recording alignment"
 
 ).
  It can be observed that VTHMM performs consistently better than the baseline
- HMM (with some exceptions of where accuracy is close).
+ HMM (with some exceptions of where accuracy is close)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Per-recording results can be found at 
+\begin_inset CommandInset href
+LatexCommand href
+name "accuracy_per_recording_with_oracle"
+target "https://docs.google.com/spreadsheets/d/1C1gJt8j3Cm14LtIxS0R10xyAVx9MZO5qsCKRKD14aNM/edit?usp=sharing"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
  
 \end_layout
 
