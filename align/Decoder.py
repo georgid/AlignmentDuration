@@ -12,6 +12,7 @@ from ParametersAlgo import ParametersAlgo
 from align.visualize import visualizeMatrix, visualizeBMap, visualizePath,\
     visualizeTransMatrix
 from onsets.OnsetSmooting import OnsetSmoothingFunction
+import subprocess
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
@@ -28,13 +29,15 @@ WITH_DURATIONS= 0
 
 
 
-if not WITH_DURATIONS:
+
+if not ParametersAlgo.WITH_DURATIONS:
     pathHTKParser = os.path.join(parentDir, 'HMM')
     if pathHTKParser not in sys.path:    
         sys.path.append(pathHTKParser)
 
 
 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 
 
 logger = logging.getLogger(__name__)
@@ -47,9 +50,13 @@ logger.setLevel(loggingLevel)
 
 # other logger set in _Continuous
 
+<<<<<<< HEAD
 # level into which to segments decoded result stateNetwork
 # DETECTION_TOKEN_LEVEL= 'syllables'
 DETECTION_TOKEN_LEVEL= 'words'
+=======
+
+>>>>>>> dc7bf9fedb16c6b55c39e134a74caf86ea3c1f2a
 
 # in backtracking allow to start this much from end back
 BACKTRACK_MARGIN_PERCENT= 0.2
@@ -87,14 +94,16 @@ class Decoder(object):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
-        
+        if ParametersAlgo.DECODE_WITH_HTK:
+            detectedWordList = self.decodeAudioWithHTK()
+            return detectedWordList
         
         if not ParametersAlgo.WITH_ORACLE_PHONEMES:
             self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
-            if  WITH_DURATIONS:
+            if  ParametersAlgo.WITH_DURATIONS:
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
-            # double check that features are in same dimension as model
+            # double check that features are in same dimension as models_makam
             if featureExtractor.featureVectors.shape[1] != self.hmmNetwork.d:
                 sys.exit("dimension of feature vector should be {} but is {} ".format(self.hmmNetwork.d, featureExtractor.featureVectors.shape[1]) )
             
@@ -102,7 +111,7 @@ class Decoder(object):
         self.hmmNetwork.initDecodingParameters(featureExtractor, fromTsTextGrid, toTsTextGrid)
 
         # standard viterbi forced alignment
-        if not WITH_DURATIONS:
+        if not ParametersAlgo.WITH_DURATIONS:
             
             psiBackPointer = self.hmmNetwork.viterbi_fast_forced()
             chiBackPointer = None
@@ -131,8 +140,25 @@ class Decoder(object):
         
         return detectedWordList
     
+    def decodeAudioWithHTK(self):
+                    dict_ = self.URIrecordingChunkNoExt + '.dict'
+                    mlf = self.URIrecordingChunkNoExt + '.mlf'
+                    self.lyricsWithModels.printDict(dict_, 0)
+                    self.lyricsWithModels.printDict(mlf, 1)
+    
+            
+                    outputHTKPhoneAlignedURI = alignWithHTK(self.URIrecordingChunkNoExt, dict_, mlf)
+                    # TODO: parse output
+                    pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
+                    if pathEvaluation not in sys.path:
+                        sys.path.append(pathEvaluation)
+                    from WordLevelEvaluator import loadDetectedTokenListFromMlf
+                    
+                    detectedTokenList = loadDetectedTokenListFromMlf( outputHTKPhoneAlignedURI, whichLevel=2 )
+                    return detectedTokenList
     
 
+    
         
     def _constructHmmNetwork(self,  numStates, ALPHA,  withModels ):
         '''
@@ -143,7 +169,7 @@ class Decoder(object):
         #######
         
         
-        if  WITH_DURATIONS:
+        if  ParametersAlgo.WITH_DURATIONS:
             from hmm.continuous.DurationGMHMM  import DurationGMHMM
             # note: no trans matrix because only forced Viterbi implemented 
             self.hmmNetwork = DurationGMHMM(self.lyricsWithModels.statesNetwork)
@@ -194,7 +220,7 @@ class Decoder(object):
                         if  nextState.phoneme.ID == 'sp':
                             forwProb1 = 1 - stateWithDur.getWaitProb() / 2.0
                             forwProb2 = 1 - stateWithDur.getWaitProb() / 2.0
-                        else: # no note onset and no sp: use transition trained from model
+                        else: # no note onset and no sp: use transition trained from models_makam
                             forwProb1 = 1 - stateWithDur.getWaitProb() 
                             forwProb2 = 0
                    
@@ -259,7 +285,7 @@ class Decoder(object):
         numStates = len(self.lyricsWithModels.statesNetwork)
         numdecodedStates = len(self.path.indicesStateStarts)
         
-        if WITH_DURATIONS:
+        if ParametersAlgo.WITH_DURATIONS:
             if numStates != numdecodedStates:
                 logging.warn("detected path has {} states, but stateNetwork transcript has {} states \n \
                 WORKAROUND: adding missing states at beginning of path. This should not happen often ".format( numdecodedStates, numStates ) )
@@ -303,7 +329,7 @@ class Decoder(object):
         
         writeListToTextFile(self.path.pathRaw, None , outputURI)
         
-        detectedTokenList = self.path2ResultWordList(self.path, DETECTION_TOKEN_LEVEL)
+        detectedTokenList = self.path2ResultWordList(self.path, ParametersAlgo.DETECTION_TOKEN_LEVEL)
         
         # DEBUG info
     #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
@@ -377,5 +403,29 @@ class Decoder(object):
 
 
     
-
+def alignWithHTK(URIRecordingChunkNoExt, dict_, mlf):
+    #     
+    #     pipe = subprocess.Popen([PATH_TO_HVITE, '-l', "'*'", '-A', '-D', '-T', '1', '-b', 'sil', '-C', PATH_TO_CONFIG_FILES + 'config_singing', '-a', \
+    #                                  '-H', self.pathToHtkModel, '-H',  DUMMY_HMM_URI , '-H',  MODEL_NOISE_URI , '-i', '/tmp/phoneme-level.output', '-m', \
+    #                                  '-w', wordNetwURI, '-y', 'lab', dictName, PATH_TO_HMMLIST, mfcFileName], stdout=self.currLogHandle)
+        
+        logName = '/tmp/log_all'
+        currLogHandle = open(logName, 'w')
+        currLogHandle.flush()
+        decodedWordlevelMLF = URIRecordingChunkNoExt + '.out.mlf'    
+            
+        
+        path, fileName = os.path.split(URIRecordingChunkNoExt)
+        path, fold = os.path.split(path) # which Fold
+        
+        PATH_HTK_MODELS = '/home/georgid/Documents/JingjuSingingAnnotation-master/lyrics2audio/models/hmmdefs_' + fold 
+        PATH_TO_HMMLIST = ' /home/georgid/Documents/JingjuSingingAnnotation-master/lyrics2audio/models/hmmlist'
+           
+        command = [ParametersAlgo.PATH_TO_HVITE, '-a', '-m', '-I', mlf, '-C', ParametersAlgo.PATH_TO_CONFIG_FILES + 'config',  \
+                                     '-H', PATH_HTK_MODELS,  '-i', decodedWordlevelMLF,  \
+                                      dict_, PATH_TO_HMMLIST, URIRecordingChunkNoExt + '.wav']   
+        pipe = subprocess.Popen(command, stdout = currLogHandle)
+            
+        pipe.wait()      
+        return decodedWordlevelMLF
 

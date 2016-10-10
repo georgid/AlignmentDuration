@@ -11,7 +11,7 @@ import utilFunctions as UF
   
 def sprModelAnal(x, fs, w, N, H, t, minSineDur, maxnSines, freqDevOffset, freqDevSlope):
 	"""
-	Analysis of a sound using the sinusoidal plus residual model
+	Analysis of a sound using the sinusoidal plus residual models_makam
 	x: input sound, fs: sampling rate, w: analysis window; N: FFT size, t: threshold in negative dB, 
 	minSineDur: minimum duration of sinusoidal tracks
 	maxnSines: maximum number of parallel sinusoids
@@ -28,7 +28,7 @@ def sprModelAnal(x, fs, w, N, H, t, minSineDur, maxnSines, freqDevOffset, freqDe
 	
 def sprModelSynth(tfreq, tmag, tphase, xr, N, H, fs):
 	"""
-	Synthesis of a sound using the sinusoidal plus residual model
+	Synthesis of a sound using the sinusoidal plus residual models_makam
 	tfreq, tmag, tphase: sinusoidal frequencies, amplitudes and phases; stocEnv: stochastic envelope
 	N: synthesis FFT size; H: hop size, fs: sampling rate 
 	returns y: output sound, y: sinusoidal component
@@ -40,7 +40,7 @@ def sprModelSynth(tfreq, tmag, tphase, xr, N, H, fs):
 	
 def sprModel(x, fs, w, N, t):
 	"""
-	Analysis/synthesis of a sound using the sinusoidal plus residual model, one frame at a time
+	Analysis/synthesis of a sound using the sinusoidal plus residual models_makam, one frame at a time
 	x: input sound, fs: sampling rate, w: analysis window, 
 	N: FFT size (minimum 512), t: threshold in negative dB, 
 	returns y: output sound, ys: sinusoidal component, xr: residual component

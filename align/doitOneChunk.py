@@ -8,7 +8,7 @@ import numpy
 import sys
 from _LyricsWithModelsBase import _LyricsWithModelsBase
 from numpy.core.arrayprint import set_printoptions
-from Decoder import Decoder, WITH_DURATIONS, logger
+from Decoder import Decoder, logger
 from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForToken, testT
 from Constants import NUM_FRAMES_PERSECOND, AUDIO_EXTENSION
 from Phonetizer import Phonetizer
@@ -28,7 +28,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
     getMeanAndStDevError, getSectionNumberFromName, readListOfListTextFile, readListTextFile, getMelodicStructFromName, tokenList2TabFile
 
-# parser of htk-build speech model
+# parser of htk-build speech models_makam
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
 from htkparser.htk_converter import HtkConverter
@@ -58,7 +58,7 @@ from parse.TextGrid_Parsing import TextGrid2WordList
 numpy.set_printoptions(threshold='nan')
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
-modelDIR = currDir + '/model/'
+modelDIR = currDir + '/models_makam/'
 HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
@@ -182,7 +182,7 @@ def alignDependingOnWithDuration(URIrecordingNoExt, sectionLink, pathToCompositi
         alignmentErrors = evalAlignmentError(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         detectedTokenList = outputHTKPhoneAlignedURI
         
-        correctDuration, totalDuration = evalAccuracy(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
+#         correctDuration, totalDuration = evalAccuracy(URIrecordingAnno, outputHTKPhoneAlignedURI, evalLevel)
         
      
     return alignmentErrors,  correctDuration, totalDuration, correctDurationScoreDev, maxPhiScore

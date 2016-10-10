@@ -8,7 +8,7 @@ from align.ParametersAlgo import ParametersAlgo
 from hmm.Parameters import MAX_SILENCE_DURATION
 from align.Constants import NUM_FRAMES_PERSECOND
 from align._LyricsWithModelsBase import _LyricsWithModelsBase
-from jingju.sciKitGMM import SciKitGMM
+from for_jingju.sciKitGMM import SciKitGMM
 import os
 from utilsLyrics.Utilz import loadDictFromTabFile
 
@@ -22,7 +22,7 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
 
 
     
-    def _linkToModels(self, URIrecordingNoExt):
+    def _linkToModels(self, fold):
             '''
             load  trained models and link phoneme list to them    
             '''
@@ -30,13 +30,13 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
              
             _LyricsWithModelsBase._addPaddedSilencePhonemes(self) 
                  
-                #link each phoneme from transcript to a model
+                #link each phoneme from transcript to a models_makam
                 # FIXME: DO A MORE OPTIMAL WAY like ismember()
             for phonemeFromTranscript in    self.phonemesNetwork:
                     self._renamePhonemeNames(phonemeFromTranscript)
                     
-                    model, modelName = self._loadGMMModel(phonemeFromTranscript.ID, URIrecordingNoExt)
-    #                 if model == None:
+                    model, modelName = self._loadGMMModel(phonemeFromTranscript.ID, fold)
+    #                 if models_makam == None:
     
                     
                     sciKitGMM = SciKitGMM(model, modelName)
@@ -44,8 +44,8 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
                     
     
     
-    def _loadGMMModel(self, modelName, URIRecordingNoExt ):
-        ''' load model'''
+    def _loadGMMModel(self, modelName, fold ):
+        ''' load models_makam'''
         
 #         thisDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__) ) )
         
@@ -53,20 +53,18 @@ class LyricsWithModelsGMM(_LyricsWithModelsBase):
         dictURI =  os.path.join(MODELS_SCRIPTS, 'modelName2FileNameDict') 
         modelName2FileNameDict = loadDictFromTabFile(dictURI)
         
-        # table convert model names
+        # table convert models_makam names
         if modelName in modelName2FileNameDict:
             modelName = modelName2FileNameDict[modelName]
         
-        path, fileName = os.path.split(URIRecordingNoExt)
-        path, fold = os.path.split(path) # which Fold
-#         fold = 'fold1'
+       
         modelsURI =  os.path.join( ParametersAlgo.MODELS_DIR + fold + '/GMM/',  str(modelName) + '.pkl' )
         import pickle
         try:
             model = pickle.load(file(modelsURI))
         except Exception:
             traceback.print_exc()
-            sys.exit("problem loading model {}. Make sure the correct fold is given".format(modelsURI))
+            sys.exit("problem loading models_makam {}. Make sure the correct fold is given".format(modelsURI))
             model = None
         return model, modelName
     

@@ -9,7 +9,9 @@ from align.LyricsWithModelsGMM import LyricsWithModelsGMM
 from align.LyricsWithModelsHTK import LyricsWithModelsHTK
 import logging
 from align.LyricsParsing import loadOraclePhonemes
-
+import tempfile
+import os
+audioTmpDir = tempfile.mkdtemp()
 
 class _SectionLinkBase():
 
@@ -18,7 +20,8 @@ class _SectionLinkBase():
         '''
         Constructor
         '''
-        self.URIRecordingChunk = URIWholeRecording + "_" + "{}".format(beginTs) + '_' + "{}".format(endTs)
+        basename = os.path.basename(URIWholeRecording)
+        self.URIRecordingChunk = os.path.join(audioTmpDir, basename + "_" + "{}".format(beginTs) + '_' + "{}".format(endTs))
 
         self.beginTs = beginTs
         self.endTs = endTs
@@ -40,9 +43,9 @@ class _SectionLinkBase():
         self.selectedSections = sections
     
     
-    def loadSmallAudioFragment( self, featureExtractor, extractedPitchList,  URIrecordingNoExt,    model):
+    def loadSmallAudioFragment( self, featureExtractor, extractedPitchList,  URIrecordingNoExt,    htkParserOrFold):
         '''
-        test duration-explicit HMM with audio features from real recording and htk-loaded model
+        test duration-explicit HMM with audio features from real recording and htk-loaded htkParserOrFold
         asserts it works. no results provided 
         '''
         
@@ -50,9 +53,9 @@ class _SectionLinkBase():
     
         
         if ParametersAlgo.FOR_JINGJU:
-            self.lyricsWithModels = LyricsWithModelsGMM( self.section.lyrics, model,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
+            self.lyricsWithModels = LyricsWithModelsGMM( self.section.lyrics, htkParserOrFold,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
         elif ParametersAlgo.FOR_MAKAM:
-            self.lyricsWithModels = LyricsWithModelsHTK( self.section.lyrics, model,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
+            self.lyricsWithModels = LyricsWithModelsHTK( self.section.lyrics, htkParserOrFold,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
         else:
             sys.exit('neither JINGJU nor MAKAM.')
     
@@ -61,7 +64,7 @@ class _SectionLinkBase():
             return None, None, None
         
         
-        # needed only with duration model
+        # needed only with duration htkParserOrFold
         self.lyricsWithModels.duration2numFrameDuration(featureVectors, URIrecordingNoExt)
     #     lyricsWithModels.printPhonemeNetwork()
 
@@ -94,7 +97,7 @@ class SectionLinkMakam(_SectionLinkBase):
 
         
         # lyricsWithModelsORacle used only as helper to get its stateNetwork with durs, but not functionally - e.g. their models are not used
-        withPaddedSilence = False # dont model silence at end and beginnning. this away we dont need to do annotatation of sp at end and beginning 
+        withPaddedSilence = False # dont models_makam silence at end and beginnning. this away we dont need to do annotatation of sp at end and beginning 
         self.lyricsWithModels = LyricsWithModelsHTK(self.section.lyrics,  htkParser,  ParametersAlgo.DEVIATION_IN_SEC, withPaddedSilence)
         
         

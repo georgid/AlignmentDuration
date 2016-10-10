@@ -59,7 +59,7 @@ class _ContinuousHMM(_BaseHMM):
     def __init__(self,n,m,d=1,transMatrices=None, means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double,verbose=False):
         '''
         Construct a new Continuous HMM.
-        In order to initialize the model with custom parameters,
+        In order to initialize the models_makam with custom parameters,
         pass values for (transMatrix,means,covars,w,pi), and set the init_type to 'user'.
         
         Normal initialization uses a uniform distribution for all probablities,
@@ -103,7 +103,7 @@ class _ContinuousHMM(_BaseHMM):
     
     def reset(self,init_type='uniform'):
         '''
-        If required, initalize the model parameters according the selected policy
+        If required, initalize the models_makam parameters according the selected policy
         '''        
         if init_type == 'uniform':
             self.pi = numpy.ones( (self.n), dtype=self.precision) *(1.0/self.n)
@@ -304,7 +304,7 @@ class _ContinuousHMM(_BaseHMM):
                 
     """
     b[j][Ot] = sum(1...M)w[j][m]*b[j][m][Ot]
-    Returns b[j][Ot] based on the current model parameters (means, covars, weights) for the mixtures.
+    Returns b[j][Ot] based on the current models_makam parameters (means, covars, weights) for the mixtures.
     - j - state
     - Ot - the current observation
     Note: there's no need to get the observation itself as it has been used for calculation before.
@@ -465,7 +465,7 @@ class _ContinuousHMM(_BaseHMM):
     def _pdfAllFeatures(self,observations,j):
         '''
         Deriving classes should implement this method.
-        get the pdf of a series of features for model j
+        get the pdf of a series of features for models_makam j
         
         '''  
         raise NotImplementedError("PDF function must be implemented")

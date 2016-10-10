@@ -30,7 +30,7 @@ class DiscreteHMM(_BaseHMM):
     def __init__(self,n,m,A=None,B=None,pi=None,init_type='uniform',precision=numpy.double,verbose=False):
         '''
         Construct a new Discrete HMM.
-        In order to initialize the model with custom parameters,
+        In order to initialize the models_makam with custom parameters,
         pass values for (A,B,pi), and set the init_type to 'user'.
         
         Normal initialization uses a uniform distribution for all probablities,
@@ -46,7 +46,7 @@ class DiscreteHMM(_BaseHMM):
 
     def reset(self,init_type='uniform'):
         '''
-        If required, initalize the model parameters according the selected policy
+        If required, initalize the models_makam parameters according the selected policy
         '''
         if init_type == 'uniform':
             self.pi = numpy.ones( (self.n), dtype=self.precision) *(1.0/self.n)
@@ -75,7 +75,7 @@ class DiscreteHMM(_BaseHMM):
     def _reestimate(self,stats,observations):
         '''
         Required extension of _reestimate. 
-        Adds a re-estimation of the model parameter 'B'.
+        Adds a re-estimation of the models_makam parameter 'B'.
         '''
         # re-estimate A, pi
         new_model = _BaseHMM._reestimate(self,stats,observations) #@UndefinedVariable

@@ -18,7 +18,7 @@ def doit(argv):
         sys.exit();
     
     pathRoot = argv[1]
-    TEST_DATA = '/turkish-makam-lyrics-2-audio-test-data-synthesis/' 
+    TEST_DATA = '/turkish-for_makam-lyrics-2-audio-test-data-synthesis/' 
     pathToScores = pathRoot + TEST_DATA
 
     

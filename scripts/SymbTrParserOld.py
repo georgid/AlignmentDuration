@@ -8,7 +8,7 @@ import codecs
 import os
 import sys
 from align.Word import Word, createWord
-from makam.Syllable import Syllable, MINIMAL_DURATION_UNIT
+from for_makam.Syllable import Syllable, MINIMAL_DURATION_UNIT
 from align.Lyrics import Lyrics
 from _SymbTrParserBaseOld import _SymbTrParserBaseOld
 from align.Phonetizer import Phonetizer
@@ -314,11 +314,11 @@ class SymbTrParserOld(_SymbTrParserBaseOld):
 
 if __name__ == "__main__":
     
-    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.txt'
-    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.sections.tsv'
+    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-for_makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.txt'
+    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-for_makam-lyrics-2-audio-test-data/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey/nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey.sections.tsv'
     
-    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.txt'
-    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.sections.tsv'
+    pathTxt=  '/Users/joro/Documents/Phd/UPF/turkish-for_makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.txt'
+    pathTsv= '/Users/joro/Documents/Phd/UPF/turkish-for_makam-lyrics-2-audio-test-data-synthesis/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin/nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin.sections.tsv'
     
     
     

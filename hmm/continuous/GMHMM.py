@@ -59,7 +59,7 @@ class GMHMM(_HMM):
         
     def _pdfAllFeatures(self,observations,j):
         '''
-        get the pdf of a series of features for model j
+        get the pdf of a series of features for models_makam j
         uses sciKit learn's GMM class
         '''
 #         old_settings = numpy.seterr(under='warn')

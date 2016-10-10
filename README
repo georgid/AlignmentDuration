@@ -1,4 +1,4 @@
-Copyright © 2015,2016  Music Technology Group - Universitat Pompeu Fabra
+Copyright ï¿½ 2015,2016  Music Technology Group - Universitat Pompeu Fabra
 
 NAME: AlignmentDuration
 
@@ -18,7 +18,8 @@ BUILD INSTRUCTIONS:
 
 git clone https://github.com/georgid/AlignmentDuration.git
 sudo apt-get install python-dev python-setuptools python-numpy
-sudo pip install -r requirements
+
+pip install -r requirements
 python setup.py install
 
 
@@ -33,28 +34,33 @@ git clone https://github.com/georgid/scikit-learn
 sudo apt-get install python-scipy
 python setup.py install
 
-* utilsLyrics
-git clone https://github.com/georgid/utilsLyrics.git
-python setup.py install
+
 
 
 -----
-* Evaluation (optional if model evaluation step needed, see Doit.py )
+* Evaluation (optional if model evaluation step needed, see Doit.py ) 
+<put in parent direcoty of AlignmentDuration>
+cd ..
 git clone https://github.com/georgid/AlignmentEvaluation.git
+
 
 * HMM (optional if approach with no-duration modeling needed)
 https://github.com/MTG/HMM.git
 
 
 -------------------------------------------------------
+USAGE (jingju):
+python AlignmentDuration/jingju/runWithParamsAll.py 2 0   /JingjuSingingAnnotation-master/lyrics2audio/results/3folds/ 3 0
 
 
-USAGE :
+USAGE (makam):
 pycompmusic/compmusic/extractors/makam/lyricsalign.py
 
 to test without pycommusic: 
 python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/test/testLyricsAlign.py
 
+
+------------------------------------------
 
 all from here is DEPRACATED: 
 EXAMPLE: doitOneChunk()

@@ -6,7 +6,8 @@ Created on Nov 4, 2014
 import numpy
 import sys
 import logging
-from align.Decoder import WITH_DURATIONS, BACKTRACK_MARGIN_PERCENT
+from align.Decoder import BACKTRACK_MARGIN_PERCENT
+from align.ParametersAlgo import ParametersAlgo
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -41,7 +42,7 @@ class Path(object):
                 '''
                 finalTime = finalTime - 1
                 logger.debug('backtracking from final time {}'.format(finalTime))
-                if WITH_DURATIONS:
+                if ParametersAlgo.WITH_DURATIONS:
                     self.pathRaw = self._backtrackForcedDur(chiBackPointers, psiBackPointer, finalTime)
                 else:
                     self.pathRaw = self._backtrack(hmm, finalTime)

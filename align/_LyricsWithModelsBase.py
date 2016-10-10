@@ -11,9 +11,8 @@ import Queue
 import math
 from ParametersAlgo import ParametersAlgo
 import logging
-from makam.Phoneme import Phoneme
-from jingju.PhonemeJingju import PhonemeJingju
-from align.Decoder import WITH_DURATIONS
+from for_makam.Phoneme import Phoneme
+from for_jingju.PhonemeJingju import PhonemeJingju
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
     
@@ -36,12 +35,12 @@ if pathEvaluation not in sys.path:
 
 class _LyricsWithModelsBase(Lyrics):
     '''
-    lyrics with each Phoneme having a link to a model of class type htkModel from htkModelParser
+    lyrics with each Phoneme having a link to a models_makam of class type htkModel from htkModelParser
     No handling of durationInMinUnit information. For it see Decoder.Decoder.decodeAudio 
     '''
 
 
-    def __init__(self,  lyrics, htkParserOrURIrecordingNoExt, deviationInSec,  withPaddedSilence=True ):
+    def __init__(self,  lyrics, htkParserOrFold, deviationInSec,  withPaddedSilence=True ):
         '''
         being  linked to models, allows expansion to network of states 
         '''
@@ -57,7 +56,7 @@ class _LyricsWithModelsBase(Lyrics):
         
         self.duratioInFramesSet = False
 
-        self._linkToModels(htkParserOrURIrecordingNoExt)
+        self._linkToModels(htkParserOrFold)
         
         
 
@@ -107,7 +106,7 @@ class _LyricsWithModelsBase(Lyrics):
             if not phoneme.isVowel(): # consonant
                     deviation = ParametersAlgo.CONSONANT_DURATION_DEVIATION
             
-            if WITH_DURATIONS:
+            if ParametersAlgo.WITH_DURATIONS:
                 distributionType='normal'
                 ### for Makam, lyrics are read from score and sp is considered a consonant with short deviation. 
                 ### only first and last phonemes (which are sp) will get padded silence 
@@ -154,7 +153,7 @@ class _LyricsWithModelsBase(Lyrics):
 #             
 #             # sanity check
 #             if not currStateCount ==  currTransMatrix.shape[0]:
-#                 sys.exit("Error on reading htk model: transMatrix for phoneme {} has not same num states as states ", phoneme.ID)
+#                 sys.exit("Error on reading htk models_makam: transMatrix for phoneme {} has not same num states as states ", phoneme.ID)
 #             
 #             waitProbs = []
 #             for currState in range(currStateCount):

@@ -1,4 +1,3 @@
-from Carbon import Snd
 
 # Copyright 2015,2016 Music Technology Group - Universitat Pompeu Fabra
 #
@@ -27,8 +26,8 @@ import os
 import sys
 import json
 import subprocess
-from makam.MakamRecording import parseSectionLinks, MakamRecording
-from align.Decoder import logger, DETECTION_TOKEN_LEVEL, WITH_DURATIONS, Decoder
+from for_makam.MakamRecording import parseSectionLinks, MakamRecording
+from align.Decoder import logger,  Decoder
 from ParametersAlgo import ParametersAlgo
 from parse.TextGrid_Parsing import tierAliases
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
@@ -40,11 +39,11 @@ import essentia.standard
 
 projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir )) 
 
-modelDIR = projDir + '/model/'
+modelDIR = projDir + '/models_makam/'
 HMM_LIST_URI = modelDIR + '/monophones0'
 MODEL_URI = modelDIR + '/hmmdefs9gmm9iter'
 
-from makam.MakamScore import  loadMakamScore2
+from for_makam.MakamScore import  loadMakamScore2
 
 
 from utilsLyrics.Utilz import writeListOfListToTextFile, writeListToTextFile,\
@@ -63,7 +62,7 @@ class LyricsAligner():
         self.recording = recording
         self.WITH_SECTION_ANNOTATIONS = WITH_SECTION_ANNOTATIONS
         self.path_to_hcopy = path_to_hcopy
-        self.tokenLevelAlignedSuffix = determineSuffix(WITH_DURATIONS, ParametersAlgo.WITH_ORACLE_PHONEMES, ParametersAlgo.WITH_ORACLE_ONSETS, DETECTION_TOKEN_LEVEL)
+        self.tokenLevelAlignedSuffix = determineSuffix(ParametersAlgo.WITH_DURATIONS, ParametersAlgo.WITH_ORACLE_PHONEMES, ParametersAlgo.WITH_ORACLE_ONSETS, ParametersAlgo.DETECTION_TOKEN_LEVEL)
         
         if ParametersAlgo.FOR_MAKAM:
             
@@ -72,8 +71,8 @@ class LyricsAligner():
             self.model.load(MODEL_URI, HMM_LIST_URI)
         
         elif ParametersAlgo.FOR_JINGJU:
-            #### read model done in LyricsWithModels depending 
-            self.model = self.recording.recordingNoExtURI
+            #### read models_makam done in LyricsWithModels depending 
+            self.model = self.recording.which_fold
         else: 
             sys.exit('neither JINGJU nor MAKAM.')
 
@@ -138,6 +137,7 @@ class LyricsAligner():
         if pathEvaluation not in sys.path:
                     sys.path.append(pathEvaluation)
         from AccuracyEvaluator import _evalAccuracy
+
                         
         totalCorrectDurations = 0
         totalDurations = 0    
@@ -168,7 +168,9 @@ class LyricsAligner():
                             evalLevel = tierAliases.phrases
                             URI_TextGrid = currSectionLink.URIRecordingChunk + ANNOTATION_EXT
                             correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel)  
-                        
+                     
+                            correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.section.fromSyllableIdx, currSectionLink.section.toSyllableIdx  )
+
                         totalCorrectDurations += correctDuration
                         totalDurations += totalDuration
             
@@ -260,7 +262,7 @@ class LyricsAligner():
             #################### decode
                 
 
-                ##### note onsets
+                ##### note onsets ############################
                 if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
                     URIrecOnsets = os.path.join(os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_ONSETS_EXT)
     
@@ -269,7 +271,9 @@ class LyricsAligner():
                 elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
                     
                     extractedOnsetsURI =  fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
+                ###############################################
                 
+
                 detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
                 if ParametersAlgo.FOR_JINGJU:
                     detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
@@ -386,11 +390,14 @@ def stereoToMono(wavFileURI):
 def determineSuffix(withDuration, withOracle, withOracleOnsets, decodedTokenLevel):
     tokenAlignedSuffix = '.'
     tokenAlignedSuffix += decodedTokenLevel
-    if withDuration: tokenAlignedSuffix += 'Duration'
-    if withOracle == 1: tokenAlignedSuffix += 'OraclePhonemes'
-    elif withOracle == -1: tokenAlignedSuffix += 'NoPhonemes'
-    if withOracleOnsets == 1: tokenAlignedSuffix += 'OracleOnsets'
-    elif withOracleOnsets == 0: tokenAlignedSuffix += 'Onsets'
+    if ParametersAlgo.DECODE_WITH_HTK:
+        tokenAlignedSuffix += '_htk_'
+    else:
+        if withDuration: tokenAlignedSuffix += 'Duration'
+        if withOracle == 1: tokenAlignedSuffix += 'OraclePhonemes'
+        elif withOracle == -1: tokenAlignedSuffix += 'NoPhonemes'
+        if withOracleOnsets == 1: tokenAlignedSuffix += 'OracleOnsets'
+        elif withOracleOnsets == 0: tokenAlignedSuffix += 'Onsets'
     
     tokenAlignedSuffix += 'Aligned' 
     return tokenAlignedSuffix

@@ -96,7 +96,7 @@ def TextGrid2WordList(textgrid_file, whichTier=2):
     parse textGrid into a python list of tokens 
     @param whichTier : 0 -  phonemes,    1- words, 2 - phrases  
     '''	
-    if not os.path.isfile(textgrid_file): raise Exception("file {} not found".format(textgrid_file))
+    if not os.path.isfile(textgrid_file): raise Exception("Annotation file {} not found".format(textgrid_file))
     beginTsAndWordList=[]
 	
     par_obj = tgp.TextGrid.load(textgrid_file)	#loading the object	

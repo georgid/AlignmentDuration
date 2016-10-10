@@ -22,7 +22,7 @@ import SectionLink
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir)) 
-# parser of htk-build speech model
+# parser of htk-build speech models_makam
 pathHtkModelParser = os.path.join(parentDir, 'pathHtkModelParser')
 sys.path.append(pathHtkModelParser)
 from htk_converter import HtkConverter

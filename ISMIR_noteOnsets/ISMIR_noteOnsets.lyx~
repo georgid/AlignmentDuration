@@ -1,7 +1,9 @@
-#LyX 2.1 created this file. For more info see http://www.lyx.org/
-\lyxformat 474
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
 \begin_document
 \begin_header
+\save_transient_properties true
+\origin unavailable
 \textclass article
 \begin_preamble
 % -----------------------------------------------
@@ -72,16 +74,16 @@
 \language_package none
 \inputencoding auto
 \fontencoding default
-\font_roman default
-\font_sans default
-\font_typewriter default
-\font_math auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
-\font_sf_scale 100
-\font_tt_scale 100
+\font_sf_scale 100 100
+\font_tt_scale 100 100
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -208,7 +210,7 @@ Increase recall even if more false positives.
 \end_layout
 
 \begin_layout Plain Layout
------------------
+—————–
 \end_layout
 
 \begin_layout Plain Layout
@@ -559,7 +561,7 @@ status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename systemOverview_acapella.svg
+	filename note_onsets_poster/systemOverview_acapella.svg
 	width 115col%
 
 \end_inset
@@ -595,7 +597,7 @@ name "overview"
 Vocal pitch extraction
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Vocal-pitch-extraction"
+name "subsec:Vocal-pitch-extraction"
 
 \end_inset
 
@@ -642,11 +644,53 @@ it does not do voicing...
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide true
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename note_onsets_poster/screen_shot_sonic_vis.png
+	width 100text%
+	height 20pheight%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Ground truth annotation of syllables (in orange/top), phonemes (in red/middle)
+ and notes (with blue/changing position).
+ Audio excerpt corresponding to word şikayet with syllables SH-IY, KK-AA
+ and Y-E-T.
+\begin_inset CommandInset label
+LatexCommand label
+name "example_annotaion"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Note segmentation
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Note-segmentation"
+name "subsec:Note-segmentation"
 
 \end_inset
 
@@ -822,7 +866,7 @@ key "johnson2005capacity"
 \begin{equation}
 a_{ij}(t)=\begin{cases}
 a_{ij}-g(t,t')q, & R1\text{\mbox{\thinspace{or}\thinspace}}R3\\
-a_{ij}+g(t,t')q, & R2\thinspace\mbox{or\thinspace}R4
+a_{ij}+g(t,t')q, & R2
 \end{cases}\label{eq:transition model}
 \end{equation}
 
@@ -831,11 +875,6 @@ a_{ij}+g(t,t')q, & R2\thinspace\mbox{or\thinspace}R4
 
 \begin_inset Note Comment
 status open
-
-\begin_layout Plain Layout
-There are N different transition matrices precomputed for each value of
- g(t,t')
-\end_layout
 
 \begin_layout Plain Layout
 IMPL: implemented as ONSET_SIGMA_IN_FRAMES different matrices each defined
@@ -995,7 +1034,7 @@ Let
 \begin_inset Formula $L$
 \end_inset
 
- denote a liquid (LL, M, NN) or the semivowel Y.
+ denote a vowel, liquid (LL, M, NN) or the semivowel Y.
  Rules 
 \begin_inset Formula $R1$
 \end_inset
@@ -1017,8 +1056,8 @@ Let
 \begin_inset Formula 
 \begin{equation}
 \begin{array}{c}
-\thinspace\thinspace R1:\quad i=V\quad j=C\backslash L\\
-R2:\quad i=C\backslash L\quad j=V\or L\thinspace\thinspace\ 
+\thinspace\thinspace R1:\quad i=V\quad j=\neg L\\
+R2:\quad i=C\quad j=L\thinspace\thinspace\ 
 \end{array}
 \end{equation}
 
@@ -1034,7 +1073,7 @@ For example, for rule
 
  if a syllable ends in a consonant, a note onset imposes with high probability
  that a transition to the following syllable is done, provided that it starts
- with a vowel or liquid.
+ with a vowel.
  Same rule applies if it starts with a liquid, according to the observation
  that
 \emph on
@@ -1066,7 +1105,8 @@ R3:\quad i=V\quad j=C\end{array}
 \end_layout
 
 \begin_layout Standard
-Essentially, if the current phoneme is vocal and the next is unvoiced (e.g.
+Essentially, if the current phoneme is vocal and the next is non-voiced
+ (e.g.
  
 \begin_inset Formula $R1$
 \end_inset
@@ -1099,44 +1139,6 @@ reference "example_annotaion"
  where the note onset triggers the change to the vowel AA.
  Unlike that, an onset for example, to the syllable Y to onset at Y for
  the syllable Y-E-T.
- 
-\begin_inset Float figure
-placement h
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename example_Rule4.png
-	width 41page%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Ground truth annotation of syllables (in orange/top), phonemes (in red/middle)
- and notes (with blue/changing position).
- Audio excerpt corresponding to word şikayet with syllables SH-IY, KK-AA
- and Y-E-T.
-\begin_inset CommandInset label
-LatexCommand label
-name "example_annotaion"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
  Note that these rules assume that a syllable has one vowel, which is the
  case for Turkish
 \begin_inset Foot
@@ -1170,7 +1172,8 @@ sp
 status open
 
 \begin_layout Plain Layout
-IMPL: forw probs based on rules are implemented in align.Decoder.
+IMPL: forw probs based on rules are implemented in align.Decoder.defineForwardTran
+sProbs.
  
 \end_layout
 
@@ -1438,7 +1441,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="3">
-<features rotate="0" booktabs="true" tabularvalignment="middle">
+<features booktabs="true" tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top">
@@ -1549,22 +1552,11 @@ Creating the annotation is a time-consuming task, but we plan to annotate
 
 \end_inset
 
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-these are: seen in table...
-\end_layout
-
-\end_inset
-
 .
  On annotation special care is taken to place the note onset on the time
  instant, at which the pitch becomes steady.
  Thus we avoid placing the onset on an unvoiced phoneme at the beginning
- of a syllable, which is assures rules R3 and R4 make sense (see Figure
- 
+ of a syllable, which assures rules R2 and R3 make sense (see Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "example_annotaion"
@@ -1577,17 +1569,6 @@ status open
 
 \begin_layout Plain Layout
 Onset annotations are available at http://compmusic.upf.edu/node/233
-\begin_inset Note Comment
-status open
-
-\begin_layout Plain Layout
-local annotation in /Users/joro/Documents/Phd/UPF/turkish_makam_audio_score_alig
-nment_dataset
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_inset
@@ -1640,12 +1621,11 @@ Experiments
 status open
 
 \begin_layout Plain Layout
-IMPL: compmusic.extractors.makam.lyricsalign.doitAllRecs 
+IMPL: compmusic.extractors.makam.lyricsalign_local.doitAllRecs 
 \end_layout
 
 \begin_layout Plain Layout
-WITH_DURATIONS=0, Decoder.DETECTION_TOKEN_LEVEL = words, WITH_SECTION_ANNOTATIONS
-=1
+WITH_DURATIONS=0, DETECTION_TOKEN_LEVEL = words
 \end_layout
 
 \begin_layout Plain Layout
@@ -1783,7 +1763,7 @@ As a baseline we conduct alignment of the test dataset with unaffected phoneme
  in Section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Note-segmentation"
+reference "subsec:Note-segmentation"
 
 \end_inset
 
@@ -1862,7 +1842,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="5" columns="7">
-<features rotate="0" booktabs="true" tabularvalignment="middle">
+<features booktabs="true" tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -2438,18 +2418,26 @@ reference "per-recording alignment"
 
 ).
  It can be observed that VTHMM performs consistently better than the baseline
- HMM (with some exceptions of where accuracy is close).
- 
-\begin_inset Note Comment
+ HMM (with some exceptions of where accuracy is close)
+\begin_inset Foot
 status open
 
 \begin_layout Plain Layout
-IMPL: ParametersAlgo.WITH_ORACLE_ONSETS =0
-\end_layout
+Per-recording results can be found at 
+\begin_inset CommandInset href
+LatexCommand href
+name "accuracy_per_recording_with_oracle"
+target "https://docs.google.com/spreadsheets/d/1C1gJt8j3Cm14LtIxS0R10xyAVx9MZO5qsCKRKD14aNM/edit?usp=sharing"
 
 \end_inset
 
 
+\end_layout
+
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Section
@@ -2553,7 +2541,7 @@ key "Serra89asystem"
 : Based on the extracted predominant pitch (see Section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Vocal-pitch-extraction"
+reference "subsec:Vocal-pitch-extraction"
 
 \end_inset
 
@@ -2660,7 +2648,7 @@ status open
 \align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="4">
-<features rotate="0" booktabs="true" tabularvalignment="middle">
+<features booktabs="true" tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">

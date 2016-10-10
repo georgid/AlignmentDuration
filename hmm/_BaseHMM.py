@@ -36,10 +36,10 @@ class _BaseHMM(object):
       
     def forwardbackward(self,observations, cache=False):
         '''
-        Forward-Backward procedure is used to efficiently calculate the probability of the observation, given the model - P(O|model)
-        alpha_t(x) = P(O1...Ot,qt=Sx|model) - The probability of state x and the observation up to time t, given the model.
+        Forward-Backward procedure is used to efficiently calculate the probability of the observation, given the models_makam - P(O|models_makam)
+        alpha_t(x) = P(O1...Ot,qt=Sx|models_makam) - The probability of state x and the observation up to time t, given the models_makam.
         
-        The returned value is the log of the probability, i.e: the log likehood model, give the observation - logL(model|O).
+        The returned value is the log of the probability, i.e: the log likehood models_makam, give the observation - logL(models_makam|O).
         
         In the discrete case, the value returned should be negative, since we are taking the log of actual (discrete)
         probabilities. In the continuous case, we are using PDFs which aren't normalized into actual probabilities,
@@ -98,7 +98,7 @@ class _BaseHMM(object):
     
     def decode(self, observations):
         '''
-        Find the best state sequence (path), given the model and an observation. i.e: max(P(Q|O,model)).
+        Find the best state sequence (path), given the models_makam and an observation. i.e: max(P(Q|O,models_makam)).
         
         This method is usually used to predict the next state after training. 
         '''        
@@ -111,7 +111,7 @@ class _BaseHMM(object):
         very similar to the forward-backward algorithm, with the added step of maximization and eventual
         backtracing.
         
-        delta[t][i] = max(P[q1..qt=i,O1...Ot|model] - the path ending in Si and until time t,
+        delta[t][i] = max(P[q1..qt=i,O1...Ot|models_makam] - the path ending in Si and until time t,
         that generates the highest probability.
         
         psi[t][i] = argmax(delta[t-1][i]*aij) - the index of the maximizing state in time (t-1), 
@@ -209,7 +209,7 @@ class _BaseHMM(object):
         a continuous HMM, a 2D array (matrix), where each row denotes a multivariate
         time sample (multiple features).
         
-        Training is repeated 'iterations' times, or until log likelihood of the model
+        Training is repeated 'iterations' times, or until log likelihood of the models_makam
         increases by less than 'epsilon'.
         
         'thres' denotes the algorithms sensitivity to the log likelihood decreasing
@@ -221,7 +221,7 @@ class _BaseHMM(object):
             prob_old, prob_new = self.trainiter(observations)
 
             if (self.verbose):      
-                print "iter: ", i, ", L(model|O) =", prob_old, ", L(model_new|O) =", prob_new, ", converging =", ( prob_new-prob_old > thres )
+                print "iter: ", i, ", L(models_makam|O) =", prob_old, ", L(model_new|O) =", prob_new, ", converging =", ( prob_new-prob_old > thres )
                 
             if ( abs(prob_new-prob_old) < epsilon ):
                 # converged
@@ -229,7 +229,7 @@ class _BaseHMM(object):
                 
     def _updatemodel(self,new_model):
         '''
-        Replaces the current model parameters with the new ones.
+        Replaces the current models_makam parameters with the new ones.
         '''
         self.pi = new_model['pi']
         self.A = new_model['A']
@@ -237,22 +237,22 @@ class _BaseHMM(object):
     def trainiter(self,observations):
         '''
         A single iteration of an EM algorithm, which given the current HMM,
-        computes new model parameters and internally replaces the old model
+        computes new models_makam parameters and internally replaces the old models_makam
         with the new one.
         
-        Returns the log likelihood of the old model (before the update),
-        and the one for the new model.
+        Returns the log likelihood of the old models_makam (before the update),
+        and the one for the new models_makam.
         '''        
         # call the EM algorithm
         new_model = self._baumwelch(observations)
         
-        # calculate the log likelihood of the previous model
+        # calculate the log likelihood of the previous models_makam
         prob_old = self.forwardbackward(observations, cache=True)
         
-        # update the model with the new estimation
+        # update the models_makam with the new estimation
         self._updatemodel(new_model)
         
-        # calculate the log likelihood of the new model. Cache set to false in order to recompute probabilities of the observations give the model.
+        # calculate the log likelihood of the new models_makam. Cache set to false in order to recompute probabilities of the observations give the models_makam.
         prob_new = self.forwardbackward(observations, cache=False)
         
         return prob_old, prob_new
@@ -277,11 +277,11 @@ class _BaseHMM(object):
     
     def _calcstats(self,observations):
         '''
-        Calculates required statistics of the current model, as part
+        Calculates required statistics of the current models_makam, as part
         of the Baum-Welch 'E' step.
         
         Deriving classes should override (extend) this method to include
-        any additional computations their model requires.
+        any additional computations their models_makam requires.
         
         Returns 'stat's, a dictionary containing required statistics.
         '''
@@ -299,10 +299,10 @@ class _BaseHMM(object):
         Performs the 'M' step of the Baum-Welch algorithm.
         
         Deriving classes should override (extend) this method to include
-        any additional computations their model requires.
+        any additional computations their models_makam requires.
         
         Returns 'new_model', a dictionary containing the new maximized
-        model's parameters.
+        models_makam's parameters.
         '''        
         new_model = {}
         
@@ -315,9 +315,9 @@ class _BaseHMM(object):
     def _baumwelch(self,observations):
         '''
         An EM(expectation-modification) algorithm devised by Baum-Welch. Finds a local maximum
-        that outputs the model that produces the highest probability, given a set of observations.
+        that outputs the models_makam that produces the highest probability, given a set of observations.
         
-        Returns the new maximized model parameters
+        Returns the new maximized models_makam parameters
         '''        
         # E step - calculate statistics
         stats = self._calcstats(observations)

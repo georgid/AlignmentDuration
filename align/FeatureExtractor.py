@@ -17,7 +17,6 @@ from onsets.OnsetDetector import OnsetDetector
 from align.ParametersAlgo import ParametersAlgo
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
-import tempfile
 
 # print '\n sys.path:' + sys.path +  '\n'
 # if pathSMS not in sys.path:
@@ -33,7 +32,6 @@ import utilsLyrics.UtilzNumpy
 
 
 projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ))
-PATH_TO_CONFIG_FILES= projDir + '/model/input_files/'
 
 
 
@@ -42,14 +40,6 @@ parentParentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(
 from ParametersAlgo import ParametersAlgo
 
 
-
-    
-
-
-
-
-
-  
 
 class FeatureExtractor(object):
     def __init__(self, path_to_hcopy, sectionLink):
@@ -75,7 +65,7 @@ class FeatureExtractor(object):
         # resynthesize audio chunk:
         if ParametersAlgo.POLYPHONIC: 
             if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
-                logging.info("doing harmonic model and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
+                logging.info("doing harmonic models_makam and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
                 
                 if extractedPitchList == None:
                     extractedPitchList = self._extractPredominantPitch(URI_recording_noExt)
@@ -113,9 +103,9 @@ class FeatureExtractor(object):
             mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
             
             if ParametersAlgo.FOR_JINGJU:
-                PATH_TO_CONFIG_FEATURES = projDir + '/model/input_files/wav_config_singing_yile'
+                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing_yile'
             elif ParametersAlgo.FOR_MAKAM:
-                PATH_TO_CONFIG_FEATURES = projDir + '/model/input_files/wav_config_singing'
+                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing'
             
             HCopyCommand = [self.path_to_hcopy, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FEATURES, URIRecordingChunk, mfcFileName]
     
@@ -151,7 +141,7 @@ class FeatureExtractor(object):
         
         ####### json serialized array format
     
-    #     from compmusic.extractors.makam import pitch
+    #     from compmusic.extractors.for_makam import pitch
     #     extractor = pitch.PitchExtractMakam()
     #     results = extractor.run(URI_recording_noExt + '.wav')
     #     extractedPitchList = results['pitch']

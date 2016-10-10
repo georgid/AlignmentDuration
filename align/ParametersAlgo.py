@@ -5,12 +5,24 @@ Created on May 28, 2015
 '''
 import logging
 from numpy.ma.core import  floor
+import os
 
 ######### PARAMS:
 class ParametersAlgo(object):
     
     FOR_JINGJU = 0
     FOR_MAKAM = 0
+    
+    # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
+    # if false, use transition probabilities from htkModels
+    WITH_DURATIONS= 1
+    
+    # level into which to segments decoded result stateNetwork
+    DETECTION_TOKEN_LEVEL= 'syllables'
+    # DETECTION_TOKEN_LEVEL= 'words'
+    
+    
+    DECODE_WITH_HTK = 0
     
     GLOBAL_WAIT_PROB = 0.8
     
@@ -37,12 +49,17 @@ class ParametersAlgo(object):
     WITH_ORACLE_PHONEMES = 0
 
     PATH_TO_HCOPY= '/usr/local/bin/HCopy'
-    # ANDRES. On kora.s.upf.edu
-    # PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'      
+    PATH_TO_HVITE = '/usr/local/bin/HVite'
+
+    # On kora.s.upf.edu
+#     PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
     
-    POLYPHONIC = 0
+    projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.path.pardir ))
+    PATH_TO_CONFIG_FILES= projDir + '/models_makam/input_files/'    
     
-    WITH_ORACLE_ONSETS = 1
+    POLYPHONIC = 1
+    
+    WITH_ORACLE_ONSETS = -1
     ### no onsets at all. 
 #     WITH_ORACLE_ONSETS = -1
     
@@ -58,9 +75,9 @@ class ParametersAlgo(object):
     # in _ContinousHMM.b_map cut probabilities
     CUTOFF_BIN_OBS_PROBS = 30
     
-    # for jingju
+    # for for_jingju
     CONSONANT_DURATION_IN_SEC = 0.3
-    # for makam
+    # for for_makam
 #     CONSONANT_DURATION_IN_SEC = 0.1 
     
     CONSONANT_DURATION = NUMFRAMESPERSECOND * CONSONANT_DURATION_IN_SEC;

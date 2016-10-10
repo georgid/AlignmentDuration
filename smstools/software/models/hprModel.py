@@ -11,7 +11,7 @@ import utilFunctions as UF
 import sineModel as SM
 
 def hprModelAnal(x, fs, w, N, H, t, minSineDur, nH, minf0, maxf0, f0et, harmDevSlope):
-	"""Analysis of a sound using the harmonic plus residual model
+	"""Analysis of a sound using the harmonic plus residual models_makam
 	x: input sound, fs: sampling rate, w: analysis window; N: FFT size, t: threshold in negative dB, 
 	minSineDur: minimum duration of sinusoidal tracks
 	nH: maximum number of harmonics; minf0: minimum fundamental frequency in sound
@@ -28,7 +28,7 @@ def hprModelAnal(x, fs, w, N, H, t, minSineDur, nH, minf0, maxf0, f0et, harmDevS
 	
 def hprModelSynth(hfreq, hmag, hphase, xr, N, H, fs):
 	"""
-	Synthesis of a sound using the sinusoidal plus residual model
+	Synthesis of a sound using the sinusoidal plus residual models_makam
 	tfreq, tmag, tphase: sinusoidal frequencies, amplitudes and phases; stocEnv: stochastic envelope
 	N: synthesis FFT size; H: hop size, fs: sampling rate 
 	returns y: output sound, yh: harmonic component
@@ -40,7 +40,7 @@ def hprModelSynth(hfreq, hmag, hphase, xr, N, H, fs):
 	
 def hprModel(x, fs, w, N, t, nH, minf0, maxf0, f0et):
 	"""
-	Analysis/synthesis of a sound using the harmonic plus residual model
+	Analysis/synthesis of a sound using the harmonic plus residual models_makam
 	x: input sound, fs: sampling rate, w: analysis window, 
 	N: FFT size (minimum 512), t: threshold in negative dB, 
 	nH: maximum number of harmonics, minf0: minimum f0 frequency in Hz, 

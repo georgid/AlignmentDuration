@@ -1,4 +1,5 @@
+ply==3.4
 Cython==0.23.4
 numpy
+scipy
 music21
-cjklib
