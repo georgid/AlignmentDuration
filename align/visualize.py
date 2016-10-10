@@ -54,19 +54,22 @@ def visualizeMatrix(psi,  titleName):
 #         plt.figure(1)
 
         fig, ax1 = plt.subplots()
-        ax  = plt.imshow(psi, interpolation='none')
+        ax  = plt.imshow(psi, interpolation='none', aspect=20)
         plt.colorbar(ax)
         plt.grid(True)
         plt.title(titleName)
         figManager = plt.get_current_fig_manager()
         figManager.full_screen_toggle()
+        
+        matplotlib.rcParams.update({'font.size': 22})
 #         plt.tight_layout()
         
-        plt.show() 
+#         plt.show() 
         return ax1 
 
 def visualizeTransMatrix(matrix, titleName, phonemesNetwork):
     visualizeMatrix(matrix,  titleName)
+    
     listPhonemeNames = []
     for phoneme in phonemesNetwork:
         listPhonemeNames.append(phoneme.ID)

@@ -68,7 +68,7 @@ class ParametersAlgo(object):
     CONSONANT_DURATION_DEVIATION = 0.7
     
     #####
-    LOGGING_LEVEL = logging.DEBUG
+    LOGGING_LEVEL = logging.INFO
     VISUALIZE = 0
     
     ANNOTATION_ONSETS_EXT = 'annotationOnsets.txt'

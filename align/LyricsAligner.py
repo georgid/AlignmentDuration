@@ -227,6 +227,9 @@ class LyricsAligner():
             detectedAlignedfileName = currSectionLink.URIRecordingChunk + tokenLevelAlignedSuffix
             fe = FeatureExtractor(self.path_to_hcopy, currSectionLink) 
             
+            detectedPath = ''
+            phiOptPath = ''
+            
             if not os.path.isfile(detectedAlignedfileName):
                 
                 fromTsTextGrid = -1; toTsTextGrid = -1
@@ -271,17 +274,17 @@ class LyricsAligner():
                 if ParametersAlgo.FOR_JINGJU:
                     detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
                 
-                
-                ##### write all decoded output persistently to files
-                tokenAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
-                with open(tokenAlignedfileName, 'w'  ) as f1:
-                    json.dump( detectedTokenList, f1)
-    #             writeListOfListToTextFile(detectedTokenList, 'startTs \t endTs \t phonemeOrSyllorWord \t beginNoteNumber \n', tokenAlignedfileName)
-                
-                phiOptPath = {'phi': decoder.path.phiPathLikelihood}
-                detectedPath = decoder.path.pathRaw
-                with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'w'  ) as f:
-                    json.dump( phiOptPath, f)
+
+#                 ##### write all decoded output persistently to files
+#                 tokenAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
+#                 with open(tokenAlignedfileName, 'w'  ) as f1:
+#                     json.dump( detectedTokenList, f1)
+#     #             writeListOfListToTextFile(detectedTokenList, 'startTs \t endTs \t phonemeOrSyllorWord \t beginNoteNumber \n', tokenAlignedfileName)
+#                 
+#                 phiOptPath = {'phi': decoder.path.phiPathLikelihood}
+#                 detectedPath = decoder.path.pathRaw
+#                 with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'w'  ) as f:
+#                     json.dump( phiOptPath, f)
                
                 
             ### VISUALIZE result 
@@ -298,7 +301,7 @@ class LyricsAligner():
                     else:
                         outputURI = URIRecordingChunkResynthesizedNoExt + '.path'
                      
-                    detectedPath = ''
+                    
     #                 detectedPath = readListTextFile(outputURI)
                      
                     phiOptPath = ''
