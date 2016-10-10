@@ -106,6 +106,8 @@ class Decoder(object):
             
             psiBackPointer = self.hmmNetwork.viterbi_fast_forced()
             chiBackPointer = None
+#            for kimseye region with note onsets for ISMIR poster SHi-KA-YET:
+            self.hmmNetwork.visualize_trans_probs(self.lyricsWithModels, 685,1095, 13,19)
         
         else:   # duration-HMM
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur()
