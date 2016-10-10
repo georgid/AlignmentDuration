@@ -12,6 +12,7 @@ from align.ParametersAlgo import ParametersAlgo
 from align.Decoder import visualizeMatrix
 from scipy.constants.constants import psi
 from onsets.OnsetDetector import getDistFromOnset, tsToFrameNumber
+import matplotlib
 
 
 class _HMM(_ContinuousHMM):
@@ -139,8 +140,7 @@ class _HMM(_ContinuousHMM):
         
         
         self.noteOnsets = featureExtractor.onsetDetector.onsetTsToOnsetFrames( lenFeatures)
-        for i in  self.noteOnsets:
-            print i    
+            
         self.phi = numpy.empty((lenFeatures,self.n),dtype=self.precision)
         self.phi.fill(-Infinity)
     
@@ -165,21 +165,18 @@ class _HMM(_ContinuousHMM):
             self.phi[0][j] = currLogPi + self.B_map[j][0]
         
         lenObs = numpy.shape(self.B_map)[1]
-        tmpOnsetProbArray = numpy.zeros((self.n - 1, lenObs)) 
         
         # viterbi loop    
-#         for t in xrange(1,lenObs):
-        for t in xrange(582,1070):
+        for t in xrange(1,lenObs):
             self.logger.debug("at time {} out of {}".format(t, lenObs ))
             
             if ParametersAlgo.WITH_ORACLE_ONSETS == -1:
-                    whichMatrix = -1 # last matrix with no onset
+               whichMatrix = -1 # last matrix with no onset
             else:
-                    # distance of how many frames from closest onset
-                    onsetDist = getDistFromOnset( self.noteOnsets, t)
-                    whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
-                    self.logger.debug( "which Matrix: " + str(whichMatrix) )
-                    
+                # distance of how many frames from closest onset
+                onsetDist = getDistFromOnset( self.noteOnsets, t)
+                whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
+            
             for j in xrange(self.n):
                         fromState = j-2
                         # if beginning state, no prev. state
@@ -188,9 +185,6 @@ class _HMM(_ContinuousHMM):
 
                             
                         sliceA = self.transMatrices[whichMatrix][fromState:j+1,j]
-                        if j > 0:
-                            a = self.transMatrices[whichMatrix][j-1,j]
-                            tmpOnsetProbArray[j-1, t] = a # because of indexing
 
 #                         if j <= t:
 #                             print 'at time {} and state {} a_j-1,j and a_j,j = {}'.format(t, j, sliceA)
@@ -206,19 +200,16 @@ class _HMM(_ContinuousHMM):
 #                         if j <= t:
 #                             print self.phi[t][j]
 #                             print '\n'
-                        
 
-#             visualizeMatrix(tmpOnsetProbArray, 'titleName')
             ##### visualize each selected chunk of psi
             tmpArray = numpy.zeros((1,self.psi.shape[1]))
             tmpArray[0,:] = self.psi[t,:]
-#             visualizeMatrix(tmpArray, 'title')
+#             visualizeMatrix(tmpArray)
 #             visualizeMatrix(self.phi, 'phi at time {}'.format(t))
                     
 #         numpy.savetxt(PATH_LOGS + '/phi', self.phi)
 #         numpy.savetxt( PATH_LOGS + '/psi', self.psi)
         
-        visualizeMatrix(tmpOnsetProbArray, 'title')
         return self.psi 
    
     
@@ -264,4 +255,51 @@ class _HMM(_ContinuousHMM):
 #         numpy.savetxt(PATH_LOGS + '/phi', self.phi)
 #         numpy.savetxt( PATH_LOGS + '/psi', self.psi)
         return self.psi
+       
+       
+    def visualize_trans_probs(self, lyricsWithModels, fromFrame, toFrame, from_phoneme, to_phoneme):
+        '''
+        forced alignment: considers only previous state in desicion
+        '''
         
+
+        lenObs = numpy.shape(self.B_map)[1]
+        tmpOnsetProbArray = numpy.zeros((to_phoneme-from_phoneme + 1, lenObs)) 
+        
+        # viterbi loop    
+#         for t in xrange(1,lenObs):
+        for t in xrange(fromFrame, toFrame):
+            self.logger.debug("at time {} out of {}".format(t, lenObs ))
+            
+            if ParametersAlgo.WITH_ORACLE_ONSETS == -1:
+                    whichMatrix = -1 # last matrix with no onset
+            else:
+                    # distance of how many frames from closest onset
+                    onsetDist = getDistFromOnset( self.noteOnsets, t)
+                    whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
+                    self.logger.debug( "which Matrix: " + str(whichMatrix) )
+                    
+            for j in xrange(from_phoneme, to_phoneme+1):
+                        if j > 0:
+                            a = self.transMatrices[whichMatrix][j-1,j]
+                            tmpOnsetProbArray[j-from_phoneme, t] = a # because of indexing
+
+                         
+#             visualizeMatrix(tmpOnsetProbArray, 'titleName')
+
+        matplotlib.rcParams['figure.figsize'] = (20, 8)
+        visualizeMatrix(tmpOnsetProbArray[:,fromFrame:toFrame], '')
+        
+        ###### add vertical legend names
+        statesNetworkNames  = []
+        for i in range(from_phoneme,to_phoneme+1):
+            stateWithDur = lyricsWithModels.statesNetwork[i]
+            stateWithDurPrev = lyricsWithModels.statesNetwork[i - 1]
+            statesNetworkNames.append("{} -> {}".format(stateWithDurPrev.phoneme.ID, stateWithDur.phoneme.ID))
+            
+        import matplotlib.pyplot as plt
+        from numpy.core.numeric import arange
+        plt.yticks(arange(len(statesNetworkNames)) , statesNetworkNames )
+        plt.show()
+        
+            
