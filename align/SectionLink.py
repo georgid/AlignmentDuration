@@ -21,8 +21,10 @@ class _SectionLinkBase():
         Constructor
         '''
         basename = os.path.basename(URIWholeRecording)
-        self.URIRecordingChunk = os.path.join(audioTmpDir, basename + "_" + "{}".format(beginTs) + '_' + "{}".format(endTs))
-
+        dirname_ = os.path.dirname(URIWholeRecording)
+#         self.URIRecordingChunk = os.path.join(audioTmpDir, basename + "_" + "{}".format(beginTs) + '_' + "{}".format(endTs))
+        self.URIRecordingChunk = os.path.join(dirname_, basename + "_" + "{}".format(beginTs) + '_' + "{}".format(endTs))
+        
         self.beginTs = beginTs
         self.endTs = endTs
         # composition section. could be LyricsSection or ScoreSection

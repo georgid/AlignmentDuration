@@ -561,7 +561,7 @@ status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename note_onsets_poster/systemOverview_acapella.svg
+	filename systemOverview.svg
 	width 115col%
 
 \end_inset
@@ -896,7 +896,7 @@ The forward trans prob is defined in align.Decoder.calcForwProbWithRules
 \end_inset
 
  to 
-\begin_inset Formula $R4$
+\begin_inset Formula $R3$
 \end_inset
 
  stand for phoneme transition rules, which are applied in the phonemes network
@@ -1643,8 +1643,18 @@ Experiment 1: alignment with oracle onsets
 
 \begin_layout Standard
 As a precursor to the following experiments, lyrics-to-audio alignment is
- run on these 6 recordings with manually annotated MIDI notes, which serve
- as an oracle for note onsets.
+ run on these 6 recordings 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+can be found here: https://docs.google.com/spreadsheets/d/1C1gJt8j3Cm14LtIxS0R10xy
+AVx9MZO5qsCKRKD14aNM/edit?usp=sharing
+\end_layout
+
+\end_inset
+
+with manually annotated MIDI notes, which serve as an oracle for note onsets.
  This is done to test the general feasibility of the proposed model on the
  dataset, unbiased from errors in the note segmentation algorithm, and to
  set a glass-ceiling alignment accuracy.
@@ -2310,6 +2320,17 @@ name "results"
 \end_inset
 
 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+to eval accuracy uncomment line self.extractNoteOnsetsAndEval(currSectionLink)
+ in align.LyricsAligner.LyricsAligner.alignRecording
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2431,7 +2452,9 @@ target "https://docs.google.com/spreadsheets/d/1C1gJt8j3Cm14LtIxS0R10xyAVx9MZO5q
 
 \end_inset
 
-
+.
+ Ground truth is evaluated on a subset of all recordings different from
+ the recordings
 \end_layout
 
 \end_inset

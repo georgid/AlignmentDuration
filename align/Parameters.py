@@ -8,7 +8,8 @@ class Parameters(object):
     '''
     classdocs
     '''
-
+    
+    WRITE_TO_FILE = False
 
     def __init__(self, ALPHA,  ONLY_MIDDLE_STATE ):
         '''

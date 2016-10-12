@@ -10,6 +10,7 @@ import os
 class Lyrics(object):
     '''
     Lyrics data structures
+    represents lyrics for one structural section as list of words
     appends sil at start and end of sequence
 
     '''

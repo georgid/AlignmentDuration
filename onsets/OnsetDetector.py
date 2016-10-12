@@ -20,6 +20,9 @@ if pathPycomp not in sys.path:
 
 
 def writeCsv(fileURI, list_, withListOfRows=1):
+    '''
+    TODO: move to utilsLyrics
+    '''
     from csv import writer
     fout = open(fileURI, 'wb')
     w = writer(fout)
@@ -33,9 +36,11 @@ def writeCsv(fileURI, list_, withListOfRows=1):
     
     fout.close()
 
+
 def extractPitch(audioFileURI):
     '''
-    extract pitch using local version of pycompmusic and save as csv as input for Nadines algo
+    extract pitch using local version of pycompmusic and save as csv as input 
+    for Nadines note segmentation algo
     '''
     
     print 'extracting pitch for {}...'.format(audioFileURI)
@@ -43,6 +48,8 @@ def extractPitch(audioFileURI):
     extractor = pitch.PitchExtractMakam()
     results = extractor.run(audioFileURI)
     extractedPitchList = results['pitch']
+    
+    ### ignore last entry (probability)
     for i, row in enumerate(extractedPitchList):
         row = row[:-1]
         extractedPitchList[i]=row
@@ -68,9 +75,10 @@ class OnsetDetector(object):
     def parseNoteOnsetsGrTruth(self, groundTruthNotesURI):
         
         '''
-        from annotated notes for score-following for a segment from given 
-        @param starttime to
-        @param  endtime 
+        from annotated notes for score-following for a segment from given sectionLink.
+         
+        
+        
         '''
         startTime = self.sectionLink.beginTs
         endTime = self.sectionLink.endTs

@@ -561,7 +561,7 @@ status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename note_onsets_poster/systemOverview_acapella.svg
+	filename systemOverview.svg
 	width 115col%
 
 \end_inset
@@ -637,6 +637,48 @@ status open
 
 \begin_layout Plain Layout
 it does not do voicing...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide true
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename note_onsets_poster/screen_shot_sonic_vis.png
+	width 100text%
+	height 20pheight%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Ground truth annotation of syllables (in orange/top), phonemes (in red/middle)
+ and notes (with blue/changing position).
+ Audio excerpt corresponding to word şikayet with syllables SH-IY, KK-AA
+ and Y-E-T.
+\begin_inset CommandInset label
+LatexCommand label
+name "example_annotaion"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -854,7 +896,7 @@ The forward trans prob is defined in align.Decoder.calcForwProbWithRules
 \end_inset
 
  to 
-\begin_inset Formula $R4$
+\begin_inset Formula $R3$
 \end_inset
 
  stand for phoneme transition rules, which are applied in the phonemes network
@@ -1097,44 +1139,6 @@ reference "example_annotaion"
  where the note onset triggers the change to the vowel AA.
  Unlike that, an onset for example, to the syllable Y to onset at Y for
  the syllable Y-E-T.
-  
-\begin_inset Float figure
-placement h
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename example_Rule4.png
-	width 41page%
-
-\end_inset
-
-
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Ground truth annotation of syllables (in orange/top), phonemes (in red/middle)
- and notes (with blue/changing position).
- Audio excerpt corresponding to word şikayet with syllables SH-IY, KK-AA
- and Y-E-T.
-\begin_inset CommandInset label
-LatexCommand label
-name "example_annotaion"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
  Note that these rules assume that a syllable has one vowel, which is the
  case for Turkish
 \begin_inset Foot
@@ -1552,8 +1556,7 @@ Creating the annotation is a time-consuming task, but we plan to annotate
  On annotation special care is taken to place the note onset on the time
  instant, at which the pitch becomes steady.
  Thus we avoid placing the onset on an unvoiced phoneme at the beginning
- of a syllable, which is assures rules R3 and R4 make sense (see Figure
- 
+ of a syllable, which assures rules R2 and R3 make sense (see Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "example_annotaion"
@@ -1640,8 +1643,18 @@ Experiment 1: alignment with oracle onsets
 
 \begin_layout Standard
 As a precursor to the following experiments, lyrics-to-audio alignment is
- run on these 6 recordings with manually annotated MIDI notes, which serve
- as an oracle for note onsets.
+ run on these 6 recordings 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+can be found here: https://docs.google.com/spreadsheets/d/1C1gJt8j3Cm14LtIxS0R10xy
+AVx9MZO5qsCKRKD14aNM/edit?usp=sharing
+\end_layout
+
+\end_inset
+
+with manually annotated MIDI notes, which serve as an oracle for note onsets.
  This is done to test the general feasibility of the proposed model on the
  dataset, unbiased from errors in the note segmentation algorithm, and to
  set a glass-ceiling alignment accuracy.
@@ -2307,6 +2320,17 @@ name "results"
 \end_inset
 
 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+to eval accuracy uncomment line self.extractNoteOnsetsAndEval(currSectionLink)
+ in align.LyricsAligner.LyricsAligner.alignRecording
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2428,7 +2452,8 @@ target "https://docs.google.com/spreadsheets/d/1C1gJt8j3Cm14LtIxS0R10xyAVx9MZO5q
 
 \end_inset
 
-
+.
+ Evaluated on a subset of all recordings indicated here
 \end_layout
 
 \end_inset

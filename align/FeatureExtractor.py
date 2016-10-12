@@ -106,6 +106,7 @@ class FeatureExtractor(object):
                 PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing_yile'
             elif ParametersAlgo.FOR_MAKAM:
                 PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing'
+                
             
             HCopyCommand = [self.path_to_hcopy, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FEATURES, URIRecordingChunk, mfcFileName]
     

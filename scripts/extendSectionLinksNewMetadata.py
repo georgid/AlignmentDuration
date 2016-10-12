@@ -45,7 +45,21 @@ dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
 
 
 
-
+def create_new_metadata_2nd_lyrics(musicbrainzid, workmbid):
+    '''
+    generate sections metadata 
+    with melodic_struct
+    and lyric_struct
+    for  lyrics with updated 2nd verse
+    '''
+    
+    URI_datasetSymbTr1_sectionMeta2 = '/Users/joro/Documents/ISTANBULSymbTr2/'
+    symbtrtxtURI, symbTrCompositionName  = constructSymbTrTxtURI(URI_datasetSymbTr1_sectionMeta2, musicbrainzid, workmbid)
+    workmbid = 'dummy'
+    #     segment_note_bound_idx_for_symbTr2  = generateListStartEndNoteNumbers(makamScore_sectionMeta2) ### could not make it work
+    segment_note_bound_idx_for_symbTr2 = None
+    sectionsMetadataNewLabels, sectionsMetadataNewLabelsDict = generateSectionsMetadata(workmbid, symbTrCompositionName, symbtrtxtURI, segment_note_bound_idx_for_symbTr2)   
+    return sectionsMetadataNewLabelsDict
 
 
 

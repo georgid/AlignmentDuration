@@ -72,7 +72,7 @@ class _SymbTrParserBase(object):
                     if 'lyrics_structure' in section:
                         lyrStruct = section['lyrics_structure']
                     elif 'lyric_structure' in section:
-                        lyrStruct = section['lyric_Structure']
+                        lyrStruct = section['lyric_structure']
                     else:
                         lyrStruct = section['lyricStructure']
                         

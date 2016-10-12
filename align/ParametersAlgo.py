@@ -88,4 +88,6 @@ class ParametersAlgo(object):
     LOGGING_LEVEL = logging.INFO
     VISUALIZE = 0
     
-    ANNOTATION_ONSETS_EXT = 'annotationOnsets.txt'
+    ANNOTATION_RULES_ONSETS_EXT = 'annotationOnsets.txt'
+    ANNOTATION_SCORE_ONSETS_EXT = 'alignedNotes.txt' # use this ont to get better impression on recall, compared to annotationOnsets.txt, which are only on note onsets with rules of interest 
+ 

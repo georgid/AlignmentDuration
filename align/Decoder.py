@@ -23,12 +23,6 @@ from utilsLyrics.Utilz import writeListToTextFile
 
 import numpy
 
-# use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
-# if false, use transition probabilities from htkModels
-WITH_DURATIONS= 0
-
-
-
 
 if not ParametersAlgo.WITH_DURATIONS:
     pathHTKParser = os.path.join(parentDir, 'HMM')
@@ -50,13 +44,9 @@ logger.setLevel(loggingLevel)
 
 # other logger set in _Continuous
 
-<<<<<<< HEAD
 # level into which to segments decoded result stateNetwork
 # DETECTION_TOKEN_LEVEL= 'syllables'
 DETECTION_TOKEN_LEVEL= 'words'
-=======
-
->>>>>>> dc7bf9fedb16c6b55c39e134a74caf86ea3c1f2a
 
 # in backtracking allow to start this much from end back
 BACKTRACK_MARGIN_PERCENT= 0.2
@@ -116,7 +106,7 @@ class Decoder(object):
             psiBackPointer = self.hmmNetwork.viterbi_fast_forced()
             chiBackPointer = None
 #            for kimseye region with note onsets for ISMIR poster SHi-KA-YET:
-            self.hmmNetwork.visualize_trans_probs(self.lyricsWithModels, 685,1095, 13,19)
+#             self.hmmNetwork.visualize_trans_probs(self.lyricsWithModels, 685,1095, 13,19)
         
         else:   # duration-HMM
             chiBackPointer, psiBackPointer = self.hmmNetwork._viterbiForcedDur()

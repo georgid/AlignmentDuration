@@ -207,7 +207,14 @@ def loadMakamScore2(symbtrtxtURI, sectionMetadata):
   
   
 def printMakamScore(ScoreURI, sectionMetadata):
+        '''
         
+        Paramters:
+        ScoreURI - full URI of symbTR file
+        sectionMetadata - dict with sections. 
+        
+        '''
+            
 #         
 #         ScoreURI = URI_dataset + compositionName + '/' + compositionName + '.txt'
 #         URISectionsMetadata = URI_dataset + compositionName + '/' + compositionName + '.sectionsMetadata.json'

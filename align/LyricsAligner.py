@@ -1,3 +1,5 @@
+from align.Parameters import Parameters
+import shutil
 
 # Copyright 2015,2016 Music Technology Group - Universitat Pompeu Fabra
 #
@@ -116,7 +118,6 @@ class LyricsAligner():
                         if not lyricsStr or lyricsStr=='None' or  lyricsStr =='_SAZ_':
                             print("skipping sectionLink {} with no lyrics ...".format(currSectionLink.melodicStructure))
                             continue 
-#                         currSectionLink.lyricsWithModels.printSyllables()
                         detectedTokenList, detectedPath, maxPhiScore = self.alignLyricsSection(  extractedPitchList,   [],  self.tokenLevelAlignedSuffix,   currSectionLink)
 #                         self.extractNoteOnsetsAndEval(currSectionLink)
       
@@ -154,7 +155,6 @@ class LyricsAligner():
                         
                         if not hasattr(currSectionLink, 'detectedTokenList'):
                             continue
-                        
                
                         audioName = os.path.basename(self.recording.recordingNoExtURI)
                         path_TextGrid =  os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(self.recording.recordingNoExtURI) ), os.path.pardir, os.path.pardir)) 
@@ -167,9 +167,13 @@ class LyricsAligner():
                         elif ParametersAlgo.FOR_MAKAM:
                             evalLevel = tierAliases.phrases
                             URI_TextGrid = currSectionLink.URIRecordingChunk + ANNOTATION_EXT
+                            if not os.path.isfile(URI_TextGrid):
+                                sourcePath = 'test'
+                                print 'TextGrid {} not in path, copying from {}'.format(URI_TextGrid, sourcePath)
+                                shutil.copy(sourcePath  , URI_TextGrid)
                             correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel)  
                      
-                            correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.section.fromSyllableIdx, currSectionLink.section.toSyllableIdx  )
+#                             correctDuration, totalDuration = _evalAccuracy(URI_TextGrid, currSectionLink.detectedTokenList, evalLevel, currSectionLink.section.fromSyllableIdx, currSectionLink.section.toSyllableIdx  )
 
                         totalCorrectDurations += correctDuration
                         totalDurations += totalDuration
@@ -207,9 +211,11 @@ class LyricsAligner():
                
     def extractNoteOnsetsAndEval(self, currSectionLink):
                     '''
-                    only extract note onsets and eval note onset extraction
+                    only extract note onsets as a separate step
+                    and eval note onset extraction
+                    
                     '''
-                    URIrecOnsets = self.recording.recordingNoExtURI + ParametersAlgo.ANNOTATION_ONSETS_EXT
+                    URIrecOnsets = os.path.join( os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_SCORE_ONSETS_EXT)
                     fe = FeatureExtractor(self.path_to_hcopy, currSectionLink) 
                     
                     gr_truth_URI = fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
@@ -218,6 +224,10 @@ class LyricsAligner():
                     print "evaluateTranscriptions( '"  + gr_truth_URI  + "','"  + extractedOnsetsURI + "')"
 
 
+
+
+
+    
 
     def  alignLyricsSection( self, extractedPitchList,  listNonVocalFragments,    tokenLevelAlignedSuffix,    currSectionLink):
             '''
@@ -236,41 +246,28 @@ class LyricsAligner():
                 
                 fromTsTextGrid = -1; toTsTextGrid = -1
                 
-                if  ParametersAlgo.WITH_ORACLE_PHONEMES:
+                if  ParametersAlgo.WITH_ORACLE_PHONEMES: # oracle phonemes
                     raw_input('implemented only for Kimseye...! Continue only if working with Kimseye' )
-                    
                     currSectionLink.loadSmallAudioFragmentOracle(self.model)
-                    # featureVectors is alias for LyricsWithModelsOracle
-                    fe.featureVectors = currSectionLink.lyricsWithModels 
-                    
-                    if ParametersAlgo.FOR_MAKAM:
-                        # for kimseye etmem
-                        fromTsTextGrid = 0; toTsTextGrid = 20.88
+                    fe.featureVectors = currSectionLink.lyricsWithModels                      # featureVectors is alias for LyricsWithModelsOracle
+                    if ParametersAlgo.FOR_MAKAM:    fromTsTextGrid = 0; toTsTextGrid = 20.88  # for kimseye etmem
 
-                    
-                     
-                else:
-                #     ###### extract audio features
-                         
+                else:     ###### extract audio features
                     fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)
-                
 #                 sectionLink.lyricsWithModels.printWordsAndStates()
                 
+            #################### decode
                 alpha = 0.97
                 decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
-
-            #################### decode
                 
 
-                ##### note onsets ############################
+                ##### prepare note onsets. result stored in files, which are used in decoding  ############################
                 if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
-                    URIrecOnsets = os.path.join(os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_ONSETS_EXT)
-    
-                    gr_truth_URI = fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
+                    URIrecOnsets = os.path.join(os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT)
+                    fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
                     
                 elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
-                    
-                    extractedOnsetsURI =  fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
+                    fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
                 ###############################################
                 
 
@@ -279,44 +276,56 @@ class LyricsAligner():
                     detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
                 
 
+                detectedPath = decoder.path.pathRaw
+
 #                 ##### write all decoded output persistently to files
-#                 tokenAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
-#                 with open(tokenAlignedfileName, 'w'  ) as f1:
-#                     json.dump( detectedTokenList, f1)
-#     #             writeListOfListToTextFile(detectedTokenList, 'startTs \t endTs \t phonemeOrSyllorWord \t beginNoteNumber \n', tokenAlignedfileName)
-#                 
-#                 phiOptPath = {'phi': decoder.path.phiPathLikelihood}
-#                 detectedPath = decoder.path.pathRaw
-#                 with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'w'  ) as f:
-#                     json.dump( phiOptPath, f)
+                if Parameters.WRITE_TO_FILE:
+                    self.write_decoded_to_file(tokenLevelAlignedSuffix, URIRecordingChunkResynthesizedNoExt, decoder.path.phiPathLikelihood,  detectedTokenList)
                
                 
             ### VISUALIZE result 
         #         decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
             
             else:   
-                    print "{}\n already exists. No decoding".format(detectedAlignedfileName)
-    #                 detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
-                    with open(detectedAlignedfileName, 'r'  ) as f2:
-                        detectedTokenList = json.load(f2)
-                    
-                    if ParametersAlgo.WITH_ORACLE_PHONEMES:
-                        outputURI = URIRecordingChunkResynthesizedNoExt + '.path_oracle'
-                    else:
-                        outputURI = URIRecordingChunkResynthesizedNoExt + '.path'
-                     
-                    
-    #                 detectedPath = readListTextFile(outputURI)
-                     
-                    phiOptPath = ''
-    #                 with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'r'  ) as f:
-    #                     phiOptPathJSON = json.load(f)
-    #                     phiOptPath = phiOptPathJSON['phi']
+                detectedTokenList, phiOptPath, detectedPath = self.read_decoded(URIRecordingChunkResynthesizedNoExt, detectedAlignedfileName)
                     
         
             return detectedTokenList, detectedPath, phiOptPath
 
 
+
+    def write_decoded_to_file(self, tokenLevelAlignedSuffix, URIRecordingChunkResynthesizedNoExt, phiOptPath, detectedTokenList):
+        '''
+        writes path and list of aligned tokens to file 
+        '''
+        
+        tokenAlignedfileName = URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix
+        with open(tokenAlignedfileName, 'w') as f1:
+            json.dump(detectedTokenList, f1) 
+        #             writeListOfListToTextFile(detectedTokenList, 'startTs \t endTs \t phonemeOrSyllorWord \t beginNoteNumber \n', tokenAlignedfileName)
+        phiOptPath = {'phi':phiOptPath}
+        with open(URIRecordingChunkResynthesizedNoExt + tokenLevelAlignedSuffix + '_phi', 'w') as f:
+            json.dump(phiOptPath, f)
+
+
+
+    def read_decoded(self, URIRecordingChunkResynthesizedNoExt, detectedAlignedfileName):
+        '''
+        read detected token list from persistent file
+        '''
+        print "{}\n already exists. No decoding".format(detectedAlignedfileName) 
+        #                 detectedTokenList = readListOfListTextFile(detectedAlignedfileName)
+        with open(detectedAlignedfileName, 'r') as f2:
+            detectedTokenList = json.load(f2)
+        if ParametersAlgo.WITH_ORACLE_PHONEMES:
+            outputURI = URIRecordingChunkResynthesizedNoExt + '.path_oracle'
+        else:
+            outputURI = URIRecordingChunkResynthesizedNoExt + '.path'
+        
+        detectedPath = readListTextFile(outputURI)
+        
+        phiOptPath = '' # TODO: read with json
+        return detectedTokenList, phiOptPath, detectedPath
 
 
 
