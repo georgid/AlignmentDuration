@@ -43,9 +43,13 @@ class MLPHMM(_HMM):
         self._load_METU_to_ARPA_mapping()
     
     def _load_METU_to_ARPA_mapping(self):
-        mapping_URI = '/Users/joro/Downloads/state_str2int'
+        '''
+        METU phoneme to its idx in learned model 
+        '''
+        METU_to_stateidx_URI = os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.pardir, os.pardir,  'for_makam' , 'state_str2int')
+
         self.METU_to_stateidx = {}
-        with open(mapping_URI, 'rb') as csvfile:
+        with open(METU_to_stateidx_URI, 'rb') as csvfile:
             score_ = csv.reader(csvfile, delimiter=' ')
             for idx, row in enumerate(score_):
                 self.METU_to_stateidx[row[0]] = int(row[2])
@@ -53,10 +57,12 @@ class MLPHMM(_HMM):
             
     def _set_MLPs(self ):
         '''
-        build n GMMs with scikit-learn's classes  
+        load the MLP learned model as MLP network  
         '''
-        nnet_cfg = '/Users/joro/Downloads/dampB.cfg'
-        nnet_param = '/Users/joro/Downloads/dampB.mdl' 
+        nnet_param = os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.pardir, os.pardir,  'models_makam' , 'dampB.mdl')
+        nnet_cfg = os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.pardir, os.pardir,  'models_makam' , 'dampB.cfg')
+
+        
         
         numpy_rng = numpy.random.RandomState(89677)
         theano_rng = RandomStreams(numpy_rng.randint(2 ** 30))
@@ -82,6 +88,7 @@ class MLPHMM(_HMM):
     def _pdfAllFeatures(self,observations,j):
         '''
         get the pdf of a series of features for model j
+        called from _mapB()
         '''
 #         old_settings = numpy.seterr(under='warn')
         
@@ -101,8 +108,15 @@ class MLPHMM(_HMM):
     
     def recogn_with_MLP(self, observations):
         '''
-        recognize with model
-        return 39-dimensional (for each phoneme from CMU's ARPA ) prob. vector  
+        recognize with MLP softmax model
+        
+        
+        Parameters: 
+        observations 
+        
+        Return: 
+        39-dimensional (for each phoneme from CMU's ARPA ) prob. vector  
+        
         '''
         layer_index  = -1 # last tier
         batch_size = 100

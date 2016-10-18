@@ -82,7 +82,10 @@ class LyricsAligner():
 
     def alignRecording(self, extractedPitchList, outputDir ):
             '''
-            each section link has 
+            align each section link
+            
+            Return 
+            detected toke 
             '''
             ##### parameters 
             if self.WITH_SECTION_ANNOTATIONS: 
