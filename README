@@ -17,13 +17,16 @@ You should have received a copy of the GNU General Public License along with thi
 BUILD INSTRUCTIONS: 
 
 git clone https://github.com/georgid/AlignmentDuration.git
+cd AlignmentDuration
+git checkout for_pycompmusic
+
 sudo apt-get install python-dev python-setuptools python-numpy
 
 pip install -r requirements
 python setup.py install
 
 
-* htkModelParser
+* htkModelParser 
 git clone https://github.com/georgid/htkModelParser.git
 sudo pip install -r requirements
 python setup.py install
