@@ -126,8 +126,10 @@ class LyricsAligner():
                         detectedTokenList = self.alignSectionLinkProbableSections( extractedPitchList, currSectionLink)
                     
                     
-                    currSectionLink.detectedTokenList = detectedTokenList 
-                    detectedSectionList.append(currSectionLink.detectedTokenList)
+                    currSectionLink.detectedTokenList = detectedTokenList
+                    
+                    detectedTokenList_timeshift = addTimeShift(detectedTokenList,  currSectionLink.beginTs) 
+                    detectedSectionList.append(detectedTokenList_timeshift)
         
             return detectedSectionList, self.recording.sectionLinksOrAnnoDict          
                      
@@ -272,8 +274,6 @@ class LyricsAligner():
                 
 
                 detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
-                if ParametersAlgo.FOR_JINGJU:
-                    detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
                 
 
                 detectedPath = decoder.path.pathRaw
