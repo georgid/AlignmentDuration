@@ -44,9 +44,7 @@ logger.setLevel(loggingLevel)
 
 # other logger set in _Continuous
 
-# level into which to segments decoded result stateNetwork
-# DETECTION_TOKEN_LEVEL= 'syllables'
-DETECTION_TOKEN_LEVEL= 'words'
+
 
 # in backtracking allow to start this much from end back
 BACKTRACK_MARGIN_PERCENT= 0.2
@@ -93,7 +91,7 @@ class Decoder(object):
             if  ParametersAlgo.WITH_DURATIONS:
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
-            # double check that features are in same dimension as models_makam
+            # double check that features are in same dimension as models
             if featureExtractor.featureVectors.shape[1] != self.hmmNetwork.d:
                 sys.exit("dimension of feature vector should be {} but is {} ".format(self.hmmNetwork.d, featureExtractor.featureVectors.shape[1]) )
             
@@ -178,8 +176,13 @@ class Decoder(object):
             
             import matplotlib.pyplot as plt
             plt.show()
-            from hmm.continuous.GMHMM  import GMHMM
-            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
+            
+            if ParametersAlgo.OBS_MODEL == 'GMM': 
+                from hmm.continuous.GMHMM  import GMHMM
+                self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
+            else:
+                from hmm.continuous.MLPHMM  import MLPHMM
+                self.hmmNetwork = MLPHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
     
     
 

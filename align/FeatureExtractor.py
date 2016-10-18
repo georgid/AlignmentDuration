@@ -15,6 +15,7 @@ import math
 import json
 from onsets.OnsetDetector import OnsetDetector
 from align.ParametersAlgo import ParametersAlgo
+import tempfile
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
 
@@ -65,7 +66,7 @@ class FeatureExtractor(object):
         # resynthesize audio chunk:
         if ParametersAlgo.POLYPHONIC: 
             if not os.path.isfile(URIRecordingChunkResynthesized): # only if resynth file does not exist 
-                logging.info("doing harmonic models_makam and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
+                logging.info("doing harmonic models and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
                 
                 if extractedPitchList == None:
                     extractedPitchList = self._extractPredominantPitch(URI_recording_noExt)
@@ -81,16 +82,16 @@ class FeatureExtractor(object):
         
         # call htk to extract features
         URImfcFile = self._extractMFCCs( URIRecordingChunkResynthesized)
-        
+
         # read features form binary htk file
         logging.debug("reading MFCCs from {} ...".format(URImfcFile))
         HTKFeat_reader =  htkmfc.open(URImfcFile, 'rb')
         mfccsFeatrues = HTKFeat_reader.getall()
         
-        if ParametersAlgo.FOR_MAKAM:
-            mfccs = mfccsFeatrues[:,0:12]
-            mfccDeltas = mfccsFeatrues[:,13:] 
-            mfccsFeatrues = np.hstack((mfccs, mfccDeltas))
+        if ParametersAlgo.FOR_MAKAM and ParametersAlgo.OBS_MODEL == 'GMM': # makam mdoels  are trained with 25-dim features 
+            mfccs_no_energy = mfccsFeatrues[:,0:12]
+            mfccDeltas = mfccsFeatrues[:,13:25] 
+            mfccsFeatrues = np.hstack((mfccs_no_energy, mfccDeltas))
         
         
         return mfccsFeatrues
@@ -99,21 +100,21 @@ class FeatureExtractor(object):
     def _extractMFCCs( self, URIRecordingChunk):
             baseNameAudioFile = os.path.splitext(os.path.basename(URIRecordingChunk))[0]
             dir_ = os.path.dirname(URIRecordingChunk)
-    #         dir_  = tempfile.mkdtemp()
+#             dir_  = tempfile.mkdtemp()
             mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
             
             if ParametersAlgo.FOR_JINGJU:
-                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing_yile'
+                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing_yile' # no singal amplitude normalization
             elif ParametersAlgo.FOR_MAKAM:
-                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing'
+                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_default'
                 
             
             HCopyCommand = [self.path_to_hcopy, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FEATURES, URIRecordingChunk, mfcFileName]
     
-            if not os.path.isfile(mfcFileName):
-                logging.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
-                pipe= subprocess.Popen(HCopyCommand)
-                pipe.wait()
+#             if not os.path.isfile(mfcFileName):
+            logging.info(" Extract mfcc with htk command: {}".format( subprocess.list2cmdline(HCopyCommand) ) )
+            pipe= subprocess.Popen(HCopyCommand)
+            pipe.wait()
             
             return mfcFileName
         

@@ -6,7 +6,7 @@ Created on Nov 29, 2015
 
 class SciKitGMM(object):
     '''
-    classdocs
+    convenienve class wrapper for scikit-learns gmm model
     '''
 
 

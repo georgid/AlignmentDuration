@@ -13,13 +13,16 @@ class ParametersAlgo(object):
     FOR_JINGJU = 0
     FOR_MAKAM = 0
     
+#     OBS_MODEL = 'GMM'
+    OBS_MODEL = 'MLP'
+    
     # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
     # if false, use transition probabilities from htkModels
-    WITH_DURATIONS= 1
+    WITH_DURATIONS= 0
     
     # level into which to segments decoded result stateNetwork
-    DETECTION_TOKEN_LEVEL= 'syllables'
-    # DETECTION_TOKEN_LEVEL= 'words'
+#     DETECTION_TOKEN_LEVEL= 'syllables'
+    DETECTION_TOKEN_LEVEL= 'words'
     
     
     DECODE_WITH_HTK = 0

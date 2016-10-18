@@ -242,52 +242,52 @@ class LyricsAligner():
             detectedPath = ''
             phiOptPath = ''
             
-            if not os.path.isfile(detectedAlignedfileName):
+#             if not os.path.isfile(detectedAlignedfileName):
                 
-                fromTsTextGrid = -1; toTsTextGrid = -1
-                
-                if  ParametersAlgo.WITH_ORACLE_PHONEMES: # oracle phonemes
-                    raw_input('implemented only for Kimseye...! Continue only if working with Kimseye' )
-                    currSectionLink.loadSmallAudioFragmentOracle(self.model)
-                    fe.featureVectors = currSectionLink.lyricsWithModels                      # featureVectors is alias for LyricsWithModelsOracle
-                    if ParametersAlgo.FOR_MAKAM:    fromTsTextGrid = 0; toTsTextGrid = 20.88  # for kimseye etmem
+            fromTsTextGrid = -1; toTsTextGrid = -1
+            
+            if  ParametersAlgo.WITH_ORACLE_PHONEMES: # oracle phonemes
+                raw_input('implemented only for Kimseye...! Continue only if working with Kimseye' )
+                currSectionLink.loadSmallAudioFragmentOracle(self.model)
+                fe.featureVectors = currSectionLink.lyricsWithModels                      # featureVectors is alias for LyricsWithModelsOracle
+                if ParametersAlgo.FOR_MAKAM:    fromTsTextGrid = 0; toTsTextGrid = 20.88  # for kimseye etmem
 
-                else:     ###### extract audio features
-                    fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)
+            else:     ###### extract audio features
+                fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)
 #                 sectionLink.lyricsWithModels.printWordsAndStates()
-                
-            #################### decode
-                alpha = 0.97
-                decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
-                
+            
+        #################### decode
+            alpha = 0.97
+            decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
+            
 
-                ##### prepare note onsets. result stored in files, which are used in decoding  ############################
-                if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
-                    URIrecOnsets = os.path.join(os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT)
-                    fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
-                    
-                elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
-                    fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
-                ###############################################
+            ##### prepare note onsets. result stored in files, which are used in decoding  ############################
+            if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
+                URIrecOnsets = os.path.join(os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT)
+                fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
                 
+            elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
+                fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
+            ###############################################
+            
 
-                detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
-                if ParametersAlgo.FOR_JINGJU:
-                    detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
-                
+            detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
+            if ParametersAlgo.FOR_JINGJU:
+                detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
+            
 
-                detectedPath = decoder.path.pathRaw
+            detectedPath = decoder.path.pathRaw
 
 #                 ##### write all decoded output persistently to files
-                if Parameters.WRITE_TO_FILE:
-                    self.write_decoded_to_file(tokenLevelAlignedSuffix, URIRecordingChunkResynthesizedNoExt, decoder.path.phiPathLikelihood,  detectedTokenList)
-               
+            if Parameters.WRITE_TO_FILE:
+                self.write_decoded_to_file(tokenLevelAlignedSuffix, URIRecordingChunkResynthesizedNoExt, decoder.path.phiPathLikelihood,  detectedTokenList)
+           
                 
             ### VISUALIZE result 
         #         decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
             
-            else:   
-                detectedTokenList, phiOptPath, detectedPath = self.read_decoded(URIRecordingChunkResynthesizedNoExt, detectedAlignedfileName)
+#             else:    # do not decode, read form file
+#                 detectedTokenList, phiOptPath, detectedPath = self.read_decoded(URIRecordingChunkResynthesizedNoExt, detectedAlignedfileName)
                     
         
             return detectedTokenList, detectedPath, phiOptPath

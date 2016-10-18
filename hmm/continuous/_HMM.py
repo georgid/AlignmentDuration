@@ -36,22 +36,24 @@ class _HMM(_ContinuousHMM):
             _ContinuousHMM.__init__(self, n, numMixtures, numDimensions, transMatrices, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
     
             self.statesNetwork = statesNetwork
-            
+            pass
 
       
     def _constructHMMNetworkParameters(self,  statesSequence):
         '''
-        tranform other htkModel params to  format of gyuz's hmm class
+        tranform  htkModel params to  format of gyuz's hmm class
         NOTE: better design is to put it in Decoder because this way parameters are not-dependent on Lyrics (.e.g. no statesSequence as arg in the constructor)
         '''
         
         if ParametersAlgo.FOR_MAKAM:
-            numMixtures = 9
-            numDimensions = 25
-            
+            numMixtures = len(statesSequence[0].mixtures)
+            (numMixture, weight, mixture) = statesSequence[0].mixtures[0]
+            numDimensions = len(mixture.var.vector)
+            numDimensions = 39
+             
         elif ParametersAlgo.FOR_JINGJU:
             
-            firstGmm_ = statesSequence[0].mixtures
+            firstGmm_ = statesSequence[0].mixtures # mixtures are of type 
             numMixtures = firstGmm_.n_components
             firstMeansVector = firstGmm_.means_[0]
             numDimensions = firstMeansVector.shape[0]
@@ -59,10 +61,11 @@ class _HMM(_ContinuousHMM):
         numStates = len(statesSequence)
         means = numpy.empty((numStates, numMixtures, numDimensions))
         
+        weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
+        
         # init covars
         covars = [[ numpy.matrix(numpy.eye(numDimensions,numDimensions)) for j in xrange(numMixtures)] for i in xrange(numStates)]
         
-        weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
         
         # start probs :
         pi = numpy.zeros((numStates), dtype=numpy.double)
@@ -71,6 +74,8 @@ class _HMM(_ContinuousHMM):
         pi.fill(sys.float_info.min)
 #          allow to start only at first state
         pi[0] = 1
+
+        return numMixtures, numDimensions, means, covars, weights, pi  # means, covars, weights dont make sence
 
 #         pi[0] = 0.33
 #         pi[1] = 0.33
@@ -156,7 +161,7 @@ class _HMM(_ContinuousHMM):
 
     def viterbi_fast_forced(self):
         '''
-        forced alignment: considers only previous state in desicion
+        forced alignment: considers only previous state in decision
         '''
         
         # init phi and psi at first time

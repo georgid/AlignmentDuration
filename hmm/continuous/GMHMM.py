@@ -40,7 +40,8 @@ class GMHMM(_HMM):
         
     def _set_GMMs(self):
         '''
-        build n GMMs with scikit-learn's classes  
+        build n-state GMMs with scikit-learn's classes.
+        copy means etc. from self.weights and self.means and self.covars
         '''
         self.GMMs = numpy.empty(self.n, dtype=GMM_)
         

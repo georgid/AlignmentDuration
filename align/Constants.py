@@ -7,8 +7,8 @@ Created on Dec 16, 2014
 
 
 # TODO: read from models
-numMixtures = 9
-NUM_DIMENSIONS = 25
+# numMixtures = 9
+# NUM_DIMENSIONS = 25
 
 # TODO: read from feat extraction parameters
 NUM_FRAMES_PERSECOND = 100.0

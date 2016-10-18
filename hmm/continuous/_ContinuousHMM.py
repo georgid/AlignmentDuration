@@ -197,11 +197,13 @@ class _ContinuousHMM(_BaseHMM):
         else:
             self.B_map[indicesZero] = MINIMAL_PROB
         
-    def _mapB(self, observations):
+    def _mapB(self, observations):    
+        
         '''
         Required implementation for _mapB. Refer to _BaseHMM for more details.
         with non-vocal
         '''
+            
         self.logger.info("calculating obs probs..." )
         self.B_map = numpy.zeros( (self.n,len(observations)), dtype=self.precision)
          
