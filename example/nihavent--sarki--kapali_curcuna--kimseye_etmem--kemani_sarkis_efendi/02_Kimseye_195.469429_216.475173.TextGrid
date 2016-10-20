@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 19.342222222222222 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 19.342222222222222 
+        intervals: size = 9 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.18159682262908056 
+            text = "" 
+        intervals [2]:
+            xmin = 0.18159682262908056 
+            xmax = 2.938327230456262 
+            text = "Titrerim " 
+        intervals [3]:
+            xmin = 2.938327230456262 
+            xmax = 6.5432823791533465 
+            text = "mücrim" 
+        intervals [4]:
+            xmin = 6.5432823791533465 
+            xmax = 6.81592604586153 
+            text = "" 
+        intervals [5]:
+            xmin = 6.81592604586153 
+            xmax = 8.76987232393684 
+            text = "gibi" 
+        intervals [6]:
+            xmin = 8.76987232393684 
+            xmax = 12.935261676422966 
+            text = " baktıkça " 
+        intervals [7]:
+            xmin = 12.935261676422966 
+            xmax = 13.223052213503827 
+            text = "" 
+        intervals [8]:
+            xmin = 13.223052213503827 
+            xmax = 17.827700806797584 
+            text = "istikbalime" 
+        intervals [9]:
+            xmin = 17.827700806797584 
+            xmax = 19.342222222222222 
+            text = "" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phrases" 
+        xmin = 0 
+        xmax = 19.342222222222222 
+        intervals: size = 7 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.6910414142981289 
+            text = "" 
+        intervals [2]:
+            xmin = 0.6910414142981289 
+            xmax = 7.021601955875179 
+            text = "Titrerim mücrim" 
+        intervals [3]:
+            xmin = 7.021601955875179 
+            xmax = 7.247693403788645 
+            text = "" 
+        intervals [4]:
+            xmin = 7.247693403788645 
+            xmax = 13.394554643936004 
+            text = "gibi baktıkça " 
+        intervals [5]:
+            xmin = 13.394554643936004 
+            xmax = 13.663038238333245 
+            text = "" 
+        intervals [6]:
+            xmin = 13.663038238333245 
+            xmax = 18.41856649803226 
+            text = "istikbalime" 
+        intervals [7]:
+            xmin = 18.41856649803226 
+            xmax = 19.342222222222222 
+            text = "" 

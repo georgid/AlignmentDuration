@@ -1,0 +1,222 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 19.86517006802721 
+tiers? <exists> 
+size = 3 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 19.86517006802721 
+        intervals: size = 8 
+        intervals [1]:
+            xmin = 0 
+            xmax = 3.064438766931607 
+            text = "kimseye" 
+        intervals [2]:
+            xmin = 3.064438766931607 
+            xmax = 6.704634070435995 
+            text = "etmem" 
+        intervals [3]:
+            xmin = 6.704634070435995 
+            xmax = 6.9535363134106545 
+            text = "" 
+        intervals [4]:
+            xmin = 6.9535363134106545 
+            xmax = 11.492570066380827 
+            text = "şikayet" 
+        intervals [5]:
+            xmin = 11.492570066380827 
+            xmax = 11.822686441602421 
+            text = " " 
+        intervals [6]:
+            xmin = 11.822686441602421 
+            xmax = 13.938355506887023 
+            text = "ağlarım " 
+        intervals [7]:
+            xmin = 13.938355506887023 
+            xmax = 14.685062235811 
+            text = "ben " 
+        intervals [8]:
+            xmin = 14.685062235811 
+            xmax = 19.86517006802721 
+            text = "halime" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phrases" 
+        xmin = 0 
+        xmax = 19.86517006802721 
+        intervals: size = 5 
+        intervals [1]:
+            xmin = 0 
+            xmax = 7.080827312993773 
+            text = "kimseye etmem" 
+        intervals [2]:
+            xmin = 7.080827312993773 
+            xmax = 7.326430427341919 
+            text = "" 
+        intervals [3]:
+            xmin = 7.326430427341919 
+            xmax = 11.492570066380827 
+            text = "şikayet" 
+        intervals [4]:
+            xmin = 11.492570066380827 
+            xmax = 12.234221086527107 
+            text = " " 
+        intervals [5]:
+            xmin = 12.234221086527107 
+            xmax = 19.86517006802721 
+            text = "ağlarım ben halime" 
+    item [3]:
+        class = "IntervalTier" 
+        name = "phonemes" 
+        xmin = 0 
+        xmax = 19.86517006802721 
+        intervals: size = 36 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.05688140374813927 
+            text = "KK" 
+        intervals [2]:
+            xmin = 0.05688140374813927 
+            xmax = 0.44872597505709055 
+            text = "IY" 
+        intervals [3]:
+            xmin = 0.44872597505709055 
+            xmax = 1.2378574033876173 
+            text = "M" 
+        intervals [4]:
+            xmin = 1.2378574033876173 
+            xmax = 1.4011259747663471 
+            text = "S" 
+        intervals [5]:
+            xmin = 1.4011259747663471 
+            xmax = 1.904537403184097 
+            text = "E" 
+        intervals [6]:
+            xmin = 1.904537403184097 
+            xmax = 2.0297099745744562 
+            text = "Y" 
+        intervals [7]:
+            xmin = 2.0297099745744562 
+            xmax = 3.4007283228337015 
+            text = "E" 
+        intervals [8]:
+            xmin = 3.4007283228337015 
+            xmax = 6.074109589605576 
+            text = "E" 
+        intervals [9]:
+            xmin = 6.074109589605576 
+            xmax = 6.290240450944695 
+            text = "T" 
+        intervals [10]:
+            xmin = 6.290240450944695 
+            xmax = 6.486370597589769 
+            text = "M" 
+        intervals [11]:
+            xmin = 6.486370597589769 
+            xmax = 6.986840626959958 
+            text = "E" 
+        intervals [12]:
+            xmin = 6.986840626959958 
+            xmax = 7.080827312993773 
+            text = "M" 
+        intervals [13]:
+            xmin = 7.080827312993773 
+            xmax = 7.326430427341919 
+            text = "" 
+        intervals [14]:
+            xmin = 7.326430427341919 
+            xmax = 7.4102921378522835 
+            text = "SH" 
+        intervals [15]:
+            xmin = 7.4102921378522835 
+            xmax = 7.82622331090994 
+            text = "IY" 
+        intervals [16]:
+            xmin = 7.82622331090994 
+            xmax = 7.937814601242482 
+            text = "KK" 
+        intervals [17]:
+            xmin = 7.937814601242482 
+            xmax = 9.303962519252996 
+            text = "AA" 
+        intervals [18]:
+            xmin = 9.303962519252996 
+            xmax = 9.425698472343042 
+            text = "Y" 
+        intervals [19]:
+            xmin = 9.425698472343042 
+            xmax = 11.434262906600532 
+            text = "E" 
+        intervals [20]:
+            xmin = 11.434262906600532 
+            xmax = 11.492570066380827 
+            text = "T" 
+        intervals [21]:
+            xmin = 11.492570066380827 
+            xmax = 12.234221086527107 
+            text = "" 
+        intervals [22]:
+            xmin = 12.234221086527107 
+            xmax = 13.121658478598665 
+            text = "AA" 
+        intervals [23]:
+            xmin = 13.121658478598665 
+            xmax = 13.226486660426204 
+            text = "LL" 
+        intervals [24]:
+            xmin = 13.226486660426204 
+            xmax = 13.797969329098919 
+            text = "AA" 
+        intervals [25]:
+            xmin = 13.797969329098919 
+            xmax = 13.8893267039609 
+            text = "RR" 
+        intervals [26]:
+            xmin = 13.8893267039609 
+            xmax = 14.062265027881796 
+            text = "I" 
+        intervals [27]:
+            xmin = 14.062265027881796 
+            xmax = 14.330896620346264 
+            text = "M" 
+        intervals [28]:
+            xmin = 14.330896620346264 
+            xmax = 14.398053627489574 
+            text = "B" 
+        intervals [29]:
+            xmin = 14.398053627489574 
+            xmax = 14.868159920517739 
+            text = "E" 
+        intervals [30]:
+            xmin = 14.868159920517739 
+            xmax = 15.159484621198102 
+            text = "NN" 
+        intervals [31]:
+            xmin = 15.159484621198102 
+            xmax = 15.223223117030372 
+            text = "H" 
+        intervals [32]:
+            xmin = 15.223223117030372 
+            xmax = 16.011125257863167 
+            text = "AA" 
+        intervals [33]:
+            xmin = 16.011125257863167 
+            xmax = 16.070302457281937 
+            text = "LL" 
+        intervals [34]:
+            xmin = 16.070302457281937 
+            xmax = 16.575237924159197 
+            text = "IY" 
+        intervals [35]:
+            xmin = 16.575237924159197 
+            xmax = 16.65685598442892 
+            text = "M" 
+        intervals [36]:
+            xmin = 16.65685598442892 
+            xmax = 19.86517006802721 
+            text = "E" 

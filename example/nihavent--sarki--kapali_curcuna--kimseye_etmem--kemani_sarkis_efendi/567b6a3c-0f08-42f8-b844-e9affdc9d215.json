@@ -1,0 +1,113 @@
+{
+    "instrumentation": "solo singing with chorus accompaniment", 
+    "work_relations": [
+        {
+            "mbid": "f8a79c74-cb05-328a-924e-fc751733763b", 
+            "title": "Kimseye Etmem \u015eikayet"
+        }
+    ], 
+    "section_annotations": [
+        {
+            "melodicStructure": "ARANAGME_1", 
+            "time": [
+                0.444305, 
+                28.534242
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "INSTRUMENTAL", 
+            "name": "Aranagme"
+        }, 
+        {
+            "melodicStructure": "ARANAGME_1", 
+            "time": [
+                28.534242, 
+                51.35423
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "INSTRUMENTAL", 
+            "name": "Aranagme"
+        }, 
+        {
+            "melodicStructure": "B1", 
+            "time": [
+                51.35423, 
+                72.248897
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "B1", 
+            "name": "Zemin"
+        }, 
+        {
+            "melodicStructure": "B2", 
+            "time": [
+                72.248897, 
+                92.909071
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "B1", 
+            "name": "Zemin"
+        }, 
+        {
+            "melodicStructure": "C1", 
+            "time": [
+                92.909071, 
+                113.519877
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "C1", 
+            "name": "Nakarat"
+        }, 
+        {
+            "melodicStructure": "D1", 
+            "time": [
+                113.519877, 
+                134.031948
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "C1", 
+            "name": "Nakarat"
+        }, 
+        {
+            "melodicStructure": "E1", 
+            "time": [
+                134.031948, 
+                154.593387
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "D1", 
+            "name": "Meyan"
+        }, 
+        {
+            "melodicStructure": "F1", 
+            "time": [
+                154.593387, 
+                175.031408
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "D1", 
+            "name": "Meyan"
+        }, 
+        {
+            "melodicStructure": "C1", 
+            "time": [
+                175.031408, 
+                195.469429
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "C1", 
+            "name": "Nakarat"
+        }, 
+        {
+            "melodicStructure": "D2", 
+            "time": [
+                195.469429, 
+                216.475173
+            ], 
+            "time_unit": "sec", 
+            "lyricStructure": "C1", 
+            "name": "Nakarat"
+        }
+    ], 
+    "symbTr": "nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi", 
+    "title": "Kimseye Etmem \u015eikayet A\u011flar\u0131m Ben Halime"
+}

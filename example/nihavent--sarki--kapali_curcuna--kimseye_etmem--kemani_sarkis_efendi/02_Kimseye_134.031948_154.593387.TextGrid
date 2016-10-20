@@ -1,0 +1,84 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 21.31591836734694 
+tiers? <exists> 
+size = 2 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 21.31591836734694 
+        intervals: size = 9 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.216819580042753 
+            text = "" 
+        intervals [2]:
+            xmin = 0.216819580042753 
+            xmax = 1.485447253705318 
+            text = "Perde" 
+        intervals [3]:
+            xmin = 1.485447253705318 
+            xmax = 3.03784690700293 
+            text = "i" 
+        intervals [4]:
+            xmin = 3.03784690700293 
+            xmax = 6.8437299279906245 
+            text = "zulmet" 
+        intervals [5]:
+            xmin = 6.8437299279906245 
+            xmax = 11.334004193980492 
+            text = "çekilmiş" 
+        intervals [6]:
+            xmin = 11.334004193980492 
+            xmax = 11.901548153250587 
+            text = "" 
+        intervals [7]:
+            xmin = 11.901548153250587 
+            xmax = 14.088261643379482 
+            text = "korkarım" 
+        intervals [8]:
+            xmin = 14.088261643379482 
+            xmax = 19.229542215590932 
+            text = "ikbalime" 
+        intervals [9]:
+            xmin = 19.229542215590932 
+            xmax = 21.31591836734694 
+            text = "" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "phrases" 
+        xmin = 0 
+        xmax = 21.31591836734694 
+        intervals: size = 7 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.9172820967179277 
+            text = "" 
+        intervals [2]:
+            xmin = 0.9172820967179277 
+            xmax = 3.6669775456749836 
+            text = "Perde i" 
+        intervals [3]:
+            xmin = 3.6669775456749836 
+            xmax = 7.5646245242690835 
+            text = "zulmet" 
+        intervals [4]:
+            xmin = 7.5646245242690835 
+            xmax = 12.230291482745157 
+            text = "çekilmiş" 
+        intervals [5]:
+            xmin = 12.230291482745157 
+            xmax = 12.655873351248026 
+            text = "" 
+        intervals [6]:
+            xmin = 12.655873351248026 
+            xmax = 19.962602763938758 
+            text = "korkarım ikbalime" 
+        intervals [7]:
+            xmin = 19.962602763938758 
+            xmax = 21.31591836734694 
+            text = "" 

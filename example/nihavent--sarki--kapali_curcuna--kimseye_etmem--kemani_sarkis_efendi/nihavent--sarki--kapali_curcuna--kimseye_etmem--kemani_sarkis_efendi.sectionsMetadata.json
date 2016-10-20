@@ -1,0 +1,170 @@
+{
+    "composer": {
+        "mbid": "99c4c547-ec9d-4bb8-8673-53a6355dbd59", 
+        "symbtr_slug": "kemani_sarkis_efendi", 
+        "name": "Kemani Sarkis Efendi", 
+        "mu2_name": "Kem\u00e2n\u00ee Sarkis Efendi"
+    }, 
+    "tonic": "G4", 
+    "lyricist": {
+        "mbid": "d326d093-b288-4434-9924-2a261fd8e559", 
+        "name": "\u0130hsan Raif Han\u0131m", 
+        "mu2_name": "\u0130hsan Raif Han\u0131m"
+    }, 
+    "notation": "TSM", 
+    "form": {
+        "symbtr_slug": "sarki", 
+        "mb_attribute": "\u015eark\u0131", 
+        "mu2_name": "\u015eark\u0131", 
+        "attribute_key": "sarki"
+    }, 
+    "language": "tur", 
+    "phrases": {
+        "automatic": [], 
+        "annotated": []
+    }, 
+    "work": {
+        "mbid": "f8a79c74-cb05-328a-924e-fc751733763b", 
+        "symbtr_slug": "kimseye_etmem", 
+        "mu2_title": "Kimseye Etmem \u015eik\u00e2yet", 
+        "title": "Kimseye Etmem \u015eikayet"
+    }, 
+    "tempo": {
+        "unit": "bpm", 
+        "value": 204
+    }, 
+    "rhythmic_structure": [
+        {
+            "endNote": 428, 
+            "startNote": 1, 
+            "usul": {
+                "symbtr_internal_id": 80, 
+                "attribute_key": "kapali_curcuna", 
+                "mertebe": 8, 
+                "mu2_name": "K. Curcuna", 
+                "number_of_pulses": 10
+            }, 
+            "tempo": {
+                "unit": "bpm", 
+                "value": 23
+            }
+        }
+    ], 
+    "genre": "classical", 
+    "key_signature": [
+        "B4b5", 
+        "E5b5"
+    ], 
+    "number_of_notes": 428, 
+    "makam": {
+        "symbtr_slug": "nihavent", 
+        "mb_attribute": "Nihavent", 
+        "mu2_name": "Nih\u00e2vent", 
+        "attribute_key": "nihavent"
+    }, 
+    "duration": {
+        "unit": "second", 
+        "value": 208.762
+    }, 
+    "usul": {
+        "attribute_key": "kapali_curcuna", 
+        "number_of_pulses": 10, 
+        "symbtr_slug": "kapali_curcuna", 
+        "mu2_name": "K. Curcuna", 
+        "mb_attribute": "Kapal\u0131 Curcuna", 
+        "mertebe": 8
+    }, 
+    "sections": [
+        {
+            "name": "ARANA\u011eME", 
+            "lyricStructure": "INSTRUMENTAL", 
+            "endNote": 57, 
+            "startNote": 2, 
+            "melodicStructure": "ARANAGME_1", 
+            "lyrics": "", 
+            "slug": "ARANAGME"
+        }, 
+        {
+            "name": "ARANA\u011eME", 
+            "lyricStructure": "INSTRUMENTAL", 
+            "endNote": 113, 
+            "startNote": 58, 
+            "melodicStructure": "ARANAGME_1", 
+            "lyrics": "", 
+            "slug": "ARANAGME"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "B1", 
+            "endNote": 146, 
+            "startNote": 114, 
+            "melodicStructure": "B1", 
+            "lyrics": "Kimseye etmem \u015fik\u00e2yet a\u011flar\u0131m ben halime  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "B1", 
+            "endNote": 179, 
+            "startNote": 147, 
+            "melodicStructure": "B2", 
+            "lyrics": "Kimseye etmem \u015fik\u00e2yet a\u011flar\u0131m ben halime  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "C1", 
+            "endNote": 221, 
+            "startNote": 180, 
+            "melodicStructure": "C1", 
+            "lyrics": "Titrerim m\u00fccrim gibi bakt\u0131k\u00e7a istikbalime  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "C1", 
+            "endNote": 265, 
+            "startNote": 222, 
+            "melodicStructure": "D1", 
+            "lyrics": "Titrerim m\u00fccrim gibi bakt\u0131k\u00e7a istikbalime  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "D1", 
+            "endNote": 310, 
+            "startNote": 266, 
+            "melodicStructure": "E1", 
+            "lyrics": "Perde i zulmet \u00e7ekilmi\u015f korkar\u0131m ikbalime  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "D1", 
+            "endNote": 350, 
+            "startNote": 311, 
+            "melodicStructure": "F1", 
+            "lyrics": "Perde i zulmet \u00e7ekilmi\u015f korkar\u0131m ikbalime  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "C1", 
+            "endNote": 392, 
+            "startNote": 351, 
+            "melodicStructure": "C1", 
+            "lyrics": "Titrerim m\u00fccrim gibi bakt\u0131k\u00e7a istikbalime  ", 
+            "slug": "VOCAL_SECTION"
+        }, 
+        {
+            "name": "VOCAL_SECTION", 
+            "lyricStructure": "C1", 
+            "endNote": 428, 
+            "startNote": 393, 
+            "melodicStructure": "D2", 
+            "lyrics": "Titrerim m\u00fccrim gibi bakt\u0131k\u00e7a istikbalime  ", 
+            "slug": "VOCAL_SECTION"
+        }
+    ], 
+    "symbtr": "nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi"
+}
