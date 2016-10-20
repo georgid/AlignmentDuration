@@ -10,6 +10,7 @@ import os
 import sys
 import math
 import numpy as np
+from utilsLyrics.Utilz import readListOfListTextFile_gen
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../software/models/'))
 import utilFunctions as UF
 import sineModel as SM
@@ -22,10 +23,8 @@ pathUtils = os.path.join(parentParentDir, 'utilsLyrics')
 if pathUtils not in sys.path:
     sys.path.append(pathUtils )
 
-inputFile = '../sounds/vignesh.wav'
-melodiaInput = '../sounds/vignesh.melodia'
-
-from Utilz import readListOfListTextFile_gen
+inputFile = 'output_sounds/vignesh.wav'
+melodiaInput = 'output_sounds/vignesh.melodia'
 
 
 def doit():
@@ -147,11 +146,20 @@ def visualizeSpectum(spectrum, timestamp, ploc,  iploc, ipmag, generatedX):
     
 def calcPeakSimilarity(ipfreq, ipmag, ipphase, spectrum, N, fs): 
     '''
-    for spectrum @param spectrum calculates the similarity for one peak.
-    Peak centered at interpolated 
-    @param: ipfreq with @param: ipmag and phrase @param ipphase
-    Generates blackman harris window in spectral domain 
-    Uses metric descibed in Rao: section II.B
+    For polyphonic spectrum calculates to what degree a peak comes from one source.   
+    The Peak is centered at interpolated ipfreq
+    Computes similarity to the mainLobe of blackman harris window in spectral domain 
+    
+    Parameters
+    -----------------
+    @param spectrum 
+    Peak parameters: 
+    @param: ipmag, ipfreq, ipphase
+    
+    
+    ------------------
+    Reference
+    Uses metric described in: V. Rao and P. Rao - Vocal melody extraction in the presence of pitched accompaniment in polyphonic music, II.B
     '''
     
     epsilonM = 0
@@ -161,10 +169,10 @@ def calcPeakSimilarity(ipfreq, ipmag, ipphase, spectrum, N, fs):
     
     denominatorS  = 0
     
-    mainLobeSpec,bins = UF.genSpecSines_p_onePeak(ipfreq, ipmag, ipphase, N, fs)     # generate spec sines
+    mainLobeSpec, bins = UF.genSpecSines_p_onePeak(ipfreq, ipmag, ipphase, N, fs)     # generate spec sines
     
     hN = N/2 + 1                                               # size of positive spectrum
-    absMainLobeSpec = abs(mainLobeSpec[:hN])                                      # compute ansolute value of positive side
+    absMainLobeSpec = abs(mainLobeSpec[:hN])                                      # compute absolute value of positive side
     absMainLobeSpec[absMainLobeSpec<np.finfo(float).eps] = np.finfo(float).eps    # if zeros add epsilon to handle log
 
 
