@@ -88,9 +88,9 @@ class FeatureExtractor(object):
         HTKFeat_reader =  htkmfc.open(URImfcFile, 'rb')
         mfccsFeatrues = HTKFeat_reader.getall()
         
-        if ParametersAlgo.FOR_MAKAM and ParametersAlgo.OBS_MODEL == 'GMM': # makam mdoels  are trained with 25-dim features 
+        if ParametersAlgo.FOR_MAKAM and ParametersAlgo.OBS_MODEL == 'GMM': # makam mdoels  are trained with 25-dim features (no energy, no deltadeltas )
             mfccs_no_energy = mfccsFeatrues[:,0:12]
-            mfccDeltas = mfccsFeatrues[:,13:25] 
+            mfccDeltas = mfccsFeatrues[:,13:26] 
             mfccsFeatrues = np.hstack((mfccs_no_energy, mfccDeltas))
         
         

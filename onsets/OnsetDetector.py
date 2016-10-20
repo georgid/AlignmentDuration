@@ -182,7 +182,7 @@ def tsToFrameNumber(ts):
     '''
     get which frame is for a given ts, according to htk's feature extraction  
     '''
-    return   int(math.floor( (ts - ParametersAlgo.WINDOW_SIZE/2.0) * ParametersAlgo.NUMFRAMESPERSECOND))
+    return   max (0, int(math.floor( (ts - ParametersAlgo.WINDOW_SIZE/2.0) * ParametersAlgo.NUMFRAMESPERSECOND)) )
  
  
 def frameNumberToTs(frameNum):

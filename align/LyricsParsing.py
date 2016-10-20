@@ -28,11 +28,16 @@ def loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx):
     '''
     LOAD ORACLE PHONEMES as annotatetd in TextGrid
     '''
-    highLevel = tierAliases.pinyin # read syllable in pinyin
-    if ParametersAlgo.WITH_SHORT_PAUSES:
-        lowLevel = tierAliases.xsampadetails_with_sp
-    else:
-        lowLevel = tierAliases.xsampadetails # read phonemesAnno
+    if ParametersAlgo.FOR_JINGJU:
+        highLevel = tierAliases.pinyin # read syllable in pinyin
+        if ParametersAlgo.WITH_SHORT_PAUSES:
+            lowLevel = tierAliases.xsampadetails_with_sp
+        else:
+            lowLevel = tierAliases.xsampadetails # read phonemesAnno
+    elif ParametersAlgo.FOR_MAKAM:
+        highLevel = tierAliases.words
+        lowLevel = tierAliases.phonemes
+
     
     phonemesAnnoAll = []
     for syllableIdx in range(fromSyllableIdx, toSyllableIdx): # for each  syllable including non-lyrics (.e.g. _SAZ_) syllables

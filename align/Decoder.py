@@ -37,7 +37,7 @@ parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file
 logger = logging.getLogger(__name__)
 # loggingLevel = logging.WARNING
 loggingLevel = logging.DEBUG
-loggingLevel = logging.INFO
+# loggingLevel = logging.INFO
 
 logging.basicConfig(format='%(levelname)s:%(funcName)30s():%(message)s')
 logger.setLevel(loggingLevel)
@@ -46,7 +46,7 @@ logger.setLevel(loggingLevel)
 
 
 
-# in backtracking allow to start this much from end back
+# in backtracking allow to start this much from end back`
 BACKTRACK_MARGIN_PERCENT= 0.2
 # BACKTRACK_MARGIN_PERCENT= 0.0
 
@@ -91,9 +91,7 @@ class Decoder(object):
             if  ParametersAlgo.WITH_DURATIONS:
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
-            # double check that features are in same dimension as models
-            if featureExtractor.featureVectors.shape[1] != self.hmmNetwork.d:
-                sys.exit("dimension of feature vector should be {} but is {} ".format(self.hmmNetwork.d, featureExtractor.featureVectors.shape[1]) )
+         
             
                 
         self.hmmNetwork.initDecodingParameters(featureExtractor, fromTsTextGrid, toTsTextGrid)
@@ -174,8 +172,7 @@ class Decoder(object):
             
             transMatrices.append( self._constructTransMatrix(self.lyricsWithModels,  onsetDist = ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1) )
             
-            import matplotlib.pyplot as plt
-            plt.show()
+
             
             if ParametersAlgo.OBS_MODEL == 'GMM': 
                 from hmm.continuous.GMHMM  import GMHMM

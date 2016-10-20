@@ -59,8 +59,10 @@ def testLyricsAlign():
     musicbrainzid = '567b6a3c-0f08-42f8-b844-e9affdc9d215'
     
     ParametersAlgo.POLYPHONIC = 0
-    ParametersAlgo.WITH_ORACLE_ONSETS = 0
+    ParametersAlgo.WITH_ORACLE_ONSETS = -1
     ParametersAlgo.DETECTION_TOKEN_LEVEL= 'words'
+    ParametersAlgo.WITH_ORACLE_PHONEMES = 1
+
     
     with open(sectionLinksSourceURI) as f:
             sectionLinksDict = json.load(f)

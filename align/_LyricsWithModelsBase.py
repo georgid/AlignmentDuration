@@ -300,14 +300,18 @@ class _LyricsWithModelsBase(Lyrics):
         '''
         set durations in num frame durations read directly from textGrid. Used in oracle. 
         does not consider empty tokens (silences) at beginning and end, but reads sp tokens
-        double check if phoenemes are the same as in lyrics 
+        
+        !! double check if annotated phoenemes  are the same as in lyrics !! 
         '''
         
         ##### put all annotated phonemes in queue
         queueAnnotationTokens = Queue.Queue()
         for annoPhoneme in phoenemeAnnotaions:
             if annoPhoneme.ID == '':
-                annoPhoneme.ID ='sil'
+                if ParametersAlgo.WITH_SHORT_PAUSES:
+                    annoPhoneme.ID ='sp'
+                else:
+                    continue
         # WORKAROUND: needed for phonemes with strange names in Jingju. Uncomment only if need this  code WITH_ORACLE=1
 #             self._renamePhonemeNames(annoPhoneme) 
             queueAnnotationTokens.put(annoPhoneme)
@@ -320,7 +324,7 @@ class _LyricsWithModelsBase(Lyrics):
         for word_ in self.listWords:
             for syllable in word_.syllables:
 #                 listDurations = []
-#                 if syllable.text == 'REST':
+#                 if syllable.text == 'REST' or syllable.text == '_SAZ_': # skip _SAZ_ because they are not annotated 
 #                     continue
                 for idx, phoneme_ in enumerate(syllable.phonemes): # current syllable
                     

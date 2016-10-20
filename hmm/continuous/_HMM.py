@@ -26,45 +26,24 @@ class _HMM(_ContinuousHMM):
             '''
             See _ContinuousHMM constructor for more information
             '''
-            numMixtures, numDimensions, means, covars, weights, pi = self._constructHMMNetworkParameters(statesNetwork)
+            pi = self._set_pi(statesNetwork)
              
             n = len(statesNetwork)
             min_std=0.01
             init_type='uniform'
             precision=numpy.double
             verbose = False 
-            _ContinuousHMM.__init__(self, n, numMixtures, numDimensions, transMatrices, means, covars, weights, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
+            _ContinuousHMM.__init__(self, n,   transMatrices, pi, min_std,init_type,precision,verbose) #@UndefinedVariable
     
             self.statesNetwork = statesNetwork
             pass
 
       
-    def _constructHMMNetworkParameters(self,  statesSequence):
-        '''
-        tranform  htkModel params to  format of gyuz's hmm class
-        NOTE: better design is to put it in Decoder because this way parameters are not-dependent on Lyrics (.e.g. no statesSequence as arg in the constructor)
-        '''
-        
-        if ParametersAlgo.FOR_MAKAM:
-            numMixtures = len(statesSequence[0].mixtures)
-            (numMixture, weight, mixture) = statesSequence[0].mixtures[0]
-            numDimensions = len(mixture.var.vector)
-            numDimensions = 39
-             
-        elif ParametersAlgo.FOR_JINGJU:
-            
-            firstGmm_ = statesSequence[0].mixtures # mixtures are of type 
-            numMixtures = firstGmm_.n_components
-            firstMeansVector = firstGmm_.means_[0]
-            numDimensions = firstMeansVector.shape[0]
+    def _set_pi(self,  statesSequence):
+
        
         numStates = len(statesSequence)
-        means = numpy.empty((numStates, numMixtures, numDimensions))
-        
-        weights = numpy.ones((numStates,numMixtures),dtype=numpy.double)
-        
-        # init covars
-        covars = [[ numpy.matrix(numpy.eye(numDimensions,numDimensions)) for j in xrange(numMixtures)] for i in xrange(numStates)]
+       
         
         
         # start probs :
@@ -75,7 +54,6 @@ class _HMM(_ContinuousHMM):
 #          allow to start only at first state
         pi[0] = 1
 
-        return numMixtures, numDimensions, means, covars, weights, pi  # means, covars, weights dont make sence
 
 #         pi[0] = 0.33
 #         pi[1] = 0.33
@@ -85,39 +63,10 @@ class _HMM(_ContinuousHMM):
 #         pi = numpy.ones( (numStates)) *(1.0/numStates)
         
     
-         
-        if statesSequence==None:
-            sys.exit('no state sequence')
-               
-        for i in range(len(statesSequence) ):
-            state  = statesSequence[i] 
-            
-            if ParametersAlgo.FOR_MAKAM:
-                for (numMixture, weight, mixture) in state.mixtures:
-                    
-                    weights[i,numMixture-1] = weight
-                    
-                    means[i,numMixture-1,:] = mixture.mean.vector
-                    
-                    variance_ = mixture.var.vector
-                    for k in  range(len( variance_) ):
-                        covars[i][numMixture-1][k,k] = variance_[k]
-            
-            elif ParametersAlgo.FOR_JINGJU:
-                gmm_ = state.mixtures
-            
-                for numMixture in range(gmm_.n_components):
-                    weights[i,numMixture] = gmm_.weights_[numMixture]
-                    
-                    means[i,numMixture,:] = gmm_.means_[numMixture]
-                    
-                    variance_ = gmm_.covars_[numMixture]
-                    
-                    for k in  range(len( variance_) ):
-                        covars[i][numMixture][k,k] = variance_[k]
+        
                         
                     
-        return numMixtures, numDimensions, means, covars, weights, pi    
+        return  pi    
         
         
         
@@ -138,6 +87,8 @@ class _HMM(_ContinuousHMM):
                 durInSeconds = toTsTextGrid - fromTsTextGrid
                 lenFeatures = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
                 self._mapBOracle( featureExtractor.featureVectors, lenFeatures, fromTsTextGrid)
+                print self.B_map
+                
         else: # with featureVectors
                 lenFeatures = len(featureExtractor.featureVectors)
                 self._mapB(featureExtractor.featureVectors)

@@ -249,11 +249,13 @@ class LyricsAligner():
                 
             fromTsTextGrid = -1; toTsTextGrid = -1
             
+            
             if  ParametersAlgo.WITH_ORACLE_PHONEMES: # oracle phonemes
                 raw_input('implemented only for Kimseye...! Continue only if working with Kimseye' )
-                currSectionLink.loadSmallAudioFragmentOracle(self.model)
-                fe.featureVectors = currSectionLink.lyricsWithModels                      # featureVectors is alias for LyricsWithModelsOracle
                 if ParametersAlgo.FOR_MAKAM:    fromTsTextGrid = 0; toTsTextGrid = 20.88  # for kimseye etmem
+                fromSyllableIdx = 0; toSyllableIdx = 10
+                currSectionLink.loadSmallAudioFragmentOracle(self.model,fromSyllableIdx, toSyllableIdx )
+                fe.featureVectors = currSectionLink.lyricsWithModels                      # featureVectors is alias for LyricsWithModelsOracle
 
             else:     ###### extract audio features
                 fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)

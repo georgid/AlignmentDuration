@@ -46,8 +46,6 @@ class Syllable(_SyllableBase):
             if self.text == '_SAZ_' or '_SAZ_' in self.text:
                 # TODO: replace with other models_makam instead of silence
                 self.phonemes.append(Phoneme('sil'))
-                # TODO: does sp at end of sp make sence? 
-                self.phonemes.append(Phoneme('sp'))
             
             # text from lyrics
             else:

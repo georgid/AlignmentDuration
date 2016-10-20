@@ -95,16 +95,18 @@ class SectionLinkMakam(_SectionLinkBase):
         self.melodicStructure = melodicStructure
   
         
-    def loadSmallAudioFragmentOracle( self, htkParser):
-
+    def loadSmallAudioFragmentOracle( self, htkParser, fromSyllableIdx = 0, toSyllableIdx = 9):
+        '''
+        
+        '''
         
         # lyricsWithModelsORacle used only as helper to get its stateNetwork with durs, but not functionally - e.g. their models are not used
-        withPaddedSilence = False # dont models_makam silence at end and beginnning. this away we dont need to do annotatation of sp at end and beginning 
+        withPaddedSilence = False # dont model silence at end and beginnning. this away we dont need to do annotatation of sp at end and beginning 
         self.lyricsWithModels = LyricsWithModelsHTK(self.section.lyrics,  htkParser,  ParametersAlgo.DEVIATION_IN_SEC, withPaddedSilence)
         
         
         URIrecordingTextGrid  = self.URIRecordingChunk  + '.TextGrid'
-        fromSyllableIdx = 1; toSyllableIdx = 8
+        
         phonemeAnnotaions = loadOraclePhonemes(URIrecordingTextGrid, fromSyllableIdx, toSyllableIdx)   
     
         

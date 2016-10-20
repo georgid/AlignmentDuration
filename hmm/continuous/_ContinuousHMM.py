@@ -42,12 +42,9 @@ class _ContinuousHMM(_BaseHMM):
     
     Model attributes:
     - n            number of hidden states
-    - m            number of mixtures in each state (each 'symbol' like in the discrete case points to a mixture)
-    - d            number of features (an observation can contain multiple features)
+ 
     - transMatrix            hidden states transition probability matrix ([NxN] numpy array)
-    - means        means of the different mixtures ([NxMxD] numpy array)
-    - covars       covars of the different mixtures ([NxM] array of [DxD] covar matrices)
-    - w            weighing of each state's mixture components ([NxM] numpy array)
+
     - pi           initial state's PMF ([N] numpy array).
     
     Additional attributes:
@@ -56,7 +53,7 @@ class _ContinuousHMM(_BaseHMM):
     - verbose      a flag for printing progress information, mainly when learning
     '''
 
-    def __init__(self,n,m,d=1,transMatrices=None, means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double,verbose=False):
+    def __init__(self,n,transMatrices=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double,verbose=False):
         '''
         Construct a new Continuous HMM.
         In order to initialize the models_makam with custom parameters,
@@ -65,14 +62,11 @@ class _ContinuousHMM(_BaseHMM):
         Normal initialization uses a uniform distribution for all probablities,
         and is not recommended.
         '''
-        _BaseHMM.__init__(self,n,m,precision,verbose) #@UndefinedVariable
+        _BaseHMM.__init__(self,n,precision,verbose) #@UndefinedVariable
         
-        self.d = d
         self.transMatrices = transMatrices
         self.pi = pi
-        self.means = means
-        self.covars = covars
-        self.w = w
+
         self.min_std = min_std
 
 #         self.reset(init_type=init_type)
@@ -159,26 +153,18 @@ class _ContinuousHMM(_BaseHMM):
 #         import math
 #         startFrameNumber =  int(math.floor(offSet * NUMFRAMESPERSEC)) 
 
+        next_sane_start_frame = 0
+        for idx, state_ in enumerate(lyricsWithModelsOracle.statesNetwork): # only for ONLY_MIDDLE_PHONEME = True
         
-        for phoneme_ in lyricsWithModelsOracle.phonemesNetwork:
-        
-            # print phoneme
-            
-            # get total dur of phoneme's states
-            counterCurrPhonemeFirstState = phoneme_.numFirstState
+            phoneme_  = state_.phoneme
             startFrameNumber = tsToFrameNumber(phoneme_.beginTs - fromTs)
 
             self.logger.debug("phoneme: {} with start dur: {} and duration: {}".format( phoneme_.ID, startFrameNumber, phoneme_.durationInNumFrames ))
-
-            for whichFollowingState in range(phoneme_.getNumStates()):
-                        counterWhichState = counterCurrPhonemeFirstState + whichFollowingState
-                        stateWithDur = lyricsWithModelsOracle.statesNetwork[counterWhichState]
-                        self.logger.debug("\tstate {} duration {}".format( stateWithDur.__str__(),  stateWithDur.getDurationInFrames()))
-                        
-                        finalDurInFrames = startFrameNumber + stateWithDur.getDurationInFrames()
-                        
-                        self.B_map[counterWhichState, startFrameNumber: finalDurInFrames+1 ] = 1
-                        startFrameNumber =  finalDurInFrames+1  
+           
+            finalDurInFrames = startFrameNumber + state_.getDurationInFrames()
+            startFrameNumber = max(next_sane_start_frame, startFrameNumber)  # make sure it does not start at same frame
+            self.B_map[idx, startFrameNumber: finalDurInFrames+1 ] = 1
+            next_sane_start_frame =  finalDurInFrames+1 
             #TODO: silence at beginning and end
         
         self._addNonPossibleObs()
@@ -374,22 +360,6 @@ class _ContinuousHMM(_BaseHMM):
 
         return stats
     
-    def _reestimate(self,stats,observations):
-        '''
-        Required extension of _reestimate. 
-        Adds a re-estimation of the mixture parameters 'w', 'means', 'covars'.
-        '''        
-        # re-estimate transMatrix, pi
-        new_model = _BaseHMM._reestimate(self,stats,observations) #@UndefinedVariable
-        
-        # re-estimate the continuous probability parameters of the mixtures
-        w_new, means_new, covars_new = self._reestimateMixtures(observations,stats['gamma_mix'])
-        
-        new_model['w'] = w_new
-        new_model['means'] = means_new
-        new_model['covars'] = covars_new
-        
-        return new_model
     
     def _reestimateMixtures(self,observations,gamma_mix):
         '''

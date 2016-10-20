@@ -16,9 +16,8 @@ class _BaseHMM(object):
     Implements the basis for all deriving classes, but should not be used directly.
     '''
     
-    def __init__(self,n,m,precision=numpy.double,verbose=False):
+    def __init__(self,n,precision=numpy.double,verbose=False):
         self.n = n
-        self.m = m
         
         self.precision = precision
         self.verbose = verbose

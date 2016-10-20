@@ -81,6 +81,11 @@ class MLPHMM(_HMM):
         extend base method. first load all output with given MLP
         takes time, so better do it in advance to _pdfAllFeatures(), becasue _ContinuousHMM._mapB calls _pdfAllFeatures()
         '''
+        
+        # double check that features are in same dimension as models
+        if observations.shape[1] != self.model.n_ins:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(self.model.n_ins, observations.shape[1]) )
+        
         self.output_mat = self.recogn_with_MLP( observations)        
         _ContinuousHMM._mapB(self, observations)
         
@@ -88,9 +93,10 @@ class MLPHMM(_HMM):
     def _pdfAllFeatures(self,observations,j):
         '''
         get the pdf of a series of features for model j
-        called from _mapB()
+        called from _Continuous._mapB()
         '''
 #         old_settings = numpy.seterr(under='warn')
+        
         
         curr_phoneme_ID = self.statesNetwork[j].phoneme.ID
         if curr_phoneme_ID not in self.METU_to_stateidx:

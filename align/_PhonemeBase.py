@@ -91,7 +91,7 @@ class _PhonemeBase(object):
     
     def getNumStates(self):
         '''
-        based on assigned htk models_makam
+        based on assigned htk models
         '''
         
 

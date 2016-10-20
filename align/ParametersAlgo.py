@@ -49,7 +49,7 @@ class ParametersAlgo(object):
     
     # no feature vectors at all. all observ, probs. set to 1
 #     WITH_ORACLE_PHONEMES = -1
-    WITH_ORACLE_PHONEMES = 0
+    WITH_ORACLE_PHONEMES = 1
 
     PATH_TO_HCOPY= '/usr/local/bin/HCopy'
     PATH_TO_HVITE = '/usr/local/bin/HVite'
