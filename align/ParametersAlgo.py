@@ -10,15 +10,16 @@ import os
 ######### PARAMS:
 class ParametersAlgo(object):
     
+    ALPHA = 0.97
     FOR_JINGJU = 0
     FOR_MAKAM = 0
     
-#     OBS_MODEL = 'GMM'
-    OBS_MODEL = 'MLP'
+    OBS_MODEL = 'GMM'
+#     OBS_MODEL = 'MLP'
     
     # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
     # if false, use transition probabilities from htkModels
-    WITH_DURATIONS= 0
+    WITH_DURATIONS= 1
     
     # level into which to segments decoded result stateNetwork
 #     DETECTION_TOKEN_LEVEL= 'syllables'
@@ -45,11 +46,11 @@ class ParametersAlgo(object):
     WITH_SHORT_PAUSES = 0
     
     # padded a short pause state at beginning and end of sequence
-    WITH_PADDED_SILENCE = 1
+    WITH_PADDED_SILENCE = 0
     
     # no feature vectors at all. all observ, probs. set to 1
 #     WITH_ORACLE_PHONEMES = -1
-    WITH_ORACLE_PHONEMES = 1
+    WITH_ORACLE_PHONEMES = 0
 
     PATH_TO_HCOPY= '/usr/local/bin/HCopy'
     PATH_TO_HVITE = '/usr/local/bin/HVite'

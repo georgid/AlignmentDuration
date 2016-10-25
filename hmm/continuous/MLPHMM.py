@@ -15,7 +15,7 @@ import os
 import math
 import csv
 from hmm.continuous._ContinuousHMM import _ContinuousHMM
-sys.path.append('/Users/joro/Downloads/pdnn')
+sys.path.append('/home/georgid/Documents/pdnn')
 from io_func import smart_open
 from models.dnn import DNN
 from io_func.model_io import _file2nnet

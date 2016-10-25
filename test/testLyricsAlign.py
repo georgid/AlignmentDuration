@@ -46,7 +46,7 @@ def testLyricsAlign():
     ParametersAlgo.POLYPHONIC = 1
     ParametersAlgo.WITH_ORACLE_ONSETS = -1
     ParametersAlgo.WITH_ORACLE_PHONEMES = 0
-
+    ParametersAlgo.WITH_DURATIONS = 1
 
 #####################################################  test with section anno and acapella
     # On kora.s.upf.edu
@@ -57,12 +57,13 @@ def testLyricsAlign():
     sectionAnnosSourceURI = os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/567b6a3c-0f08-42f8-b844-e9affdc9d215.json' )
     audioFileURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/02_Kimseye.wav')
     musicbrainzid = '567b6a3c-0f08-42f8-b844-e9affdc9d215'
-    
+     
     ParametersAlgo.POLYPHONIC = 0
     ParametersAlgo.WITH_ORACLE_ONSETS = -1
     ParametersAlgo.DETECTION_TOKEN_LEVEL= 'words'
-    ParametersAlgo.WITH_ORACLE_PHONEMES = 1
-
+    ParametersAlgo.WITH_ORACLE_PHONEMES = 0
+    ParametersAlgo.WITH_DURATIONS = 1
+    
     
     with open(sectionLinksSourceURI) as f:
             sectionLinksDict = json.load(f)

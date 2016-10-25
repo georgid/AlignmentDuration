@@ -27,7 +27,6 @@ from align.FeatureExtractor import FeatureExtractor
 import os
 import sys
 import json
-import subprocess
 from for_makam.MakamRecording import parseSectionLinks, MakamRecording
 from align.Decoder import logger,  Decoder
 from ParametersAlgo import ParametersAlgo
@@ -262,8 +261,7 @@ class LyricsAligner():
 #                 sectionLink.lyricsWithModels.printWordsAndStates()
             
         #################### decode
-            alpha = 0.97
-            decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt, alpha)
+            decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt)
             
 
             ##### prepare note onsets. result stored in files, which are used in decoding  ############################

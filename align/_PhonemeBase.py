@@ -17,7 +17,7 @@ if pathHTKParser not in sys.path:
 import htkparser
 
 
-class _PhonemeBase(object):
+class PhonemeBase(object):
     '''
     classdocs
     '''

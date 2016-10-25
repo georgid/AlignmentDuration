@@ -6,11 +6,11 @@ Created on Oct 8, 2014
 import sys
 import numpy
 from utilsLyrics.Utilz import loadTextFile
-from align._PhonemeBase import _PhonemeBase
+from align._PhonemeBase import PhonemeBase
 import os
 from align.ParametersAlgo import ParametersAlgo
 
-class PhonemeJingju(_PhonemeBase):
+class PhonemeJingju(PhonemeBase):
    
         
 

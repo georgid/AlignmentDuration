@@ -13,6 +13,7 @@ from align.visualize import visualizeMatrix, visualizeBMap, visualizePath,\
     visualizeTransMatrix
 from onsets.OnsetSmooting import OnsetSmoothingFunction
 import subprocess
+from align.ParametersAlgo import ParametersAlgo
 
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
@@ -58,7 +59,7 @@ class Decoder(object):
     '''
 
 
-    def __init__(self, lyricsWithModels, URIrecordingChunkNoExt, ALPHA, numStates=None, withModels=True):
+    def __init__(self, lyricsWithModels, URIrecordingChunkNoExt, numStates=None, withModels=True):
         '''
         Constructor
         '''
@@ -71,7 +72,7 @@ class Decoder(object):
         self.hmmNetwork = []
         
         self.onsetSmoothingFunction = OnsetSmoothingFunction(ParametersAlgo.ONSET_SIGMA_IN_FRAMES)
-        self._constructHmmNetwork(numStates, float(ALPHA), withModels)
+        self._constructHmmNetwork(numStates, withModels)
         self.hmmNetwork.logger.setLevel(ParametersAlgo.LOGGING_LEVEL)
         
         # Path class object
@@ -146,7 +147,7 @@ class Decoder(object):
 
     
         
-    def _constructHmmNetwork(self,  numStates, ALPHA,  withModels ):
+    def _constructHmmNetwork(self,  numStates,  withModels ):
         '''
         top level-function: costruct self.hmmNEtwork that confirms to guyz's code 
         '''
@@ -154,14 +155,8 @@ class Decoder(object):
         ######## construct transition matrix
         #######
         
-        
-        if  ParametersAlgo.WITH_DURATIONS:
-            from hmm.continuous.DurationGMHMM  import DurationGMHMM
-            # note: no trans matrix because only forced Viterbi implemented 
-            self.hmmNetwork = DurationGMHMM(self.lyricsWithModels.statesNetwork)
-            self.hmmNetwork.setALPHA(ALPHA)
-        
-        else: # with no durations standard Viterbi
+        transMatrices = None
+        if not ParametersAlgo.WITH_DURATIONS:
             if ParametersAlgo.FOR_JINGJU:
                 sys.exit("trying to run viterbi with no duration modeling for Jingju. Not implemented.")
             # construct means, covars, and all the rest params
@@ -171,15 +166,16 @@ class Decoder(object):
                 transMatrices.append( self._constructTransMatrix(self.lyricsWithModels, onsetDist) )
             
             transMatrices.append( self._constructTransMatrix(self.lyricsWithModels,  onsetDist = ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1) )
-            
+        
 
-            
-            if ParametersAlgo.OBS_MODEL == 'GMM': 
-                from hmm.continuous.GMHMM  import GMHMM
-                self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
-            else:
-                from hmm.continuous.MLPHMM  import MLPHMM
-                self.hmmNetwork = MLPHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
+        
+        if ParametersAlgo.OBS_MODEL == 'GMM': 
+            from hmm.continuous.GMHMM  import GMHMM
+            self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
+            print self.hmmNetwork.__class__.__bases__[0]
+        else:
+            from hmm.continuous.MLPHMM  import MLPHMM
+            self.hmmNetwork = MLPHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
     
     
 

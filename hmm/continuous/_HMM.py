@@ -87,12 +87,15 @@ class _HMM(_ContinuousHMM):
                 durInSeconds = toTsTextGrid - fromTsTextGrid
                 lenFeatures = tsToFrameNumber(durInSeconds - ParametersAlgo.WINDOW_SIZE / 2.0) 
                 self._mapBOracle( featureExtractor.featureVectors, lenFeatures, fromTsTextGrid)
-                print self.B_map
+        
+        
                 
         else: # with featureVectors
                 lenFeatures = len(featureExtractor.featureVectors)
                 self._mapB(featureExtractor.featureVectors)
-            
+                import pickle
+                with open('/home/georgid/Downloads/02_Kimseye_mapB_GMM', 'w') as f:
+                    pickle.dump(self.B_map, f)
         
         
         self.noteOnsets = featureExtractor.onsetDetector.onsetTsToOnsetFrames( lenFeatures)

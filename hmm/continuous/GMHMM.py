@@ -7,17 +7,22 @@ Created on Nov 12, 2012
 import numpy
 
 
-from sklearn.mixture import GMM as GMM_
+from sklearn.mixture import GaussianMixture as GMM_
+from sklearn.mixture.gaussian_mixture import _compute_precision_cholesky
 from hmm.continuous._HMM import _HMM
 import sys
 from align.ParametersAlgo import ParametersAlgo
+from hmm.continuous._DurationHMM import _DurationHMM
 # GMM class from
 # http://scikit-learn.org/stable/modules/generated/sklearn.mixture.GMM.html
 
-
-
+if ParametersAlgo.WITH_DURATIONS:
+    baseClass = _DurationHMM
+else:   
+    baseClass = _HMM
+    
 # from _ContinuousHMM import _ContinuousHMM
-class GMHMM(_HMM):
+class GMHMM(baseClass):
     '''
     A Gaussian Mixtures HMM - This is a representation of a continuous HMM,
     containing a mixture of gaussians in each hidden state.
@@ -36,10 +41,10 @@ class GMHMM(_HMM):
         '''
         See base class constructor for more information
         '''
-        _HMM.__init__(self, statesSequence, transMatrices)
-        
+        super(GMHMM, self).__init__(statesSequence, transMatrices)
+        if baseClass == _DurationHMM:
+            super(GMHMM, self).setALPHA(ParametersAlgo.ALPHA)
         self._set_GMMs(statesSequence)
-        
 
    
         
@@ -91,18 +96,25 @@ class GMHMM(_HMM):
         
         ####### put into GMM models 
         self.GMMs = numpy.empty(self.n, dtype=GMM_)
+
+        
+  
         
         for stateIdx in range(self.n):
-            self.GMMs[stateIdx] = GMM_(covariance_type='diag', n_components=numMixtures)
-            self.GMMs[stateIdx].means_ = means[stateIdx]
+            curr_GMM = GMM_(covariance_type='diag', n_components=numMixtures)
+            curr_GMM.means_ = means[stateIdx]
             
-            self.GMMs[stateIdx].covars_  = numpy.zeros((numMixtures, self.numDimensions))
+            curr_GMM.covars_  = numpy.zeros((numMixtures, self.numDimensions))
             for m_idx in range(numMixtures):
                 for d_idx in range(self.numDimensions):
                     a = covars[stateIdx][m_idx][d_idx,d_idx]
-                    self.GMMs[stateIdx].covars_[m_idx,d_idx] = a
+                    curr_GMM.covars_[m_idx,d_idx] = a
             
-            self.GMMs[stateIdx].weights_ = weights[stateIdx]
+            curr_GMM.weights_ = weights[stateIdx]
+            
+            
+            curr_GMM.precisions_cholesky_ = _compute_precision_cholesky(curr_GMM.covars_, curr_GMM.covariance_type)
+            self.GMMs[stateIdx] = curr_GMM    
     
     def _get_num_mixtures(self, statesSequence):
         '''
@@ -134,7 +146,7 @@ class GMHMM(_HMM):
         if observations.shape[1] != self.numDimensions:
                 sys.exit("dimension of feature vector should be {} but is {} ".format(self.numDimensions, observations.shape[1]) )
         
-        (logprob,responsibilities) = self.GMMs[j].score_samples(observations)
+        logprob = self.GMMs[j].score_samples(observations)
         return logprob  
         
         

@@ -75,7 +75,7 @@ def getDecoder(lyricsWithModels, URIrecordingNoExt):
     alpha = 0.97
     ONLY_MIDDLE_STATE=False
     params = Parameters(alpha, ONLY_MIDDLE_STATE)
-    decoder = Decoder(lyricsWithModels, URIrecordingNoExt, params.ALPHA)
+    decoder = Decoder(lyricsWithModels, URIrecordingNoExt)
     return decoder
 
 

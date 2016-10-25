@@ -31,7 +31,6 @@ PATH_LOGS= os.path.dirname(os.path.realpath(sys.argv[0]))
 
 
 
-ALPHA =  0.99
 # OVER_MAX_DUR_FACTOR = 1.3
 
 
@@ -41,18 +40,16 @@ class _DurationHMM(_HMM):
     Implements the decoding with duration probabilities, but should not be used directly.
     '''
     
-    def __init__(self,statesNetwork):
+    def __init__(self,statesNetwork, transMatrices=None):
     
 #     def __init__(self,n,m,d=1,A=None,means=None,covars=None,w=None,pi=None,min_std=0.01,init_type='uniform',precision=numpy.double, verbose=False):
             '''
             See _ContinuousHMM constructor for more information
             '''
-            _HMM.__init__(self, statesNetwork, transMatrices=None)
+            _HMM.__init__(self, statesNetwork, transMatrices)
             
             self.setDurForStates(listDurations=[])
             
-            self.ALPHA = ALPHA # could be redefined by setAlpha() method
-
                 
     def setALPHA(self, ALPHA):
         # DURATION_WEIGHT 
@@ -337,7 +334,7 @@ class _DurationHMM(_HMM):
 
 #             print "\t\t prevPhi= {}".format(currPhi)  
         
-        old_settings = numpy.seterr( under='raise')
+#         old_settings = numpy.seterr( under='raise')
         
         waitLogLik = self.getWaitLogLikOneDur(whichDuration, currState)
 #         print  "\t\t waitLogLik= {}".format (waitLogLik) 

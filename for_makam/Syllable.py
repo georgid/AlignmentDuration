@@ -3,7 +3,7 @@ Created on Oct 8, 2014
 
 @author: joro
 '''
-from Phoneme import Phoneme
+from PhonemeMakam import PhonemeMakam
 import sys
 from align.Decoder import logger
 from align._SyllableBase import _SyllableBase
@@ -45,17 +45,17 @@ class Syllable(_SyllableBase):
             # instrument
             if self.text == '_SAZ_' or '_SAZ_' in self.text:
                 # TODO: replace with other models_makam instead of silence
-                self.phonemes.append(Phoneme('sil'))
+                self.phonemes.append(PhonemeMakam('sil'))
             
             # text from lyrics
             else:
                 phonemeIDs = grapheme2Phoneme(self.text)
                 
                 for phonemeID in phonemeIDs:
-                    self.phonemes.append(Phoneme(phonemeID))
+                    self.phonemes.append(PhonemeMakam(phonemeID))
             
                 if self.hasShortPauseAtEnd:
-                    self.phonemes.append(Phoneme('sp'))
+                    self.phonemes.append(PhonemeMakam('sp'))
             
         
         def calcPhonemeDurations(self):

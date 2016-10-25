@@ -7,7 +7,7 @@ Utility class: logic for parsing statesNetwork, phoeneNetwork
 '''
 import sys
 from Constants import NUM_FRAMES_PERSECOND, NUMSTATES_SIL, NUMSTATES_PHONEME
-from for_makam.Phoneme import Phoneme
+from for_makam.PhonemeMakam import PhonemeMakam
 import os
 import logging
 from parse.TextGrid_Parsing import tierAliases, readNonEmptyTokensTextGrid
@@ -290,7 +290,7 @@ def stripPunctuationSigns(string_):
 def phonemeTokens2Classes( phonemeTokensAnno):
     phonemesAnnoList = []
     for phonemeAnno in phonemeTokensAnno:
-        currPhn = Phoneme(phonemeAnno[2].strip())
+        currPhn = PhonemeMakam(phonemeAnno[2].strip())
         currPhn.setBeginTs(phonemeAnno[0])
         currPhn.setEndTs(phonemeAnno[1])
         phonemesAnnoList.append(currPhn)

@@ -24,7 +24,7 @@ tier_names = ["phonemes", "words", "phrases", "pinyin", "sections", "line", "det
 
 
 
-def readNonEmptyTokensTextGrid(annotationURI, whichLevel, startIdx, endIdx, initialTimeOffset=0):
+def readNonEmptyTokensTextGrid(annotationURI, whichLevel, startIdx=0, endIdx=-1, initialTimeOffset=0):
     '''
     ######################
     # prepare list of phrases from ANNOTATION. remove empty annotation tokens
@@ -37,9 +37,11 @@ def readNonEmptyTokensTextGrid(annotationURI, whichLevel, startIdx, endIdx, init
     except Exception as errorMsg:
         sys.exit(str(errorMsg))
     
-    if endIdx != -1:
+    if endIdx == -1:
+        annotationTokenListAll = annotationTokenListAll[startIdx :]
+    else:
         annotationTokenListAll = annotationTokenListAll[startIdx : endIdx+1]
-    
+
     for currAnnoTsAndToken in annotationTokenListAll:
         currAnnoTsAndToken[0] = float(currAnnoTsAndToken[0])
         currAnnoTsAndToken[0] += initialTimeOffset

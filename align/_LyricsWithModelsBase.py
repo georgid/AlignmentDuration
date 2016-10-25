@@ -11,7 +11,7 @@ import Queue
 import math
 from ParametersAlgo import ParametersAlgo
 import logging
-from for_makam.Phoneme import Phoneme
+from for_makam.PhonemeMakam import PhonemeMakam
 from for_jingju.PhonemeJingju import PhonemeJingju
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir)) 
@@ -35,7 +35,7 @@ if pathEvaluation not in sys.path:
 
 class _LyricsWithModelsBase(Lyrics):
     '''
-    lyrics with each Phoneme having a link to a models_makam of class type htkModel from htkModelParser
+    lyrics with each PhonemeMakam having a link to a models_makam of class type htkModel from htkModelParser
     No handling of durationInMinUnit information. For it see Decoder.Decoder.decodeAudio 
     '''
 
@@ -66,7 +66,7 @@ class _LyricsWithModelsBase(Lyrics):
         
         
         if ParametersAlgo.FOR_MAKAM:
-            phonemeSp =  Phoneme('sp');
+            phonemeSp =  PhonemeMakam('sp');
         elif ParametersAlgo.FOR_JINGJU:
             phonemeSp =  PhonemeJingju('sp');
         
@@ -337,7 +337,7 @@ class _LyricsWithModelsBase(Lyrics):
                         sys.exit( " phoneme idx from annotation {} and  phoneme from lyrics  {} are  different".format( phonemeAnno.ID, phoneme_.ID ))
 
                     phoneme_.setBeginTs(float(phonemeAnno.beginTs))
-                    currDur = self._computeDurationInFrames( phonemeAnno)
+                    currDur = computeDurationInFrames( phonemeAnno)
                     phoneme_.durationInNumFrames = currDur
         
         
@@ -393,13 +393,6 @@ class _LyricsWithModelsBase(Lyrics):
         
         
      
-    def _computeDurationInFrames(self, phonemeAnno):
-        '''
-        compute Duration from annotation token 
-        '''
-        durationInSec = float(phonemeAnno.endTs) - float(phonemeAnno.beginTs)
-        durationInFrames = math.floor(durationInSec * NUM_FRAMES_PERSECOND)
-        return durationInFrames
             
     
     def stateDurationInFrames2List(self):
@@ -475,6 +468,16 @@ class _LyricsWithModelsBase(Lyrics):
         
         for i, state_ in enumerate(self.statesNetwork):
                 print "{} : {}".format(i, state_.display())
+
+
+
+def computeDurationInFrames(phonemeAnno):
+        '''
+        compute Duration from annotation token 
+        '''
+        durationInSec = float(phonemeAnno.endTs) - float(phonemeAnno.beginTs)
+        durationInFrames = math.floor(durationInSec * NUM_FRAMES_PERSECOND)
+        return durationInFrames
 
 
 
