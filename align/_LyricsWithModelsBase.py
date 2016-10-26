@@ -117,11 +117,11 @@ class _LyricsWithModelsBase(Lyrics):
                     distributionType='exponential'
             else:
                 distributionType='exponential'
-                
-            
-            stateIndices = range( phoneme.getNumStates())
-            if ParametersAlgo.ONLY_MIDDLE_STATE and phoneme.getNumStates() == 3: # take only middle state. 1 is middle in 0,1,2
-                stateIndices = [1]
+
+            ##### TODO: replace by simpleer logic: if it has 3 states, take index [1] if one take index 0, Note that sp has one
+            stateIndices = range( phoneme.getNumStates())   
+            if ParametersAlgo.ONLY_MIDDLE_STATE and len(phoneme.model.states) == 3: # take only middle state. 1 is middle in 0,1,2
+                     stateIndices = [1]
                     
             for idxState in stateIndices :
           

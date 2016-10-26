@@ -25,6 +25,9 @@ class Word():
         def __str__(self):
                 return self.text.encode('utf-8','replace')
         
+        def __repr__(self):
+            return self.text.encode('utf-8','replace')
+        
         def getNumPhonemes(self):
             numPhonemes = 0
             for syllable in self.syllables:

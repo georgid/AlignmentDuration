@@ -135,7 +135,7 @@ class GMHMM(baseClass):
             self.numDimensions = firstMeansVector.shape[0]
         return numMixtures      
         
-    def _pdfAllFeatures(self,observations,j):
+    def _pdfAllFeatures(self,features,j):
         '''
         get the pdf of a series of features for models_makam j
         uses sciKit learn's GMM class
@@ -143,10 +143,10 @@ class GMHMM(baseClass):
 #         old_settings = numpy.seterr(under='warn')
         
         # double check that features are in same dimension as models
-        if observations.shape[1] != self.numDimensions:
-                sys.exit("dimension of feature vector should be {} but is {} ".format(self.numDimensions, observations.shape[1]) )
+        if features.shape[1] != self.numDimensions:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(self.numDimensions, features.shape[1]) )
         
-        logprob = self.GMMs[j].score_samples(observations)
+        logprob = self.GMMs[j].score_samples(features)
         return logprob  
         
         

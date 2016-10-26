@@ -76,21 +76,21 @@ class MLPHMM(_HMM):
         _file2nnet(model.layers, filename = nnet_param)
         self.model = model
     
-    def _mapB(self, observations):
+    def _mapB(self, features):
         '''
         extend base method. first load all output with given MLP
         takes time, so better do it in advance to _pdfAllFeatures(), becasue _ContinuousHMM._mapB calls _pdfAllFeatures()
         '''
         
         # double check that features are in same dimension as models
-        if observations.shape[1] != self.model.n_ins:
-                sys.exit("dimension of feature vector should be {} but is {} ".format(self.model.n_ins, observations.shape[1]) )
+        if features.shape[1] != self.model.n_ins:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(self.model.n_ins, features.shape[1]) )
         
-        self.output_mat = self.recogn_with_MLP( observations)        
-        _ContinuousHMM._mapB(self, observations)
+        self.output_mat = self.recogn_with_MLP( features)        
+        _ContinuousHMM._mapB(self, features)
         
         
-    def _pdfAllFeatures(self,observations,j):
+    def _pdfAllFeatures(self,features,j):
         '''
         get the pdf of a series of features for model j
         called from _Continuous._mapB()
@@ -112,13 +112,13 @@ class MLPHMM(_HMM):
         return logprob  
     
     
-    def recogn_with_MLP(self, observations):
+    def recogn_with_MLP(self, features):
         '''
         recognize with MLP softmax model
         
         
         Parameters: 
-        observations 
+        features 
         
         Return: 
         39-dimensional (for each phoneme from CMU's ARPA ) prob. vector  
@@ -128,11 +128,11 @@ class MLPHMM(_HMM):
         batch_size = 100
 
         tmp_dir  = tempfile.mkdtemp()
-        tmp_obs_file = os.path.join(tmp_dir, 'observations.pkl')
-        labels = numpy.zeros( len(observations), dtype = 'float32')
+        tmp_obs_file = os.path.join(tmp_dir, 'features.pkl')
+        labels = numpy.zeros( len(features), dtype = 'float32')
         
         with open(tmp_obs_file,'w') as f:
-            pickle.dump((observations,labels),f)     
+            pickle.dump((features,labels),f)     
             
         self.cfg.init_data_reading_test(tmp_obs_file)
 

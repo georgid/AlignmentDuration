@@ -53,15 +53,15 @@ class DiscreteHMM(_BaseHMM):
             self.A = numpy.ones( (self.n,self.n), dtype=self.precision)*(1.0/self.n)
             self.B = numpy.ones( (self.n,self.m), dtype=self.precision)*(1.0/self.m)
     
-    def _mapB(self,observations):
+    def _mapB(self,features):
         '''
         Required implementation for _mapB. Refer to _BaseHMM for more details.
         '''
-        self.B_map = numpy.zeros( (self.n,len(observations)), dtype=self.precision)
+        self.B_map = numpy.zeros( (self.n,len(features)), dtype=self.precision)
         
         for j in xrange(self.n):
-            for t in xrange(len(observations)):
-                self.B_map[j][t] = self.B[j][observations[t]]
+            for t in xrange(len(features)):
+                self.B_map[j][t] = self.B[j][features[t]]
                 
     def _updatemodel(self,new_model):
         '''

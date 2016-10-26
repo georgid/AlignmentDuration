@@ -324,9 +324,9 @@ class _BaseHMM(object):
         # M step
         return self._reestimate(stats,observations)
 
-    def _mapB(self,observations):
+    def _mapB(self,features):
         '''
-        Deriving classes should implement this method, so that it maps the observations'
+        Deriving classes should implement this method, so that it maps the features'
         mass/density Bj(Ot) to Bj(t).
         
         This method has no explicit return value, but it expects that 'self.B_map' is internally computed

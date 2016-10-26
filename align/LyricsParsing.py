@@ -67,7 +67,7 @@ def getOnsetsFromPhonemeAnnos(URIRecordingChunkResynthesizedNoExt):
 
 def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
     '''
-    expand @path to words and corresponding timestamps
+    expand path to words and corresponding timestamps
     @param path stands for path or statesNetwork
     '''
 
@@ -85,7 +85,11 @@ def expandlyrics2WordList (lyricsWithModels, path, totalDuration, func):
         countLastState = getCountLastState(lyricsWithModels, word_, lastSyll, lastPhoneme)
 
         startNoteNumber = word_.syllables[0].noteNum
-
+        
+        print word_.text
+        print countFirstState
+        print countLastState
+        print '\n'
         currWord, totalDuration = func( word_.text, startNoteNumber, countFirstState, countLastState, path, totalDuration)
         
         # TODO: SAZ words not needed.
@@ -99,9 +103,9 @@ def getCountLastState(lyricsWithModels, word_, lastSyll, lastPhoneme):
     helper function
     '''
     if lastSyll.hasShortPauseAtEnd:
-        if lastPhoneme.ID != 'sp':  # sanity check that last syllable is sp
+        if lastPhoneme.ID != 'sp':  # sanity check that last phoneme is sp
             sys.exit(' \n last state for word {} is not sp. Sorry - not implemented.'.format(word_.text))
-        countLastState = lastPhoneme.numFirstState
+        countLastState = lastPhoneme.numFirstState # counter before sp 
     else:
         countLastState_ = lastPhoneme.numFirstState + lastPhoneme.getNumStates()
         countLastState = min(countLastState_, len(lyricsWithModels.statesNetwork) - 1) # make sure not outside of state network
