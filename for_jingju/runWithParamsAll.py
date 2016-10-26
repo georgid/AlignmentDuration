@@ -27,6 +27,7 @@ def runWithParametersAll(argv):
 
     ParametersAlgo.MODELS_DIR = os.path.join(parentDir, 'models_jingju/' + numFolds + 'folds/')
     from utilsLyrics.Utilz import findFilesByExtension
+    ParametersAlgo.POLYPHONIC = 0
     
     withRefSyllDurations = argv[5]
     
@@ -78,3 +79,5 @@ if __name__ == '__main__':
     runWithParametersAll(sys.argv)
     
 #     python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/for_jingju/runWithParamsAll.py  2 0  /Users/joro/Documents/Phd/UPF/JingjuSingingAnnotation/lyrics2audio/praat_rules/3folds/ 3
+
+#  python ~/workspace/AlignmentDuration/for_jingju/runWithParamsAll.py  2 0  ~/Documents/Jingju/JingjuSingingAnnotation-master/lyrics2audio/praat_rules/3folds/ 3

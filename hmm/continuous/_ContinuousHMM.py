@@ -183,7 +183,7 @@ class _ContinuousHMM(_BaseHMM):
         else:
             self.B_map[indicesZero] = MINIMAL_PROB
         
-    def _mapB(self, observations):    
+    def _mapB(self, features):    
         
         '''
         Required implementation for _mapB. Refer to _BaseHMM for more details.
@@ -191,10 +191,10 @@ class _ContinuousHMM(_BaseHMM):
         '''
             
         self.logger.info("calculating obs probs..." )
-        self.B_map = numpy.zeros( (self.n,len(observations)), dtype=self.precision)
+        self.B_map = numpy.zeros( (self.n,len(features)), dtype=self.precision)
          
         for j in xrange(self.n):
-            logLiksForj = self._pdfAllFeatures(observations,j)
+            logLiksForj = self._pdfAllFeatures(features,j)
             
 # normalize  probs for each state to sum to 1 (in log domain)
 #             sumLogLiks = logsumexp(logLiksForj)
@@ -434,7 +434,7 @@ class _ContinuousHMM(_BaseHMM):
         '''        
         raise NotImplementedError("PDF function must be implemented")
     
-    def _pdfAllFeatures(self,observations,j):
+    def _pdfAllFeatures(self,features,j):
         '''
         Deriving classes should implement this method.
         get the pdf of a series of features for models_makam j

@@ -124,7 +124,7 @@ class LyricsAligner():
 #                         self.extractNoteOnsetsAndEval(currSectionLink)
       
                      
-                    else:  # section links
+                    else:  # section links. align all related and take maximum
                         detectedTokenList = self.alignSectionLinkProbableSections( extractedPitchList, currSectionLink)
                     
                     
@@ -136,7 +136,7 @@ class LyricsAligner():
              
     def evalAccuracy(self):
         
-        pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation')
+        pathEvaluation = os.path.join(parentDir, 'AlignmentEvaluation/align_eval')
         if pathEvaluation not in sys.path:
                     sys.path.append(pathEvaluation)
         from AccuracyEvaluator import _evalAccuracy
@@ -243,54 +243,54 @@ class LyricsAligner():
             
             detectedPath = ''
             phiOptPath = ''
+            detectedTokenList = []
             
-#             if not os.path.isfile(detectedAlignedfileName):
+            if not os.path.isfile(detectedAlignedfileName):
                 
-            fromTsTextGrid = -1; toTsTextGrid = -1
-            
-            
-            if  ParametersAlgo.WITH_ORACLE_PHONEMES: # oracle phonemes
-                raw_input('implemented only for Kimseye...! Continue only if working with Kimseye' )
-                if ParametersAlgo.FOR_MAKAM:    fromTsTextGrid = 0; toTsTextGrid = 20.88  # for kimseye etmem
-                fromSyllableIdx = 0; toSyllableIdx = 10
-                currSectionLink.loadSmallAudioFragmentOracle(self.model,fromSyllableIdx, toSyllableIdx )
-                fe.featureVectors = currSectionLink.lyricsWithModels                      # featureVectors is alias for LyricsWithModelsOracle
-
-            else:     ###### extract audio features
-                fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)
-#                 sectionLink.lyricsWithModels.printWordsAndStates()
-            
-        #################### decode
-            decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt)
-            
-
-            ##### prepare note onsets. result stored in files, which are used in decoding  ############################
-            if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
-                URIrecOnsets = os.path.join(os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT)
-                fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
+                fromTsTextGrid = -1; toTsTextGrid = -1
                 
-            elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
-                fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
-            ###############################################
-            
-
-            detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
-            if ParametersAlgo.FOR_JINGJU:
-                detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
-            
-
-            detectedPath = decoder.path.pathRaw
-
-#                 ##### write all decoded output persistently to files
-            if Parameters.WRITE_TO_FILE:
-                self.write_decoded_to_file(tokenLevelAlignedSuffix, URIRecordingChunkResynthesizedNoExt, decoder.path.phiPathLikelihood,  detectedTokenList)
-           
+                
+                if  ParametersAlgo.WITH_ORACLE_PHONEMES: # oracle phonemes
+                    raw_input('implemented only for Kimseye...! Continue only if working with Kimseye' )
+                    if ParametersAlgo.FOR_MAKAM:    fromTsTextGrid = 0; toTsTextGrid = 20.88  # for kimseye etmem
+                    fromSyllableIdx = 0; toSyllableIdx = 10
+                    currSectionLink.loadSmallAudioFragmentOracle(self.model,fromSyllableIdx, toSyllableIdx )
+                    fe.featureVectors = currSectionLink.lyricsWithModels                      # featureVectors is alias for LyricsWithModelsOracle
+    
+                else:     ###### extract audio features
+                    fe.featureVectors = currSectionLink.loadSmallAudioFragment( fe, extractedPitchList,   self.recording.recordingNoExtURI,  self.model)
+    #                 sectionLink.lyricsWithModels.printWordsAndStates()
+            #################### decode
+                decoder = Decoder(currSectionLink.lyricsWithModels, URIRecordingChunkResynthesizedNoExt)
+                
+    
+                ##### prepare note onsets. result stored in files, which are used in decoding  ############################
+                if ParametersAlgo.WITH_ORACLE_ONSETS == 1:
+                    URIrecOnsets = os.path.join(os.path.dirname(self.recording.recordingNoExtURI), ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT)
+                    fe.onsetDetector.parseNoteOnsetsGrTruth(URIrecOnsets)
+                    
+                elif ParametersAlgo.WITH_ORACLE_ONSETS == 0:
+                    fe.onsetDetector.extractNoteOnsets(URIRecordingChunkResynthesizedNoExt + '.wav')
+                ###############################################
+                
+    
+                detectedTokenList = decoder.decodeAudio(fe, listNonVocalFragments, False,  fromTsTextGrid, toTsTextGrid)
+                if ParametersAlgo.FOR_JINGJU:
+                    detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
+                
+    
+                detectedPath = decoder.path.pathRaw
+    
+    #                 ##### write all decoded output persistently to files
+                if Parameters.WRITE_TO_FILE:
+                    self.write_decoded_to_file(tokenLevelAlignedSuffix, URIRecordingChunkResynthesizedNoExt, decoder.path.phiPathLikelihood,  detectedTokenList)
+               
                 
             ### VISUALIZE result 
         #         decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
             
-#             else:    # do not decode, read form file
-#                 detectedTokenList, phiOptPath, detectedPath = self.read_decoded(URIRecordingChunkResynthesizedNoExt, detectedAlignedfileName)
+            else:    # do not decode, read form file
+                detectedTokenList, phiOptPath, detectedPath = self.read_decoded(URIRecordingChunkResynthesizedNoExt, detectedAlignedfileName)
                     
         
             return detectedTokenList, detectedPath, phiOptPath

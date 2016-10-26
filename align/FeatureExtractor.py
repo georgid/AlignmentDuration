@@ -103,10 +103,14 @@ class FeatureExtractor(object):
 #             dir_  = tempfile.mkdtemp()
             mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
             
-            if ParametersAlgo.FOR_JINGJU:
-                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing_yile' # no singal amplitude normalization
-            elif ParametersAlgo.FOR_MAKAM:
-                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_default'
+            if ParametersAlgo.OBS_MODEL == 'MLP': # only on type of features trained
+               PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_default'
+            elif  ParametersAlgo.OBS_MODEL == 'GMM':  
+                if ParametersAlgo.FOR_JINGJU:
+                    PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing_yile' # no singal amplitude normalization
+    
+                elif ParametersAlgo.FOR_MAKAM:
+                    PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_singing_makam'
                 
             
             HCopyCommand = [self.path_to_hcopy, '-A', '-D', '-T', '1', '-C', PATH_TO_CONFIG_FEATURES, URIRecordingChunk, mfcFileName]

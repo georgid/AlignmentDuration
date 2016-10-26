@@ -11,6 +11,8 @@ import logging
 from align.LyricsParsing import loadOraclePhonemes
 import tempfile
 import os
+import numpy
+import pickle
 audioTmpDir = tempfile.mkdtemp()
 
 class _SectionLinkBase():
@@ -52,9 +54,16 @@ class _SectionLinkBase():
         '''
         
         featureVectors = featureExtractor.loadMFCCs(URIrecordingNoExt, extractedPitchList,  self) #     featureVectors = featureVectors[0:1000]
-    
         
-        if ParametersAlgo.FOR_JINGJU:
+#         tmp_dir = '/home/georgid/Downloads/'
+#         tmp_obs_file = self.URIRecordingChunk + '.features.pkl'
+#         labels = numpy.zeros( len(featureVectors), dtype = 'float32')
+#         
+#         with open(tmp_obs_file,'w') as f:
+#             pickle.dump((featureVectors,labels),f)     
+        
+        
+        if ParametersAlgo.FOR_JINGJU: # they are one-state
             self.lyricsWithModels = LyricsWithModelsGMM( self.section.lyrics, htkParserOrFold,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)
         elif ParametersAlgo.FOR_MAKAM:
             self.lyricsWithModels = LyricsWithModelsHTK( self.section.lyrics, htkParserOrFold,  ParametersAlgo.DEVIATION_IN_SEC, ParametersAlgo.WITH_PADDED_SILENCE)

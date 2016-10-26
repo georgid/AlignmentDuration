@@ -42,7 +42,7 @@ def runWithParameters(argv):
     correctDurationHTK = 0
     totalDurationHTK = 1
     accuracyListHTK = []
-    correctDurationHTK, totalDurationHTK, accuracyListHTK = runitHTK(["dummy", URIrecordingNoExt ])       
+#     correctDurationHTK, totalDurationHTK, accuracyListHTK = runitHTK(["dummy", URIrecordingNoExt ])       
     
        
     if float(argv[2]) == 0.0:
@@ -103,7 +103,7 @@ def runWithParameters(argv):
 #     acc = correctDuration / totalDuration
 #     print "result is: " + str(acc)
      
-    lyricsAligner.evalAccuracy()
+#     lyricsAligner.evalAccuracy()
     
     
     correctDurationOracle = 0

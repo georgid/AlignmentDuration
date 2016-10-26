@@ -7,6 +7,7 @@ import sys
 import os
 from for_jingju.sciKitGMM import SciKitGMM
 import numpy
+from align.ParametersAlgo import ParametersAlgo
 
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
 
@@ -91,6 +92,7 @@ class PhonemeBase(object):
     
     def getNumStates(self):
         '''
+        return the number of states that are associated with this phoneme
         based on assigned htk models
         '''
         
@@ -100,10 +102,13 @@ class PhonemeBase(object):
             sys.exit("cannot get numstates. phoneme {} has no htk or gmm models_makam assigned ".format(self.ID))
             
         if self.isModelTypeHTK:
-            if (self.model.tmat.numStates - 2) != len(self.model.states):
-                sys.exit('num states in matrix differs from num states in htk ')
+            if ParametersAlgo.ONLY_MIDDLE_STATE:
+                lenStates = 1
             
-            lenStates = len(self.model.states)
+            else:
+                if (self.model.tmat.numStates - 2) != len(self.model.states):
+                    sys.exit('num states in matrix differs from num states in htk ')
+                lenStates = len(self.model.states)
         
         else:
             lenStates = 1

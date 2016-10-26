@@ -1,4 +1,4 @@
-Copyright © 2015  Music Technology Group - Universitat Pompeu Fabra
+Copyright ï¿½ 2015  Music Technology Group - Universitat Pompeu Fabra
 
 NAME: JingjuAlignment
 
@@ -47,6 +47,5 @@ git clone https://github.com/georgid/sms-tools.git
 USAGE: runWithParams.py   <pathToRecordings> <withScores> <deviationINSec> <recordingName> <withVocalPrediciton>
 
 example usage:
-# python runWithParams.py tests 1 0.1 dan-xipi_01 1
-
+ python ~/workspace/AlignmentDuration/for_jingju/runWithParamsAll.py  2 0  ~/Documents/Jingju/JingjuSingingAnnotation-master/lyrics2audio/praat_rules/3folds/ 3
 as wel see tests/AlignOneChunkTest to test segment(=1, or =2) from aria

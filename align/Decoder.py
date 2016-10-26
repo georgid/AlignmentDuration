@@ -262,6 +262,9 @@ class Decoder(object):
         makes sense of path indices : maps numbers to states and phonemes.
         uses self.lyricsWithModels.statesNetwork and self.lyricsWithModels.listWords) 
         to be called after decoding
+        
+        Parameters:
+        path of type hmm.Path
         '''
         # indices in pathRaw
         self.path = path

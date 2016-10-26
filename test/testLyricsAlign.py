@@ -62,7 +62,7 @@ def testLyricsAlign():
     ParametersAlgo.WITH_ORACLE_ONSETS = -1
     ParametersAlgo.DETECTION_TOKEN_LEVEL= 'words'
     ParametersAlgo.WITH_ORACLE_PHONEMES = 0
-    ParametersAlgo.WITH_DURATIONS = 1
+    ParametersAlgo.WITH_DURATIONS = 0
     
     
     with open(sectionLinksSourceURI) as f:
