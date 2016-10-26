@@ -557,11 +557,11 @@ ly sections are discarded.
 placement h
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename systemOverview.svg
+	filename note_onsets_poster/systemOverview_acapella.svg
 	width 115col%
 
 \end_inset
@@ -649,7 +649,7 @@ it does not do voicing...
 placement t
 wide true
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics

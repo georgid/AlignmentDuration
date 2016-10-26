@@ -2325,7 +2325,9 @@ status open
 
 \begin_layout Plain Layout
 to eval accuracy uncomment line self.extractNoteOnsetsAndEval(currSectionLink)
- in align.LyricsAligner.LyricsAligner.alignRecording
+ in align.LyricsAligner.LyricsAligner.alignRecording.
+ use a list of files with ground truth given at https://docs.google.com/spreadshee
+ts/d/1C1gJt8j3Cm14LtIxS0R10xyAVx9MZO5qsCKRKD14aNM/edit?usp=sharing 
 \end_layout
 
 \end_inset
@@ -2453,8 +2455,7 @@ target "https://docs.google.com/spreadsheets/d/1C1gJt8j3Cm14LtIxS0R10xyAVx9MZO5q
 \end_inset
 
 .
- Ground truth is evaluated on a subset of all recordings different from
- the recordings
+ 
 \end_layout
 
 \end_inset
