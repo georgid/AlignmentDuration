@@ -8,15 +8,15 @@ import sys
 import json
 import urllib2
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../for_makam'))
 
 
 
+from src.for_makam.MakamRecording import parseSectionLinks
+from src.align.ScoreSection import ScoreSection
+from src.for_makam.MakamScore import loadMakamScore2
 
-from for_makam.MakamRecording import MakamRecording, parseSectionLinks
-from align.ScoreSection import ScoreSection
-from for_makam.MakamScore import loadMakamScore2
-
-from align.LyricsAligner import LyricsAligner, extendSectionLinksSelectedSections,\
+from src.align.LyricsAligner import LyricsAligner, extendSectionLinksSelectedSections,\
     stereoToMono, loadMakamRecording
 
 currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
@@ -24,9 +24,29 @@ currDir = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) )
 
 WITH_SECTION_ANNOTATIONS = 1
 
-from align.ParametersAlgo import ParametersAlgo
+from src.align.ParametersAlgo import ParametersAlgo
 
         
+
+def prepare_for_makam_recording(sectionMetadataURI, sectionLinksSourceURI, audioFileURI):
+    '''
+    convenience method
+    '''
+    with open(sectionLinksSourceURI) as f:
+        sectionLinksDict = json.load(f)
+    with open(sectionMetadataURI) as f2:
+        sectionMetadataDict = json.load(f2)
+           
+        
+###  for Juanjos pitch
+#     extractedPitch = os.path.splitext(audioFileURI)[0] + '.pitch'
+#     with open(extractedPitch) as f:
+#         extractedPitchList = json.load(f)
+    extractedPitchList = None
+    audioFileURI = stereoToMono(audioFileURI)
+    
+    return audioFileURI, sectionMetadataDict, sectionLinksDict, extractedPitchList
+
 def testLyricsAlign():
     
     ParametersAlgo.FOR_MAKAM = 1
@@ -60,40 +80,22 @@ def testLyricsAlign():
      
     ParametersAlgo.POLYPHONIC = 0
     ParametersAlgo.WITH_ORACLE_ONSETS = -1
-    ParametersAlgo.DETECTION_TOKEN_LEVEL= 'words'
+    ParametersAlgo.DETECTION_TOKEN_LEVEL= 'phonemes'
     ParametersAlgo.WITH_ORACLE_PHONEMES = 0
     ParametersAlgo.WITH_DURATIONS = 0
     
-    
-    with open(sectionLinksSourceURI) as f:
-            sectionLinksDict = json.load(f)
-    with open(sectionMetadataURI) as f2:
-            sectionMetadataDict = json.load(f2)
-
-
-    outputDir =  os.path.join( currDir, '../example/output/' )
-    noteOnsetAnnotationDir =  '/Users/joro/Downloads/ISTANBULSymbTr2/'
-    
-    
-    ###  for Juanjos pitch
-#     extractedPitch = os.path.splitext(audioFileURI)[0] + '.pitch'
-#     with open(extractedPitch) as f:
-#         extractedPitchList = json.load(f)
-    extractedPitchList = None
-    
     if WITH_SECTION_ANNOTATIONS:
-        
-        with open(sectionAnnosSourceURI) as f:
-            sectionLinksDict = json.load(f)
+        sectionLinksSourceURI = sectionAnnosSourceURI
     
-    
-    audioFileURI = stereoToMono(audioFileURI)               
+    audioFileURI, sectionMetadataDict, sectionLinksDict, extractedPitchList = prepare_for_makam_recording(sectionMetadataURI, sectionLinksSourceURI, audioFileURI)               
     
     recording = loadMakamRecording(musicbrainzid, audioFileURI, symbtrtxtURI, sectionMetadataDict, sectionLinksDict,  WITH_SECTION_ANNOTATIONS)
     
 
-                    
     la = LyricsAligner(recording, WITH_SECTION_ANNOTATIONS, ParametersAlgo.PATH_TO_HCOPY)
+    
+    outputDir = os.path.join(currDir, '../example/output/')
+    noteOnsetAnnotationDir = '/Users/joro/Downloads/ISTANBULSymbTr2/'
     
     la.alignRecording( extractedPitchList, outputDir)
     
@@ -113,7 +115,7 @@ def testLyricsAlign():
     ret['sectionlinks'] = sectionLinksDict
     print ret
     
-    la.evalAccuracy()
+    la.evalAccuracy(ParametersAlgo.EVAL_LEVEL)
 
 
 
@@ -139,16 +141,7 @@ def testExtendSectionLinksSelectedSections():
     print sectionLinksDict
     
 
-def testMakamRecording():
-    makamScore = loadMakamScore2(symbtrtxtURI, sectionMetadataDict)
-    
-    with open(sectionAnnosSourceURI) as f:
-        sectionLinksDict = json.load(f)
-    
-    recordingNoExtURI = os.path.splitext(audioFileURI)[0]  
 
-    
-    mr = MakamRecording(makamScore, sectionLinksDict, sectionAnnosDict )
     
 
 # def testDecoding():
