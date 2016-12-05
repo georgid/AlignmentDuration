@@ -81,6 +81,7 @@ def testLyricsAlign():
     ParametersAlgo.POLYPHONIC = 0
     ParametersAlgo.WITH_ORACLE_ONSETS = -1
     ParametersAlgo.DETECTION_TOKEN_LEVEL= 'phonemes'
+    ParametersAlgo.DETECTION_TOKEN_LEVEL= 'words'
     ParametersAlgo.WITH_ORACLE_PHONEMES = 0
     ParametersAlgo.WITH_DURATIONS = 0
     

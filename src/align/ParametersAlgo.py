@@ -25,7 +25,7 @@ class ParametersAlgo(object):
     
     OBS_MODEL = 'GMM'
     OBS_MODEL = 'MLP'
-    
+    OBS_MODEL = 'MLP_fuzzy'
     
     EVAL_LEVEL = tierAliases.words 
 # eval level  phonemes does not work
@@ -34,6 +34,8 @@ class ParametersAlgo(object):
     # use duraiton-based decoding (HMMDuraiton package) or just plain viterbi (HMM package) 
     # if false, use transition probabilities from htkModels
     WITH_DURATIONS= 1
+    
+    USE_PERSISTENT_PPGs = 0
     
     # level into which to segments decoded result stateNetwork
 #     DETECTION_TOKEN_LEVEL= 'syllables'

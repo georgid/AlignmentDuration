@@ -110,7 +110,7 @@ class FeatureExtractor(object):
 #             dir_  = tempfile.mkdtemp()
             mfcFileName = os.path.join(dir_, baseNameAudioFile  ) + '.mfc'
             
-            if ParametersAlgo.OBS_MODEL == 'MLP': # only one type of features trained
+            if ParametersAlgo.OBS_MODEL == 'MLP' or ParametersAlgo.OBS_MODEL == 'MLP_fuzzy': # only one type of features trained
                PATH_TO_CONFIG_FEATURES = projDir + '/models_makam/input_files/wav_config_default'
             elif  ParametersAlgo.OBS_MODEL == 'GMM':  
                 if ParametersAlgo.FOR_JINGJU:

@@ -67,7 +67,7 @@ class PhonemeBase(object):
         
             
         self.model =  model
-        if ParametersAlgo.OBS_MODEL == 'MLP':
+        if ParametersAlgo.OBS_MODEL == 'MLP' or ParametersAlgo.OBS_MODEL == 'MLP_fuzzy':
             self.isModelType = 'theano'
              
         elif isinstance(model, htkparser.htk_models.Hmm):

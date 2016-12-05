@@ -90,19 +90,19 @@ class Decoder(object):
     
     
 
-    def serializePosteriograms(self):
-        import pickle
-        URI_tmp = self.URIrecordingChunkNoExt + '.' + ParametersAlgo.OBS_MODEL + '.PPG.pkl'
-        if ParametersAlgo.OBS_MODEL == 'MLP':
-            with open(URI_tmp, 'w') as f:
-                pickle.dump(self.hmmNetwork.output_mat.T, f)
-            
-        elif ParametersAlgo.OBS_MODEL == 'GMM':
-            with open(URI_tmp, 'w') as f:
-                pickle.dump(self.hmmNetwork.B_map, f)
+#     def serializePosteriograms(self):
+#         import pickle
+#         URI_tmp = self.URIrecordingChunkNoExt + '.' + ParametersAlgo.OBS_MODEL + '.PPG.pkl'
+#         if ParametersAlgo.OBS_MODEL == 'MLP' or ParametersAlgo.OBS_MODEL == 'MLP_fuzzy':
+#             with open(URI_tmp, 'w') as f:
+#                 pickle.dump(self.hmmNetwork.mlp_posteriograms.T, f)
+#             
+#         elif ParametersAlgo.OBS_MODEL == 'GMM':
+#             with open(URI_tmp, 'w') as f:
+#                 pickle.dump(self.hmmNetwork.B_map, f)
 
 
-    def decodeAudio( self, featureExtractor, onsetDetector, listNonVocalFragments, usePersistentFiles,  fromTsTextGrid=0, toTsTextGrid=0):
+    def decodeAudio( self, featureExtractor, onsetDetector, listNonVocalFragments, fromTsTextGrid=0, toTsTextGrid=0):
         ''' decode path for given exatrcted features for audio
         HERE is decided which decoding scheme: with or without duration (based on WITH_DURATION parameter)
         '''
@@ -111,7 +111,11 @@ class Decoder(object):
             return detectedWordList
         
         if not ParametersAlgo.WITH_ORACLE_PHONEMES:
-            self.hmmNetwork.setPersitentFiles( usePersistentFiles, '' )
+            obs_model_type = ParametersAlgo.OBS_MODEL 
+            if ParametersAlgo.OBS_MODEL == 'MLP_fuzzy':
+                obs_model_type = 'MLP'
+            
+            self.hmmNetwork.set_PPG_filename(self.URIrecordingChunkNoExt + '.' + obs_model_type + '.PPG.pkl' )
             if  ParametersAlgo.WITH_DURATIONS:
                 self.hmmNetwork.setNonVocal(listNonVocalFragments)
             
@@ -120,8 +124,6 @@ class Decoder(object):
                 
         self.hmmNetwork.initDecodingParameters(featureExtractor, onsetDetector, fromTsTextGrid, toTsTextGrid)
 
-        # write posteriograms to file: for phoneme-level alignment accuracy      
-        self.serializePosteriograms()
         
 
         # standard viterbi forced alignment
@@ -197,13 +199,16 @@ class Decoder(object):
 
         
         if ParametersAlgo.OBS_MODEL == 'GMM': 
-            from hmm.continuous.GMHMM  import GMHMM
+            from src.hmm.continuous.GMHMM  import GMHMM
             self.hmmNetwork = GMHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
-            print self.hmmNetwork.__class__.__bases__[0]
-        else:
-            from hmm.continuous.MLPHMM  import MLPHMM
+#             print self.hmmNetwork.__class__.__bases__[0]
+        elif ParametersAlgo.OBS_MODEL == 'MLP':
+            from src.hmm.continuous.MLPHMM  import MLPHMM
             self.hmmNetwork = MLPHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
-    
+        elif ParametersAlgo.OBS_MODEL == 'MLP_fuzzy':
+            from src.hmm.continuous.MLP_fuzzyMappedHMM  import MLP_fuzzyMappedHMM
+            self.hmmNetwork = MLP_fuzzyMappedHMM(self.lyricsWithModels.statesNetwork,  transMatrices)
+
     
 
     

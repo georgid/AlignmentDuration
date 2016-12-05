@@ -3,11 +3,11 @@ Created on Feb 24, 2016
 
 @author: joro
 '''
-from hmm.continuous._ContinuousHMM import _ContinuousHMM
+from src.hmm.continuous._ContinuousHMM import _ContinuousHMM
 import numpy
 import sys
 from numpy.core.numeric import Infinity
-from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
+from src.hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from src.align.ParametersAlgo import ParametersAlgo
 from src.align.Decoder import visualizeMatrix
 from scipy.constants.constants import psi

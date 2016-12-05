@@ -9,20 +9,21 @@ import numpy as np
 import os
 import sys
 import logging
-from hmm.continuous.DurationPdf import NUMFRAMESPERSEC
+from DurationPdf import NUMFRAMESPERSEC
 from src.align.ParametersAlgo import ParametersAlgo
 from src.onsets.OnsetDetector import tsToFrameNumber
+import pickle
 # from sklearn.utils.extmath import logsumexp
 
 parentDir = os.path.abspath(  os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir ) )
 hmmDir = os.path.join(parentDir, 'HMM/hmm')
 if hmmDir not in sys.path: sys.path.append(parentDir)
 
-from hmm._BaseHMM import _BaseHMM
+from src.hmm._BaseHMM import _BaseHMM
 
 
 
-from utilsLyrics.Utilz import writeListOfListToTextFile, readListTextFile
+from src.utilsLyrics.Utilz import writeListOfListToTextFile, readListTextFile
 
 
 
@@ -86,10 +87,7 @@ class _ContinuousHMM(_BaseHMM):
         
 
 
-    
-    def setPersitentFiles(self, usePersistentFiles, URI_bmap):
-       
-        self.usePersistentFiles =  usePersistentFiles
+    def set_PPG_filename(self, URI_bmap):
         self.PATH_BMAP = URI_bmap
 
     def setNonVocal(self, listNonVocalFragments):
@@ -183,17 +181,27 @@ class _ContinuousHMM(_BaseHMM):
         else:
             self.B_map[indicesZero] = MINIMAL_PROB
         
+        
     def _mapB(self, features):    
         
         '''
         Required implementation for _mapB. Refer to _BaseHMM for more details.
         with non-vocal
         '''
+        
+        if ParametersAlgo.USE_PERSISTENT_PPGs and os.path.exists(self.PATH_BMAP):
             
+            self.logger.info("loading probs all observations from {}".format(self.PATH_BMAP))
+            
+            with open(self.PATH_BMAP,'r') as f:
+                self.B_map = pickle.load(f)
+            return 
+        
+        
         self.logger.info("calculating obs probs..." )
         self.B_map = numpy.zeros( (self.n,len(features)), dtype=self.precision)
          
-        for j in xrange(self.n):
+        for j in xrange(self.n): ######## for each state
             logLiksForj = self._pdfAllFeatures(features,j)
             
 # normalize  probs for each state to sum to 1 (in log domain)
@@ -201,11 +209,9 @@ class _ContinuousHMM(_BaseHMM):
 #             logLiksForj -= sumLogLiks
             self.B_map[j,:] = logLiksForj
         
-
+        
          
-        #### vocal/non-vocal     
-
-        # get non-vocal states 
+        #### VOCAL NOVOCAL     
         indicesSilent = self.getSilentStates() 
          
         # assign 1-s to non-vocal states
@@ -214,7 +220,6 @@ class _ContinuousHMM(_BaseHMM):
         
         # if listNonVocalNotdefinednot defined
         if hasattr(self, 'listNonVocalFragments'):
-#           if listNonVocalNotdefined empty it does not change matrix
             for nonVocalFrag in self.listNonVocalFragments:
             
     #             print "start: " + str(segStart[i]) + "\tend: " + str((segStart[i] + segDuration[i])) + "\t" + str(segPred[i]) 
@@ -227,13 +232,17 @@ class _ContinuousHMM(_BaseHMM):
                 self.B_map[:,startFrame:endFrame+1] =  numpy.log(MINIMAL_PROB)
                 self.B_map[numpy.array([indicesSilent]),startFrame:endFrame+1] =  numpy.log(1)
 
-                 
+        ############## end of VOCAL NOVOCAL         
+    
+        
         self._addNonPossibleObs(inLogDomain=True)
         self._normalizeBByMaxLog()
 #         cutOffHistogram(self.B_map, ParametersAlgo.CUTOFF_BIN_OBS_PROBS)
 
 
-         
+        if ParametersAlgo.USE_PERSISTENT_PPGs:
+            with open(self.PATH_BMAP, 'w') as f:
+                pickle.dump(self.B_map, f)
  
 
   

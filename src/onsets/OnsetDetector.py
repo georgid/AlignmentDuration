@@ -11,15 +11,15 @@ import math
 import logging
 import sys
 import csv
-from compmusic import dunya
 from src.align.FeatureExtractor import extractPredominantPitch
 from src.utilsLyrics.Utilz import writeCsv
 
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir)) 
+parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir,  os.path.pardir)) 
 
 pathPycomp = os.path.join(parentDir, 'pycompmusic')
 if pathPycomp not in sys.path:
     sys.path.append(pathPycomp)
+from compmusic import dunya
 
 
 

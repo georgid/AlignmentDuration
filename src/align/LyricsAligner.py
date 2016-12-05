@@ -47,7 +47,7 @@ from src.parse.TextGrid_Parsing import tierAliases,\
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.path.pardir, os.path.pardir,)) 
 from scipy.io import wavfile
 
-from evalPhonemes import eval_percentage_correct_phonemes, display
+# from evalPhonemes import eval_percentage_correct_phonemes, display
 
 
 import essentia.standard
@@ -157,7 +157,7 @@ class LyricsAligner():
         '''
         URI_PPG = currSectionLink.URIRecordingChunk + '.' + ParametersAlgo.OBS_MODEL + '.PPG.pkl'
         METU_to_stateidx_URI = None
-        if ParametersAlgo.OBS_MODEL == 'MLP':
+        if ParametersAlgo.OBS_MODEL == 'MLP'  or ParametersAlgo.OBS_MODEL == 'MLP_fuzzy':
             METU_to_stateidx_URI = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir, 'for_makam', 'state_str2int_METU')
         perc_correct, B_map_max = eval_percentage_correct_phonemes(URI_TextGrid, URI_PPG, METU_to_stateidx_URI, currSectionLink.counter)
         display(perc_correct, B_map_max)
@@ -337,7 +337,7 @@ class LyricsAligner():
                 ###############################################
                 
     
-                detectedTokenList = decoder.decodeAudio(fe, onsetDetector, listNonVocalFragments,  False, fromTsTextGrid, toTsTextGrid)
+                detectedTokenList = decoder.decodeAudio(fe, onsetDetector, listNonVocalFragments,  fromTsTextGrid, toTsTextGrid)
                 detectedTokenList = addTimeShift(detectedTokenList,  currSectionLink.beginTs)
                 
     
@@ -480,7 +480,7 @@ def determineSuffix(withDuration, withOracle, withOracleOnsets, decodedTokenLeve
         
         
         if obs_model == 'MLP': tokenAlignedSuffix += 'MLP'
-        
+        if obs_model == 'MLP_fuzzy': tokenAlignedSuffix += 'MLP_fuzzy'
     
             
     

@@ -7,18 +7,19 @@ Created on Nov 12, 2012
 import numpy
 
 
-from hmm.continuous._HMM import _HMM
+from src.hmm.continuous._HMM import _HMM
 from theano.tensor.shared_randomstreams import RandomStreams
 import cPickle
 import sys
 import os
 import math
-import csv
-from hmm.continuous._ContinuousHMM import _ContinuousHMM
+from src.hmm.continuous._ContinuousHMM import _ContinuousHMM
 
 from src.align.evalPhonemes import load_METU_to_ARPA_mapping
+from src.align.ParametersAlgo import ParametersAlgo
 
-sys.path.append('/home/georgid/Documents/pdnn')
+# sys.path.append('/home/georgid/Documents/pdnn')
+sys.path.append('/Users/joro/Downloads/pdnn')
 from io_func import smart_open
 from models.dnn import DNN
 from io_func.model_io import _file2nnet
@@ -42,7 +43,7 @@ class MLPHMM(_HMM):
         See base class constructor for more information
         '''
         _HMM.__init__(self, statesNetwork, transMatrices)
-        self._set_MLPs()
+        
         
         METU_to_stateidx_URI = os.path.join(os.path.dirname(os.path.realpath(__file__)) , os.pardir, os.pardir,  'for_makam' , 'state_str2int_METU')
         self.METU_to_stateidx = load_METU_to_ARPA_mapping(METU_to_stateidx_URI)
@@ -67,7 +68,7 @@ class MLPHMM(_HMM):
         model = DNN(numpy_rng=numpy_rng, theano_rng = theano_rng, cfg = cfg)
     
         # load model parameters
-        _file2nnet(model.layers, filename = nnet_param)
+        _file2nnet(model.layers, filename = nnet_param) # this is very slow
         self.model = model
     
     def _mapB(self, features):
@@ -75,19 +76,20 @@ class MLPHMM(_HMM):
         extend base method. first load all output with given MLP
         takes time, so better do it in advance to _pdfAllFeatures(), becasue _ContinuousHMM._mapB calls _pdfAllFeatures()
         '''
-        
-        # double check that features are in same dimension as models
-        if features.shape[1] != self.model.n_ins:
-                sys.exit("dimension of feature vector should be {} but is {} ".format(self.model.n_ins, features.shape[1]) )
-        
-        self.output_mat = self.recogn_with_MLP( features)      
+        if not ParametersAlgo.USE_PERSISTENT_PPGs or not os.path.exists(self.PATH_BMAP):
+            self.mlp_posteriograms = self.recogn_with_MLP( features) ## posteriograms, no log applied
+              
         _ContinuousHMM._mapB(self, features)
         
         
     def _pdfAllFeatures(self,features,j):
         '''
-        get the pdf of a series of features for model j
+        get the log likelohood of a series of features for model j.
+        
         called from _Continuous._mapB()
+        
+        -----------------------
+        Returns log likelihoods
         '''
 #         old_settings = numpy.seterr(under='warn')
         
@@ -97,11 +99,11 @@ class MLPHMM(_HMM):
                 print 'phoneme {} not in dict'.format(curr_phoneme_ID)
                 phoneme_idx = 0
         else:
-            phoneme_idx = self.METU_to_stateidx[curr_phoneme_ID]
+            phoneme_idx = self.METU_to_stateidx[curr_phoneme_ID] # direct mapping
             
 
         
-        probs_phoneme = self.output_mat[:,phoneme_idx]
+        probs_phoneme = self.mlp_posteriograms[:,phoneme_idx]
         logprob = numpy.log(probs_phoneme)
         return logprob  
     
@@ -114,10 +116,19 @@ class MLPHMM(_HMM):
         Parameters: 
         features 
         
-        Return: 
-        39-dimensional (for each phoneme from CMU's ARPA ) prob. vector  
+        Return:
+        -------------------------- 
+        39-dimensional (for each phoneme from CMU's ARPA ) prob. vector, normalized to sum to one for each vector (row) 
         
         '''
+        
+        self._set_MLPs() # load network
+        
+        # double check that features are in same dimension as models
+        if features.shape[1] != self.model.n_ins:
+                sys.exit("dimension of feature vector should be {} but is {} ".format(self.model.n_ins, features.shape[1]) )
+        
+        ################ recognize
         layer_index  = -1 # last tier
         batch_size = 100
 
