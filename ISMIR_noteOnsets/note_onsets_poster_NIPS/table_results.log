@@ -1,0 +1,246 @@
+This is pdfTeX, Version 3.1415926-1.40.11 (TeX Live 2010) (format=pdflatex 2010.12.5)  3 DEC 2016 00:18
+entering extended mode
+ \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**table_results.tex
+(./table_results.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman-x-2009-06-19, ngerman-x-2009-06-19, ancientgreek, ibycus, arabic, armenian
+, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danish, dutch, u
+kenglish, usenglishmax, esperanto, estonian, farsi, finnish, french, galician, 
+german, ngerman, swissgerman, monogreek, greek, hungarian, icelandic, assamese,
+ bengali, gujarati, hindi, kannada, malayalam, marathi, oriya, panjabi, tamil, 
+telugu, indonesian, interlingua, irish, italian, kurmanji, lao, latin, latvian,
+ lithuanian, mongolian, mongolianlmc, bokmal, nynorsk, polish, portuguese, roma
+nian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, turkish,
+ turkmen, ukrainian, uppersorbian, welsh, loaded.
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks14
+\inpenc@posthook=\toks15
+
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/latin9.def
+File: latin9.def 2008/03/30 v1.1d Input encoding file
+))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/07/13 v5.5 Page Geometry
+
+(/usr/local/texlive/2010/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks16
+)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2010/01/28 v2.1 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in pdf mode detected.
+)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2010/03/01 v1.5 Switches for detecting VTeX and its modes (HO)
+Package ifvtex Info: VTeX not detected.
+)
+\Gm@cnth=\count87
+\Gm@cntv=\count88
+\c@Gm@tempcnt=\count89
+\Gm@bindingoffset=\dimen103
+\Gm@wd@mp=\dimen104
+\Gm@odd@mp=\dimen105
+\Gm@even@mp=\dimen106
+\Gm@layoutwidth=\dimen107
+\Gm@layoutheight=\dimen108
+\Gm@layouthoffset=\dimen109
+\Gm@layoutvoffset=\dimen110
+\Gm@dimlist=\toks17
+)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/srcltx/srcltx.sty
+Package: srcltx 2006/11/12 v1.6 Source specials for inverse search in DVI files
+
+
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\src@lastline=\count90
+\src@new@everypar=\toks18
+\src@new@output=\toks19
+)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+(/usr/local/texlive/2010/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+Package srcltx Info: Expanded filename `pdftex.def' to `pdftex.def.tex' on inpu
+t line 131.
+
+:<+ pdftex.def.tex
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2010/02/14 v0.04n Graphics/color for pdfTeX
+\Gread@gobject=\count91
+)
+:<-
+) (/usr/local/texlive/2010/texmf-dist/tex/latex/tools/array.sty
+Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
+\col@sep=\dimen111
+\extrarowheight=\dimen112
+\NC@list=\toks20
+\extratabsurround=\skip43
+\backup@length=\skip44
+)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2005/04/14 v1.61803 publication quality tables
+\heavyrulewidth=\dimen113
+\lightrulewidth=\dimen114
+\cmidrulewidth=\dimen115
+\belowrulesep=\dimen116
+\belowbottomsep=\dimen117
+\aboverulesep=\dimen118
+\abovetopsep=\dimen119
+\cmidrulesep=\dimen120
+\cmidrulekern=\dimen121
+\defaultaddspace=\dimen122
+\@cmidla=\count92
+\@cmidlb=\count93
+\@aboverulesep=\dimen123
+\@belowrulesep=\dimen124
+\@thisruleclass=\count94
+\@lastruleclass=\count95
+\@thisrulewidth=\dimen125
+)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen126
+)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/tools/multicol.sty
+Package: multicol 2008/12/05 v1.6h multicolumn formatting (FMi)
+\c@tracingmulticols=\count96
+\mult@box=\box26
+\multicol@leftmargin=\dimen127
+\c@unbalance=\count97
+\c@collectmore=\count98
+\doublecol@number=\count99
+\multicoltolerance=\count100
+\multicolpretolerance=\count101
+\full@width=\dimen128
+\page@free=\dimen129
+\premulticols=\dimen130
+\postmulticols=\dimen131
+\multicolsep=\skip45
+\multicolbaselineskip=\skip46
+\partial@page=\box27
+\last@line=\box28
+\mult@rightbox=\box29
+\mult@grightbox=\box30
+\mult@gfirstbox=\box31
+\mult@firstbox=\box32
+\@tempa=\box33
+\@tempa=\box34
+\@tempa=\box35
+\@tempa=\box36
+\@tempa=\box37
+\@tempa=\box38
+\@tempa=\box39
+\@tempa=\box40
+\@tempa=\box41
+\@tempa=\box42
+\@tempa=\box43
+\@tempa=\box44
+\@tempa=\box45
+\@tempa=\box46
+\@tempa=\box47
+\@tempa=\box48
+\@tempa=\box49
+\c@columnbadness=\count102
+\c@finalcolumnbadness=\count103
+\last@try=\dimen132
+\multicolovershoot=\dimen133
+\multicolundershoot=\dimen134
+\mult@nat@firstbox=\box50
+\colbreak@box=\box51
+)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2008/07/06 v3.8l The Babel package
+Package srcltx Info: Expanded filename `english.ldf' to `english.ldf.tex' on in
+put line 141.
+
+:<+ english.ldf.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/babel/english.ldf
+Language: english 2005/03/30 v3.3o English support from the babel system
+
+(/usr/local/texlive/2010/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2008/07/06 v3.8l Babel common definitions
+\babel@savecnt=\count104
+\U@D=\dimen135
+)
+\l@canadian = a dialect from \language\l@american 
+\l@australian = a dialect from \language\l@british 
+\l@newzealand = a dialect from \language\l@british 
+)
+:<-
+) (./table_results.aux)
+\openout1 = `table_results.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+Package geometry Warning: The marginal notes overrun the paper.
+     Add 14.56676pt and more to the right margin.
+
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(61.43324pt, 491.42851pt, 61.43324pt)
+* v-part:(T,H,B)=(55.65105pt, 659.8171pt, 79.50185pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=491.42851pt
+* \textheight=659.8171pt
+* \oddsidemargin=-10.83675pt
+* \evensidemargin=-10.83675pt
+* \topmargin=-53.61894pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0p
