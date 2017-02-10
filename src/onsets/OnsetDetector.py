@@ -92,8 +92,15 @@ class OnsetDetector(object):
         if not os.path.isfile(onsetsURI):
             
             if not os.path.isfile(pitchURI):
-                extractPredominantPitch(audioFileURI)
-            
+                extractedPitchList = extractPredominantPitch(audioFileURI)
+                #         ######## SERIALIZE
+                # ignore last entry (probability)
+                for i, row in enumerate(extractedPitchList):
+                    row = row[:-1]
+                    extractedPitchList[i]=row
+                 
+                writeCsv(pitchURI, extractedPitchList)
+
             print 'extracting note onsets for {}...'.format(audioFileURI)
             cante = '/Users/joro/Downloads/cante-beta-csv/DerivedData/cante-static/Build/Products/Debug/cante-static'
             canteCommand = [cante, pitchURI, audioFileURI ]
@@ -114,7 +121,10 @@ class OnsetDetector(object):
     
                 
     def onsetTsToOnsetFrames(self,  lenObservations):
-        
+        '''
+        for each timestamp of array  self.vocalNotes sets a the corresponding frame number to 1
+        sets one to more than one frame using ParametersAlgo.ONSET_TOLERANCE_WINDOW
+        '''
         noteOnsets = numpy.zeros((lenObservations,)) # init note onsets as all zeros: e.g. with normal transMatrices
         if self.vocalNotes != None:
         
@@ -132,24 +142,41 @@ class OnsetDetector(object):
         return noteOnsets  
     
 
-def getDistFromOnset(noteOnsets, t):
+def getDistFromEvent(noteOnsets, t):
         '''
-        get distance in frames from time t to closest onset 
+        get distance in frames from time t to closest onset
+        start at onset and keep looking right and left simultanously while it finds a 1
+        
+        
+        Parameters
+        -------------------------
+        noteOnsets: list of size equal to timeframes
+            1-s at timeframes with onsets, all other frames = 0
+        
+        Returns
+        --------------------------
+        dist
+        iFrame: int
+            index of frame with closest 
+         
         '''
 #        ##### DEBUG: 
 #         for idx, onset in  enumerate(noteOnsets):
 #             print idx, ": ", onset
         
         #### find closest onset 
-        n = 0
+        dist = 0
         rightIdx = t
         leftIdx = t
         while  noteOnsets[rightIdx] == 0 and  noteOnsets[leftIdx] == 0:
-            n += 1
-            rightIdx =  min(t + n, noteOnsets.shape[0]-1)
-            leftIdx = max(t - n, 0) 
-        
-        return n
+            dist += 1
+            rightIdx =  min(t + dist, noteOnsets.shape[0]-1)
+            leftIdx = max(t - dist, 0) 
+        if noteOnsets[rightIdx] == 1:
+            iFrame = rightIdx
+        else:
+            iFrame = leftIdx
+        return dist, iFrame
 
 def tsToFrameNumber(ts):
     '''
@@ -191,5 +218,5 @@ if __name__ == '__main__':
 #     noteOnsets = numpy.zeros((8,))
 #     noteOnsets[2] = 1
 #     noteOnsets[7] = 1
-#     n = getDistFromOnset(noteOnsets, 7)
+#     n = getDistFromEvent(noteOnsets, 7)
 #     print n

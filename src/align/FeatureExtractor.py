@@ -21,7 +21,6 @@ projDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__
 if projDir not in sys.path:
     sys.path.append(projDir)
 
-from ParametersAlgo import ParametersAlgo
 import tempfile
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0]) ), os.path.pardir, os.path.pardir)) 
 pathSMS = os.path.join(parentDir, 'sms-tools')
@@ -76,7 +75,7 @@ class FeatureExtractor(object):
                 logging.info("doing harmonic models and resynthesis for segment: {} ...".format(URIRecordingChunkResynthesized))
                 
                 if extractedPitchList == None:
-                    extractedPitchList = extractPredominantPitch(URI_recording_noExt)
+                    extractedPitchList= extractPredominantPitch( URI_recording_noExt, 2048, 128,  jointAnalysis=True, )
                 hfreq, hmag, hphase, fs, hopSizeMelodia, inputAudioFromTsToTs = extractHarmSpec(URI_recording, extractedPitchList, sectionLink.beginTs, sectionLink.endTs, ParametersAlgo.THRESHOLD_PEAKS)
                 resynthesize(hfreq, hmag, hphase, fs, hopSizeMelodia, URIRecordingChunkResynthesized)
         else:
@@ -130,44 +129,44 @@ class FeatureExtractor(object):
             return mfcFileName
         
     
-def extractPredominantPitch( URI_recording_noExt):
+def extractPredominantPitch( URI_recording_noExt,  frameSize=None, hopSize=None, jointAnalysis=False, musicbrainzid=None, preload=False):
         '''
         extract pitch using local version of pycompmusic and save as csv as input 
         used as inpu to  note segmentation algo
+        preploaded joint analysis has hopsize=256 
         '''
         logging.debug( 'extracting pitch for {}...'.format(URI_recording_noExt))
 
         extractedPitchList = []
         ####### melodia format
-      
-      ############## LOAD from already extracted locally
-#         melodiaInput = URI_recording_noExt + '.pitch'
-#         with open(melodiaInput) as f:
-#             extractedPitchList = json.load(f)
-    #     extractedPitchList = readListOfListTextFile_gen(melodiaInput)
-   
-        ########## EXTRACT NOW
-        extractor = PredominantMelodyMakam()
-        results = extractor.run(URI_recording_noExt)
-        extractedPitchList = results['pitch']
-    
-    ############# load from extractor output on server
-#     try:
-#         pitch_data = dunya.docserver.get_document_as_json(musicbrainzid, "jointanalysis", "pitch", 1, version="0.1")
-#         extractedPitchList = pitch_data['pitch']
-#     except:
-#         logging.error("no initialmakampitch series could be downloaded. for rec  {}".format(musicbrainzid))
-#         return None
-    
-    
-        ######## SERIALIZE
-        # ignore last entry (probability)
-        for i, row in enumerate(extractedPitchList):
-            row = row[:-1]
-            extractedPitchList[i]=row
         
-        outFileURI = os.path.splitext(URI_recording_noExt)[0] + '.pitch.csv'
-        writeCsv(outFileURI, extractedPitchList)
+        
+        URI_recording = URI_recording_noExt + '.wav'
+        
+        if preload and musicbrainzid != None: ############# load from extractor output on server
+    
+            try:
+                if jointAnalysis:
+                    pitch_data = dunya.docserver.get_document_as_json(musicbrainzid, "jointanalysis", "pitch", 1, version="0.1")
+                else:
+                    pitch_data = dunya.docserver.get_document_as_json(musicbrainzid, "audioanalysis", "pitch_filtered", 1, version="0.1")
+                extractedPitchList = pitch_data['pitch']
+            except:
+                logging.error("no initialmakampitch series could be downloaded. for rec ID  {}".format(musicbrainzid))
+        elif not os.path.exists(URI_recording):
+            logging.error('The file {} does not exist, nor is Music Brainz ID provided. No pitch extracted  '.format(URI_recording))
+        else:
+            ########## EXTRACT NOW. dont know how to extract with joint analysis
+            logging.warning('extracting predominat pitch contour with audio analysis...')
+            if hopSize != None and frameSize!= None:
+                extractor = PredominantMelodyMakam(hop_size=hopSize, frame_size=frameSize)
+            else:
+                extractor = PredominantMelodyMakam()
+            results = extractor.run(URI_recording)
+            extractedPitchList = results['pitch']
+            extractedPitchList = np.array(extractedPitchList)
+    
+
 
         
         

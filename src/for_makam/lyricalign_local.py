@@ -10,15 +10,16 @@ import urllib2
 import json
 import logging
 import subprocess
-parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir))
 
 ### include src folder
 parentDir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__) ), os.path.pardir, os.pardir))
 if parentDir not in sys.path:
     sys.path.append(parentDir)
 
-if '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/pycompmusic/' not in sys.path:
-    sys.path.append('/Users/joro/Documents/Phd/UPF/voxforge/myScripts/pycompmusic/')
+# if '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/pycompmusic/' not in sys.path:
+#     sys.path.append('/Users/joro/Documents/Phd/UPF/voxforge/myScripts/pycompmusic/')
+
+# make sure pycompmusic is installed with setup.py install
     
 import compmusic.extractors
 # from docserver import util
@@ -26,6 +27,9 @@ from compmusic import dunya
 from compmusic.dunya import makam
 import tempfile
 
+
+from compmusic.extractors.makam.fetch_tools import getWork, fetchNoteOnsetFile,\
+    get_section_annotaions_dict, downloadSymbTr, fetch_audio_wav
 
 from src.align.LyricsAligner  import LyricsAligner, stereoToMono, loadMakamRecording
 from src.align.ParametersAlgo import ParametersAlgo
@@ -47,8 +51,8 @@ ParametersAlgo.DETECTION_TOKEN_LEVEL= 'words'
 ParametersAlgo.WITH_ORACLE_ONSETS = -1
 
 if ParametersAlgo.POLYPHONIC:
-#     dataDir = '/Users/joro/Documents/lyrics-2-audio-test-data/'
-    sys.exit('path to audio not given')
+    dataDir = '/Users/joro/Documents/lyrics-2-audio-test-data/'
+#     sys.exit('path to audio not given')
 else:
 #     dataDir = '/home/georgid/Documents/makam_acapella/'
     dataDir = '/Users/joro/Documents/ISTANBULSymbTr2'
@@ -85,13 +89,15 @@ PATH_TO_HCOPY= '/usr/local/bin/HCopy'
 # ANDRES. On kora.s.upf.edu
 # PATH_TO_HCOPY= '/srv/htkBuilt/bin/HCopy'
 
+
+############# keep this class and use it as a local test version of  pycompmusic/compmusic/extractros/makam/lyricsalign. 
 class LyricsAlign(object):
     _version = "0.1"
     _sourcetype = "mp3"
     _slug = "lyrics-align"
     _output = {
             "alignedLyricsSyllables": {"extension": "json", "mimetype": "application/json"},
-            "sectionlinks": {"extension": "json", "mimetype": "application/json"},
+            "sectionlinks": {"extension": "json", "mimetype": "application/json"}, # refined section links
             }
    
 
@@ -124,12 +130,9 @@ class LyricsAlign(object):
         outputDir = recIDoutputDir
 
         w = getWork(musicbrainzid)
+
        
-        # TODO: mark second verse symbTr second verse and get from a separate reposotory
-# on dunya server
-#         symbtrtxtURI = util.docserver_get_symbtrtxt(w['mbid'])
-       
-# on other computer
+# get symbTr local
         symbtrtxtURI = downloadSymbTr(w['mbid'], recIDoutputDir, self.hasSecondVerse)
        
         if not symbtrtxtURI:
@@ -173,7 +176,7 @@ class LyricsAlign(object):
 
 # on other computer
        
-        wavFileURI = get_audio(self.dataDir,  musicbrainzid)
+        wavFileURI =  fetch_audio_wav(self.dataDir, musicbrainzid, ParametersAlgo.POLYPHONIC)
                 
 
        
@@ -200,153 +203,153 @@ class LyricsAlign(object):
 #         print ret
         return ret, totalCorrectDurations, totalDurations
 
-
-def getWork( musicbrainzid):
-        try:
-            rec_data = dunya.makam.get_recording(musicbrainzid)
-            if len(rec_data['works']) == 0:
-                raise Exception('No work on recording %s' % musicbrainzid)
-            if len(rec_data['works']) > 1:
-                raise Exception('More than one work for recording %s Not implemented!' % musicbrainzid)
-            w = rec_data['works'][0]
-        except Exception:
-            sys.exit('no recording with this UUID found or no works related')
-            w = {}
-            w['mbid'] = ''
-        return w
-
-def get_audio(dataDir, musicbrainzid):
-        recIDoutputDir = os.path.join(dataDir, musicbrainzid)        
-        if not os.path.isdir(recIDoutputDir):
-            os.mkdir(recIDoutputDir)
-       
-        wavFileURI = os.path.join(recIDoutputDir, musicbrainzid + '.wav' )
-       
-        if ParametersAlgo.POLYPHONIC:
-            wavFileURI_as_fetched = download_wav(musicbrainzid, recIDoutputDir)
-#             wavFileURI = wavFileURI_as_fetched
-            os.rename(wavFileURI_as_fetched, wavFileURI)
-        else: # acapella expect file to be already provided in dir
-           
-            if not os.path.isfile(wavFileURI): 
-                sys.exit("acapella file {} not found".format(wavFileURI))
-        return wavFileURI
-
-
-def download_wav(musicbrainzid, outputDir):
-        '''
-        download wav for MB recording id from makam collection
-        '''
-        mp3FileURI = dunya.makam.download_mp3(musicbrainzid, outputDir)
-    ###### mp3 to Wav: way 1
-    #         newName = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.mp3')
-    #         os.rename(mp3FileURI, newName )
-    #         mp3ToWav = Mp3ToWav()
-    #         wavFileURI = mp3ToWav.run('dummyMBID', newName)
-       
-        ###### mp3 to Wav: way 2
-        wavFileURI = os.path.splitext(mp3FileURI)[0] + '.wav'
-        if os.path.isfile(wavFileURI):
-            return wavFileURI
-           
-        pipe = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', mp3FileURI, wavFileURI])
-        pipe.wait()
-   
-        return wavFileURI
-
-
-def get_section_annotaions_dict( musicbrainzid, dir_, outputDir, hasSectionNumberDiscrepancy):
-        URL = 'https://raw.githubusercontent.com/georgid/turkish_makam_section_dataset/master/' + dir_ + musicbrainzid + '.json'
-        sectionAnnosURI = os.path.join(outputDir, musicbrainzid + '.json')
-        fetchFileFromURL(URL, sectionAnnosURI)
-       
-#         if not hasSectionNumberDiscrepancy: # because score section metadata taken from sertan's github but section anno from georgis
-#             raw_input("make sure you audio section Annotation... has same section letters as score section Metadata ")
-
-       
-        with open(sectionAnnosURI) as f3:
-            sectionAnnosDict = json.load(f3) # use annotations instead of links
-        return sectionAnnosDict
-
-
-def get_section_metadata_dict( workmbid, dir_, outputDir, hasSectionNumberDiscrepancy):
-       
-        symbtr = dunya.makam.get_symbtr(workmbid)
-        symbTrCompositionName = symbtr['name']
-#         symbTrCompositionName  = 'ussak--sarki--aksak--bu_aksam--tatyos_efendi'
-       
-        if hasSectionNumberDiscrepancy:
-            raw_input("make sure you first run exendSectionLinks... then press key")
-            # my derived with extendsecitonLinksnewNames metadata
-            URL = 'https://raw.githubusercontent.com/georgid/turkish_makam_section_dataset/master/' + dir_ + workmbid + '.json'
-       
-        else:
-            #  use sertans derived metadata with symbTrdataExtractor
-            URL = 'https://raw.githubusercontent.com/sertansenturk/turkish_makam_corpus_stats/master/data/SymbTrData/' + symbTrCompositionName + '.json'
-
-        sectionAnnosURI = os.path.join(outputDir, symbTrCompositionName + '.json')
-       
-        fetchFileFromURL(URL, sectionAnnosURI)
-       
-       
-        with open(sectionAnnosURI) as f3:
-            sectionAnnosDict = json.load(f3) # use annotations instead of links
-        return sectionAnnosDict
-
-
-def downloadSymbTr(workMBID, outputDirURI, hasSecondVerse):
-   
-    symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
-    symbTrCompositionName = symbtr['name']
-   
-    if workMBID == '30cdf1c2-8dc3-4612-9513-a5d7f523a889': # because of problem in work
-        symbTrCompositionName = 'ussak--sarki--aksak--bu_aksam--tatyos_efendi'
-   
-    URL = 'https://raw.githubusercontent.com/MTG/SymbTr/master/txt/' + symbTrCompositionName + '.txt'
-    outputFileURI = os.path.join(outputDirURI, symbTrCompositionName + '.txt')
-
-    if hasSecondVerse:
-        raw_input("composition has a second verse not in github. copy symbTr manually to {}.\n  when done press a key ".format(outputFileURI))
-    else:
-        fetchFileFromURL(URL, outputFileURI)
-        print "downloaded symbtr file  {}".format(outputFileURI) 
-
-    return outputFileURI
-
-
-
-def fetchNoteOnsetFile(musicbrainzid,  recIDoutputDir):
-    '''
-    fetch note onset annotations
-    '''
-
-            
-    onsetPath = os.path.join(recIDoutputDir,  ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT)
-    if not os.path.isfile(onsetPath):
-                work = getWork(musicbrainzid)
-                symbtr = dunya.makam.get_symbtr(work['mbid'])
-                symbTrCompositionName = symbtr['name']
-                URL = 'https://raw.githubusercontent.com/MTG/turkish_makam_audio_score_alignment_dataset/vocal-only-annotation//data/' + symbTrCompositionName + '/' + musicbrainzid + '/' + ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT
-               
-                # problem with symbTrComposition name
-#                 URL = 'https://raw.githubusercontent.com/MTG/turkish_makam_audio_score_alignment_dataset/master/data/nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi/feda89e3-a50d-4ff8-87d4-c1e531cc1233/' + ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT
-                fetchFileFromURL(URL, onsetPath )
-               
-
-
-
-
-
-def fetchFileFromURL(URL, outputFileURI):
-        print "fetching file from URL {} ...  ".format(URL)
-        try:
-            response = urllib2.urlopen(URL)
-            a = response.read()
-        except Exception:
-            "...maybe symbTr name has changed"
-       
-        with open(outputFileURI,'w') as f:
-            f.write(a)
+# 
+# def getWork( musicbrainzid):
+#         try:
+#             rec_data = dunya.makam.get_recording(musicbrainzid)
+#             if len(rec_data['works']) == 0:
+#                 raise Exception('No work on recording %s' % musicbrainzid)
+#             if len(rec_data['works']) > 1:
+#                 raise Exception('More than one work for recording %s Not implemented!' % musicbrainzid)
+#             w = rec_data['works'][0]
+#         except Exception:
+#             sys.exit('no recording with this UUID found or no works related')
+#             w = {}
+#             w['mbid'] = ''
+#         return w
+# 
+# def get_audio(dataDir, musicbrainzid):
+#         recIDoutputDir = os.path.join(dataDir, musicbrainzid)        
+#         if not os.path.isdir(recIDoutputDir):
+#             os.mkdir(recIDoutputDir)
+#        
+#         wavFileURI = os.path.join(recIDoutputDir, musicbrainzid + '.wav' )
+#        
+#         if ParametersAlgo.POLYPHONIC:
+#             wavFileURI_as_fetched = download_wav(musicbrainzid, recIDoutputDir)
+# #             wavFileURI = wavFileURI_as_fetched
+#             os.rename(wavFileURI_as_fetched, wavFileURI)
+#         else: # acapella expect file to be already provided in dir
+#            
+#             if not os.path.isfile(wavFileURI): 
+#                 sys.exit("acapella file {} not found".format(wavFileURI))
+#         return wavFileURI
+# 
+# 
+# def download_wav(musicbrainzid, outputDir):
+#         '''
+#         download wav for MB recording id from makam collection
+#         '''
+#         mp3FileURI = dunya.makam.download_mp3(musicbrainzid, outputDir)
+#     ###### mp3 to Wav: way 1
+#     #         newName = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'test.mp3')
+#     #         os.rename(mp3FileURI, newName )
+#     #         mp3ToWav = Mp3ToWav()
+#     #         wavFileURI = mp3ToWav.run('dummyMBID', newName)
+#        
+#         ###### mp3 to Wav: way 2
+#         wavFileURI = os.path.splitext(mp3FileURI)[0] + '.wav'
+#         if os.path.isfile(wavFileURI):
+#             return wavFileURI
+#            
+#         pipe = subprocess.Popen(['/usr/local/bin/ffmpeg', '-i', mp3FileURI, wavFileURI])
+#         pipe.wait()
+#    
+#         return wavFileURI
+# 
+# 
+# def get_section_annotaions_dict( musicbrainzid, dir_, outputDir, hasSectionNumberDiscrepancy):
+#         URL = 'https://raw.githubusercontent.com/georgid/turkish_makam_section_dataset/master/' + dir_ + musicbrainzid + '.json'
+#         sectionAnnosURI = os.path.join(outputDir, musicbrainzid + '.json')
+#         fetchFileFromURL(URL, sectionAnnosURI)
+#        
+# #         if not hasSectionNumberDiscrepancy: # because score section metadata taken from sertan's github but section anno from georgis
+# #             raw_input("make sure you audio section Annotation... has same section letters as score section Metadata ")
+# 
+#        
+#         with open(sectionAnnosURI) as f3:
+#             sectionAnnosDict = json.load(f3) # use annotations instead of links
+#         return sectionAnnosDict
+# 
+# 
+# def get_section_metadata_dict( workmbid, dir_, outputDir, hasSectionNumberDiscrepancy):
+#        
+#         symbtr = dunya.makam.get_symbtr(workmbid)
+#         symbTrCompositionName = symbtr['name']
+# #         symbTrCompositionName  = 'ussak--sarki--aksak--bu_aksam--tatyos_efendi'
+#        
+#         if hasSectionNumberDiscrepancy:
+#             raw_input("make sure you first run exendSectionLinks... then press key")
+#             # my derived with extendsecitonLinksnewNames metadata
+#             URL = 'https://raw.githubusercontent.com/georgid/turkish_makam_section_dataset/master/' + dir_ + workmbid + '.json'
+#        
+#         else:
+#             #  use sertans derived metadata with symbTrdataExtractor
+#             URL = 'https://raw.githubusercontent.com/sertansenturk/turkish_makam_corpus_stats/master/data/SymbTrData/' + symbTrCompositionName + '.json'
+# 
+#         sectionAnnosURI = os.path.join(outputDir, symbTrCompositionName + '.json')
+#        
+#         fetchFileFromURL(URL, sectionAnnosURI)
+#        
+#        
+#         with open(sectionAnnosURI) as f3:
+#             sectionAnnosDict = json.load(f3) # use annotations instead of links
+#         return sectionAnnosDict
+# 
+# 
+# def downloadSymbTr(workMBID, outputDirURI, hasSecondVerse):
+#    
+#     symbtr = compmusic.dunya.makam.get_symbtr(workMBID)
+#     symbTrCompositionName = symbtr['name']
+#    
+#     if workMBID == '30cdf1c2-8dc3-4612-9513-a5d7f523a889': # because of problem in work
+#         symbTrCompositionName = 'ussak--sarki--aksak--bu_aksam--tatyos_efendi'
+#    
+#     URL = 'https://raw.githubusercontent.com/MTG/SymbTr/master/txt/' + symbTrCompositionName + '.txt'
+#     outputFileURI = os.path.join(outputDirURI, symbTrCompositionName + '.txt')
+# 
+#     if hasSecondVerse:
+#         raw_input("composition has a second verse not in github. copy symbTr manually to {}.\n  when done press a key ".format(outputFileURI))
+#     else:
+#         fetchFileFromURL(URL, outputFileURI)
+#         print "downloaded symbtr file  {}".format(outputFileURI) 
+# 
+#     return outputFileURI
+# 
+# 
+# 
+# def fetchNoteOnsetFile(musicbrainzid,  recIDoutputDir):
+#     '''
+#     fetch note onset annotations
+#     '''
+# 
+#             
+#     onsetPath = os.path.join(recIDoutputDir,  ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT)
+#     if not os.path.isfile(onsetPath):
+#                 work = getWork(musicbrainzid)
+#                 symbtr = dunya.makam.get_symbtr(work['mbid'])
+#                 symbTrCompositionName = symbtr['name']
+#                 URL = 'https://raw.githubusercontent.com/MTG/turkish_makam_audio_score_alignment_dataset/vocal-only-annotation//data/' + symbTrCompositionName + '/' + musicbrainzid + '/' + ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT
+#                
+#                 # problem with symbTrComposition name
+# #                 URL = 'https://raw.githubusercontent.com/MTG/turkish_makam_audio_score_alignment_dataset/master/data/nihavent--sarki--curcuna--kimseye_etmem--kemani_sarkis_efendi/feda89e3-a50d-4ff8-87d4-c1e531cc1233/' + ParametersAlgo.ANNOTATION_RULES_ONSETS_EXT
+#                 fetchFileFromURL(URL, onsetPath )
+#                
+# 
+# 
+# 
+# 
+# 
+# def fetchFileFromURL(URL, outputFileURI):
+#         print "fetching file from URL {} ...  ".format(URL)
+#         try:
+#             response = urllib2.urlopen(URL)
+#             a = response.read()
+#         except Exception:
+#             "...maybe symbTr name has changed"
+#        
+#         with open(outputFileURI,'w') as f:
+#             f.write(a)
 
 
 def doitAllRecs(la, recMBIDs):

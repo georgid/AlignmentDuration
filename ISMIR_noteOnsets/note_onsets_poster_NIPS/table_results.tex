@@ -1,0 +1,50 @@
+%% LyX 2.2.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=0.1\textheight,bmargin=0.1\paperheight,lmargin=0.1\paperwidth,rmargin=0.1\paperwidth}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage[active]{srcltx}
+\usepackage{color}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{multicol}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+\begin{table}[h]
+\begin{centering}
+\begin{tabular}{cccc}
+\toprule 
+\multirow{2}{*}{\multicolumn{1}{m{3cm}|}{phoneme mapping}} & \multirow{2}{*}{HMM} & \multicolumn{2}{c}{onset-aware HMM}\tabularnewline
+\cmidrule{3-4} 
+ &  & automatic onsets & oracle onsets\tabularnewline
+\midrule
+\midrule 
+direct & 79.2 & \textcolor{black}{81.7} & 82.5\tabularnewline
+\midrule 
+fuzzy & 83.5 & \textcolor{black}{84.8} & 86.1\tabularnewline
+\bottomrule
+\end{tabular}
+\par\end{centering}
+\caption{Comparison of accuracy of baseline HMM, VTHMM and, VTHMM with oracle
+onsets. VTHMM shown are the best accuracies reported in Table \ref{results}.
+Alignment accuracy is reported on total for all recordings. }
+\label{results baseline}
+\end{table}
+
+\end{document}

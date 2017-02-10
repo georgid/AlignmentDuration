@@ -557,11 +557,11 @@ ly sections are discarded.
 placement h
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename systemOverview.svg
+	filename note_onsets_poster/systemOverview_acapella.svg
 	width 115col%
 
 \end_inset
@@ -649,7 +649,7 @@ it does not do voicing...
 placement t
 wide true
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -849,12 +849,12 @@ key "johnson2005capacity"
 \begin_inset Formula $t'$
 \end_inset
 
- be the timestamp of the closest to given time 
-\begin_inset Formula $t$
+ be the timestamp of the onset 
+\begin_inset Formula $\Delta n_{t'}=1$
 \end_inset
 
- onset 
-\begin_inset Formula $\Delta n_{t'}=1$
+, which is closest to given time 
+\begin_inset Formula $t$
 \end_inset
 
 .
@@ -883,7 +883,8 @@ us._HMM._HMM.viterbi_fast_forced()
 \end_layout
 
 \begin_layout Plain Layout
-The forward trans prob is defined in align.Decoder.calcForwProbWithRules
+The forward trans prob is defined in align.Decoder.defineForwardTransProbs
+ having as parameter the onsetDist t - t' 
 \end_layout
 
 \end_inset

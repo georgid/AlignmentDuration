@@ -11,7 +11,7 @@ from src.hmm.continuous.DurationPdf import NUMFRAMESPERSEC
 from src.align.ParametersAlgo import ParametersAlgo
 from src.align.Decoder import visualizeMatrix
 from scipy.constants.constants import psi
-from src.onsets.OnsetDetector import getDistFromOnset, tsToFrameNumber
+from src.onsets.OnsetDetector import getDistFromEvent, tsToFrameNumber
 import matplotlib
 
 
@@ -131,7 +131,7 @@ class _HMM(_ContinuousHMM):
                whichMatrix = -1 # last matrix with no onset
             else:
                 # distance of how many frames from closest onset
-                onsetDist = getDistFromOnset( self.noteOnsets, t)
+                onsetDist ,_ = getDistFromEvent( self.noteOnsets, t)
                 whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
             
             for j in xrange(self.n):
@@ -232,7 +232,7 @@ class _HMM(_ContinuousHMM):
                     whichMatrix = -1 # last matrix with no onset
             else:
                     # distance of how many frames from closest onset
-                    onsetDist = getDistFromOnset( self.noteOnsets, t)
+                    onsetDist, _ = getDistFromEvent( self.noteOnsets, t)
                     whichMatrix = min(ParametersAlgo.ONSET_SIGMA_IN_FRAMES + 1, onsetDist)
                     self.logger.debug( "which Matrix: " + str(whichMatrix) )
                     

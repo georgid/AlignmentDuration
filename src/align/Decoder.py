@@ -17,7 +17,7 @@ from LyricsParsing import expandlyrics2WordList, _constructTimeStampsForTokenDet
 from ParametersAlgo import ParametersAlgo
 from visualize import visualizeMatrix, visualizeBMap, visualizePath,\
     visualizeTransMatrix
-from src.onsets.OnsetSmooting import OnsetSmoothingFunction
+from src.onsets.OnsetSmoothing import OnsetSmoothingFunction
 import subprocess
 from src.onsets.OnsetDetector import frameNumberToTs
 
