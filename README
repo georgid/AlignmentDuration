@@ -28,16 +28,37 @@ python setup.py install
 
 * htkModelParser 
 git clone https://github.com/georgid/htkModelParser.git
+cd htkModelParser
 sudo pip install -r requirements
 python setup.py install
 
 
 * sci-kit-learn (branch with fixed underflow issues)
 git clone https://github.com/georgid/scikit-learn 
+cd scikit-learn
 sudo apt-get install python-scipy
 python setup.py install
 
 
+INSTALL INSTRUCTIONS ON KORA
+-------------------------------
+
+
+cd /homedtic/georgid/test2/AlignmentDuration
+source /homedtic/georgid/env/bin/activate 
+python setup.py install
+
+to test:
+python /homedtic/georgid/test2/AlignmentDuration/test/testLyricsAlign.py
+
+on server:
+git pull https://github.com/MTG/pycompmusic
+/srv/dunya/env/src/pycompmusic/compmusic/extractors/makam/lyricsalign.py
+with recording MB-ID: 727cff89-392f-4d15-926d-63b2697d7f3f 
+
+
+
+ 
 
 
 -----

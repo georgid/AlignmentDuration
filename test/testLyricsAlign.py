@@ -52,7 +52,7 @@ def testLyricsAlign():
 
 #     # test with section anno and acapella
     # On kora.s.upf.edu
-#     ParametersAlgo.PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
+    ParametersAlgo.PATH_TO_HCOPY = '/homedtic/georgid/htkBuilt/bin/HCopy'
     
 #     symbtrtxtURI = os.path.join( currDir,'../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.txt')
 #     sectionMetadataURI =  os.path.join( currDir, '../example/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi/nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi.sectionsMetadata.json' )
@@ -109,7 +109,7 @@ def testLyricsAlign():
     ret['sectionlinks'] = sectionLinksDict
     print ret
     
-    la.evalAccuracy()
+#    la.evalAccuracy()
 
 
 

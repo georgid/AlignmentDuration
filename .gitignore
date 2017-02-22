@@ -2,3 +2,6 @@
 /Aligner.py
 /MakamRecording.py
 /setup.pyc
+*.mfc
+*.pyc
+*.path
