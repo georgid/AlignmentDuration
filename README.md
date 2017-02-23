@@ -40,18 +40,28 @@ sudo apt-get install python-scipy
 python setup.py install
 
 
-INSTALL INSTRUCTIONS ON KORA
+
+How to Run on KORA
 -------------------------------
 
+ssh georgid@kora.s.upf.edu
 
 cd /homedtic/georgid/test2/AlignmentDuration
 source /homedtic/georgid/env/bin/activate 
 python setup.py install
+(dependencies already installed in this python virtual env)
 
 to test:
+make sure to adjust path to HCopy
+https://github.com/MTG/pycompmusic/blob/master/compmusic/extractors/makam/lyricsalign.py#L61
+
 python /homedtic/georgid/test2/AlignmentDuration/test/testLyricsAlign.py
 
-on server:
+
+
+How to run on on server
+-------------------------------
+
 git pull https://github.com/MTG/pycompmusic
 /srv/dunya/env/src/pycompmusic/compmusic/extractors/makam/lyricsalign.py
 with recording MB-ID: 727cff89-392f-4d15-926d-63b2697d7f3f 
