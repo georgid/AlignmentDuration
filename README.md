@@ -43,28 +43,36 @@ python setup.py install
 
 How to Run on KORA
 -------------------------------
+one can only test AlignmentDuration library
 
 ssh georgid@kora.s.upf.edu
 
 cd /homedtic/georgid/test2/AlignmentDuration
+git checkout for_pycompmusic
+git pull
 source /homedtic/georgid/env/bin/activate 
 python setup.py install
 (dependencies already installed in this python virtual env)
 
-to test:
-make sure to adjust path to HCopy
-https://github.com/MTG/pycompmusic/blob/master/compmusic/extractors/makam/lyricsalign.py#L61
 
 python /homedtic/georgid/test2/AlignmentDuration/test/testLyricsAlign.py
+
 
 
 
 How to run on on server
 -------------------------------
 
-git pull https://github.com/MTG/pycompmusic
-/srv/dunya/env/src/pycompmusic/compmusic/extractors/makam/lyricsalign.py
-with recording MB-ID: 727cff89-392f-4d15-926d-63b2697d7f3f 
+make sure to set parameter ON_SERVER = True [here](https://github.com/MTG/pycompmusic/blob/master/compmusic/extractors/makam/lyricsalign.py#L53)
+ssh georgid@kora.s.upf.edu
+
+source /srv/dunya/env/bin/activate
+python /srv/dunya/env/src/pycompmusic/compmusic/extractors/makam/lyricsalign.py
+
+
+NOTE: 
+it is configured to use branch *for_pycompmusic*
+works with recording with MB-ID: 727cff89-392f-4d15-926d-63b2697d7f3f 
 
 
 
@@ -91,7 +99,7 @@ USAGE (makam):
 pycompmusic/compmusic/extractors/makam/lyricsalign.py
 
 to test without pycommusic: 
-python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentDuration/test/testLyricsAlign.py
+python AlignmentDuration/test/testLyricsAlign.py
 
 
 ------------------------------------------
