@@ -1,7 +1,9 @@
-#LyX 2.1 created this file. For more info see http://www.lyx.org/
-\lyxformat 474
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
 \begin_document
 \begin_header
+\save_transient_properties true
+\origin unavailable
 \textclass article
 \begin_preamble
 \usepackage{multicol}
@@ -15,16 +17,16 @@
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman default
-\font_sans default
-\font_typewriter default
-\font_math auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
-\font_sf_scale 100
-\font_tt_scale 100
+\font_sf_scale 100 100
+\font_tt_scale 100 100
 \graphics default
 \default_output_format default
 \output_sync 1
@@ -277,7 +279,7 @@ TODO: test on all with and without vocal
 Durational model
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:DHMM"
+name "subsec:DHMM"
 
 \end_inset
 
@@ -504,19 +506,6 @@ For each state for a phoneme, for the frames of its duration assign 1 in
 status open
 
 \begin_layout Plain Layout
-2.0 is much better than 0.1.
- 2.0 is comparable to 1.0.
- vowel gets longer deviationInSec.
- Try first reading syllable durs from textGrid and )
-\end_layout
-
-\end_inset
-
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
 weighting factor alpha = 0.97
 \end_layout
 
@@ -524,22 +513,6 @@ weighting factor alpha = 0.97
 
 As a baseline we considered same models but without duration modeling.
  
-\color green
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
- Recent work shows that recognition of phonemes trained on singing voice
- can yield better performance compared to the traditional way of training
- on speech [hansen, kruspe].
-\end_layout
-
-\end_inset
-
-
-\color inherit
-
 \begin_inset Note Comment
 status open
 
@@ -580,7 +553,7 @@ U^ -> copy u
 \end_layout
 
 \begin_layout Plain Layout
-----
+—-
 \end_layout
 
 \begin_layout Plain Layout
@@ -640,7 +613,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="4">
-<features rotate="0" tabularvalignment="middle">
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -1347,7 +1320,7 @@ dan_xipi_01 has best score: seems it s due to female voice, not to tempo.
 \begin_inset VSpace bigskip
 \end_inset
 
-----------
+———-
 \end_layout
 
 \begin_layout Plain Layout

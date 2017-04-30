@@ -1,0 +1,3206 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+% Template for EUSIPCO 2015 paper; to be used with:
+%          spconf.sty  - LaTeX style file, and
+%          IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+\usepackage{spconf}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{xcolor}
+\selectcolormodel{gray}
+
+% Example definitions.
+% --------------------
+\def\x{{\mathbf x}}
+\def\L{{\cal L}}
+
+% Title.
+% ------
+\title{On the use of lyrical duration from musical score for automatic lyrics-to-audio alignment}
+%
+% Single address.
+% ---------------
+\name{Georgi Dzhambazov, Xavier Serra}
+%\address{Author Affiliation(s)}
+%
+% For example:
+% ------------
+\address{Music Technology Group\\
+Universitat Pompeu Fabra\\
+Barcelona}
+%
+% Two addresses (uncomment and modify for two-address case).
+% ----------------------------------------------------------
+%\twoauthors
+%  {A. Author-one, B. Author-two\sthanks{Thanks to XYZ agency for funding.}}
+%	{School A-B\\
+%	Department A-B\\
+%	Address A-B}
+%  {C. Author-three, D. Author-four\sthanks{The fourth author performed the work
+%	while at ...}}
+%	{School C-D\\
+%	Department C-D\\
+%	Address C-D}
+%
+% Multiple author/addresses combination (use only in particular cases).
+% ---------------------------------------------------------------------
+%\name{A. Author-one$^*$, B. Author-two$^*$$^\dagger$, C. Author-three$^\dagger$, D. Author-four$^\ddagger$ %
+%	\thanks{General thanks/acknowledgment}%
+%	\thanks{$^*$ Thanks/acknowledgments for authors marked with *}%
+%	\thanks{$^\dagger$ Thanks/acknowledgments for authors marked with $\dagger$}%
+%	\thanks{$^\ddaggerstitute ABC\\
+%		Group Group ABC\\
+%		Address ABC
+%	\endtabular$ Thanks/acknowledgments for authors marked with $\ddagger$}%
+%}
+%\address{%
+%    \tabular{c}
+%		$^*$ In
+%	\hskip 0.5in
+%    \tabular{c}
+%		$^\dagger$ School DEF\\
+%		Department DEF\\
+%		Address DEF
+%	\endtabular
+%	\hskip 0.5in
+%    \tabular{c}
+%		$^\ddagger$ Company GHI\\
+%		Department GHI\\
+%		Address GHI
+%	\endtabular
+%}
+%
+% The symbol order for multiple author combination is:
+%  $^*$, $^\dagger$, $^\ddagger$, $^\mathsection$, $^\mathparagraph$, $^\|$,
+%  $^{**}$, $^{\dagger\dagger}$, $^{\ddagger\ddagger}$, ...
+%
+%
+% Alternative multiple author/addresses combination (use only in particular cases).
+% ---------------------------------------------------------------------------------
+%\name{A. Author-one$^*$, B. Author-two$^*$$^\dagger$, C. Author-three$^\dagger$, D. Author-four$^\ddagger$ %
+%	\thanks{General thanks/acknowledgment}%
+%	\thanks{$^*$ Thanks/acknowledgments for authors marked with *}%
+%	\thanks{$^\dagger$ Thanks/acknowledgments for authors marked with $\dagger$}%
+%	\thanks{$^\ddagger$ Thanks/acknowledgments for authors marked with $\ddagger$}%
+%}
+%\address{%
+%	$^*$ Institute ABC, Group Group ABC, Address ABC\\
+%	$^\dagger$ School DEF, Department DEF, Address DEF\\
+%	$^\ddagger$ Company GHI, Department GHI, Address GHI\\
+%}
+%
+% The symbol order for multiple author combination is:
+%  $^*$, $^\dagger$, $^\ddagger$, $^\mathsection$, $^\mathparagraph$, $^\|$,
+%  $^{**}$, $^{\dagger\dagger}$, $^{\ddagger\ddagger}$, ...
+%
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry false
+\use_package amsmath 2
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+maketitle
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Abstract
+In this work we show that automatic lyrics-to-audio alignment can be improved
+ by explicitly modeling sung vocal durations.
+ The system is a variant of a duration-explicit hidden Markov model (DHMM)
+ phonetic recognizer based on timbral features: mel frequency cepstral coefficie
+nts (MFCCs).
+ We modify the standard scheme for text-to-speech alignment to address the
+ differences of phoneme durations, specific for singing.
+ Phoneme durations are inferred from sheet music.
+\end_layout
+
+\begin_layout Abstract
+The proposed approach is tested on polyphonic audio from the classical Turkish
+ music tradition, whereby MFCCs are extracted in a way robust to background
+ instrumental sounds.
+ In order to assess the impact of the polyphonic setting, alignment is evaluated
+ as well on an acapella dataset, compiled especially for this study.
+\end_layout
+
+\begin_layout Abstract
+We show that the inclusion of duration information improves alignment accuracy
+ by absolute 10 percent on the level of lyrics lines (phrases) and performs
+ on par with state-of-the-art aligners for other languages.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{keywords}
+\end_layout
+
+\end_inset
+
+ lyrics-to-audio alignment; score-informed alignment; phoneme durations;
+ singing voice tracking; Turkish classical music
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{keywords}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:intro"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The automatic synchronization between lyrics and audio is a challenging
+ research problem.
+ 
+\color red
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color red
+TODO: MORE
+\end_layout
+
+\end_inset
+
+
+\color inherit
+It has inherent relation to text-to-speech alignment.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ (synthesizing a reference melodic contour, templates of phonemes are concatenat
+ed into a template sequence with their corresponding durations)
+\end_layout
+
+\end_inset
+
+For spoken utterances phonemes have relatively similar duration across speakers.
+ Unlike that, in singing durations of phoneme (especially vowels) have higher
+ variation 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kruspekeyword"
+
+\end_inset
+
+.
+ When being sung, vowels are prolonged according to musical note values,
+ which in term have intrinsic relation to musical meter (e.g.
+ duration could align with beats in a musical bar).
+ 
+\end_layout
+
+\begin_layout Standard
+Another aspect that distinguishes speech from music is that unlike clean
+ speech, singing voice is accompanied by background instruments.
+ Instrumental accompaniment and non-vocal segments can deteriorate significantly
+ the alignment accuracy.
+\end_layout
+
+\begin_layout Standard
+The goal of this study is to test the hypothesis that extending a state-of-the-a
+rt system for automatic lyrics-to-audio alignment with modeling of phoneme
+ durations, can improve its accuracy.
+ More specifically, we aim to show that durations of vocals (inferred from
+ musical score) can guide the recognition process in cases when it looses
+ track in polyphonic audio.
+ Such guidance can be compared to the way modeling prosodic rules helps
+ in automatic speech understanding.
+ 
+\end_layout
+
+\begin_layout Standard
+While being aided by sheet music, our modeling approach allows at the same
+ time room for certain temporal flexibility to handle cases of expressive
+ singing, in which vocals are sustained in a way not obeying the reference
+ sheet music.
+ The proposed approach was tested on polyphonic audio from the classical
+ Turkish tradition which is characterized by high degree of expressive singing,
+ thus providing challenging material with versatile temporal deviations.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Further research goal is to sort out the cases in which duration information
+ is beneficial or these where it might not be and investigate the musical
+ reasons behind.
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Related Work
+\end_layout
+
+\begin_layout Standard
+To date most of the studies of automatic lyrics-to-audio alignment exploit
+ phonetic acoustic features and state-of-the-art work is based on a phoneme
+ recognizer 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer,Mesaros96automaticalignment"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+An example of such a system 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ relies on hidden Markov model (HMM) and was tested on Japanese popular
+ music.
+ To reduce the spectral content of background instruments, the authors perform
+ automatic segregation of the vocal line.
+ Then Viterbi forced alignment 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rabiner1989tutorial"
+
+\end_inset
+
+ is run utilizing mel frequency cepstral coefficients (MFCCs) extracted
+ from the vocal-only signal.
+ In both 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Mesaros96automaticalignment"
+
+\end_inset
+
+ the phoneme models are trained on speech and later adapted to singing voice.
+ This is necessary because of the lack of big enough training singing voice
+ corpus.
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ additionally an adaptation to the voice of a particular singer is carried
+ out.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Maybe about Jansen-REcognition of phonemes
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In other works duration of lyrics has been applied as a reinforcing cue:
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "wang2004lyrically"
+
+\end_inset
+
+ relative estimated durations are inferred directly from textual lyrics.
+ The estimation process is done based on supervised training on singing
+ voice.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: filips master thesis based on duration of score
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+how to model duration 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+TODO: score-folowing in general uses HMMs 
+\end_layout
+
+\end_inset
+
+A common-occurring drawback of HMMs is that their capability to model exact
+ state durations is restricted.
+ The wait time in a state is implicitly set to a geometric distribution
+ (derived from the self-transition likelihood).
+ Duration is usually modeled by duration-explicit hidden Markov models (DHMM)
+ (a.k.a.
+ hidden semi-Markov models).
+ In DHMMs the underlying process is allowed to be a semi-Markov chain with
+ variable duration of each state 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "yu2010hidden"
+
+\end_inset
+
+.
+ Each state in turn can be assigned any statistical distribution.
+ DHMMs have been shown to be successful for modeling chord durations in
+ automatic chord recognition 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "chen2012chord"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Section
+Proposed System
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "b"
+hor_pos "c"
+has_inner_box 1
+inner_pos "b"
+use_parbox 0
+use_makebox 0
+width "100line%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+ 
+\backslash
+centerline{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename systemOverview.eps
+	width 100col%
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\size small
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Overview of the modules of the proposed approach.
+ Leftmost column represents audio preprocessing steps, while the middle
+ column shows how durations are modeled.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "Diagram"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Similar to 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ in this work we develop a phoneme-recognizer-based forced alignment employing
+ the Viterbi algorithm 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rabiner1989tutorial"
+
+\end_inset
+
+ to decode the most optimal state sequence.
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+
+\color red
+TODO: more
+\end_layout
+
+\end_inset
+
+We have adopted the idea of 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "chen2012chord"
+
+\end_inset
+
+ not to explicitly add states for durations in the model, but instead to
+ extend the Viterbi decoding to handle duration of states.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+For brevity in the rest of the paper this model will be referred to HSMM
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+For brevity in the rest of the paper our model will be referred to as DHMM.
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Diagram"
+
+\end_inset
+
+ presents an overview of the proposed system.
+ An audio recording and its corresponding score are input.
+ Relying on HMMs of phonemes the DHMM returns start and end timestamps of
+ aligned lyrical phrases.
+\end_layout
+
+\begin_layout Standard
+
+\color black
+First an audio recording is manually divided into sections  (e.g.
+ verse, chorus) as indicated in the score, whereby instrumental-only sections
+ are discarded.
+ All further steps are performed on each audio section.
+ If we had used automatic segmentation instead, potential erroneous lyrics
+ and durations could have biased the comparison of a baseline system and
+ DHMM.
+ As we focus on evaluating the effect of DHMM, manual segmentation is preferred.
+\end_layout
+
+\begin_layout Subsection
+Vocal activity detection
+\end_layout
+
+\begin_layout Standard
+Next a predominant singing voice detection (a.k.a.
+ vocal activity detection) method 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "salamon2012melody"
+
+\end_inset
+
+ is applied on each section to attenuate the spectral content from accompanying
+ instruments, 
+\color black
+because they have
+\color inherit
+ negative effect on the alignment.
+ It performs detection of segments with predominant singing voice and in
+ the same time melody transcription for the detected segments.
+ Based on the extracted melodic contours, the vocal content is resynthesized
+ as separate audio using a harmonic model 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Serra89asystem"
+
+\end_inset
+
+.
+ This resynthesis allowed us to perceptually evaluate the intelligibility
+ of different vocals after vocal detection.
+  More details and examples on the resynthesis step can be found in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "dzhambazov2014automatic"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Reading score durations
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Reading-score-durations"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For each lyrics syllable a reference duration is derived from the values
+ of its corresponding musical notes 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+DETAIL: (in units of 64th notes)
+\end_layout
+
+\end_inset
+
+.
+ 
+\color black
+Then the reference duration is spread among its constituent phonemes, whereby
+ consonants are assigned constant duration and the rest is assigned to the
+ vowel.
+\color inherit
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+DETAIL: Consonants-handling policy: Each consonants in a syllable is assigned
+ a fixed duration (1/32): IMPL: Syllable.Syllable.calcPhonemeDurations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Each phoneme is modeled by a 3-state HMM, resulting into a lookup table
+ of reference durations 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $R_{i}$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ for each state 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ We assume that the duration 
+\begin_inset Formula $d$
+\end_inset
+
+ for a state 
+\begin_inset Formula $i$
+\end_inset
+
+ may vary according to a normal distribution 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $P_{i}(d)$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ with mean at the reference duration 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $d=R_{i}$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ and standard deviation 
+\begin_inset Formula $\sigma$
+\end_inset
+
+.
+ To align a given recording the score-inferred lengths are linearly rescaled
+ to match its musical tempo.
+ In this work the unit of 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+ is number of acoustic frames.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+At beginning and end of chunk there is a sp model with 1 state with exponential
+ distribution.
+ exponential models better cases when no ref.
+ dur.
+ is known, as is for these.
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+ IMPL: controlled by LyricsWithModels.withPaddedSilence.
+ ( to make it work in the given decoding scheme we have to ssign some MAX_DIL_DU
+RATION=2 sec.) 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color red
+TODO: why normal distrib? it does not allow shortening of syllables
+\color inherit
+ which is allowed by gamma).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Duration-explicit HMM alignment
+\end_layout
+
+\begin_layout Standard
+For each phoneme a HMM is trained from a corpus of turkish speech utilizing
+ MFCCs.
+ For given lyrics, the words are expanded to phonemes based on grapheme-to-phone
+me rules for Turkish 
+\begin_inset CommandInset citation
+LatexCommand citep
+after "Table 1"
+key "Salor2007580"
+
+\end_inset
+
+ and the the trained HMMs are concatenated into a phoneme network.
+ The network is then aligned to the MFCC features, extracted from the resynthesi
+zed audio signal, by means of the duration-explicit decoding.
+ In what follows we describe a variation of Viterbi decoding method, in
+ which maximization is carried over the most likely duration for each state.
+ The decoding is adapted from the procedure described in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "chen2012chord"
+
+\end_inset
+
+.
+ Let us define: 
+\end_layout
+
+\begin_layout Description
+\begin_inset Formula $R_{max}:$
+\end_inset
+
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\max_{i}(R_{i})+\sigma$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+\begin_inset Formula $b_{i}(O_{t}):$
+\end_inset
+
+ observation probability for state 
+\begin_inset Formula $i$
+\end_inset
+
+ for feature vector 
+\begin_inset Formula $O_{t}$
+\end_inset
+
+ (comply with the notation of 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rabiner1989tutorial"
+
+\end_inset
+
+)
+\color red
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\color red
+DETAIL: OVER_MAX dur is used to cut the duration 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+, 
+\end_layout
+
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\end_layout
+
+\begin_layout Description
+\begin_inset Formula $\delta_{t}(i):$
+\end_inset
+
+ probability for the path with highest probability ending in state 
+\emph on
+i
+\emph default
+ at time 
+\emph on
+t
+\emph default
+ (comply with the notation of 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "III. B"
+key "rabiner1989tutorial"
+
+\end_inset
+
+))
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+IMPLEMENT: rd(i) hmm.continuous._DurationHMM._DurationHMM.setDurForStates
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Recursion
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $R_{max}<t\leq T$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+\delta_{t}(i) & = & \max_{d}\{\delta_{t-d}(i-1).\nonumber \\
+ &  & P_{i}(d)^{\alpha}\thinspace[B_{t}(i,d)]^{1-\alpha}\}\label{eq:decoding}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula 
+\begin{equation}
+B_{t}(i,d)=\Pi_{s=t-d+1}^{t}b_{i}(O_{s})
+\end{equation}
+
+\end_inset
+
+ is the observation probability of staying 
+\begin_inset Formula $d$
+\end_inset
+
+ frames in state 
+\begin_inset Formula $i$
+\end_inset
+
+ until frame 
+\begin_inset Formula $t$
+\end_inset
+
+.
+ The domain of 
+\begin_inset Formula $d$
+\end_inset
+
+ comes from the normal distribution 
+\begin_inset Formula $(\max\{R_{i}-\sigma,1\},R_{i}+\sigma)$
+\end_inset
+
+ and is reduced for states with reference duration 
+\begin_inset Formula $R_{i}<\sigma$
+\end_inset
+
+.
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+The recursive relateion 
+\begin_inset Formula $B_{i}(t,d+1)=$
+\end_inset
+
+
+\begin_inset Formula $B_{i}(t,d)\thinspace b_{i}(O_{t-d})$
+\end_inset
+
+ allows to precompute a table and for efficient decoding
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: boundaries for d set in hmm.continuous.DurationPdf.DurationPdf.getMinRefDur
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+IMPL: recursive rule eq:decoding in hmm.continuous._DurationHMM._DurationHMM.getMaxP
+hi
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A duration back-pointer is defined as
+\begin_inset Formula 
+\begin{eqnarray}
+\chi_{t}(i) & = & \arg\max_{d}\{\delta_{t-d}(i-1).\nonumber \\
+ &  & P_{i}(d)^{\alpha}\thinspace[B_{t}(i,d)]^{1-\alpha}\}\label{eq:backpointer}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that in forced alignment the source state could be only the previous
+ state 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $i-1$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+.
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+Thus no maximization over transition from different source states in necessary.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To be able to control the influence of the duration we have introduced a
+ weighting factor 
+\begin_inset Formula $\alpha$
+\end_inset
+
+.
+ Note that setting 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ to zero is equivalent to using a uniform distribution for 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $p_{i}(d)$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: 
+\end_layout
+
+\begin_layout Plain Layout
+instead of 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\delta_{t}(i)$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ we rewrite the corresponding
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\phi_{t}(i)$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ (to comply with the notation of Rabiner in V.
+ A) as 
+\begin_inset Formula $\phi_{t}(i)=max_{d}\{\phi_{t-d}(i-1)+\alpha log[p_{i}(d)]+(1-\alpha)\Sigma_{s=t-d+1}^{t}log[b_{i}(O_{s})]\}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+and 
+\begin_inset Formula $\kappa_{t}^{'}(i)=log\pi_{i}+log[p_{i}(t)]+\Sigma_{s=1}^{t}(O_{s})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Plain Layout
+-----
+\end_layout
+
+\begin_layout Plain Layout
+the scaling presented in Cheng et al.
+ is not needed since we let in python a flag to track if there is underfllow.
+ We divide B_map by its max as suggested by Cheng.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+note that when d_max(currT)<t <D_max 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+it might be 
+\begin_inset Formula $p_{i}(t)=0$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Basically the observation probs.
+ from HMMs are used, no transition probs.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Initialization
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $t\leq R_{max}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+\delta_{t}(i) & = & \max\{\delta_{t}(i)^{*},\thinspace\kappa_{t}(i)\}\label{eq:deltaStarOrKappa}
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: hmm.continuous._DurationHMM._DurationHMM._initBeginingPhis
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where a reduced-duration delta 
+\begin_inset Formula $\delta_{t}(i)^{*}$
+\end_inset
+
+ is defined in the same way as in 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:decoding"
+
+\end_inset
+
+ but 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula 
+\begin{equation}
+d\in\begin{cases}
+emptySet, & t\le R_{i}-\sigma\\
+(R_{i}-\sigma,\min\{t-1,R_{i}+\sigma\}), & else
+\end{cases}
+\end{equation}
+
+\end_inset
+
+ reduces the duration to 
+\begin_inset Formula $t$
+\end_inset
+
+ when 
+\begin_inset Formula $t<R_{i}+\sigma$
+\end_inset
+
+.
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+these boundary rules are defined in hmm.continuous._DurationHMM._DurationHMM.compute
+PhiStar
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+Lastly the probability of staying at initial state 
+\begin_inset Formula $i$
+\end_inset
+
+ at time 
+\begin_inset Formula $t$
+\end_inset
+
+ is defined as: 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula 
+\begin{equation}
+\kappa_{t}(i)=\pi_{i}P_{i}(t){}^{\alpha}[\Pi_{s=1}^{t}(O_{s})]^{1-\alpha}
+\end{equation}
+
+\end_inset
+
+ for 
+\begin_inset Formula $t\in(1,R_{i}+\sigma)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: kappa_t(i) are computed for t in 1:R_i + 
+\backslash
+sigma, from R_i + 
+\backslash
+sigma to R_max + 
+\backslash
+sigma remains -infinity from initialization
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+Python IMplementational remark:
+\end_layout
+
+\begin_layout Plain Layout
+(all indices for delta, kappa, phi as well as t are in range 0:len-1 ) Only
+ d = 1:D because d is discretized, so 0 could be a meaningful value 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Subsubsection*
+backtracking
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $t=T$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $q_{t}=N$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $d=\chi_{t}(q_{t})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+while t > d do:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $q_{t-d+1...}q_{t-1}=q_{t}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+update
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $t=t-d$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $q_{t}=q_{t+1}-1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $d=\chi_{t}(q_{t})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally the decoded state sequence is derived by backtracking starting at
+ the last state 
+\begin_inset Formula $N$
+\end_inset
+
+ and switching to a source state a number of 
+\begin_inset Formula $d=\chi_{t}(i)$
+\end_inset
+
+ frames ahead according to the backpointer from 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:backpointer"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Experimental setup
+\end_layout
+
+\begin_layout Standard
+Alignment is performed on each manually divided audio section and results
+ are reported per recording (on total for its sections).
+\end_layout
+
+\begin_layout Standard
+To assess the benefit of duration modeling for alignment a comparison to
+ a baseline system with standard Viterbi decoding is conducted.
+ We present results for the most optimal 
+\begin_inset Formula $\alpha=0.97$
+\end_inset
+
+.
+ It was found by minimizing the alignment error (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Evaluation-metric"
+
+\end_inset
+
+) on a separate development dataset of 20 minutes Turkish acapella recordings.
+ To assure optimality we aligned on word-level ground truth.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The system with durational model has three states, classical Viterbi with
+ three states as well.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To train the speech model the HMM Toolkit (HTK) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "young1993htk"
+
+\end_inset
+
+ is employed.
+ The acoustic properties (most importantly the formant frequencies) of spoken
+ phonemes can be induced by the spectral envelope of speech.
+ To this end, we utilize the first 12 MFCCs and their delta to the previous
+ time instant.
+\end_layout
+
+\begin_layout Standard
+A 3-state HMM model for each of 38 Turkish phonemes is trained, plus a silent
+ pause model.
+ For each state a 9-mixture Gaussian distribution is fitted on the feature
+ vector.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+from HTK - they are not singer-independent.
+ why? 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Qualitative Special case : It is interesting to see the behavior when there
+ is deviation from score (two different performers on same vowel spot from
+ lyrics)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\color blue
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+
+\color blue
+IMPL: AlignmentDuration: 7d873c1f29a3fd0c8cf74ded496bc428951f57a0
+\end_layout
+
+\begin_layout Plain Layout
+
+\color blue
+AlignmentEvaluation: branch for-audio-segments
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Datasets
+\end_layout
+
+\begin_layout Standard
+The test dataset consists of 12 single-vocal classical Turkish music recordings
+ with accompaniment with total duration of 
+\color black
+18:40 minutes
+\color green
+.
+
+\color inherit
+ Scores are provided in the machine-readable 
+\emph on
+symbTr
+\emph default
+ format 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "karaosmanouglu2012turkish"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\color black
+Additionally a separate acapella dataset of the same 12 songs sung by semiprofes
+sional singers has been recorded especially for this study.
+ It can be considered a vocal-track-only version of the original polyphonic
+\color green
+ 
+\color inherit
+dataset.
+ 
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The data is available here: 
+\begin_inset CommandInset href
+LatexCommand href
+name "https://github.com/MTG/ISTANBUL"
+target "https://github.com/MTG/ISTANBUL"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ 
+\color black
+Evaluation on the acapella corpus was conducted in order to assess the impact
+ of the vocal extraction step.
+
+\color red
+ 
+\end_layout
+
+\begin_layout Standard
+Each song section was manually annotated into musical phrases as proposed
+ by
+\color red
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "karaosmanouglu2014symbolic"
+
+\end_inset
+
+
+\color inherit
+.
+ A musical phrase usually corresponds to a lyrical line.
+ If a phrase boundary splits a word we have modified it to include the complete
+ word.
+ 
+\color black
+Short instrumental motives have not been excluded from the phrases.
+ 
+\color inherit
+Furthermore we split or merged some melodic phrases so that phrases within
+ a recording have roughly the same number of musical bars (1 or 2).
+ Table 1 presents statistics about phrases.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: final word timestamp is taken at beginning of last phoneme (assuming
+ it is 'sp') in Decoder.Decoder.path2ResultWordList
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\begin_inset FormulaMacro
+\newcommand{\arraystretch}{1.2}
+\end_inset
+
+ 
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top" width="25col%">
+<column alignment="center" valignment="top" width="25col%">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+total
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+linebreak
+\end_layout
+
+\end_inset
+
+ #sections
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+#phrases
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+linebreak
+\end_layout
+
+\end_inset
+
+ per section
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+section duration
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+75
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size small
+ 2 to 5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7-20 seconds
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\size small
+\begin_inset VSpace -0.3cm*
+\end_inset
+
+ 
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Section and phrase statistics for test dataset.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\size small
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:dataset-stats"
+
+\end_inset
+
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+
+\size small
+IMPL: file ISTANBUL/statistics
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Evaluation metrics
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Evaluation-metric"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\color black
+Alignment is evaluated in terms of alignment accuracy (AA) as the percentage
+ of duration of correctly aligned regions from total audio duration (see
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "Fig.9"
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ for an example).
+ 
+\color inherit
+A value of 100 means perfect matching of phrase boundaries
+\color black
+.
+ Additionally is reported the mean absolute phrase alignment error (AE):
+ measured at the start and end timestamp of a phrase.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+
+\color black
+, because there might be longer inter-phrase silent intervals.
+ Note that the metric is rather strict in cases when the beginning of a
+ phrase coincides with the end of its preceding phrase (if no inter-phrase
+ interval): the alignment error is counted twice in this case: once as ending-
+ and once as beginning boundary.
+ 
+\color red
+TODO: provide example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We define a metric 
+\emph on
+musical score in-sync
+\emph default
+ (MSI) to measure the approximate degree to which a singer performs a recording
+ in synchronization with note values indicated in the musical score.
+ Thus low accuracy of MSI indicates a higher temporal deviation from musical
+ score.
+ We compute
+\emph on
+ 
+\emph default
+MSI per a recording as the AA of score-inferred reference durations 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+ (defined in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Reading-score-durations"
+
+\end_inset
+
+) compared to ground-truth, as if they were results after alignment.
+ 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+IMPL: grThurhWordList used to compare instead of decodedWordList in doitOneChunk.
+decodeAudioChunk
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+
+\size small
+\begin_inset FormulaMacro
+\renewcommand{\arraystretch}{1.2}
+\end_inset
+
+ 
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="left" valignment="top" width="38col%">
+<column alignment="center" valignment="top" width="25col%">
+<column alignment="center" valignment="top" width="25col%">
+<row>
+<cell alignment="left" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+System variant
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+alignment
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+linebreak
+\end_layout
+
+\end_inset
+
+
+\family default
+\series bold
+\shape default
+\size small
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ accuracy
+\series default
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size small
+alignment
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+linebreak
+\end_layout
+
+\end_inset
+
+
+\family default
+\series bold
+\shape default
+\size small
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ error
+\series default
+ 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+musical score in-sync
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+88.14
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.32
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+HMM polyphonic
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+67.46
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.04
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+DHMM polyphonic
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+77.74
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.63
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+DHMM acapella
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+90.04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.26
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+HMM+adaptation 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Mesaros96automaticalignment"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+HMM+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+linebreak
+\end_layout
+
+\end_inset
+
+ singer adaptation 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+85.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\size small
+\begin_inset VSpace -0.3cm*
+\end_inset
+
+ 
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Alignment accuracy (in percent) for musical score in-sync; different system
+ variants: baseline HMM and DHMM; state-of-the-art for other languages.
+ Alignment accuracy is reported as total for all recordings.
+ Additionally the total mean phrase alignment error (in seconds) is reported
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "resultsTable"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Table 2 presents comparison of the proposed DHMM system performance and
+ a baseline HMM system.
+ It can be observed that modeling of note values with DHMM increases HMM
+ accuracy by 10 absolute percent.
+ One reason for this are cases of long vocals, in which HMM switches to
+ the next phoneme prematurely (due to its inability to stay long in a given
+ state).
+ In contrast, the duration-explicit decoding allows picking the optimal
+ duration (which can be traced in an example in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "example-of-decoded-Praat"
+
+\end_inset
+
+).
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+FUTURE: is this true for songs where average vocal duration is short?, maybe
+ add on figure 2 tempo BPM as well
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide true
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename scatterCorrelation.eps
+	width 80page%
+	height 30theight%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Comparison between results from DHMM (for both polyphonic and acapella)
+ and baseline HMM.
+ Metric used is alignment accuracy.
+ A connected triple of shapes represents results for one recording.
+ Results are ordered according to
+\emph on
+ musical score in-sync 
+\emph default
+(on horizontal axis)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "correlationGraph"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+\color red
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+
+\emph on
+\color red
+IMPL:
+\emph default
+ For experiment details see file 
+\emph on
+experiments.
+ FIle missing.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\color red
+-baseline is with htk
+\end_layout
+
+\begin_layout Plain Layout
+DHMM: ParametersAlgo.DEVIATION_IN_SEC = 0.1 used.
+ OVER_MAX_DUR_FACTOR (OMDF) is amount (in %) on top of reference duration
+ considered 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+ (in _calcCurrStatePhi and initPhis)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+features are different from HTK: - no cepstral mean norm done
+\end_layout
+
+\begin_layout Plain Layout
+sp are mandatory and ( cannot be skipped in the alignment.
+ do not know how to implement grammar in Viterbi )
+\end_layout
+
+\end_inset
+
+
+\emph default
+\color inherit
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "correlationGraph"
+
+\end_inset
+
+ allows a glance at results per recording, ordered according to MSI
+\emph on
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+the per-recording results are published 
+\begin_inset CommandInset href
+LatexCommand href
+name "https://drive.google.com/file/d/0B4bIMgQlCAuqY3hKc25WTm9kTEk/view?usp=sharing"
+target "here"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ 
+\emph default
+It can be observed that DHMM performs consistently better than the baseline
+ (with some exceptions of where accuracy is close).
+ Unlike the relatively stable accuracy for the acapella case, when background
+ instruments are present, the accuracy variates more among recordings.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+FUTURE: test for these cases with bigger OMDF 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename ../DurationHSMM_polyphonic/KiseyeZeminPhoneLevel.png
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Example of decoded phonemes.
+ 
+\emph on
+very top
+\emph default
+: resynthesized spectrum;
+\emph on
+ upper level
+\emph default
+: ground truth, 
+\emph on
+middle level
+\emph default
+: HMM; 
+\emph on
+bottom level
+\emph default
+: DHMM;
+\emph on
+ 
+\emph default
+(excerpt from the recording 'Kimseye etmem şikayet' by Bekir Unluater)
+\end_layout
+
+\end_inset
+
+
+\color blue
+
+\begin_inset CommandInset label
+LatexCommand label
+name "example-of-decoded-Praat"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Although coming from different genre and language, we compare our alignment
+ results to best hitherto alignment systems for English pop songs 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Mesaros96automaticalignment"
+
+\end_inset
+
+ and for Japanese pop 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+.
+ These are abbreviated in table 2 respectively as 
+\emph on
+HMM + adaptation 
+\emph default
+and 
+\emph on
+HMM + singer adaptation
+\emph default
+.
+ In these works alignment is evaluated also on the 
+\color black
+level of a lyrical line/phrase.
+
+\color inherit
+ Except for the duration-explicit decoding scheme, our approach differs
+ from both works essentially in that they conduct speech-to-singing-voice
+ adaptation.
+ Unlike that we did not perform any adaptation of the original speech model.
+ Adaptation data of clean singing voice for a particular singer might not
+ always be available and thus does not allow the system to scale to data
+ from unknown singers.
+ In the end, despite lacking adaptation, our approach yields results comparable
+ to these reference approaches.
+\end_layout
+
+\begin_layout Standard
+Moreover, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ trains a vocal activity detection (VAD) module on data selected from material
+ with same acoustics characteristics as the test data.
+ The VAD module showed to notably increase the average accuracy of 72.1 %
+ for a baseline to accuracy of 85.2 % for their final system.
+  Similarly we observe that for our system evaluation on the acapella dataset
+ yields an accuracy by about the same percent higher than the polyphonic
+ one (see table 2).
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+FUTURE: song-wise errors are not well correlated.
+ probable reason: different accuracy of vocal resynthesis? 
+\end_layout
+
+\end_inset
+
+ Investigating our results with low accuracy revealed that false positives
+ of our VAD module is a considerable reason for misalignment.
+ Unlike 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+ we did not tailor the parameters of the VAD module used in this work (built
+ for Western popular music) to the specificities of our test dataset.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+correlation explained: http://greenteapress.com/thinkstats/html/thinkstats010.html
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+correlation between phrase-level alignment error (in seconds) for DHMM system
+ for polyphonic and DHMM acapella.
+ pearson correlation = ...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+IMPL: Lyrics are read from score in a specific format (no support for musicXML)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this work we evaluated the behavior of a HMM-based phonetic recognizer
+ for lyrics-to-audio alignment in two settings: with and without utilizing
+ lyrics duration information.
+ Using duration-explicit modeling for the former setting outperformed the
+ latter for polyphonic Turkish classical recordings.
+ 
+\end_layout
+
+\begin_layout Standard
+Importantly our approach reaches accuracy on par with state of the art alignment
+ systems by using an acoustic model trained on speech only.
+ This suggests that steps like adaptation to singing voice and adaptation
+ to a particular singer can be compensated by applying the DHMM.
+ Furthermore, the DHMM performs considerably better on an acapella version
+ of the test dataset, which indicates that improving the vocal activity
+ detection module will result in even better accuracy.
+\end_layout
+
+\begin_layout Standard
+A limitation of the current alignment system is the prerequisite for manually-do
+ne structural segmentation, which we plan to automate in the future.
+ 
+\end_layout
+
+\begin_layout Standard
+In general, the proposed approach is applicable not only when musical scores
+ are available, but also for any format, from which duration information
+ can be inferred: for example annotated melodic contour or singer-created
+ indications along the lyrics.
+\end_layout
+
+\begin_layout Subparagraph*
+Acknowledgements
+\end_layout
+
+\begin_layout Standard
+This work is partly supported by the European Research Council under the
+ European Union’s Seventh Framework Program, as part of the CompMusic project
+ (ERC grant agreement 267583) and partly by the AGAUR research grant.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+% References should be produced using the bibtex program from suitable
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+% BiBTeX files (here: strings, refs, manuals).
+ The IEEEbib.bst bibliography
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+% style file from IEEE produces unsorted bibliography list.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+% -------------------------------------------------------------------------
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefLyrics2Audio,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefCompMusicNon-Lyrics,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRef_saerch_by_lyrics"
+options "unsrt"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

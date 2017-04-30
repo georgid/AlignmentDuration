@@ -1,0 +1,514 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%Creator: MATLAB, The Mathworks, Inc. Version 7.9.0.529 (R2009b). Operating System: Darwin 13.4.0 Darwin Kernel Version 13.4.0: Sun Aug 17 19:50:11 PDT 2014; root:xnu-2422.115.4~1/RELEASE_X86_64 x86_64.
+%%Title: /Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/audioFeature.eps
+%%CreationDate: 03/02/2015  15:57:06
+%%DocumentNeededFonts: Helvetica
+%%DocumentProcessColors: Cyan Magenta Yellow Black
+%%LanguageLevel: 2
+%%Pages: 1
+%%BoundingBox:  -365    40   978   752
+%%EndComments
+
+%%BeginProlog
+% MathWorks dictionary
+/MathWorks 160 dict begin
+% definition operators
+/bdef {bind def} bind def
+/ldef {load def} bind def
+/xdef {exch def} bdef
+/xstore {exch store} bdef
+% operator abbreviations
+/c  /clip ldef
+/cc /concat ldef
+/cp /closepath ldef
+/gr /grestore ldef
+/gs /gsave ldef
+/mt /moveto ldef
+/np /newpath ldef
+/cm /currentmatrix ldef
+/sm /setmatrix ldef
+/rm /rmoveto ldef
+/rl /rlineto ldef
+/s {show newpath} bdef
+/sc {setcmykcolor} bdef
+/sr /setrgbcolor ldef
+/sg /setgray ldef
+/w /setlinewidth ldef
+/j /setlinejoin ldef
+/cap /setlinecap ldef
+/rc {rectclip} bdef
+/rf {rectfill} bdef
+% page state control
+/pgsv () def
+/bpage {/pgsv save def} bdef
+/epage {pgsv restore} bdef
+/bplot /gsave ldef
+/eplot {stroke grestore} bdef
+% orientation switch
+/portraitMode 0 def /landscapeMode 1 def /rotateMode 2 def
+% coordinate system mappings
+/dpi2point 0 def
+% font control
+/FontSize 0 def
+/FMS {/FontSize xstore findfont [FontSize 0 0 FontSize neg 0 0]
+  makefont setfont} bdef
+/reencode {exch dup where {pop load} {pop StandardEncoding} ifelse
+  exch dup 3 1 roll findfont dup length dict begin
+  { 1 index /FID ne {def}{pop pop} ifelse } forall
+  /Encoding exch def currentdict end definefont pop} bdef
+/isroman {findfont /CharStrings get /Agrave known} bdef
+/FMSR {3 1 roll 1 index dup isroman {reencode} {pop pop} ifelse
+  exch FMS} bdef
+/csm {1 dpi2point div -1 dpi2point div scale neg translate
+ dup landscapeMode eq {pop -90 rotate}
+  {rotateMode eq {90 rotate} if} ifelse} bdef
+% line types: solid, dotted, dashed, dotdash
+/SO { [] 0 setdash } bdef
+/DO { [.5 dpi2point mul 4 dpi2point mul] 0 setdash } bdef
+/DA { [6 dpi2point mul] 0 setdash } bdef
+/DD { [.5 dpi2point mul 4 dpi2point mul 6 dpi2point mul 4
+  dpi2point mul] 0 setdash } bdef
+% macros for lines and objects
+/L {lineto stroke} bdef
+/MP {3 1 roll moveto 1 sub {rlineto} repeat} bdef
+/AP {{rlineto} repeat} bdef
+/PDlw -1 def
+/W {/PDlw currentlinewidth def setlinewidth} def
+/PP {closepath eofill} bdef
+/DP {closepath stroke} bdef
+/MR {4 -2 roll moveto dup  0 exch rlineto exch 0 rlineto
+  neg 0 exch rlineto closepath} bdef
+/FR {MR stroke} bdef
+/PR {MR fill} bdef
+/L1i {{currentfile picstr readhexstring pop} image} bdef
+/tMatrix matrix def
+/MakeOval {newpath tMatrix currentmatrix pop translate scale
+0 0 1 0 360 arc tMatrix setmatrix} bdef
+/FO {MakeOval stroke} bdef
+/PO {MakeOval fill} bdef
+/PD {currentlinewidth 2 div 0 360 arc fill
+   PDlw -1 eq not {PDlw w /PDlw -1 def} if} def
+/FA {newpath tMatrix currentmatrix pop translate scale
+  0 0 1 5 -2 roll arc tMatrix setmatrix stroke} bdef
+/PA {newpath tMatrix currentmatrix pop	translate 0 0 moveto scale
+  0 0 1 5 -2 roll arc closepath tMatrix setmatrix fill} bdef
+/FAn {newpath tMatrix currentmatrix pop translate scale
+  0 0 1 5 -2 roll arcn tMatrix setmatrix stroke} bdef
+/PAn {newpath tMatrix currentmatrix pop translate 0 0 moveto scale
+  0 0 1 5 -2 roll arcn closepath tMatrix setmatrix fill} bdef
+/vradius 0 def /hradius 0 def /lry 0 def
+/lrx 0 def /uly 0 def /ulx 0 def /rad 0 def
+/MRR {/vradius xdef /hradius xdef /lry xdef /lrx xdef /uly xdef
+  /ulx xdef newpath tMatrix currentmatrix pop ulx hradius add uly
+  vradius add translate hradius vradius scale 0 0 1 180 270 arc 
+  tMatrix setmatrix lrx hradius sub uly vradius add translate
+  hradius vradius scale 0 0 1 270 360 arc tMatrix setmatrix
+  lrx hradius sub lry vradius sub translate hradius vradius scale
+  0 0 1 0 90 arc tMatrix setmatrix ulx hradius add lry vradius sub
+  translate hradius vradius scale 0 0 1 90 180 arc tMatrix setmatrix
+  closepath} bdef
+/FRR {MRR stroke } bdef
+/PRR {MRR fill } bdef
+/MlrRR {/lry xdef /lrx xdef /uly xdef /ulx xdef /rad lry uly sub 2 div def
+  newpath tMatrix currentmatrix pop ulx rad add uly rad add translate
+  rad rad scale 0 0 1 90 270 arc tMatrix setmatrix lrx rad sub lry rad
+  sub translate rad rad scale 0 0 1 270 90 arc tMatrix setmatrix
+  closepath} bdef
+/FlrRR {MlrRR stroke } bdef
+/PlrRR {MlrRR fill } bdef
+/MtbRR {/lry xdef /lrx xdef /uly xdef /ulx xdef /rad lrx ulx sub 2 div def
+  newpath tMatrix currentmatrix pop ulx rad add uly rad add translate
+  rad rad scale 0 0 1 180 360 arc tMatrix setmatrix lrx rad sub lry rad
+  sub translate rad rad scale 0 0 1 0 180 arc tMatrix setmatrix
+  closepath} bdef
+/FtbRR {MtbRR stroke } bdef
+/PtbRR {MtbRR fill } bdef
+/stri 6 array def /dtri 6 array def
+/smat 6 array def /dmat 6 array def
+/tmat1 6 array def /tmat2 6 array def /dif 3 array def
+/asub {/ind2 exch def /ind1 exch def dup dup
+  ind1 get exch ind2 get sub exch } bdef
+/tri_to_matrix {
+  2 0 asub 3 1 asub 4 0 asub 5 1 asub
+  dup 0 get exch 1 get 7 -1 roll astore } bdef
+/compute_transform {
+  dmat dtri tri_to_matrix tmat1 invertmatrix 
+  smat stri tri_to_matrix tmat2 concatmatrix } bdef
+/ds {stri astore pop} bdef
+/dt {dtri astore pop} bdef
+/db {2 copy /cols xdef /rows xdef mul dup 3 mul string
+  currentfile 
+  3 index 0 eq {/ASCIIHexDecode filter}
+  {/ASCII85Decode filter 3 index 2 eq {/RunLengthDecode filter} if }
+  ifelse exch readstring pop
+  dup 0 3 index getinterval /rbmap xdef
+  dup 2 index dup getinterval /gbmap xdef
+  1 index dup 2 mul exch getinterval /bbmap xdef pop pop}bdef
+/it {gs np dtri aload pop moveto lineto lineto cp c
+  cols rows 8 compute_transform 
+  rbmap gbmap bbmap true 3 colorimage gr}bdef
+/il {newpath moveto lineto stroke}bdef
+currentdict end def
+%%EndProlog
+
+%%BeginSetup
+MathWorks begin
+
+0 cap
+
+end
+%%EndSetup
+
+%%Page: 1 1
+%%BeginPageSetup
+%%PageBoundingBox:  -365    40   978   752
+MathWorks begin
+bpage
+%%EndPageSetup
+
+%%BeginObject: obj1
+bplot
+
+/dpi2point 12 def
+portraitMode -4380 9024 csm
+
+    0     0 16127  8535 rc
+85 dict begin %Colortable dictionary
+/c0 { 0.000000 0.000000 0.000000 sr} bdef
+/c1 { 1.000000 1.000000 1.000000 sr} bdef
+/c2 { 0.900000 0.000000 0.000000 sr} bdef
+/c3 { 0.000000 0.820000 0.000000 sr} bdef
+/c4 { 0.000000 0.000000 0.800000 sr} bdef
+/c5 { 0.910000 0.820000 0.320000 sr} bdef
+/c6 { 1.000000 0.260000 0.820000 sr} bdef
+/c7 { 0.000000 0.820000 0.820000 sr} bdef
+c0
+1 j
+1 sg
+   0    0 16128 8536 rf
+6 w
+0 6956 11873 0 0 -6956 2097 7596 4 MP
+PP
+-11873 0 0 6956 11873 0 0 -6956 2097 7596 5 MP stroke
+gs 2097 640 11875 6957 rc
+/mwscm { [/Indexed /DeviceRGB 63
+  <
+    00008f 00009f 0000af 0000bf 0000cf 0000df 0000ef 0000ff 000fff 001fff 
+    002fff 003fff 004fff 005fff 006fff 007fff 008fff 009fff 00afff 00bfff 
+    00cfff 00dfff 00efff 00ffff 0fffef 1fffdf 2fffcf 3fffbf 4fffaf 5fff9f 
+    6fff8f 7fff7f 8fff6f 9fff5f afff4f bfff3f cfff2f dfff1f efff0f ffff00 
+    ffef00 ffdf00 ffcf00 ffbf00 ffaf00 ff9f00 ff8f00 ff7f00 ff6f00 ff5f00 
+    ff4f00 ff3f00 ff2f00 ff1f00 ff0f00 ff0000 ef0000 df0000 cf0000 bf0000 
+    af0000 9f0000 8f0000 7f0000 
+  >
+] setcolorspace } bdef mwscm
+gs np 2097 640 mt 0 6956 rl 11874 0 rl 0 -6956 rl cp c np
+[11874 0 0 6956 2097 640] cc
+<< % Image dictionary
+  /ImageType 1
+  /Width 257 /Height 100
+  /BitsPerComponent 8
+  /Decode [0 255]
+  /ImageMatrix [257.000000 0 0 100.000000 0 0]
+  /DataSource currentfile
+  /ASCII85Decode filter
+  /RunLengthDecode filter
+>>
+image
+JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$JH16$
+JH16$n,WFgJH16$!<<.O!/(@N!J(6(!;ceJ!/:LQ!W`<&JH1B(r;ls"kl:\aJH28ArW<-%rW2?crW.QM
+T)efl!WiB'mf<1brVup!JH2JGrWN9)rW3'#oDepn!<Dor"9JT)!!.WNV#^Ju!X&T,r;lWmr;cm"r;lm!
+"9AN)!<N-!!!.WNWW<#&"9eo1!s8H&p](<q!WE-#"8;lp!J(6M!<!*)"U"o0!r`3$!!3'!!<E6#!WrH*
+!sJT*"9\f.!X&B&"T\W*!<<.O!3?2"#R1M<"U"r1!r2lr!X8`0!sA`1"TAT("TAN&!W`<'rW.QMXT8>+
+"pY>:"U"o0r;cm"rW*'%!X&E)$O$_=#6kA9"U5)5"oJK$!rW.N!3lP&#mU_@"pP25!sAB$rWET5"pYA=
+#7(P?#6kG3"p5#3!sAH&quM?KZiL(3"pbM@#R:P:qZ@')!sA`1"pG;3#lk>3#m1M@#RUJ8rWNT2"9S`-
+!s/N(!J(6W!;m0-#mghA"pOf*"pG29#mgtJr<rQ2$j[.H#RCY>"pG/5!sAN(quM?K[fHC:!=TA8$3CG;
+#5\N."U5/;$4@7MrX8c9r!WT8%/pS=#m^b@"pG/5rW<-%quM?K\,cL<rXB>F$47"C#R1D8"U5/:$4HhA
+rXSl;!=]P;%K6_<$4$kA#6"c9"9\f/!WiB(!<E0#!<</d!!30$!Vucs!<I`Oi;ifd(_$r`$OR4I#6k>9
+#6tM@$OdFR%1a!^&.ngR!>,qB%L`dS$k*IL#m^b?"U"u,!rrE$!WE'!!W<!!!<N0"pAt6np]1Bq!;?Kq
+!!*+O!:Bjd%Kd4Q%M&IH!"&W1$3pkE#n.7Q%h90`rY,GL()7P_&crRS&H3.I%1ERN#mgkC#6k>7rWE-$
+quHfu!;QWq!;?Ko!qcQs!W`<'!qQEm!;llX!!!%g!<*Q9%hK9_%LrmT$iUJc$O[@Q&.]Eg()I`&(E!u'
+(DRSr',(oi&.T3\%LijT$4$nB#6b;7"9S`-!s/Pk!WE-$!<W3#q>pd#!WiB(l2g_]q>gQrrW2fp!<E5u
+!<*"o!<*Q;'+toi&.]3Y$4@4?$kEdX&/#Tk(Ddo,*#KP3)&W>h#8@gb&ePZe&cN:A%1<%?!=&i."Tnl0
+"9\N&!W`?'pAt<srW<$#!!;rur;ls"p]:Nu!<N>?!<<,u!<E0$rVus"!<*#U!!**#joPGn#8.^a'+tif
+%fQnJ$k3^Y&eYln(`4,-)]Te:r>Qjt)&X8+'bh>q'+tie%h9!V$47(G#6tG:"U"r1!WrN+rWE'"!<WE$
+!rrK%!s&N-r<!$$q#g!c!<WE&!<<2k!Vulj!WE/j!<<,q!W<#t!VZQq!<<,r!W2rU!WEZM',2/p&eP]d
+&.f<^&.fHf(Ddr+)B0S4*?6"<rZ)=b(`=82)&O/+'c$]\";;CX%1E.A#RCY?"pG27"U+f,!!N9'!<N?#
+!s/W/"o&3&"U"u4qZHp%"9&H""8i6!"9&?%"8W)u!U'U\!WE/s!<<3#!<<2n!<<,u!Vl`D!W<ZO'b_>s
+&eYcg%hTEe',))r)&jV9)B0_:*ZGt:*W?u[)AsJ2r>-(`(DRW!',(ic%13IM$4$qD#7(/2qum?/"9eu5
+"U"u3rWNN2"pY>;"pP>2"pP;;"pP57"T8N""T8H!"T8E-!WrK+!s/Q,pB(3oqZ6g"!Wr<$!!<-#qZ6`u
+quQj!quYmZ!!<-#rW;*\rXoAK'G_K#(B+sX&eP]j'GM<#)AsD3*#fk<rYuLh*#fh;*uu:?)]K\7)&F)(
+'`JgO&.oH_%1<RC$3LS@#RL52!=/u1#65&/#6>)8qZm9/"pYG4#6>)9rWi?*!XAr7rWN9)r<;`p!<WK(
+"9&Gr!s8Z/!s8H(qZ6a"klLqf!W`>r!qu`k!X&N)!WiDb!r`f6'bh>\(BbHf(DR\a'H%W')Aj>3*??1@
+*#fh:*#fn;)BBk@*?,q;rYkkT)#b<Y()7Gq'G(`a%1NaF$iC>;#mgtH$4$nD$2b&2$4.%Hr<WK1#lP&;
+#RCYA#RC_B#7(M<r<N9*o`Y="pBCHt!!E0&!<WH&"9S`/"9\Q)o)m_K!!3'#!!2ru!!D?brXfDL'c%Q%
+()du(r>#AMrYY_T)u^g*)]Kb:)&XD7*Zc:?*$$.B*?,n9*#fb5(`4,-()7Js'+kcb%Ls!Y%K6e8$O$kG
+$4@4KrX8]6!"8c7":GVI$k<1ErX8N/!=9).#lFr+"p>/8#6kD1#6>#5r<30*rWN9+rWW9*!!W?)rWN?-
+"U4i-!<iZ("T&9$"SVuu!qQKp!Wr9%r;ls$qZ>^Yr=]\V()7Q%(`+#,(Dn&.(E"+h)[[K$)&O50)&aJ5
+*<$lj)B'V9+!2IA)]]k9)]Te7(Dmr'rY#JJ&J#E`%hALH!=TJ9%0m:N%1WjW%1`:F$4[LS%LimX%1E[S
+r<i]7$4@7?$Mt,3#RC_CrWiN0#l=l+#Qb59#58B%"pY;8"9\l3"pY&1!!`*"!X&W0qud!'p&t-m!!Mfo
+rWE9)!sIfirXo5F(&esR(E"&-(`=51rYYeV)]K[o(^(Wl(`++i)&jD2)B0Y8)]]q@+<MXF+!)C>)]0G/
+(`4#'',CHZ!"f,A!"f,A!Y,_OrXf&@!"f,?"qD.T%hK9^rXT5F%hB3_%hB0J%0?qG%/gP7$k3(B!"/Z2
+rX/Q0!=/u.#mLY@#m^eA#Q"c.#7(S(#4_rm"T&B""9\f/"9Sc!"9AT,kQLhr'bhDu(`+#-)&a;/)&aA3
+*#]V1()I_b('YQl(`!o*)>kBm*#ot>*ZH+@+!)C@*??+=)&X5,'c.W#',;/n')`IU'GD/p',(uj&eGWe
+&eYch',1<W!>,qA&crUV&H31A&.]9M%1E^U%1E[S$OdFQ$k3XE$iLM5$iUJ9$O[:L$iUJ5$iUM3#lk>2
+#m:M>#7(V5#64u-#Q=o3#6k>8"pG20#6"f*"p"l2rWE<,"U"u+"o8B$"o\`&"TS\f"o]&?&ebro'c.](
+)&X@l(^h3$)]9M1(_m`!'c-c^%i,rs(Ddo+)AsD3)]]qA*r[5a+<;C@+9!5b)]0G0)&F)(rY-(^'bh>s
+().Dr'GV;r()7Ms',2)m'DrOJ&eYij&J=sS"VD=X&J>`U&c3.=%fQn<%M&(>rX8i;$k*%C!t,JF$i121
+$iUM2$2b).#65&/#Q4i.#6tP2#Q4i/"U,#3r!!!&!=&l.#2]U_%gip`().K#(E",/)>tHn)&O,'&eYcg
+&eP`g',2)n'GVAu'c.Z')B'P5*W-uf*?H1A+<;F?)B0P4)uUZQ(]bEfr>#GN(`3/e!>QCL(BG6brY>YP
+()7Js'E&UH',2)Y&cNFB&HNFSr=9/F&.oKc&.]<_rXK2C%LrpX%1WmZrXK&A%LrpWrXJo;rX8c7rXA]4
+p'Ld+rWiT4#RLh5#QY/9q$.'-"pG28#Q"]+"U=r0hZj&j$P=!b&ebro()Ic))#Y<V(DIMq&eP]R%fd1?
+%gim\',2,q'GV?!)#bBR)]nu#rZE%$+!;XI*#fn<)]K\5(`4,0)&jJ4)&O2.rYc%[)B'J1(`=51rYYVM
+rYPPLrY5DKq%Wf@!tu=\'DW7=&-ELU&.eaP!tZ%V&H34=&-3:Oq[`Z9$4RCQ$k<aV%1EUQr<rE0!XfAC
+r<WQ3#RLh2#l=l)#5JK*#RCb##lY8d%hK9b',;5t(Ddo*)&X8-&eYcg%h0!Y%1EUP$k*UU%hB3a',)&q
+()If((`=85rYtq\,5r_g*uuCF*rR&r)B0V6)B0S6)&X>4)]Kb;*?,q9)]BY6)]J\nr>5hY)B'J1(`*r(
+)#Y9K'a#*_&eb-VrXo2ErY,VN&J>`k',(ukrXfPO'+tlh&.fEc'+trkrXf,ArXf/B&H!%B%LimX%1`4D
+r!WQ5r<`N2q[30+q[!'*!!rK/jTteo"V)%U&J5cW(Ddi(()I]!'+b]b%1N^R$4.%I$47.L%1W:H)A*Sp
+',)&r)&X8/*$-(?*?H=G+!)ID*ZlFEr>bq]*ZY.u#9"R%*?Q@E*W@#^)]]n<)B/So'-%o0)AsG3*#fe8
+)]BP3)&O2.)>t?]()I`%(D[`&(D[c$'bhA]'aYQg'bqDs',(ukrY#8ErY#JK'+trk&J=sQ!"\r<!>,qC
+&Glt?%LijUr=&c;%fQn?$k*LO%/gS-$Mau/#RKJrrXBVO$OmRW&J>cm()7T"'GD#g%LrmS$Ocn='*edL
+#mq"I$k3[W%hK9a&eu,t)#bBX)]Th=*#p"BrZ;Ch+WhdH*?H4Ar>Z4d)]Th<*$$(A*?6+?r#GhX)]AVo
+"rnR%*?H7@rYbeT)?(N\)&jJ4(`4#((Dlue%2]ou(DRVu'bqJt'GV>\'`\sG'a#-a',1<Y";MXc&ek3V
+$54!`&eYcg&.f?^q@<Z<%M'*K%KHt9$igb2$j7"J$k!IB$N1:k$N:>3$iUSB%hK6`'+krm'G;&X%L<IL
+#mU\>"U,,0#7:_B$47(I$k3XU%fQtG&ebur(`4//)]Kjt*s`u3+WhdI*?6'u)uU`X)]Kdr*<@-!rYu:b
+*$$"=*?,t;)]0Ro*WR;[*"!W)*$$"<)B9\7)Z:T\)Aj;/(`=/-(]>*R(D[`#()Iec('bQi'bh>q',CH]
+%Moiq'bhAu'b_2m'+trlq[s,F&.]9_&.]<N&-ECP%hAII!tGbK%JpP8$OdIC$NUYFq@!B4$fVL0$O[@N
+%Lip[&/#Tf&.f?]$jm=I"pP57rWE9+"U=o1'+"pO$k*IN%1NdX&J5Wi()@`*)?(Q^)BBk>+!)ID*#fgq
+*;g`d*??(=*#fk:)BBe<*Zc=Cr>cOk)B9b;*?,q=*??+>)]]tA*??-t)@%6'*#]_4(`E;k!Z;gkq\TPU
+(`*u(()7V`(]>*L'`AdG'EAmH'`AaH'`JaQ'GD,m&eP]g&J,NQ&c<1?&,m(<%h9'Z%1WmZ%Ls!Z%h9$Y
+%fQn<$k*%CjpV.p#7(VB$4@7O%K6kI&.]9\$jm:H"pP25!sAH(!!W<*!XAu:rX&Z6%/p\S%hK<e'bqK#
+(`F>3)&aJ5)]Te9)B0S5)]g!u)u^`[)&aG4)]BXo)[IH()]g">)]9Un)$q9&)]BY6*$$%>r>bq\*ZY.u
+"WA=!)B'Rn)@IK()]K\6)&O/,(E!,h"rA$j(D[f'r"]DM()7T#r=oAL(Dcra!#GPK!#5DG!YQ(Vq[iiB
+')W=I&eYcg%hK6_&H!%=%f6_7$ipeHj:)"o!XK#9rX&]7$k3+E#n.4O$4$nA"9\o'!s/W0"TAQ0#6kJ?
+#mq%JrX9eW%h]Kg'GVB#)B'J2)]9J1)B0V6*#]\5)]9P3)?(QM)&3u+)AsG4*$#t:)AsG1(Dn#,)B'P5
+r>Y_U$6:**)]BY7*$$"=rYl+\(`4,/)]K\7rYkbR!uMml(]G0N(`<2f$5aWt)&O5-()@Suq@s,I'GV;q
+rY,VO'+toi&eP`ir=f>I&eP`T&e#?_%h9*[%M'*^%hB0K%g!4N&*4;t#6P5<$4HhA#n%1M$4$k@"9\i(
+!]C,^!WrN-"9Sc0"U5,8"pbMA#RLhG$k<g[&J5]l'c%W%()Ro,(`=52)&X>0)&O/-)&O5.)#b<O)#bBU
+)AsD/)#b<P(`E;i"W&!m(Dmtd)%RW()]K\5)B0Y9)]Kb;*?>"sq\]JS)&X@l(^1cp(`=/-rYGeV)&aG5
+)&O4i(C1ip(Dn#+()7V`'a#-`',:EZ$PX<k'bh;q'GD,m')iOH'GD)kq[a&G&J,Ha&.oNe&cN=B&J=+9
+rWa,A"U,)8#mq%H#n.1K$4$h>"9\c.rW3*$!Vld"!s8Z0"T8KF#6tM>#7(\G%1WgW%1s6e&el&r(`=2.
+(Dmu,()I_`(\ngE('#*J('53f(]5-O(`E;h!uMgk)ZCTU(`F=l)$(WprYc.^)B0S4)&aA1)]K^p)[dN&
+)As>-(`+#+)&iJl!Z2dlq\]JQ)&aFm)$1]o)>t?R(`4&*rYGGI!#GJI#o"!c'+tok&eYfU')`CN&eYcg
+&.oKe&J5Qc&`sZ("q(P;"U##6#7(VA$4?b;"9el1!s8,r#Qb#-!WrQ.!sAN*!sJi4#Q=u?#mgtJ%1Wp\
+&eP]h',22t(&emM'bqK!(&\dH'GUN[!#5AE!#,;F%Mfir()If)(DR]#(Ddi&rYGSP)#b<Y(`*r(()If+
+)&X:h)$1]p)?(KO)%d]')&O/+(`4,.)AsA/(Dn#-rYc.^)&O2,(`F80(Ddqe)$Lio(Dmr(rYH.`(Ddi%
+'c%N!'GM8s'GM8t'`AaL()7Mt'E&OG&J>]grXe6'r<3?,!sA`1"o8H-"Tnl0!Wr?%!WW6$r;clurW*$$
+!W<'$!s/T'"9Sf2"pt87!XT2ArXB/F%h9'[&J>`k'E/UF&JG$S!tl1Y'E/UF&.naO%2'<d&eYij',2/s
+'bqG^'b1ok'GM8t().Ju()7W$(]G0M)>tBW(D[c&(`4&*rYP_R(`=4j(^1co(Ddo*rYYbS(`3#c%Mols
+(E")-(D[c$()@]$p_ElH(B,$K(B,$L()Hla$54*f'+trk&ebrmq[rlBjV%LprWE-&$3gY;#6k>7"9S],
+qZ6BjrW2ouqu[**"9er6#6"i-$N:D:$k<^V%hJUK!"]#>#nIRX&.f<^&.]9M&-WRU&.]9]r=Al=!"o2C
+"VVO^&ebrX&e5Qg'GD/q()7Pu'c%Q!(&esR'c.]''bqN$rY>JMr>#MN()7Z(rYYVNq\B>M'c%T&)#P0M
+)#b<R()@W#r=oDM'bhA](&es['c%N!'GD,o'bqDt'GM2q'`8XC'''Z(!s/N+"9&?-!sA`1"U"r1"8i2m
+!!!'!!!30%!;urr!W`B*rWEN2"U52:#RC_C$N1>5$k*%C!=K>8%0I"H$4Hb?#Rq4Q%1E[U%M8OJ"V2+R
+%hB9M&-`^Z&ePZe')iOL&ebrn'+trmrY#VQ'bh8o'GV;s()Hi`";DRd'c-c`#8S$g'bqK!(&emK'bqG^
+'`]$J(BbKi(Dmtf(AnsN()Ii*rYGkV(Ddf$()7T#(&\mN(D[f&(AegI'GUN[!#"H,q#Uj)!WrQ."Tnf.
+!r`5d!;QWr!Wr<&!!N9)!!`B,!sf2>#lY,4$4@1Lq[3N6$4.%Iq?d?5$OdIRrX8l:$OdIC%K$\L%1Wp]
+&.fEc&eYce%hTBb&J5WgrY,8F"VVO^&J5ZT'+,Ee&ebom'GV;s(&\jG'`]$F'a,3c'GVA]('>Bi(DZob
+$PsTo()Ri)(`*u*(]5$L'c$]`#8\-l()I`#(&AX,'E&"3!WE/u"9&?'!<</a!!30$!<*#s!Xo/5"9er3
+"9eu6#71_9#Rq"D#RLhE#RLbA#RC_BrX&Q0":5>>#mgM;":5AA$Ocq@(^g`\%1EXS$k*RS%Ls!Z%M'*_
+&J,Ne&J>!Rq[j&G'+toi&J>`T'*]$[&.oNf'E&UH',2,W'EAmC'F,?e',),t()Qrbr>#SP()@W#(`3/e
+$PaEl'bh;q&ebom'`JaH&ej:<r;uouq?$Wsh>dNWr;d$&!sA].rWE3)rWWE/"pXr0":,29#6t/4$3g_>
+"pY>;#RCY@rWiB-":5AA$4H\;#7CkH$k*RT%fQn?%M''[&,["<%fd1=%g!:R%fQt?%Ls'J&c!%@&J,QQ
+&c`UE')E7C'GM5[')iRF(&\gO'bqK!'GVAurY,MN'GV;r(&\jG'`f!_itD:lqZ-d#!<E9$!SmbP!>,A8
+!s/N+"9\l3"9\l3"pG/7q#pd'#5n]*#5\T%#5nc,#knZ)$3pqH$47.J$OcnAr='8I%hB*Y%LimY%h9'Y
+%1WmI%K-b=%1WjYrX]&?r=Jl;!>#h@&HrdZ&ebokrY#>G'G^N[r=]/Fr=]DJ&eP`h',2,Z'FGKe&ebrm
+'GM2o&a0l*!<E0#p]9"IrW*6*!<N<'!WiK&"9AT,q?.!)!sAc1"9nN&!!W<(rWN<,#5e`*#QP52#m(A=
+$2Xu1#6tM@rX/Q2!"AZ4!"Su;r=8Z5"qD+R&.]<_r=Jf;!##5B%h]Ke&J>]g&.fEd&eblk')iRD'`JgK
+'GD/X&c`UE')`F(')hq.!;llI!;Z]s!X&B&"9S]-!sJB$!!N6&!<N?$"8i9&!sAK)r<<$%"U>59#7(V1
+#Q>#2$4.(;$2t89$O[@O%1E[E$N^_F%K$V;%1NdW&,m(9%fd1?%g3FT%hK9N&H`RU&J=sQ";)7Z&J=^L
+r"8i>";;C\&JF:>quOh<quQcuquQWq!<E5u!WW8u!WW?#!rW5r"9Sf2"pOl.!!W<*"U,&6#6tP6#Q4o3
+#7(SA#mgM:oEkX-$OltC$4[LS%LrpV%1WjYrXJr>&H31B&.oHbr"8l=rX\r=!"\l:r=Al=jUo6-!W`<'
+q>pKqquHg"!r`6"!W`<&p]:ErrW<!"!!N6&r<**(q?-d%rW`<)r!!9/#6kD<q[!0+r<NE1$2t87#mgqF
+$2t;1$O@.M$k3[U%Ls$J%L!@Q%M00^rXSi:rX]5D%Ls!\&,6\;%hK<O&*=B$!P\X3!<<,p!<<,m!WE/u
+!W3#l"8rB%"8rB#"oAE&"oSW2#6tG<#6kA;#5ST&#Qb;<#lFu2$47.Lr!WH3!"Jl8!=]M9%f?h@&/#Qd
+%hJFF"V2(P%1Wj0%^lB:!<N6%!W<#n!<<,i!<WB)!<N-#q#^U"rWE*#qZ?p'!s8]*!sf&5"9er5"U520
+"oSZ)#Q4r,#lk>2$2t22$4Hh?q?m<4%/LG4%fHh<%M''J%gNRT%h9$X%LrCI!=]M%%\Ne&!<MurrW*!#
+pAk6qr<)is$j-P5!s/Q,!WrN+!s8H(qulcu!!`?)q??s*#Q>#.#65&+#m1MB$4Hh?!XfDEq$[<6$k3(D
+r<rZ8r!if<$k3^1%@@.l!<<,r!<<2q!<<3#!VQQr!s/Q""8r?'!sAN*!X/`1r<<-&r<33+#6"i."pb)4
+p^%$0$4@4>$NLV3$NUYErXJ`5j:-tHn,WRl!Wi6$!<E5u!X8`.!s/N+!r)lm"9J`0"T8N""p>/8"U,,0
+#65&.#6Y;<#mq(<$31D2$N:><$4@7M$OdCN$k;D/LB%>U!Vl]u!<E0$!;$<a!qHHi"Si3("pG/5"TAT&
+"p+r4#Q>#3#RC_Cq?d<2#RUmu$@r3S!!rZ,!!*'"!<E0#q#LHsp&Y!kr<)ouqu[!'"9nZ*!<i]("U5/8
+#6kA9#5JK,#RC_C$Mk(l#_<!J!<*#o!:^*[!rN/u"9AT,r<2s#rWWB,"o\].#6kD<rWWB.#lG"k$@r3B
+!!<6&!!*!!q#L'gp]C3mp]U6n!X8i4q??p)j9U;:f)YCCn,iIho`Y0rqZ['+#j;ME!8%;N!WE'"!<Dfo
+ncJ^k!<`Q%"8N'$!sAc*"m?/A!7LoJ!Vl`d!VQQt!sA]."Si/u"TAK'"Qfl=!6G6?!<<,j!<E6&q?$0h
+!X&T-k6->9^&[R%q?$Qs!<`Pd"+^HZ!;-Be!WrN-!s@]fJH2tU!W`<%p&Y-o!!E-#jo^/7WrVeniW=Z2
+W;ubq!!)ruj8sl4U]C/j!<N>d!J(6D!9!s0!1X&N!J(6>!9XB6!.b-$!.b-$!.b-$!.b-$!1<iJ!It
+~>
+gr
+gr
+
+0 sg
+%%IncludeResource: font Helvetica
+/Helvetica /ISOLatin1Encoding 480 FMSR
+
+6979 8149 mt 
+(frequency) s
+%%IncludeResource: font Helvetica
+/Helvetica /ISOLatin1Encoding 120 FMSR
+
+2080 7639 mt 
+( ) s
+13955  682 mt 
+( ) s
+4 w
+DO
+SO
+6 w
+2097 7596 mt 13970 7596 L
+2097  640 mt 13970  640 L
+2097 7596 mt 2097  640 L
+13970 7596 mt 13970  640 L
+2097 7596 mt 13970 7596 L
+2097 7596 mt 2097  640 L
+2120 7596 mt 2120 7477 L
+2120  640 mt 2120  758 L
+2087 7741 mt 
+(0) s
+3598 7596 mt 3598 7477 L
+3598  640 mt 3598  758 L
+3465 7741 mt 
+(1000) s
+5077 7596 mt 5077 7477 L
+5077  640 mt 5077  758 L
+4944 7741 mt 
+(2000) s
+6555 7596 mt 6555 7477 L
+6555  640 mt 6555  758 L
+6422 7741 mt 
+(3000) s
+8034 7596 mt 8034 7477 L
+8034  640 mt 8034  758 L
+7901 7741 mt 
+(4000) s
+9512 7596 mt 9512 7477 L
+9512  640 mt 9512  758 L
+9379 7741 mt 
+(5000) s
+10990 7596 mt 10990 7477 L
+10990  640 mt 10990  758 L
+10857 7741 mt 
+(6000) s
+12469 7596 mt 12469 7477 L
+12469  640 mt 12469  758 L
+12336 7741 mt 
+(7000) s
+13947 7596 mt 13947 7477 L
+13947  640 mt 13947  758 L
+13814 7741 mt 
+(8000) s
+2097 7130 mt 2215 7130 L
+13971 7130 mt 13852 7130 L
+1859 7174 mt 
+(-50) s
+2097 6270 mt 2215 6270 L
+13971 6270 mt 13852 6270 L
+1859 6314 mt 
+(-40) s
+2097 5409 mt 2215 5409 L
+13971 5409 mt 13852 5409 L
+1859 5453 mt 
+(-30) s
+2097 4548 mt 2215 4548 L
+13971 4548 mt 13852 4548 L
+1859 4592 mt 
+(-20) s
+2097 3687 mt 2215 3687 L
+13971 3687 mt 13852 3687 L
+1859 3731 mt 
+(-10) s
+2097 2826 mt 2215 2826 L
+13971 2826 mt 13852 2826 L
+1996 2870 mt 
+(0) s
+2097 1965 mt 2215 1965 L
+13971 1965 mt 13852 1965 L
+1929 2009 mt 
+(10) s
+2097 1105 mt 2215 1105 L
+13971 1105 mt 13852 1105 L
+1929 1149 mt 
+(20) s
+2097 7596 mt 13970 7596 L
+2097  640 mt 13970  640 L
+2097 7596 mt 2097  640 L
+13970 7596 mt 13970  640 L
+1 sg
+0 6958 240 0 0 -6958 14151 7597 4 MP
+PP
+-240 0 0 6958 240 0 0 -6958 14151 7597 5 MP stroke
+gs 14151 640 241 6958 rc
+/mwscm { [/Indexed /DeviceRGB 63
+  <
+    00008f 00009f 0000af 0000bf 0000cf 0000df 0000ef 0000ff 000fff 001fff 
+    002fff 003fff 004fff 005fff 006fff 007fff 008fff 009fff 00afff 00bfff 
+    00cfff 00dfff 00efff 00ffff 0fffef 1fffdf 2fffcf 3fffbf 4fffaf 5fff9f 
+    6fff8f 7fff7f 8fff6f 9fff5f afff4f bfff3f cfff2f dfff1f efff0f ffff00 
+    ffef00 ffdf00 ffcf00 ffbf00 ffaf00 ff9f00 ff8f00 ff7f00 ff6f00 ff5f00 
+    ff4f00 ff3f00 ff2f00 ff1f00 ff0f00 ff0000 ef0000 df0000 cf0000 bf0000 
+    af0000 9f0000 8f0000 7f0000 
+  >
+] setcolorspace } bdef mwscm
+gs np 14151 640 mt 0 6957 rl 240 0 rl 0 -6957 rl cp c np
+[240 0 0 6957 14151 640] cc
+<< % Image dictionary
+  /ImageType 1
+  /Width 1 /Height 64
+  /BitsPerComponent 8
+  /Decode [0 255]
+  /ImageMatrix [1.000000 0 0 64.000000 0 0]
+  /DataSource currentfile
+  /ASCII85Decode filter
+  /RunLengthDecode filter
+>>
+image
+5<h=p4?GSa3&``Q1c$mA0J>%1/1W2!-mp>f,U4KV+<MXF*#fe6(`*r&'GD)k&.]6[$k!CK#R:P;"9S]+
+!.Y
+~>
+gr
+gr
+
+4 w
+DO
+SO
+6 w
+0 sg
+14151 7597 mt 14391 7597 L
+14151  639 mt 14391  639 L
+14151 7597 mt 14151  639 L
+14391 7597 mt 14391  639 L
+14151 7597 mt 14391 7597 L
+14391 7597 mt 14391  639 L
+14391 7597 mt 14321 7597 L
+14151 7597 mt 14220 7597 L
+14425 7641 mt 
+(0) s
+14391 5277 mt 14321 5277 L
+14151 5277 mt 14220 5277 L
+14425 5321 mt 
+(0.05) s
+14391 2958 mt 14321 2958 L
+14151 2958 mt 14220 2958 L
+14425 3002 mt 
+(0.1) s
+14391  639 mt 14321  639 L
+14151  639 mt 14220  639 L
+14425  683 mt 
+(0.15) s
+14151 7597 mt 14391 7597 L
+14151  639 mt 14391  639 L
+14151 7597 mt 14151  639 L
+14391 7597 mt 14391  639 L
+
+end %%Color Dict
+
+eplot
+%%EndObject
+
+epage
+end
+
+showpage
+
+%%Trailer
+%%EOF

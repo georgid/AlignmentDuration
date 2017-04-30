@@ -1,0 +1,18 @@
+\begin{thebibliography}{1}
+
+\bibitem{A1}
+A.B. Smith, C.D. Jones, and E.F. Roberts,
+\newblock ``Article title,''
+\newblock {\em Journal}, vol. 1, no. 1, pp. 1--10, Month Year.
+
+\bibitem{P1}
+C.D. Jones, E.F. Roberts, and A.B. Smith,
+\newblock ``Paper title,''
+\newblock in {\em Proc. Conference Name}, Location, Year, pp. 1--10.
+
+\bibitem{B1}
+E.F. Roberts, A.B. Smith, and C.D. Jones,
+\newblock {\em Book Title},
+\newblock Publisher, Year.
+
+\end{thebibliography}

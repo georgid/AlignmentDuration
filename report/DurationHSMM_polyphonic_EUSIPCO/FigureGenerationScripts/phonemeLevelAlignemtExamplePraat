@@ -1,0 +1,12 @@
+cd $recordingDir
+copy htkAligned from /tmp to $recordingDir (because wav fie needed)
+
+# phone-level HMM
+change recName.TextGrid to recName.TextGrid2
+python /Users/joro/Documents/Phd/UPF/voxforge/myScripts/AlignmentEvaluation/mlf2Praat.py htkAligned
+
+# phone-level HSMM: 
+uncomment in doitOneChunk: #     decoder.lyricsWithModels.printWordsAndStatesAndDurations(decoder.path)
+TODO: write script to put phoneme into a tsv file and call tab2Praat.py 
+
+PRaat -> merge tiers 

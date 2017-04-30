@@ -1,0 +1,631 @@
+% -----------------------------------------------
+% Template for SMC 2012
+% adapted from the template for SMC 2011, which was adapted from that of SMC 2010
+% -----------------------------------------------
+
+\documentclass{article}
+\usepackage{smc2015}
+\usepackage{times}
+\usepackage{ifpdf}
+\usepackage[english]{babel}
+\usepackage{cite}
+
+%%%%%%%%%%%%%%%%%%%%%%%% Some useful packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%% See related documentation %%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath} % popular packages from Am. Math. Soc. Please use the 
+\usepackage{amssymb} % related math environments (split, subequation, cases,
+\usepackage{amsfonts}% multline, etc.)
+\usepackage{bm}      % Bold Math package, defines the command \bf{}
+\usepackage{paralist}% extended list environments
+%%subfig.sty is the modern replacement for subfigure.sty. However, subfig.sty 
+%%requires and automatically loads caption.sty which overrides class handling 
+%%of captions. To prevent this problem, preload caption.sty with caption=false 
+%\usepackage[caption=false]{caption}
+%\usepackage[font=footnotesize]{subfig}
+
+
+%user defined variables
+\def\papertitle{MODELING OF PHONEME DURATIONS FOR ALIGNMENT BETWEEN POLYPHONIC AUDIO AND LYRICS}
+\def\firstauthor{Georgi Dzhambazov}
+\def\secondauthor{Xavier Serra}
+\def\thirdauthor{Third author}
+
+\def\pathDiagrams{/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_EUSIPCO/}
+
+% adds the automatic
+% Saves a lot of ouptut space in PDF... after conversion with the distiller
+% Delete if you cannot get PS fonts working on your system.
+
+% pdf-tex settings: detect automatically if run by latex or pdflatex
+\newif\ifpdf
+\ifx\pdfoutput\relax
+\else
+   \ifcase\pdfoutput
+      \pdffalse
+   \else
+      \pdftrue
+\fi
+
+\ifpdf % compiling with pdflatex
+  \usepackage[pdftex,
+    pdftitle={\papertitle},
+    pdfauthor={\firstauthor, \secondauthor, \thirdauthor},
+    bookmarksnumbered, % use section numbers with bookmarks
+    pdfstartview=XYZ % start with zoom=100% instead of full screen; 
+                     % especially useful if working with a big screen :-)
+   ]{hyperref}
+  %\pdfcompresslevel=9
+
+  \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are and their extensions so 
+  %you won't have to specify these with every instance of \includegraphics
+  \graphicspath{{./figures/}}
+  \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+
+  \usepackage[figure,table]{hypcap}
+
+\else % compiling with latex
+  \usepackage[dvips,
+    bookmarksnumbered, % use section numbers with bookmarks
+    pdfstartview=XYZ % start with zoom=100% instead of full screen
+  ]{hyperref}  % hyperrefs are active in the pdf file after conversion
+
+  \usepackage[dvips]{epsfig,graphicx}
+  % declare the path(s) where your graphic files are and their extensions so 
+  %you won't have to specify these with every instance of \includegraphics
+  \graphicspath{{./figures/}}
+  \DeclareGraphicsExtensions{.eps}
+
+  \usepackage[figure,table]{hypcap}
+\fi
+
+%setup the hyperref package - make the links black without a surrounding frame
+\hypersetup{
+    colorlinks,%
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=black
+}
+
+
+% Title.
+% ------
+\title{\papertitle}
+
+% Authors
+% Please note that submissions are NOT anonymous, therefore 
+% authors' names have to be VISIBLE in your manuscript. 
+%
+% Single address
+% To use with only one author or several with the same address
+% ---------------
+\oneauthor
+  {\firstauthor, \secondauthor} {Music Technology Group \\  Universitat Pompeu Fabra,  \\ Barcelona, Spain \\%
+    {\tt \href{mailto:georgi.dzhambazov@upf.edu}{\{georgi.dzhambazov,xavier.serra\}@upf.edu}}}
+  
+%Two addresses
+%--------------
+% \twoauthors
+%   {\firstauthor} {Affiliation1 \\ %
+%     {\tt \href{mailto:author1@smcnetwork.org}{author1@smcnetwork.org}}}
+%   {\secondauthor} {Affiliation2 \\ %
+%     {\tt \href{mailto:author2@smcnetwork.org}{author2@smcnetwork.org}}}
+
+% Three addresses
+% --------------
+ % \threeauthors
+ %   {\firstauthor} {Affiliation1 \\ %
+ %     {\tt \href{mailto:author1@smcnetwork.org}{author1@smcnetwork.org}}}
+ %   {\secondauthor} {Affiliation2 \\ %
+ %     {\tt \href{mailto:author2@smcnetwork.org}{author2@smcnetwork.org}}}
+ %   {\thirdauthor} { Affiliation3 \\ %
+ %     {\tt \href{mailto:author3@smcnetwork.org}{author3@smcnetwork.org}}}
+
+
+% ***************************************** the document starts here ***************
+\begin{document}
+%
+\capstartfalse
+\maketitle
+\capstarttrue
+%
+\begin{abstract}
+In this work we propose how to modify a standard approach to text-to-speech alignment
+for solving the problem of alignment of lyrics and singing voice. To this end we model the duration of phonemes, specific to the case of singing.
+We rely on a duration-explicit hidden Markov model (DHMM) phonetic
+recognizer based on mel frequency cepstral coefficients
+(MFCCs), which are extracted in a way robust to background instrumental sounds. The proposed approach is tested on polyphonic audio from the classical
+Turkish music tradition in two settings: with and without modeling phoneme durations. Phoneme durations are inferred from sheet music.
+In order to assess the impact of the polyphonic setting, alignment is evaluated as well on an acapella
+dataset, compiled especially for this study. Results show that the explicit modeling of phoneme durations improves alignment
+accuracy by absolute 10 percent on the level of lyrics lines (phrases). Comparison to
+ state-of-the-art aligners for other languages indicates the potential of the proposed method.
+\end{abstract}
+%
+
+
+\section{Introduction}
+
+\label{sec:intro}
+Lyrics are one of the most important aspects
+of vocal music. When a performance is heard, most listeners
+will follow the lyrics of the main vocal melody. The goal of automatic lyrics-to-audio alignment is to generate a temporal relationship between textual lyrics and sung audio. In this particular work, the goal is to detect the start and end times of every phrase from lyrics. 
+
+The problem of lyrics-to-audio alignment has inherent relation to text-to-speech
+alignment. For spoken utterances phonemes have relatively similar
+duration across speakers. Unlike that, in singing durations of phoneme
+(especially vowels) have higher variation \cite{kruspekeyword}. When
+being sung, vowels are prolonged according to musical note values,
+which in term have intrinsic relation to musical meter (e.g. duration
+could align with beats in a musical bar). 
+
+Another aspect that distinguishes speech from music is that unlike
+clean speech, singing voice is accompanied by background instruments.
+Instrumental accompaniment and non-vocal segments can deteriorate
+significantly the alignment accuracy.
+
+The goal of this study is to test the hypothesis that extending a
+state-of-the-art system for automatic lyrics-to-audio alignment with
+modeling of phoneme durations, can improve its accuracy. More specifically,
+we aim to show that durations of vocals (inferred from musical score)
+can guide the recognition process in cases when it looses track in
+polyphonic audio. Such guidance can be compared to the way modeling
+prosodic rules helps in automatic speech understanding. 
+
+While being aided by sheet music, our modeling approach allows at
+the same time room for certain temporal flexibility to handle cases
+of expressive singing, in which vocals are sustained in a way not
+obeying the reference sheet music. The proposed approach was tested
+on polyphonic audio from the classical Turkish tradition which is
+characterized by a high degree of expressive singing, thus providing
+challenging material with versatile temporal deviations.  
+
+
+\section{Related Work}
+
+To date most of the studies of automatic lyrics-to-audio alignment
+exploit phonetic acoustic features and state-of-the-art work is based
+on a phoneme recognizer \cite{fujihara2011lyricsynchronizer,Mesaros96automaticalignment}.
+
+An example of such a system \cite{fujihara2011lyricsynchronizer}
+relies on hidden Markov model (HMM) and was tested on Japanese popular
+music. To reduce the spectral content of background instruments, the
+authors perform automatic segregation of the vocal line. Then Viterbi
+forced alignment \cite{rabiner1989tutorial} is run utilising mel
+frequency cepstral coefficients (MFCCs) extracted from the vocal-only
+signal. In both \cite{fujihara2011lyricsynchronizer} and \cite{Mesaros96automaticalignment}
+the phoneme models are trained on speech and later adapted to singing
+voice. This is necessary because of the lack of a big enough training
+singing voice corpus. In \cite{fujihara2011lyricsynchronizer} additionally
+an adaptation to the voice of a particular singer is carried out.
+
+
+In other works the duration of the lyrics has been applied as a reinforcing
+cue: In \cite{wang2004lyrically} relative estimated durations are
+inferred directly from textual lyrics. The estimation process is done
+based on supervised training on singing voice. 
+
+
+
+
+A common-occurring drawback of HMMs is that their capability to model
+exact state durations is restricted. The wait time in a state is implicitly
+set to a geometric distribution (derived from the self-transition
+likelihood). Duration is usually modeled by duration-explicit hidden
+Markov models (DHMM) (a.k.a. hidden semi-Markov models). In DHMMs
+the underlying process is allowed to be a semi-Markov chain with variable
+duration of each state \cite{yu2010hidden}. Each state in turn can
+be assigned any statistical distribution. DHMMs have been shown to
+be successful for modeling chord durations in automatic chord recognition
+\cite{chen2012chord}. 
+
+
+\section{Proposed System}
+
+\begin{figure}
+\begin{minipage}[b]{1\linewidth}%
+\centering  \centerline{\includegraphics[width=1\columnwidth]{\pathDiagrams systemOverview}}{\small{}\medskip{}
+}%
+\end{minipage} \protect\caption{Overview of the modules of the proposed approach. Leftmost column
+represents audio preprocessing steps, while the middle column shows
+how durations are modeled. }
+
+
+\label{Diagram}
+\end{figure}
+
+
+Similar to \cite{fujihara2011lyricsynchronizer} in this work we develop
+a phoneme-recognizer-based forced alignment employing the Viterbi
+algorithm \cite{rabiner1989tutorial} to decode the most optimal state
+sequence. %
+
+
+We have adopted the idea of \cite{chen2012chord} not to explicitly
+add states for durations in the model, but instead to extend the Viterbi
+decoding to handle duration of states. For brevity in the rest of
+the paper our model will be referred to as DHMM.
+
+Figure \ref{Diagram} presents an overview of the proposed system.
+An audio recording and its corresponding score are input. Relying
+on HMMs of phonemes the DHMM returns start and end timestamps of aligned
+lyrical phrases.
+
+\textcolor{black}{First an audio recording is manually divided into
+sections  (e.g. verse, chorus) as indicated in the score, whereby
+instrumental-only sections are discarded. All further steps are performed
+on each audio section. If we had used automatic segmentation instead,
+potential erroneous lyrics and durations could have biased the comparison
+of a baseline system and DHMM. As we focus on evaluating the effect
+of DHMM, manual segmentation is preferred.}
+
+
+\subsection{Vocal activity detection (VAD)}
+
+Next a predominant singing voice detection (a.k.a. vocal activity
+detection) method is applied on each section
+to attenuate the spectral content from accompanying instruments, \textcolor{black}{because
+they have} negative effect on the alignment. We utilize a method that performs detection
+of segments with predominant singing voice and in the same time melody
+transcription for the detected segments \cite{salamon2012melody}. 
+
+\subsubsection{Vocal resynthesis}
+
+For the regions with predominant vocal, based on the extracted melodic
+contours and a set of peaks in the original spectrum, the vocal content is resynthesized as separate audio using
+a harmonic model \cite{Serra89asystem}. 
+A problem in the resynthesis are spectral peaks of the singing voice, for which there is overlap with peaks from the spectrum of a background instrument. 
+These distorted peaks lead to deformation of the original voice timbre. To detect these peaks we apply the main-lobe matching technique \cite{rao2010vocal}. The detected spectral peaks have been excluded from the harmonic series in the harmonic model.\footnote{In fact, resynthesis is not an obligatory step, but was performed in order to allow to track the intelligibility of different vocals after the application of the vocal detection and main-lobe matching. }   More details and examples of the resynthesis
+step can be found in \cite{dzhambazov2014automatic}.
+
+\subsection{Reading score durations\label{sub:Reading-score-durations}}
+
+For each lyrics syllable a reference duration is derived from the
+values of its corresponding musical notes. \textcolor{black}{Then
+the reference duration is spread among its constituent phonemes, whereby
+consonants are assigned constant duration and the rest is assigned
+to the vowel.}
+
+Each phoneme is modeled by a 3-state HMM. The three states represent the initial, sustain and decay phase of the phoneme acoustics.  A lookup
+table of reference durations $R_{i}$ for each state $i$ is constructed from the reference phoneme durations.\footnote{We used the simple strategy of assigning equal duration to each of the three states within a phoneme} We assume
+that the duration $d$ for a state $i$ may vary according to a normal
+distribution $P_{i}(d)$ with mean at the reference duration $d=R_{i}$
+and a global for all phonemes standard deviation $\sigma$. To align a given recording the score-inferred
+lengths are linearly rescaled to match its musical tempo. In this
+work the unit of $R_{i}$ is number of acoustic frames. 
+
+
+
+
+\subsection{Duration-explicit HMM alignment}
+
+For each phoneme a HMM is trained from a corpus of turkish speech
+utilizing MFCCs. For given lyrics, the words are expanded to phonemes
+based on grapheme-to-phoneme rules for Turkish \cite[Table 1]{Salor2007580}
+and the trained HMMs are concatenated into a phoneme network.
+The network is then aligned to the MFCC features, extracted from the
+resynthesized audio signal, by means of the duration-explicit decoding.
+In what follows we describe a variation of Viterbi decoding method,
+in which maximization is carried over the most likely duration for
+each state. The decoding is adapted from the procedure described in
+\cite{chen2012chord}. Let us define: 
+\begin{description}
+\item [{$R_{max}:$}] $\max_{i}(R_{i})+\sigma$
+\item [{$b_{i}(O_{t}):$}] observation probability for state $i$ for feature
+vector $O_{t}$ (complying with the notation of \cite{rabiner1989tutorial})\textcolor{red}{} 
+\item [{$\delta_{t}(i):$}] probability for the path with highest probability
+ending in state \emph{i} at time \emph{t} (comply with the notation
+of \cite[III. B]{rabiner1989tutorial}))
+\end{description}
+
+
+
+
+
+\subsubsection{Recursion}
+
+For $R_{max}<t\leq T$
+
+\begin{eqnarray}
+\delta_{t}(i) & = & \max_{d}\{\delta_{t-d}(i-1).\nonumber \\
+ &  & P_{i}(d)^{\alpha}\thinspace[B_{t}(i,d)]^{1-\alpha}\}\label{eq:decoding}
+\end{eqnarray}
+
+
+where 
+\begin{equation}
+B_{t}(i,d)=\Pi_{s=t-d+1}^{t}b_{i}(O_{s})
+\end{equation}
+ is the observation probability of staying $d$ frames in state $i$
+until frame $t$. The domain of $d$ is $\left(\max\{R_{i}-\sigma,1\},R_{i}+\sigma)\right)$ and complies to a normal distribution, but is reduced for states
+with reference duration $R_{i}<\sigma$. %
+
+
+A duration back-pointer is defined as
+\begin{eqnarray}
+\chi_{t}(i) & = & \arg\max_{d}\{\delta_{t-d}(i-1).\nonumber \\
+ &  & P_{i}(d)^{\alpha}\thinspace[B_{t}(i,d)]^{1-\alpha}\}\label{eq:backpointer}
+\end{eqnarray}
+
+
+Note that in forced alignment the source state could be only the previous
+state $i-1$. %
+
+
+
+To be able to control the influence of the duration we have introduced
+a weighting factor $\alpha$. Note that setting $\alpha$ to zero
+is equivalent to using a uniform distribution for $p_{i}(d)$.
+
+
+
+
+
+
+
+\subsubsection{Initialization}
+
+For $t\leq R_{max}$
+
+\begin{eqnarray}
+\delta_{t}(i) & = & \max\{\delta_{t}(i)^{*},\thinspace\kappa_{t}(i)\}\label{eq:deltaStarOrKappa}
+\end{eqnarray}
+
+
+where a reduced-duration delta $\delta_{t}(i)^{*}$ is defined in
+the same way as in \eqref{eq:decoding} but 
+\begin{equation}
+d\in\begin{cases}
+\varnothing, & t\le R_{i}-\sigma\\
+(R_{i}-\sigma,\min\{t-1,R_{i}+\sigma\}), & else
+\end{cases}
+\end{equation}
+ reduces the duration to $t-1$ when $t<R_{i}+\sigma$.  Lastly the probability of staying at initial state $i$ at time $t$
+is defined as: 
+\begin{equation}
+\kappa_{t}(i)=\pi_{i}P_{i}(t){}^{\alpha}[\Pi_{s=1}^{t}(O_{s})]^{1-\alpha}
+\end{equation}
+ for $t\in(1,R_{i}+\sigma)$.
+
+
+\subsubsection{Backtracking}
+Finally the decoded state sequence is derived by backtracking starting
+at the last state $N$ and switching to a source state a number of
+$d=\chi_{t}(i)$ frames ahead according to the backpointer from \eqref{eq:backpointer}.
+
+
+\section{Experimental setup}
+
+Alignment is performed on each manually divided audio section and
+results are reported per recording (one total for its sections).\footnote{To assure reproducibility of this research we publish source code at \url{https://github.com/georgid/AlignmentDuration}}
+
+To assess the benefit of duration modeling for alignment a comparison
+to a baseline system with Viterbi decoding with no state durations  (as proposed by \cite{rabiner1989tutorial} ) is conducted.
+We present results for the most optimal value of $\alpha=0.97$. It was found
+by minimizing the alignment error (see section \ref{sub:Evaluation-metric})
+on a separate development dataset of 20 minutes Turkish acapella recordings.
+To assure optimality we aligned on word-level ground truth.
+
+To train the speech model the HMM Toolkit (HTK) \cite{young1993htk}
+is employed. The acoustic properties (most importantly the formant
+frequencies) of spoken phonemes can be induced by the spectral envelope
+of speech. To this end, we utilise the first 12 MFCCs and their delta
+to the previous time instant.
+
+A 3-state HMM model for each of 38 Turkish phonemes is trained, plus
+a silent pause model. For each state a 9-mixture Gaussian distribution
+is fitted on the feature vector. 
+
+
+
+\subsection{Datasets}
+
+The test dataset consists of 12 single-vocal recordings of 9 compositions with accompaniment with total duration of \textcolor{black}{19:00
+minutes}\footnote{Dataset is available at \url{http://compmusic.upf.edu/turkish-sarki}}.  The compositions are drawn from the CompMusic corpus of classical Turkish Makam repertoire \cite{uyar2014corpus_dlfm}. Scores are provided in the machine-readable
+\emph{symbTr} format \cite{karaosmanouglu2012turkish}. 
+
+\textcolor{black}{Additionally a separate acapella dataset of the
+same 12 recordings sung by professional singers has been recorded especially
+for this study. It can be considered a vocal-track-only version of
+the original polyphonic}\textcolor{green}{{} }dataset\footnote{Dataset is available at \url{http://compmusic.upf.edu/turkish-makam-acapella-sections-dataset}}. {Evaluation
+on the acapella corpus was conducted in order to assess the impact
+of the vocal extraction step.}\textcolor{red}{{} }
+
+Each song section was manually annotated into musical phrases as proposed
+by  {{} \cite{karaosmanouglu2014symbolic}}. A musical
+phrase usually corresponds to a lyrical line. If a phrase boundary
+splits a word we have modified it to include the complete word. \textcolor{black}{Short
+instrumental motives have not been excluded from the phrases. }Furthermore
+we split or merged some melodic phrases so that phrases within a recording
+have roughly the same number of musical bars (1 or 2). Table 1 presents
+statistics about phrases. 
+
+
+
+
+\begin{table}
+\begin{centering}
+{\small{}}\global\long\def\arraystretch{1.2}
+{\small{} }%
+\begin{tabular}{|l|l|l|}
+\hline 
+\textbf{total \linebreak  \#sections} & \textbf{\#phrases per section} & \textbf{section duration}\tabularnewline
+\hline 
+{\small{}75} & {\small{} 2 to 5} & 7-20 seconds\tabularnewline
+\hline 
+\end{tabular}
+\par\end{centering}{\small \par}
+
+{\small{}\vspace*{-0.3cm}
+ \protect\caption{Section and phrase statistics for test dataset.}
+}{\small \par}
+
+{\small{}\label{tab:dataset-stats} }%
+
+\end{table}
+
+
+
+\subsection{Evaluation metrics\label{sub:Evaluation-metric}}
+
+\textcolor{black}{Alignment is evaluated in terms of alignment accuracy
+(AA) as the percentage of duration of correctly aligned regions from
+total audio duration (see \cite[Fig.9]{fujihara2011lyricsynchronizer}
+for an example). }A value of 100 means perfect matching of phrase
+boundaries\textcolor{black}{. We report as well the mean of the alignment error (AE): it measures the absolute error (in seconds) at the start and end timestamp
+of a phrase. }
+
+We define a metric \emph{musical score in-sync} (MSI) to measure the
+approximate degree to which a singer performs a recording in synchronization
+with note values indicated in the musical score. Thus low accuracy
+of MSI indicates a higher temporal deviation from musical score. We
+compute\emph{ }MSI per a recording as the AA of score-inferred reference
+durations $R_{i}$ (defined in section \ref{sub:Reading-score-durations})
+compared to ground-truth, as if they were results after alignment.
+
+
+
+\textcolor{red}{}
+
+
+
+
+\section{Results}
+
+\begin{table}
+\begin{centering}
+{\small{} }%
+% \begin{tabular}{>{\raggedright}p{0.38\columnwidth}>{\centering}p{0.25\columnwidth}>{\centering}p{0.25\columnwidth}}
+\begin{tabular}{|l|l|l|}
+\hline 
+\textbf{\small{}System variant} & \textbf{\small{} }\linebreak\textbf{\small{ } accuracy}{\small{} } & \textbf{\small{}}\linebreak\textbf{\small{} error}{\small{} }\tabularnewline
+\hline 
+musical score in-sync & 88.14 & 0.32\tabularnewline
+\hline 
+HMM polyphonic & 67.46 & 1.04\tabularnewline
+DHMM polyphonic & 77.74 & 0.63\tabularnewline
+DHMM acapella & 90.04 & 0.26\tabularnewline
+\hline 
+HMM+adaptation \cite{Mesaros96automaticalignment} & - & 1.4\tabularnewline
+HMM+\linebreak singer adaptation \cite{fujihara2011lyricsynchronizer} & 85.2 & -\tabularnewline
+\hline 
+\end{tabular}
+\par\end{centering}{\small \par}
+
+{\small{}\vspace*{-0.3cm}
+ \protect\caption{Alignment accuracy (in percent) for musical score in-sync; different
+system variants: baseline HMM and DHMM; state-of-the-art for other
+languages. Alignment accuracy is reported as total for all recordings.
+Additionally the total mean phrase alignment error (in seconds) is
+reported}
+}{\small \par}
+
+\label{resultsTable}
+\end{table}
+
+
+Table 2 presents comparison of the proposed DHMM system performance
+and a baseline HMM system. It can be observed that modeling of note
+values with DHMM increases HMM accuracy by 10 absolute percent. One
+reason for this are cases of long vocals, in which HMM switches to the next phoneme prematurely. One reason for this might be that the HMM is trained on speech and cannot stay long enough in
+a given state. In contrast, the duration-explicit decoding allows
+picking the optimal duration (which can be traced in an example in
+figure \ref{example-of-decoded-Praat}). 
+\begin{figure*}
+\begin{minipage}[t]{1\columnwidth}%
+\centering\includegraphics[width=0.8\paperwidth,height=0.3\textheight]{\pathDiagrams scatterCorrelation}%
+\end{minipage}
+
+\protect\caption{Comparison between results from DHMM (for both polyphonic and acapella)
+and baseline HMM. The metric used is alignment accuracy. A connected triple
+of shapes represents results for one recording. Results are ordered
+according to\emph{ musical score in-sync }(on horizontal axis)}
+
+
+\label{correlationGraph}
+\end{figure*}
+
+
+\textcolor{red}{\emph{}}%
+
+
+Figure \ref{correlationGraph} allows a glance at results per recording,
+ordered according to MSI.\footnote{Per-recording results are published at \url{https://drive.google.com/file/d/0B4bIMgQlCAuqY3hKc25WTm9kTEk/view?usp=sharing}} . It can be observed that DHMM performs
+consistently better than the baseline (with some exceptions of where
+accuracy is close). Unlike the relatively stable accuracy for the
+acapella case, when background instruments are present, the accuracy
+variates more among recordings. 
+\begin{figure}
+\centering\includegraphics[width=1\columnwidth]{../DurationHSMM_polyphonic/KiseyeZeminPhoneLevel}
+
+\protect\caption{Example of decoded phonemes. \emph{very top}: resynthesized spectrum;\emph{
+upper level}: ground truth, \emph{middle level}: HMM; \emph{bottom
+level}: DHMM;\emph{ }(excerpt from the recording 'Kimseye etmem \c{s}ikayet'
+by Bekir Unluater). Notice that no spectrum is resynthesized for regions with unvoiced consonants.}
+\textcolor{blue}{\label{example-of-decoded-Praat}}
+\end{figure}
+
+
+We compare our alignment results as well to the best hitherto alignment systems: one for English pop
+songs \cite{Mesaros96automaticalignment} and one for Japanese pop \cite{fujihara2011lyricsynchronizer}.
+These are abbreviated in table 2 respectively as \emph{HMM+adaptation
+}and \emph{HMM+singer adaptation}. In these works alignment is evaluated
+also on the \textcolor{black}{level of a lyrical line/phrase.} Except
+for the duration-explicit decoding scheme, our approach differs from
+both works essentially in that they conduct speech-to-singing-voice
+adaptation. Unlike that we did not perform any adaptation of the original
+speech model. Adaptation data of clean singing voice for a particular
+singer might not always be available and thus does not allow the system
+to scale to data from unknown singers. 
+
+Apart from that, the VAD module of \cite{fujihara2011lyricsynchronizer}  showed to notably
+increase the average accuracy of 72.1 \% for a baseline, to accuracy
+of 85.2 \% for their final system.  Similarly, we observe that evaluation on the acapella dataset yields an accuracy by
+about the same percent higher than the polyphonic one (see table 2).
+ Investigating our results with low accuracy revealed that false
+positives of our VAD module is a considerable reason for misalignment.
+Since \emph{HMM+adaptation} and \emph{HMM+singer adaptation} are tested on material with different genre and language, no direct conclusions are possible. However, the comparable range of the results indicates a potential of our approach to perform on par with these systems, especially by further improving our VAD step. 
+
+
+
+\section{Conclusion}
+
+
+
+In this work we evaluated the behavior of a HMM-based phonetic recognizer
+for lyrics-to-audio alignment in two settings: with and without utilising
+lyrics duration information. Using duration-explicit modeling for
+the former setting outperformed the latter for polyphonic Turkish
+classical recordings. 
+
+Importantly our approach reaches accuracy comparable to state of the
+art alignment systems by using an acoustic model trained on speech
+only.  
+Furthermore, results outlined that the DHMM performs considerably better on an acapella
+version of the test dataset, which indicates that improving the vocal
+activity detection module can result in even better accuracy, which we plan to address in future work. 
+
+A limitation of the current alignment system is the prerequisite for
+manually-done structural segmentation, which we plan to automate in
+the future. 
+
+In general, the proposed approach is applicable not only when musical
+scores are available, but also for any format, from which duration
+information can be inferred: for example annotated melodic contour
+or singer-created indications along the lyrics.
+
+
+%
+\begin{acknowledgments}
+This work is partly supported by the European Research Council under the European Union’s Seventh Framework Program, as part of the CompMusic project (ERC grant agreement 267583) and partly by the AGAUR research grant.
+\end{acknowledgments} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%bibliography here
+
+\bibliographystyle{unsrt}
+\bibliography{/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefLyrics2Audio,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefCompMusicNon-Lyrics,/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRef_saerch_by_lyrics}
+
+
+\end{document}

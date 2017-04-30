@@ -1,0 +1,13 @@
+
+signal processing (left column): 
+first the whole audio has to be divided into short-section regions. 
+Manual segmentation can be done. We are working on automatising this step 
+
+——
+returns timestamps foe each phoneme
+
+Accuracy can be evaluated on the level of detail, relevant for the needed application:
+phonemes-level, words-level, phrase-level. 
+here as an example is shown word-level accucary
+
+ 

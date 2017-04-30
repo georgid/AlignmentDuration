@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="46cm"
+   height="79cm"
+   viewBox="-111 39 913 1576"
+   id="svg3717"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="systemOverview.svg">
+  <metadata
+     id="metadata4037">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4035" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1680"
+     inkscape:window-height="940"
+     id="namedview4033"
+     showgrid="false"
+     inkscape:zoom="0.33723769"
+     inkscape:cx="814.96063"
+     inkscape:cy="2111.2705"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3717" />
+  <g
+     id="g3719">
+    <rect
+       style="fill: #ffffff"
+       x="-80"
+       y="280"
+       width="219.8"
+       height="93.5151"
+       id="rect3721" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="-80"
+       y="280"
+       width="219.8"
+       height="93.5151"
+       id="rect3723" />
+    <text
+       font-size="28.606"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="29.9"
+       y="317.55"
+       id="text3725">
+      <tspan
+         x="29.9"
+         y="317.55"
+         id="tspan3727">manual</tspan>
+      <tspan
+         x="29.9"
+         y="353.308"
+         id="tspan3729">segmentation</tspan>
+    </text>
+  </g>
+  <g
+     id="g3731">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="29.9558"
+       y1="222.683"
+       x2="29.9308"
+       y2="269.268"
+       id="line3733" />
+    <polygon
+       style="fill: #000000"
+       points="29.9268,276.768 24.9322,266.765 29.9308,269.268 34.9322,266.771 "
+       id="polygon3735" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="29.9268,276.768 24.9322,266.765 29.9308,269.268 34.9322,266.771 "
+       id="polygon3737" />
+  </g>
+  <g
+     id="g4039">
+    <g
+       id="g3739">
+      <rect
+         id="rect3741"
+         height="57.7576"
+         width="279.4"
+         y="652"
+         x="-109"
+         style="fill: #ffffff" />
+      <rect
+         id="rect3743"
+         height="57.7576"
+         width="279.4"
+         y="652"
+         x="-109"
+         style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" />
+      <text
+         id="text3745"
+         y="689.55"
+         x="30.7"
+         style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+         font-size="28.606">
+        <tspan
+           id="tspan3747"
+           y="689.55"
+           x="30.7">feature extraction</tspan>
+      </text>
+    </g>
+  </g>
+  <g
+     id="g3749">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="30.1141"
+       y1="588.93"
+       x2="30.4562"
+       y2="642.616"
+       id="line3751" />
+    <polygon
+       style="fill: #000000"
+       points="30.504,650.116 25.4403,640.148 30.4562,642.616 35.4401,640.084 "
+       id="polygon3753" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="30.504,650.116 25.4403,640.148 30.4562,642.616 35.4401,640.084 "
+       id="polygon3755" />
+  </g>
+  <g
+     id="g3757">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="30.5689"
+       y1="710.751"
+       x2="30.4042"
+       y2="748.261"
+       id="line3759" />
+    <polygon
+       style="fill: #000000"
+       points="30.3713,755.761 25.4153,745.739 30.4042,748.261 35.4152,745.783 "
+       id="polygon3761" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="30.3713,755.761 25.4153,745.739 30.4042,748.261 35.4152,745.783 "
+       id="polygon3763" />
+  </g>
+  <g
+     id="g3765">
+    <rect
+       style="fill: #ffffff"
+       x="228"
+       y="281"
+       width="243.2"
+       height="93.5151"
+       id="rect3767" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="228"
+       y="281"
+       width="243.2"
+       height="93.5151"
+       id="rect3769" />
+    <text
+       font-size="28.606"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="349.6"
+       y="318.55"
+       id="text3771">
+      <tspan
+         x="349.6"
+         y="318.55"
+         id="tspan3773">reading </tspan>
+      <tspan
+         x="349.6"
+         y="354.308"
+         id="tspan3775">score durations</tspan>
+    </text>
+  </g>
+  <g
+     id="g3777">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="352.265"
+       y1="217.81"
+       x2="350.993"
+       y2="270.281"
+       id="line3779" />
+    <polygon
+       style="fill: #000000"
+       points="350.811,277.779 346.055,267.66 350.993,270.281 356.052,267.903 "
+       id="polygon3781" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="350.811,277.779 346.055,267.66 350.993,270.281 356.052,267.903 "
+       id="polygon3783" />
+  </g>
+  <text
+     font-size="28.2222"
+     style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal"
+     x="29.9"
+     y="326.758"
+     id="text3785">
+    <tspan
+       x="29.9"
+       y="326.758"
+       id="tspan3787" />
+  </text>
+  <g
+     id="g3789">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="347.859"
+       y1="375.522"
+       x2="346.665"
+       y2="408.289"
+       id="line3791" />
+    <polygon
+       style="fill: #000000"
+       points="346.392,415.784 341.759,405.609 346.665,408.289 351.753,405.973 "
+       id="polygon3793" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="346.392,415.784 341.759,405.609 346.665,408.289 351.753,405.973 "
+       id="polygon3795" />
+  </g>
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_1.jpg"
+     xlink:href="poster_1.jpg"
+     id="image3797"
+     height="175.807"
+     width="348.887"
+     y="40"
+     x="180" />
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_2.jpg"
+     xlink:href="poster_2.jpg"
+     id="image3799"
+     height="126"
+     width="247.885"
+     y="420"
+     x="220" />
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/audioSignal.png"
+     xlink:href="audioSignal.png"
+     id="image3801"
+     height="160.681"
+     width="220"
+     y="60"
+     x="-80" />
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_3.jpg"
+     xlink:href="poster_3.jpg"
+     id="image3803"
+     height="160"
+     width="219.184"
+     y="427"
+     x="-80" />
+  <g
+     id="g3805">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="29.8184"
+       y1="374.513"
+       x2="29.7487"
+       y2="415.273"
+       id="line3807" />
+    <polygon
+       style="fill: #000000"
+       points="29.7359,422.773 24.753,412.764 29.7487,415.273 34.753,412.781 "
+       id="polygon3809" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="29.7359,422.773 24.753,412.764 29.7487,415.273 34.753,412.781 "
+       id="polygon3811" />
+  </g>
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_4.jpg"
+     xlink:href="poster_4.jpg"
+     id="image3813"
+     height="160.703"
+     width="220"
+     y="760"
+     x="-80" />
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_5_pen.jpg"
+     xlink:href="poster_5_pen.jpg"
+     id="image3815"
+     height="34.7462"
+     width="58.0298"
+     y="662"
+     x="210" />
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_6.jpg"
+     xlink:href="poster_6.jpg"
+     id="image3817"
+     height="160"
+     width="23.125"
+     y="1060"
+     x="180" />
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_7.jpg"
+     xlink:href="poster_7.jpg"
+     id="image3819"
+     height="160"
+     width="23.125"
+     y="1060"
+     x="360" />
+  <text
+     font-size="28.2222"
+     style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal"
+     x="360"
+     y="1160"
+     id="text3821">
+    <tspan
+       x="360"
+       y="1160"
+       id="tspan3823" />
+  </text>
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_8.jpg"
+     xlink:href="poster_8.jpg"
+     id="image3825"
+     height="353.847"
+     width="540"
+     y="1260"
+     x="160" />
+  <text
+     font-size="28.2222"
+     style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal"
+     x="171.356"
+     y="833.963"
+     id="text3827">
+    <tspan
+       x="171.356"
+       y="833.963"
+       id="tspan3829" />
+  </text>
+  <g
+     id="g3831">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="240.45"
+       y1="602.246"
+       x2="239.249"
+       y2="652.267"
+       id="line3833" />
+    <polygon
+       style="fill: #000000"
+       points="239.069,659.765 234.31,649.647 239.249,652.267 244.307,649.888 "
+       id="polygon3835" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="239.069,659.765 234.31,649.647 239.249,652.267 244.307,649.888 "
+       id="polygon3837" />
+  </g>
+  <g
+     id="g3839">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="314.629"
+       y1="602.054"
+       x2="313.769"
+       y2="651.412"
+       id="line3841" />
+    <polygon
+       style="fill: #000000"
+       points="313.639,658.91 308.814,648.825 313.769,651.412 318.812,648.999 "
+       id="polygon3843" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="313.639,658.91 308.814,648.825 313.769,651.412 318.812,648.999 "
+       id="polygon3845" />
+  </g>
+  <g
+     id="g3847">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="388.929"
+       y1="602.454"
+       x2="388.075"
+       y2="649.812"
+       id="line3849" />
+    <polygon
+       style="fill: #000000"
+       points="387.94,657.311 383.121,647.222 388.075,649.812 393.12,647.402 "
+       id="polygon3851" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="387.94,657.311 383.121,647.222 388.075,649.812 393.12,647.402 "
+       id="polygon3853" />
+  </g>
+  <g
+     id="g3855">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="462.229"
+       y1="599.854"
+       x2="463.875"
+       y2="649.216"
+       id="line3857" />
+    <polygon
+       style="fill: #000000"
+       points="464.125,656.711 458.795,646.884 463.875,649.216 468.789,646.55 "
+       id="polygon3859" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="464.125,656.711 458.795,646.884 463.875,649.216 468.789,646.55 "
+       id="polygon3861" />
+  </g>
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_5_pen.jpg"
+     xlink:href="poster_5_pen.jpg"
+     id="image3863"
+     height="35.7462"
+     width="59.6999"
+     y="661.146"
+     x="283.75" />
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_5_pen.jpg"
+     xlink:href="poster_5_pen.jpg"
+     id="image3865"
+     height="35.7462"
+     width="59.6999"
+     y="659.546"
+     x="358.05" />
+  <image
+     sodipodi:absref="/Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_poster/poster_5_pen.jpg"
+     xlink:href="poster_5_pen.jpg"
+     id="image3867"
+     height="35.7462"
+     width="59.6999"
+     y="658.946"
+     x="434.35" />
+  <g
+     id="g3869">
+    <polyline
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="239.015,698.745 239.015,820 353.45,820 353.45,907.01 "
+       id="polyline3871" />
+    <polygon
+       style="fill: #000000"
+       points="353.45,914.51 348.45,904.51 353.45,907.01 358.45,904.51 "
+       id="polygon3873" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="353.45,914.51 348.45,904.51 353.45,907.01 358.45,904.51 "
+       id="polygon3875" />
+  </g>
+  <g
+     id="g3877">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="4.97623"
+       y1="955.246"
+       x2="4.97623"
+       y2="1009.25"
+       id="line3879" />
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="4.97623"
+       y1="955.246"
+       x2="101.45"
+       y2="955.246"
+       id="line3881" />
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="4.97623"
+       y1="1009.25"
+       x2="101.45"
+       y2="1009.25"
+       id="line3883" />
+    <text
+       font-size="12.7998"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="55.6249"
+       y="987.596"
+       id="text3885">
+      <tspan
+         x="55.6249"
+         y="987.596"
+         id="tspan3887">feature</tspan>
+    </text>
+  </g>
+  <g
+     id="g3889">
+    <polyline
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="313.6,698.875 313.6,819 363.45,819 363.45,906.01 "
+       id="polyline3891" />
+    <polygon
+       style="fill: #000000"
+       points="363.45,913.51 358.45,903.51 363.45,906.01 368.45,903.51 "
+       id="polygon3893" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="363.45,913.51 358.45,903.51 363.45,906.01 368.45,903.51 "
+       id="polygon3895" />
+  </g>
+  <g
+     id="g3897">
+    <polyline
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="387.9,697.278 387.9,820 373.45,820 373.45,908.01 "
+       id="polyline3899" />
+    <polygon
+       style="fill: #000000"
+       points="373.45,915.51 368.45,905.51 373.45,908.01 378.45,905.51 "
+       id="polygon3901" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="373.45,915.51 368.45,905.51 373.45,908.01 378.45,905.51 "
+       id="polygon3903" />
+  </g>
+  <g
+     id="g3905">
+    <polyline
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="464.2,696.692 464.2,820 383.45,820 383.45,906.01 "
+       id="polyline3907" />
+    <polygon
+       style="fill: #000000"
+       points="383.45,913.51 378.45,903.51 383.45,906.01 388.45,903.51 "
+       id="polygon3909" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="383.45,913.51 378.45,903.51 383.45,906.01 388.45,903.51 "
+       id="polygon3911" />
+  </g>
+  <g
+     id="g3913">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="200"
+       y1="840"
+       x2="200"
+       y2="900"
+       id="line3915" />
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="200"
+       y1="840"
+       x2="300"
+       y2="840"
+       id="line3917" />
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="200"
+       y1="900"
+       x2="300"
+       y2="900"
+       id="line3919" />
+    <text
+       font-size="12.7998"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="252.5"
+       y="875.5"
+       id="text3921">
+      <tspan
+         x="252.5"
+         y="875.5"
+         id="tspan3923">formula</tspan>
+    </text>
+  </g>
+  <g
+     id="g3925">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="340"
+       y1="920"
+       x2="340"
+       y2="980"
+       id="line3927" />
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="340"
+       y1="920"
+       x2="440"
+       y2="920"
+       id="line3929" />
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="340"
+       y1="980"
+       x2="440"
+       y2="980"
+       id="line3931" />
+    <text
+       font-size="12.7998"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="392.5"
+       y="955.5"
+       id="text3933">
+      <tspan
+         x="392.5"
+         y="955.5"
+         id="tspan3935">formula</tspan>
+    </text>
+  </g>
+  <g
+     id="g3937">
+    <rect
+       style="fill: #ffffff"
+       x="200"
+       y="920"
+       width="120"
+       height="60"
+       id="rect3939" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="200"
+       y="920"
+       width="120"
+       height="60"
+       id="rect3941" />
+    <text
+       font-size="12.7998"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="260"
+       y="953.9"
+       id="text3943">
+      <tspan
+         x="260"
+         y="953.9"
+         id="tspan3945">formula</tspan>
+    </text>
+  </g>
+  <g
+     id="g3947">
+    <polyline
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="53.2131,982.246 53.2131,1009.75 53.2131,1009.75 53.2131,991.982 "
+       id="polyline3949" />
+    <polygon
+       style="fill: #000000"
+       points="53.2131,984.482 58.2131,994.482 53.2131,991.982 48.2131,994.482 "
+       id="polygon3951" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="53.2131,984.482 58.2131,994.482 53.2131,991.982 48.2131,994.482 "
+       id="polygon3953" />
+  </g>
+  <g
+     id="g3955">
+    <polyline
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="100,1000 260,1000 260,989.736 "
+       id="polyline3957" />
+    <polygon
+       style="fill: #000000"
+       points="260,982.236 265,992.236 260,989.736 255,992.236 "
+       id="polygon3959" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="260,982.236 265,992.236 260,989.736 255,992.236 "
+       id="polygon3961" />
+  </g>
+  <g
+     id="g3963">
+    <rect
+       style="fill: #ffffff"
+       x="563"
+       y="431"
+       width="200"
+       height="149"
+       id="rect3965" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="563"
+       y="431"
+       width="200"
+       height="149"
+       id="rect3967" />
+    <text
+       font-size="12.7998"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="663"
+       y="509.4"
+       id="text3969">
+      <tspan
+         x="663"
+         y="509.4"
+         id="tspan3971" />
+    </text>
+  </g>
+  <g
+     id="g3973">
+    <rect
+       style="fill: #ffffff"
+       x="522"
+       y="650"
+       width="279.4"
+       height="57.7576"
+       id="rect3975" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="522"
+       y="650"
+       width="279.4"
+       height="57.7576"
+       id="rect3977" />
+    <text
+       font-size="28.606"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="661.7"
+       y="687.55"
+       id="text3979">
+      <tspan
+         x="661.7"
+         y="687.55"
+         id="tspan3981">train models</tspan>
+    </text>
+  </g>
+  <g
+     id="g3983">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="662.435"
+       y1="580.845"
+       x2="661.997"
+       y2="639.301"
+       id="line3985" />
+    <polygon
+       style="fill: #000000"
+       points="661.941,646.801 657.016,636.764 661.997,639.301 667.015,636.839 "
+       id="polygon3987" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="661.941,646.801 657.016,636.764 661.997,639.301 667.015,636.839 "
+       id="polygon3989" />
+  </g>
+  <g
+     id="g3991">
+    <rect
+       style="fill: #ffffff"
+       x="557.75"
+       y="762.646"
+       width="200"
+       height="183.6"
+       id="rect3993" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="557.75"
+       y="762.646"
+       width="200"
+       height="183.6"
+       id="rect3995" />
+    <text
+       font-size="12.7998"
+       style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal"
+       x="657.75"
+       y="858.346"
+       id="text3997">
+      <tspan
+         x="657.75"
+         y="858.346"
+         id="tspan3999" />
+    </text>
+  </g>
+  <g
+     id="g4001">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="661.7"
+       y1="707.758"
+       x2="660.511"
+       y2="751.914"
+       id="line4003" />
+    <polygon
+       style="fill: #000000"
+       points="660.309,759.411 655.58,749.28 660.511,751.914 665.576,749.55 "
+       id="polygon4005" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="660.309,759.411 655.58,749.28 660.511,751.914 665.576,749.55 "
+       id="polygon4007" />
+  </g>
+  <g
+     id="g4009">
+    <polyline
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="657.75,947.194 657.75,1000 290,1000 290,989.736 "
+       id="polyline4011" />
+    <polygon
+       style="fill: #000000"
+       points="290,982.236 295,992.236 290,989.736 285,992.236 "
+       id="polygon4013" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="290,982.236 295,992.236 290,989.736 285,992.236 "
+       id="polygon4015" />
+  </g>
+  <g
+     id="g4017">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="191.563"
+       y1="1220"
+       x2="190.741"
+       y2="1247.51"
+       id="line4019" />
+    <polygon
+       style="fill: #000000"
+       points="190.517,1255.01 185.817,1244.87 190.741,1247.51 195.813,1245.16 "
+       id="polygon4021" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="190.517,1255.01 185.817,1244.87 190.741,1247.51 195.813,1245.16 "
+       id="polygon4023" />
+  </g>
+  <g
+     id="g4025">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x1="371.563"
+       y1="1220"
+       x2="371.481"
+       y2="1245.51"
+       id="line4027" />
+    <polygon
+       style="fill: #000000"
+       points="371.457,1253.01 366.489,1242.99 371.481,1245.51 376.489,1243.03 "
+       id="polygon4029" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="371.457,1253.01 366.489,1242.99 371.481,1245.51 376.489,1243.03 "
+       id="polygon4031" />
+  </g>
+</svg>

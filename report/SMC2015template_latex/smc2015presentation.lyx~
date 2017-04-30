@@ -1,0 +1,2121 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+\usepackage{movie15}
+\usetheme[left,width=3.45em]{Berkeley}
+\usepackage{multicol}
+\usepackage{hyperref}
+\renewcommand*{\contentsname}{}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 10page%
+\topmargin 10theight%
+\rightmargin 10page%
+\bottommargin 10pheight%
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+MODELING OF PHONEME DURATIONS FOR ALIGNMENT BETWEEN POLYPHONIC AUDIO AND
+ LYRICS
+\end_layout
+
+\begin_layout Author
+Georgi Dzhambazov, Xavier Serra
+\end_layout
+
+\begin_layout Institute
+Music Technology Group, Universitat Pompeu Fabra, Barcelona
+\end_layout
+
+\begin_layout TitleGraphic
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "50line%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename ../HMM_andLyrics_presentation_NavaRubin/CompMusic_logotoweb.png
+	scale 23
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "50line%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename mtg_logo.png
+	scale 23
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_deeper
+\begin_layout FrameTitle
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+presentation
+\end_layout
+
+\end_inset
+
+Contents
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Task definitio
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Alignment between lyrics and audio
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout FrameSubtitle
+Task definition
+\end_layout
+
+\begin_layout Block
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+Goal
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+automatic synchronization between audio and lyrics (a.k.a.
+ lyrics-to-audio alignment)
+\end_layout
+
+\begin_layout Itemize
+input: audio lyrics
+\end_layout
+
+\begin_layout Itemize
+output: boundary timestamps of phonemes
+\end_layout
+
+\begin_layout Itemize
+analogous to score-to-audio alignment
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename /Users/joro/Documents/Phd/UPF/papers/lyrics-to-audio-alignment_example_phonemeLevelPart.png
+	lyxscale 40
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Dataset
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout ExampleBlock
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+Excerpt from classical Turkish Makam
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{figure}[ht]
+\backslash
+includemovie[poster,mouse=true]{8cm}{6cm}     {/Users/joro/Documents/Phd/UPF/pap
+ers/FMA2014_tex_fullPaper/poster/bakmiyor_example_alignment.mov} 
+\backslash
+end{figure}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+heterophonic music 
+\end_layout
+
+\begin_layout Itemize
+long vocal durations
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Motivation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Why automate lyrics-to-audio alignment?
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+automatic karaoke generation 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+listeners follow lyrics and melody in paralel
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+enables 
+\end_layout
+
+\end_inset
+
+structural navigation by lyrics 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+when learning the song
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+educational purposes: explore interpretations of same lyrics
+\end_layout
+
+\begin_deeper
+\begin_layout ExampleBlock
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+Lyrics visualization
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{figure}[ht]
+\backslash
+includemovie[poster,mouse=true]{0.5
+\backslash
+paperwidth}{0.4
+\backslash
+paperheight}      {/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/po
+ster/benSeni_musixMatch.mov}  
+\backslash
+end{figure}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Subsection
+State of the art
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+State of the art
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+based on speech-technique
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Mesaros96automaticalignment"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand cite
+key "fujihara2011lyricsynchronizer"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="3">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mesaros et al.
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Fujihara et al.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+approach
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+phoneme-HMMs Viterbi forced alignment
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+refinements
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+singing adaptation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+singer adaptation
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+test dataset
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+English pop
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Japanese + English pop
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Motivation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Why research lyrics-to-audio alignement?
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+no work on non-eurogenetic music (singing style and language)
+\end_layout
+
+\begin_layout Itemize
+state of the art accuracy could be improved
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+hard problem
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+build reproducible research
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Section
+Approach
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Approach
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout FrameSubtitle
+Main ideas
+\end_layout
+
+\begin_layout Itemize
+extend the phoneme-HMMs Viterbi forced alignment
+\end_layout
+
+\begin_layout Itemize
+explicitly model phoneme durations by use of musical score
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 3
+status open
+
+\begin_layout Plain Layout
+label=overview
+\end_layout
+
+\end_inset
+
+
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Approach Overview
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Graphics
+	filename /Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_EUSIPCO/systemOverview.eps
+	height 73pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+DHMM: Duration-explicit Hidden Markov Model
+\end_layout
+
+\end_deeper
+\begin_layout Frame
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Left is signal processing, center is duration modeling.
+ DHMM, phoneme HMMS from speech
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Dataset
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+i start with corpus because it is data-driven research
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+12 recordings (19 min) of classical Turkish Makam
+\end_layout
+
+\begin_layout Itemize
+drawn from CompMusic collection
+\end_layout
+
+\begin_layout Itemize
+segmented into sections
+\end_layout
+
+\begin_layout Itemize
+evaluate phrase boundaries
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{table}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{centering}
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{}}
+\backslash
+global
+\backslash
+long
+\backslash
+def
+\backslash
+arraystretch{1.2}
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{} }%
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{tabular}{|l|l|l|}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+textbf{total 
+\backslash
+linebreak 
+\backslash
+#phrases} & 
+\backslash
+textbf{
+\backslash
+#phrases per section} & 
+\backslash
+textbf{
+\backslash
+#words in phrase}
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline 
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{}220} & {
+\backslash
+small{} 2 to 5} & 1-5 
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+par
+\backslash
+end{centering}{
+\backslash
+small 
+\backslash
+par}
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{}
+\backslash
+vspace*{-0.3cm}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+protect
+\backslash
+caption{Section and phrase statistics for test dataset.}
+\end_layout
+
+\begin_layout Plain Layout
+
+}{
+\backslash
+small 
+\backslash
+par}
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{}
+\backslash
+label{tab:dataset-stats} }%
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{table}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Subsection
+Acoustic features
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Vocal Activity Detection
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{figure}[ht]
+\backslash
+includemovie[poster,mouse=true]{0.8
+\backslash
+paperwidth}{0.66
+\backslash
+paperheight}     {/Users/joro/Documents/Phd/UPF/papers/SMC2015template_latex/bak
+miyor_original.mov}  
+\backslash
+end{figure}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+original polyphonic audio
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Vocal Activity Detection
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Graphics
+	filename bakmiyor_melodia.png
+	width 80page%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+predominant melody extraction: 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "salamon2012melody"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+vocal activity detection at the same time
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Resynthesis of main vocal
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{figure}[ht]
+\backslash
+includemovie[poster,mouse=true]{0.8
+\backslash
+paperwidth}{0.6
+\backslash
+paperheight}     {/Users/joro/Documents/Phd/UPF/papers/SMC2015template_latex/bak
+miyor_resynthesized.mov}  
+\backslash
+end{figure}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Serra89asystem"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+extract 12 MFCCs from resynthesized vocal
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Phoneme models 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+38 Phoneme HMMs trained on clean speech
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+trained on ~6 hours Turkish speech 
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset Formula $b_{i}(O_{s})$
+\end_inset
+
+ - from GMM with 9-mixture Normal distribution
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename phonemeModels.eps
+	height 55pheight%
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout AgainFrame
+overview
+\end_layout
+
+\begin_layout Subsection
+Duration modeling
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Read score reference durations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename readingScoreDurations.eps
+	height 66pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+relative reference durations
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Model duration distributions 
+\begin_inset Formula $P_{i}(d)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename durationDistributions.eps
+	height 61pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+durations distributions
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Duration-explicit HMM alignment
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Description
+\noindent
+\begin_inset Formula $\delta_{t}(i)$
+\end_inset
+
+: probability for optimal path ending in state 
+\begin_inset Formula $i$
+\end_inset
+
+ at time 
+\begin_inset Formula $t$
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+recursuve like in Viterbi
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{eqnarray*}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+delta_{t}(i) & = & 
+\backslash
+max_{d}
+\backslash
+{
+\backslash
+delta_{t-d}(i-1).
+\backslash
+nonumber 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+& & P_{i}(d)^{
+\backslash
+alpha}
+\backslash
+thinspace[B_{t}(i,d)]^{1-
+\backslash
+alpha}
+\backslash
+}
+\backslash
+label{eq:decoding}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{eqnarray*}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+and
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $B_{t}(i,d)=\Pi_{s=t-d+1}^{t}b_{i}(O_{s})$
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+d valies according to normal distribution
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Duration-explicit HMM alignment
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename DHMMAlignment.eps
+	height 75pheight%
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Section
+Experiments
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Results
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{table}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{centering}
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{} }%
+\end_layout
+
+\begin_layout Plain Layout
+
+% 
+\backslash
+begin{tabular}{>{
+\backslash
+raggedright}p{0.38
+\backslash
+columnwidth}>{
+\backslash
+centering}p{0.25
+\backslash
+columnwidth}>{
+\backslash
+centering}p{0.25
+\backslash
+columnwidth}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{tabular}{|l|l|l|}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+textbf{
+\backslash
+small{}System variant} & 
+\backslash
+textbf{
+\backslash
+small{} }
+\backslash
+linebreak
+\backslash
+textbf{
+\backslash
+small{ } accuracy}{
+\backslash
+small{} } & 
+\backslash
+textbf{
+\backslash
+small{}}
+\backslash
+linebreak
+\backslash
+textbf{
+\backslash
+small{} error}{
+\backslash
+small{} }
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline 
+\end_layout
+
+\begin_layout Plain Layout
+
+HMM polyphonic & 67.46 & 1.04
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+DHMM polyphonic & 77.74 & 0.63
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+DHMM acapella & 90.04 & 0.26
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+par
+\backslash
+end{centering}{
+\backslash
+small 
+\backslash
+par}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{}
+\backslash
+vspace*{-0.3cm}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+protect
+\backslash
+caption{Alignment accuracy and error for baseline HMM and DHMM}
+\end_layout
+
+\begin_layout Plain Layout
+
+}{
+\backslash
+small 
+\backslash
+par}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+label{resultsTable}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{table}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{table}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{centering}
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{} }%
+\end_layout
+
+\begin_layout Plain Layout
+
+% 
+\backslash
+begin{tabular}{>{
+\backslash
+raggedright}p{0.38
+\backslash
+columnwidth}>{
+\backslash
+centering}p{0.25
+\backslash
+columnwidth}>{
+\backslash
+centering}p{0.25
+\backslash
+columnwidth}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{tabular}{|l|l|l|}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+textbf{
+\backslash
+small{}System variant} & 
+\backslash
+textbf{
+\backslash
+small{} }
+\backslash
+linebreak
+\backslash
+textbf{
+\backslash
+small{ } accuracy}{
+\backslash
+small{} } & 
+\backslash
+textbf{
+\backslash
+small{}}
+\backslash
+linebreak
+\backslash
+textbf{
+\backslash
+small{} error}{
+\backslash
+small{} }
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline 
+\end_layout
+
+\begin_layout Plain Layout
+
+HMM+singing adaptation [2] & - & 1.4
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+HMM+
+\backslash
+linebreak singer adaptation [1] & 85.2 & -
+\backslash
+tabularnewline
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+hline 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tabular}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+par
+\backslash
+end{centering}{
+\backslash
+small 
+\backslash
+par}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+small{}
+\backslash
+vspace*{-0.3cm}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+protect
+\backslash
+caption{Alignment accuracy and error for related work}
+\end_layout
+
+\begin_layout Plain Layout
+
+}{
+\backslash
+small 
+\backslash
+par}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+label{resultsTable}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{table}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Results
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename /Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_EUSIPCO/scatterCorrelation.eps
+	width 90page%
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Results
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout ExampleBlock
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+Example phoneme-level alignment
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset Graphics
+	filename /Users/joro/Documents/Phd/UPF/papers/DurationHSMM_polyphonic_EUSIPCO/KiseyeZeminPhoneLevel.png
+	width 80page%
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+works beuse of long vowels.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Conclusion and Future
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+extension to a HMM decoding with duration modeling
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+reference durations extracted from score
+\end_layout
+
+\begin_layout Itemize
+allows tracking duration variability
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+vocal segregation by harmonic modeling
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Itemize
+improve vocal extraction
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+acapella showed
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+rely on automatic note-segmentation instead of score
+\end_layout
+
+\end_deeper
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+References
+\end_layout
+
+\begin_deeper
+\begin_layout FrameSubtitle
+\begin_inset Argument 1
+status open
+
+\begin_layout Plain Layout
+presentation
+\end_layout
+
+\end_inset
+
+References
+\end_layout
+
+\begin_layout Quotation
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/joro/Documents/Phd/UPF/papers/FMA2014_tex_fullPaper/JabRefLyrics2Audio"
+options "plainnat"
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Separator
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Questions and answers
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+georgi.dzhambazov@upf.edu
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://twitter.com/georgi_d_
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/georgid/AlignmentDuration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://compmusic.upf.edu/
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\end_body
+\end_document

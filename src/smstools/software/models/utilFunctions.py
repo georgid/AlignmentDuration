@@ -9,7 +9,7 @@ utilsPath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'utilFunct
 print utilsPath
 
 sys.path.append(utilsPath)
-print sys.path
+# print sys.path
 
 try:
 	import utilFunctions_C as UF_C

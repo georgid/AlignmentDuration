@@ -1,0 +1,897 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{multicol}
+\usepackage{smc2015}
+\usepackage{times}
+\usepackage{ifpdf}
+\usepackage[english]{babel}
+\usepackage{cite}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 10page%
+\topmargin 10theight%
+\rightmargin 10page%
+\bottommargin 10pheight%
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+capstartfalse
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+maketitle
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+capstarttrue
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Abstract
+Place your abstract at the top left column on the first page.
+ Please write about 150-200 words that specifically highlight the purpose
+ of your work, its context, and provide a brief synopsis of your results.
+ Avoid equations in this part.
+ 
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:introduction"
+
+\end_inset
+
+ This template includes all the information about formatting manuscripts
+ for the SMC2015 Conference.
+ Please use LaTeX templates when preparing your submission.
+ Please follow these guidelines to give the final proceedings a professional
+ look.
+ If you have any questions, please contact the SMC2015 Organizers.
+ This template can be downloaded from: 
+\begin_inset Flex Flex:URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.maynoothuniversity.ie/smc15
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Page size and format
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:page_size"
+
+\end_inset
+
+ Your paper must not exceed 
+\series bold
+8 pages
+\series default
+, no matter if you are presenting orally or posterly.
+ We 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+underline{strongly encourage}
+\end_layout
+
+\end_inset
+
+ a paper length of 
+\series bold
+6 pages
+\series default
+.
+ We will format the proceedings as 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+underline{portrait A4-size paper}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+underline{(21.0cm x 29.7cm)}
+\end_layout
+
+\end_inset
+
+.
+ All material on each page should fit within a rectangle of 17.2cm x 25.2cm,
+ centered on the page, beginning 2.0cm from the top of the page and ending
+ with 2.5cm from the bottom.
+ The left and right margins should be 1.9cm.
+ The text should be in two 8.2cm columns with a 0.8cm gutter.
+ All text must be in a two-column format, and justified.
+ If you prepare your document by cutting and pasting into this one, then
+ you should not have to worry, unless there is something strange with your
+ LaTeX interpreter.
+ So double check.
+ If you have any questions, please contact the SMC2015 Organizers.
+\end_layout
+
+\begin_layout Section
+Typeset Text
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:typeset_text"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Normal or Body Text
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:body"
+
+\end_inset
+
+ Please use a 10pt (point) Times font.
+ Use sans-serif or non-proportional fonts only for special purposes, such
+ as distinguishing source code.
+ The first paragraph in each section should not be indented, but all other
+ paragraphs should be.
+\end_layout
+
+\begin_layout Subsection
+Title and Authors
+\end_layout
+
+\begin_layout Standard
+As you can see above, the title is 16pt Times, bold, upper case, and centered.
+ The names of the authors are also centered.
+ The lead author's name is to be listed first (left-most), and the co-authors'
+ names after.
+ If the addresses for all authors are the same, include the address only
+ once, centered.
+ If the authors have different addresses, put the addresses, evenly spaced,
+ under each authors' name.
+\end_layout
+
+\begin_layout Subsection
+First Page Copyright Notice
+\end_layout
+
+\begin_layout Standard
+Please leave the copyright notice exactly as it appears in the lower left-hand
+ corner of the first page.
+ It is set in 8pt Times, if you are wondering.
+\end_layout
+
+\begin_layout Subsection
+Page Numbering, Headers and Footers
+\end_layout
+
+\begin_layout Standard
+Do not include headers, footers or page numbers in your submission.
+ We add these electronically when we assemble the publications into the
+ proceedings.
+\end_layout
+
+\begin_layout Section
+Headings
+\end_layout
+
+\begin_layout Standard
+First level headings are in Times 12pt bold, centered with 1 line of space
+ above the section head, and 1/2 space below it.
+ For a section header immediately followed by a subsection header, the space
+ should be merged.
+\end_layout
+
+\begin_layout Subsection
+Second Level Headings
+\end_layout
+
+\begin_layout Standard
+Second level headings are in Times 10pt bold, flush left, with 1 line of
+ space above the section head, and 1/2 space below it.
+ The first letter of each significant word is capitalized.
+\end_layout
+
+\begin_layout Subsubsection
+Third Level Headings
+\end_layout
+
+\begin_layout Standard
+Third level headings are in Times 10pt italic, flush left, with 1/2 line
+ of space above the section head, and 1/2 space below it.
+ The first letter of significant words is capitalized.
+\end_layout
+
+\begin_layout Subsubsection
+Level Headings Beyond the Third
+\end_layout
+
+\begin_layout Standard
+We strongly discourage any use of more than three levels of headings.
+ Also, if you have only one subsection in a section,
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Just like this section.
+\end_layout
+
+\end_inset
+
+ then you should reorganize it into one section.
+\end_layout
+
+\begin_layout Section
+Floats and equations
+\end_layout
+
+\begin_layout Subsection
+Equations
+\end_layout
+
+\begin_layout Standard
+Equations of importance, or to which you refer later, should be placed on
+ separated lines and numbered.
+ The number should be on the right side, in parentheses.
+ 
+\begin_inset Formula 
+\begin{equation}
+E=mc^{2+\delta}.\label{eq:Emc2}
+\end{equation}
+
+\end_inset
+
+Refer to equations like so: As (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Emc2"
+
+\end_inset
+
+) shows, I do not completely trust Special Relativity.
+\end_layout
+
+\begin_layout Subsection
+Figures, Tables and Captions
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement t
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="2">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+String value 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Numeric value 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Hej SMC 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2015 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Table captions should be placed below the table, exactly like this, but
+ using words different from these.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:example"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+All artwork must be centered, neat, clean, and legible.
+ And if you include figures in your paper, instead of artwork, please make
+ sure they are centered, neat, clean, and completely legible without superresolu
+tion imaging.
+ All lines should be thick and dark enough to be reproducible even by a
+ facsimile machine; and figures should not be hand-drawn unless your hand
+ is robotically precise.
+ Since the proceedings are distributed in electronic form only, we allow
+ color to be used in figures; but please check that your figures are coherent
+ if they are printed in black-and-white.
+ For instance, to make your figures zing in several conditions, vary line
+ thickness, style, and color at the same time.
+\end_layout
+
+\begin_layout Standard
+Numbers and captions of figures and tables always appear below the figure/table.
+ Leave 1 line space between the figure or table and the caption.
+ Figure and tables are numbered consecutively.
+ Captions should be Times 10pt.
+ And try to make your captions sufficiently explain your figures and tables.
+ Place tables/figures in text as close to the reference as possible, and
+ preferably at the top of the page.
+\end_layout
+
+\begin_layout Standard
+Always refer to tables and figures in the main text, for example: see Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:example"
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+tabref
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+tab:example
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ Figures and tables may extend across both columns to a maximum width of
+ 17.2cm.
+\end_layout
+
+\begin_layout Standard
+Vectorial figures are preferred, e.g., eps.
+ When using 
+\family typewriter
+Matlab
+\family default
+, export using either (encapsulated) Postscript or PDF format.
+ In order to optimize readability, the font size of text within a figure
+ should be no smaller than that of footnotes (8pt font-size).
+ If you use bitmap figures, make sure that the resolution is high enough
+ for print quality.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename figure.pdf
+	width 60col%
+
+\end_inset
+
+ 
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Figure captions should be placed below the figure, exactly like this.
+ When you come to SMC2015, you will understand why there is a large hand
+ planted atop Copenhagen.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+begin{figure}[t]
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+figbox{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+subfloat[][]{
+\backslash
+includegraphics[width=60mm]{figure}
+\backslash
+label{fig:subfigex_a}}
+\backslash
+
+\backslash
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+subfloat[][]{
+\backslash
+includegraphics[width=80mm]{figure}
+\backslash
+label{fig:subfigex_b}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+caption{Here's an example using the subfig package.
+\backslash
+label{fig:subfigex} }
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%
+\backslash
+end{figure}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Footnotes
+\end_layout
+
+\begin_layout Standard
+You can indicate footnotes with a number in the text,
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+This is a footnote.
+\end_layout
+
+\end_inset
+
+ but try to work the content into the main text.
+ Use 8pt font-size for footnotes.
+ Place the footnotes at the bottom of the page on which they appear.
+ Precede the footnote with a 0.5pt horizontal rule.
+\end_layout
+
+\begin_layout Section
+Citations
+\end_layout
+
+\begin_layout Standard
+List all bibliographical references at the end of your paper, inside a section
+ named 
+\begin_inset Quotes eld
+\end_inset
+
+REFERENCES
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Order and number the references in order of appearance.
+ Do not list references that do not appear in the text.
+ Reference numbers in the text should appear within square brackets, such
+ as in
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Someone:00"
+
+\end_inset
+
+ or
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Someone:00,Someone:04,Someone:09"
+
+\end_inset
+
+.
+ The reference format is the standard IEEE one.
+ We highly recommend you use Bib
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+TeX
+\end_layout
+
+\end_inset
+
+ to generate the reference list.
+\end_layout
+
+\begin_layout Section
+Conclusions
+\end_layout
+
+\begin_layout Standard
+To finish your full-length paper, end it with a conclusion; and after careful
+ editing and a final spell-cheek, submit it through the Conference Web Submissio
+n System.
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+underline{Do not}
+\end_layout
+
+\end_inset
+
+ send papers directly by e-mail.
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{acknowledgments}
+\end_layout
+
+\end_inset
+
+ You may acknowledge people, projects, funding agencies, etc.
+ which can be included after the second-level heading 
+\begin_inset Quotes eld
+\end_inset
+
+Acknowledgments
+\begin_inset Quotes erd
+\end_inset
+
+ (with no numbering).
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{acknowledgments}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%bibliography here
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "smc2015template"
+options "default"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

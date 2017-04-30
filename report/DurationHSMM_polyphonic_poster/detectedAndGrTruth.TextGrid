@@ -1,0 +1,90 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 10.402539682539683 
+tiers? <exists> 
+size = 3 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "detected" 
+        xmin = 0 
+        xmax = 10.402539682539683 
+        intervals: size = 10 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.01741054916139899 
+            text = "" 
+        intervals [2]:
+            xmin = 0.01741054916139899 
+            xmax = 1.226126508897686 
+            text = "a" 
+        intervals [3]:
+            xmin = 1.226126508897686 
+            xmax = 1.4644648671555454 
+            text = "l" 
+        intervals [4]:
+            xmin = 1.4644648671555454 
+            xmax = 1.9666778363417492 
+            text = "a" 
+        intervals [5]:
+            xmin = 1.9666778363417492 
+            xmax = 2.119895352364659 
+            text = "r" 
+        intervals [6]:
+            xmin = 2.119895352364659 
+            xmax = 3.269026722536481 
+            text = "" 
+        intervals [7]:
+            xmin = 3.269026722536481 
+            xmax = 3.6265342599232704 
+            text = "s" 
+        intervals [8]:
+            xmin = 3.6265342599232704 
+            xmax = 4.571375608731213 
+            text = "o" 
+        intervals [9]:
+            xmin = 4.571375608731213 
+            xmax = 4.9799556514589725 
+            text = "n" 
+        intervals [10]:
+            xmin = 4.9799556514589725 
+            xmax = 10.402539682539683 
+            text = "" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "" 
+        xmin = 0 
+        xmax = 10.402539682539683 
+        intervals: size = 1 
+        intervals [1]:
+            xmin = 0 
+            xmax = 10.402539682539683 
+            text = "" 
+    item [3]:
+        class = "IntervalTier" 
+        name = "ground truth" 
+        xmin = 0 
+        xmax = 10.402539682539683 
+        intervals: size = 5 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.4600389287831379 
+            text = "" 
+        intervals [2]:
+            xmin = 0.4600389287831379 
+            xmax = 2.434842468633973 
+            text = "alar" 
+        intervals [3]:
+            xmin = 2.434842468633973 
+            xmax = 3.3967079858889058 
+            text = "" 
+        intervals [4]:
+            xmin = 3.3967079858889058 
+            xmax = 4.9799556514589725 
+            text = "son" 
+        intervals [5]:
+            xmin = 4.9799556514589725 
+            xmax = 10.402539682539683 
+            text = "" 
