@@ -19,7 +19,11 @@ from src.align.evalPhonemes import load_METU_to_ARPA_mapping
 from src.align.ParametersAlgo import ParametersAlgo
 
 # sys.path.append('/home/georgid/Documents/pdnn')
-sys.path.append('/Users/joro/Downloads/pdnn')
+currDir = os.path.abspath( os.path.join( os.path.dirname(os.path.realpath(__file__)) , os.path.pardir, os.path.pardir, os.path.pardir, os.path.pardir ) )
+pdnn_dir = os.path.join(currDir, 'pdnn/')
+if pdnn_dir not in sys.path:
+    sys.path.append(pdnn_dir)
+
 from io_func import smart_open
 from models.dnn import DNN
 from io_func.model_io import _file2nnet

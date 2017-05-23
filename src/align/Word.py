@@ -7,7 +7,7 @@ from ParametersAlgo import ParametersAlgo
 
 class Word():
         ''' just a list of syllables. order  matters '''
-        def __init__(self,syllables):
+        def __init__(self, syllables):
             self.syllables = syllables;
         
             wordText = ''
@@ -17,7 +17,11 @@ class Word():
             
 #             # consequtive number of first phoneme from phonemeNetwork in Lyrics context
 #             self.numFirstPhoneme = -1
-#             
+#       
+        def expandToPhonemes(self):
+            for syllable_ in self.syllables:
+                syllable_.expandToPhonemes()
+                      
         def setNumFirstPhoneme(self, numFirstPhoneme):
             self.numFirstPhoneme = numFirstPhoneme
 

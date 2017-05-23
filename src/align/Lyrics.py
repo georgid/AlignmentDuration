@@ -34,16 +34,13 @@ class Lyrics(object):
         @return: self.phonemesNetwork: 
         '''
       
-
-        
-        # start word after sil phoneme
-#         currNumPhoneme = 1
-        
+        ### loop through all words to combine phonemes network
         for word_ in self.listWords:
+            word_.expandToPhonemes()
             for syllable_ in word_.syllables:
-                syllable_.expandToPhonemes()
                 phonemesInSyll = syllable_.getPhonemes()
                 phonemesInSyll[-1].setIsLastInSyll(True)
+                
                 self.phonemesNetwork.extend(phonemesInSyll )
             
 #             word_.setNumFirstPhoneme(currNumPhoneme)

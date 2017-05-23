@@ -9,8 +9,15 @@ from sklearn import mixture
 # from numpy import mean, cov
 import sys
 from scipy.stats._multivariate import multivariate_normal
+from src.align.ParametersAlgo import ParametersAlgo
+import os
 
-DIR_PPGs = '/Users/joro/Documents/ISTANBULSymbTr2/phonemeAudio/'
+# make sure you download this repo in parent folder
+# https://github.com/georgid/makam_acapella
+if ParametersAlgo.OBS_MODEL == 'MLP_fuzzy':
+    currDir = os.path.abspath( os.path.join( os.path.dirname(os.path.realpath(__file__)) , os.path.pardir, os.path.pardir, os.path.pardir, os.path.pardir ) )
+    DIR_PPGs = os.path.join(currDir, 'makam_acapella/phonemeAudio/')
+
 numfolds = 4
 which_fold = 1 
 

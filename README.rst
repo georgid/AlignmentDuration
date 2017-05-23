@@ -1,4 +1,4 @@
-Copyright � 2015,2016  Music Technology Group - Universitat Pompeu Fabra
+Copyright 2017  Music Technology Group - Universitat Pompeu Fabra
 
 NAME: AlignmentDuration
 
@@ -22,6 +22,12 @@ sudo apt-get install python-dev python-setuptools python-numpy
 pip install -r requirements
 python setup.py install
 
+* pdnn
+install [Theano](http://www.cs.cmu.edu/~ymiao/pdnntk.html)
+# go to parent folder of this project
+cd .. 
+git clone https://github.com/yajiemiao/pdnn
+
 
 * htkModelParser
 git clone https://github.com/georgid/htkModelParser.git
@@ -33,6 +39,10 @@ python setup.py install
 git clone https://github.com/georgid/scikit-learn 
 sudo apt-get install python-scipy
 python setup.py install
+
+
+* if using [MLP_fuzzy model](https://github.com/georgid/AlignmentDuration/blob/noteOnsets/src/align/ParametersAlgo.py#L28) 
+git clone https://github.com/georgid/makam_acapella
 
 -----------------------------------------------------------------------
 
