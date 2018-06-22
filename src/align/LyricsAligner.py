@@ -1,3 +1,28 @@
+# Copyright (C) 2014-2017  Music Technology Group - Universitat Pompeu Fabra
+#
+# This file is part of AlignmentDuration:  tool for Lyrics-to-audio alignment with syllable duration modeling
+
+#
+# AlignmentDuration is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License as published by the Free
+# Software Foundation (FSF), either version 3 of the License, or (at your
+# option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the Affero GNU General Public License
+# version 3 along with this program. If not, see http://www.gnu.org/licenses/
+
+""" 
+Created on Dec 16, 2014
+please cite:
+Dzhambazov, G., & Serra X. (2015).  Modeling of Phoneme Durations for Alignment between Polyphonic Audio and Lyrics.
+Sound and Music Computing Conference 2015.
+"""
+
 import shutil
 import csv
 import logging
@@ -13,27 +38,9 @@ if parentDir not in sys.path:
  
 from src.onsets.OnsetDetector import OnsetDetector
 
-# Copyright 2015,2016 Music Technology Group - Universitat Pompeu Fabra
-#
-# This file is part of Dunya
-#
-# Dunya is free software: you can redistribute it and/or modify it under the
-# terms of the GNU Affero General Public License as published by the Free Software
-# Foundation (FSF), either version 3 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with
-# this program.  If not, see http://www.gnu.org/licenses/
 
-# Lyrics-to-audio alignment with syllable duration modeling
-""" please cite:
-Dzhambazov, G., & Serra X. (2015).  Modeling of Phoneme Durations for Alignment between Polyphonic Audio and Lyrics.
-Sound and Music Computing Conference 2015.
-"""
+
+
 
 from FeatureExtractor import FeatureExtractor
 import os

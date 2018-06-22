@@ -1,9 +1,28 @@
-# Copyright (c) 2007 Carnegie Mellon University
+# Copyright (C) 2014-2017  Music Technology Group - Universitat Pompeu Fabra
 #
-# You may copy and modify this freely under the same terms as
-# Sphinx-III
+# This file is part of AlignmentDuration and is modified from Copyright (c) of 2007 Carnegie Mellon University
+# under the same terms as Sphinx-III
+#
+# AlignmentDuration is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License as published by the Free
+# Software Foundation (FSF), either version 3 of the License, or (at your
+# option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the Affero GNU General Public License
+# version 3 along with this program. If not, see http://www.gnu.org/licenses/
 
-"""Read and write HTK feature files.
+
+
+
+"""
+Modified from:
+
+Read and write HTK feature files.
 
 This module reads and writes the acoustic feature files used by HTK
 """
