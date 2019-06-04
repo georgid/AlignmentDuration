@@ -3,9 +3,7 @@
 AlignmentDuration
 ======
 
-Tool for Aligning lyrics to audio automatically using a phonetic recognizer with Hidden Markov Models. 
-
-A version with explicit durations of reference syllables can be turned on with the parameter [WITH_DURATIONS](https://github.com/georgid/AlignmentDuration/blob/noteOnsets/src/align/ParametersAlgo.py#L36)
+Tool for Aligning lyrics to audio automatically using a phonetic recognizer with Hidden Markov Models. The Viterbi Decoding with explicit durations of reference syllables can be toggled on with the parameter [WITH_DURATIONS](https://github.com/georgid/AlignmentDuration/blob/noteOnsets/src/align/ParametersAlgo.py#L36)
 
 Built from scratch. Alternatively one can use this tool as a wrapper around  [htk](http://htk.eng.cam.ac.uk/download.shtml) (may be faster) by setting the parameter [DECODE_WITH_HTK](https://github.com/georgid/AlignmentDuration/blob/noteOnsets/src/align/ParametersAlgo.py#L47) 
 
